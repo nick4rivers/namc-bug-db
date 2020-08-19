@@ -1,0 +1,30 @@
+version: '3'
+services:
+
+  # PostGIS Server
+  # ====================================
+  postgis:
+    image: "postgis/postgis"
+    ports:
+      - "5432:5432"    
+    env_file:
+      - .env.database # configure with env variables
+    volumes:
+      - database-data-pg:/var/lib/postgresql/data/ # persist data even if container shuts down
+
+  # MS SQL Server
+  # Borrowed from: https://docs.microsoft.com/en-us/sql/linux/sql-server-linux-configure-docker?view=sql-server-ver15
+  # ====================================
+  sqlserver:
+    image: "mcr.microsoft.com/mssql/rhel/server"
+    env_file:
+      - .env.database # configure with env variables    
+    ports:
+      - "1400:1433"
+    volumes:
+      - database-data-mssql:/var/opt/mssql
+
+
+volumes:
+  database-data-pg: # named volumes can be managed easier using docker-compose
+  database-data-mssql: # named volumes can be managed easier using docker-compose
