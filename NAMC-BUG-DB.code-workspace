@@ -1,0 +1,17 @@
+{
+	"folders": [
+		{
+			"name": "NAMC-BUG-DB (Root)",
+			"path": "."
+		},
+		{
+			"name": "Python",
+			"path": "python"
+		},
+		{
+			"name": "Docker",
+			"path": "docker"
+		}
+	],
+	"settings": {}
+}
