@@ -1,0 +1,21 @@
+{
+  "$schema": "http://json.schemastore.org/nodemon",
+  "restartable": "rs",
+  "ignore": [
+    ".git", 
+    "src",
+    ".webpack",
+    "./node_modules"
+  ],
+  "verbose": true,
+  "execMap": {
+    "ts": "node --require ts-node/register"
+  },
+  "watch": [
+    "../**/dist/**/*.js"
+  ],
+  "env": {
+    "NODE_ENV": "development"
+  },
+  "ext": "js,json,ts"
+}

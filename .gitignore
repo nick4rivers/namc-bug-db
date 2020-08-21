@@ -1,2 +1,7 @@
+node_modules
+*.log
+.ssh
+id_rsa
+.venv
 .env
 .env.*

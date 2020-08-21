@@ -1,0 +1,12 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "lib": [
+      "es6",
+      "dom",
+      "dom.iterable"
+    ],
+    "jsx": "react",
+    "noImplicitAny": false
+  },
+}

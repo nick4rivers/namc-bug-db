@@ -1,0 +1,29 @@
+{
+  "name": "@namcbugdb/aws-cdk-stack",
+  "version": "0.1.1",
+  "main": "dist/index.js",
+  "private": true,
+  "scripts": {
+    "build": "tsc --noEmit",
+    "watch": "tsc -w --noEmit",
+    "test": "jest",
+    "diff": "cdk diff",
+    "deploy:dev": "env-cmd -f ../../.env.development cdk deploy",
+    "cdk": "cdk"
+  },
+  "devDependencies": {
+    "@aws-cdk/assert": "1.56.0",
+    "@types/jest": "^26.0.9",
+    "@types/node": "10.17.5",
+    "aws-cdk": "1.56.0"
+  },
+  "dependencies": {
+    "@aws-cdk/aws-lambda-nodejs": "^1.59.0",
+    "@aws-cdk/aws-logs": "^1.56.0",
+    "@aws-cdk/aws-s3-assets": "^1.60.0",
+    "@aws-cdk/core": "^1.56.0",
+    "source-map-support": "^0.5.16"
+  },
+  "license": "MIT",
+  "gitHead": "d9467f47d1a2ea560bacf70a43c860ca875b8211"
+}

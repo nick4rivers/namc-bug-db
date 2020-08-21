@@ -8,10 +8,6 @@
 			"name": "Python",
 			"path": "python"
 		},
-		{
-			"name": "Docker",
-			"path": "docker"
-		}
 	],
 	"settings": {}
 }

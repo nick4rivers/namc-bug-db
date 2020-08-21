@@ -1,0 +1,18 @@
+{
+  "compilerOptions": {
+    "declaration": true,
+    "esModuleInterop": true,
+    "module": "CommonJS",
+    "moduleResolution": "node",
+    "removeComments": true,
+    "resolveJsonModule": true,
+    "sourceMap": true,
+    "target": "ES5"
+  },
+  "exclude": [
+    "**/dist/**",
+    "node_modules",
+    "**/*.test.?s",
+    "**/*.spec.?s",
+  ]
+ }

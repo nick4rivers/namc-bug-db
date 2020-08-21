@@ -1,0 +1,10 @@
+*.ts
+!*.d.ts
+
+# Ignore the source code and the deploy script
+src
+.vscode
+
+# CDK asset staging directory
+.cdk.staging
+cdk.out

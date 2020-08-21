@@ -1,0 +1,8 @@
+{
+  "search.exclude": {
+    "**/.webpack/**": true
+  },
+  "files.watcherExclude": {
+    "**/.webpack/**": true
+  }
+}

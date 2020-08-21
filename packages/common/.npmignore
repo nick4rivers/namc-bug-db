@@ -1,0 +1,9 @@
+src
+scripts
+__test__
+*.fixture.*
+*.test.*
+.vscode
+.babelrc
+.eslintrc
+logs
