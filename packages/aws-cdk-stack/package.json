@@ -18,6 +18,7 @@
     "aws-cdk": "1.56.0"
   },
   "dependencies": {
+    "@aws-cdk/aws-apigateway": "^1.59.0",
     "@aws-cdk/aws-lambda-nodejs": "^1.59.0",
     "@aws-cdk/aws-logs": "^1.56.0",
     "@aws-cdk/aws-s3-assets": "^1.60.0",

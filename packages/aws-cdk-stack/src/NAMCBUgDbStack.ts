@@ -3,7 +3,7 @@ import * as cw from '@aws-cdk/aws-logs'
 // import log from 'loglevel'
 // import { VpcStack } from '@northarrowresearch/nar-aws-cdk'
 
-import { StackStages } from './config'
+import { StackStages } from './types'
 // import axios from 'axios'
 // import { addTagsToResource } from './constructs/tags'
 import LambdaAPI from './constructs/LambdaAPI'

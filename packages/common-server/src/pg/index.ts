@@ -3,7 +3,7 @@ import { Pool } from 'pg'
 import log from 'loglevel'
 
 export const getPool = (): Pool => {
-    return new Pool(config.pg)
+    return new Pool(config.aws.Postgres)
 }
 
 const pgPromise = (pool: Pool, query: string, vars: any): Promise<any> => {

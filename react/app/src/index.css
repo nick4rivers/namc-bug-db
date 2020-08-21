@@ -1,0 +1,36 @@
+/*
+  This file exists ONLY to import other files. Please don't put any CSS or SCSS here
+*/
+body, #root {
+  height: 100%; 
+}
+
+
+html, body {
+  overflow: hidden;
+  position: fixed;
+  overflow: hidden;
+  overscroll-behavior: contain;
+  /* In Chrome 63+, Firefox 59+ and Opera 50+  */
+  /* background: inherit !important; */
+  height: 100%;
+  overflow: auto; 
+  width: 100%;
+}
+
+
+/*
+* This prevents selections in the app. You probably want to 
+* copy this to production but be careful
+*/
+:not(input):not(textarea),
+:not(input):not(textarea)::after,
+:not(input):not(textarea)::before {
+    -webkit-user-select: none;
+    user-select: none;
+    cursor: default;
+}
+input, button, textarea, :focus {
+    outline: none;
+     /* // You should add some other style for :focus to help UX/a11y */
+}

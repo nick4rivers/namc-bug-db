@@ -1,0 +1,7 @@
+{
+  "webpack": {
+    "overridePath": "../../cosmos.webpack.js"
+  },
+  "rootDir": "src",
+  "staticPath": "../static"
+}
