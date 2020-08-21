@@ -1,0 +1,52 @@
+{
+  "name": "@namcbugdb/react-app",
+  "version": "0.1.30",
+  "private": true,
+  "engines": {
+    "node": ">8.10"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts --max_old_space_size=4096 build",
+    "test": "react-scripts test",
+    "cosmos": "cosmos --config ./cosmos.config.json"
+  },
+  "browserslist": [
+    ">0.2%",
+    "not dead",
+    "not ie <= 11",
+    "not op_mini all"
+  ],
+  "homepage": "https://something.com/something",
+  "devDependencies": {
+    "@northarrowresearch/mock": "^1.x",
+    "@northarrowresearch/react-support": "^1.x"
+  },
+  "dependencies": {
+    "@material-ui/core": "^4.6.0",
+    "@material-ui/icons": "^4.5.1",
+    "@material-ui/lab": "^4.0.0-alpha.31",
+    "@northarrowresearch/common": "^1.x",
+    "@northarrowresearch/react-auth": "^1.x",
+    "@northarrowresearch/react-common": "^1.x",
+    "@northarrowresearch/react-maps": "^1.x",
+    "axios": "^0.19.2",
+    "d3-ease": "^1.0.6",
+    "lodash": "^4.17.11",
+    "moment": "^2.23.0",
+    "moment-timezone": "^0.5.23",
+    "numeral": "^2.0.6",
+    "react": "^16.10.1",
+    "react-dom": "^16.10.1",
+    "react-map-gl": "^5.2.3",
+    "react-router-dom": "^5.1.2",
+    "react-scripts": "3.4.1",
+    "react-vis": "^1.11.7",
+    "typeface-roboto": "^0.0.54",
+    "uuid": "^3.3.2",
+    "viewport-mercator-project": "^6.1.0"
+  },
+  "main": "index.js",
+  "author": "Matt Reimer <matt.reimer@gmail.com>",
+  "license": "MIT"
+}
