@@ -1,87 +1,24 @@
-DROP DATABASE IF EXISTS bugdb;
+-- DROP DATABASE IF EXISTS bugdb;
+--
+CREATE DATABASE bugdb3;
 
-CREATE DATABASE bugdb;
 
 CREATE TABLE units (
     unit_id SERIAL PRIMARY KEY,
-    name VARCHAR(50) UNIQUE NOT NULL,
+    unit_name VARCHAR(50) UNIQUE NOT NULL,
     abbreviation VARCHAR(10) UNIQUE NOT NULL
 );
 
 CREATE TABLE predictors (
     predictor_id SERIAL PRIMARY KEY,
-    name VARCHAR(50) UNIQUE NOT NULL,
+    predictor_name VARCHAR(50) UNIQUE NOT NULL,
     description VARCHAR(255),
-    unit_id int NOT NULL,
+    unit_id INT NOT NULL,
 
     CONSTRAINT fk_predictors_unit_id FOREIGN KEY (unit_id) REFERENCES units(unit_id)
 );
 CREATE INDEX ix_predictors_unit_id ON predictors(unit_id);
 
-CREATE TABLE model_types (
-    model_type_id SERIAL PRIMARY KEY,
-    name VARCHAR(50) UNIQUE NOT NULL
-);
-
-CREATE TABLE models (
-    model_id SERIAL PRIMARY KEY,
-    name VARCHAR(255) UNIQUE NOT NULL,
-    model_type_id INT NOT NULL,
-    state_id INT NOT NULL,
-    is_active boolean NOT NULL default true,
-
-    CONSTRAINT fk_models_model_type_id FOREIGN KEY (model_type_id) REFERENCES model_types(model_type_id),
-    CONSTRAINT fk_models_state_id FOREIGN KEY (state_id) REFERENCES states(state_id)
-);
-CREATE INDEX ix_models_model_type_id ON models(model_type_id);
-CREATE INDEX ix_models_state_id ON models(state_id);
-
-CREATE TABLE model_predictors (
-    model_id INT NOT NULL,
-    predictor_id INT NOT NULL,
-    PRIMARY KEY (model_id, predictor_id)
-);
-
-CREATE TABLE sites (
-    site_id SERIAL PRIMARY KEY,
-    site_code VARCHAR(10) NOT NULL,
-    geom geography(POINT, 4326) NOT NULL,
-    waterbody VARCHAR(255),
-    nhdplusid BIGINT,
-    comid BIGINT
-);
-CREATE UNIQUE INDEX ux_sites_site_code ON sites(site_code);
-CREATE INDEX ix_sites_geom ON sites USING GIST(geom);
-
-CREATE TABLE site_predictors (
-    site_id INT NOT NULL,
-    predictor_id INT NOT NULL,
-    PRIMARY KEY (site_id, predictor_id),
-
-    CONSTRAINT fk_site_predictors_site_id FOREIGN KEY (site_id) REFERENCES sites(site_id),
-    CONSTRAINT fk_site_predictors_predictor_id FOREIGN KEY (predictor_id) REFERENCES predictors(predictor_id)
-);
-
-CREATE TABLE customers (
-    customer_id SERIAL PRIMARY KEY,
-    name VARCHAR(255) UNIQUE NOT NULL
-);
-
-CREATE TABLE box_statuses (
-    status_id SERIAL PRIMARY KEY,
-    name VARCHAR(50) UNIQUE NOT NULL
-);
-
-CREATE TABLE boxes (
-    box_id SERIAL PRIMARY KEY,
-    customer_id INT NOT NULL,
-    status_id INT NOT NULL,
-
-    CONSTRAINT fk_boxes_customer_id FOREIGN KEY (customer_id) REFERENCES customers(customer_id),
-    CONSTRAINT fk_boxes_status_id FOREIGN KEY (status_id) REFERENCES box_statuses(status_id)
-);
-
-CREATE INDEX ix_boxes_customerid ON boxes(customer_id);
 
 CREATE TABLE countries (
     country_id SERIAL PRIMARY KEY,
@@ -116,6 +53,37 @@ CREATE INDEX ix_counties_state_id ON counties(state_id);
 CREATE UNIQUE INDEX ux_counties_name ON counties(state_id, county_name);
 CREATE INDEX ix_counties_geom ON counties USING GIST(geom);
 
+CREATE TABLE model_types (
+    model_type_id SERIAL PRIMARY KEY,
+    model_type_name VARCHAR(50) UNIQUE NOT NULL
+);
+
+INSERT INTO model_types (model_type_id, model_type_name) VALUES
+    (1, 'MMI'),
+    (2, 'ODE');
+
+CREATE TABLE models (
+    model_id SERIAL PRIMARY KEY,
+    model_name VARCHAR(255) UNIQUE NOT NULL,
+    model_type_id INT NOT NULL,
+    state_id INT NOT NULL,
+    is_active BOOLEAN NOT NULL DEFAULT true,
+
+    CONSTRAINT fk_models_model_type_id FOREIGN KEY (model_type_id) REFERENCES model_types(model_type_id),
+    CONSTRAINT fk_models_state_id FOREIGN KEY (state_id) REFERENCES states(state_id)
+);
+CREATE INDEX ix_models_model_type_id ON models(model_type_id);
+CREATE INDEX ix_models_state_id ON models(state_id);
+
+CREATE TABLE model_predictors (
+    model_id INT NOT NULL,
+    predictor_id INT NOT NULL,
+
+    PRIMARY KEY (model_id, predictor_id),
+    CONSTRAINT fk_model_predictors_model_id FOREIGN KEY (model_id) REFERENCES models(model_id),
+    CONSTRAINT fk_model_predictors_predictor_id FOREIGN KEY (predictor_id) REFERENCES predictors(predictor_id)
+);
+
 CREATE TABLE sites (
     site_id SERIAL PRIMARY KEY,
     site_name varchar(50) UNIQUE NOT NULL,
@@ -126,6 +94,51 @@ CREATE TABLE sites (
     COMID BIGINT
 );
 CREATE INDEX ix_sites_geom ON sites USING GIST(geom);
+
+CREATE TABLE site_predictors (
+    site_id INT NOT NULL,
+    predictor_id INT NOT NULL,
+    predictor_value double precision,
+
+    PRIMARY KEY (site_id, predictor_id),
+    CONSTRAINT fk_site_predictors_site_id FOREIGN KEY (site_id) REFERENCES sites(site_id),
+    CONSTRAINT fk_site_predictors_predictor_id FOREIGN KEY (predictor_id) REFERENCES predictors(predictor_id)
+);
+
+CREATE TABLE customers (
+    customer_id SERIAL PRIMARY KEY,
+    customer_name VARCHAR(255) UNIQUE NOT NULL,
+    street1 VARCHAR(255),
+    street2 VARCHAR(255),
+    city VARCHAR(255),
+    country_id INT NOT NULL,
+    zip_code VARCHAR(20),
+
+    CONSTRAINT fk_customers_country_id FOREIGN KEY (country_id) REFERENCES countries(country_id)
+);
+
+CREATE TABLE box_statuses (
+    status_id SERIAL PRIMARY KEY,
+    box_status_name VARCHAR(50) UNIQUE NOT NULL
+);
+
+INSERT INTO box_statuses (status_id, box_status_name) VALUES
+    (1, 'Submitted'),
+    (2, 'Received'),
+    (3, 'Pending'),
+    (4, 'Complete'),
+    (5, 'Archived');
+
+CREATE TABLE boxes (
+    box_id SERIAL PRIMARY KEY,
+    customer_id INT NOT NULL,
+    status_id INT NOT NULL,
+
+    CONSTRAINT fk_boxes_customer_id FOREIGN KEY (customer_id) REFERENCES customers(customer_id),
+    CONSTRAINT fk_boxes_status_id FOREIGN KEY (status_id) REFERENCES box_statuses(status_id)
+);
+CREATE INDEX ix_boxes_customer_id ON boxes(customer_id);
+CREATE INDEX ix_boxes_status_id ON boxes(status_id);
 
 CREATE TABLE samples (
     sample_id SERIAL PRIMARY KEY,
