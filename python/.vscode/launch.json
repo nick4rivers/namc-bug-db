@@ -4,6 +4,34 @@
   // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
   "version": "0.2.0",
   "configurations": [
-
+    {
+      "name": "Database Migration",
+      "type": "python",
+      "request": "launch",
+      "module": "database_migration",
+      "console": "integratedTerminal",
+      "args": [
+          "{env:POSTGRES_HOST}",
+          "{env:POSTGRES_PORT}",
+          "{env:POSTGRES_DB}",
+          "{env:POSTGRES_USER}",
+          "{env:POSTGRES_PASSWORD}",
+          "{env:MS_DB}",
+          "{env:MS_USER}",
+          "{env:MS_PASSWORD}"
+      ]
+  },
+  {
+    "name": "Print Tables",
+    "type": "python",
+    "request": "launch",
+    "module": "print_tables",
+    "console": "integratedTerminal",
+    "args": [
+        "{env:MS_DB}",
+        "{env:MS_USER}",
+        "{env:MS_PASSWORD}"
+    ]
+}
   ]
 }
