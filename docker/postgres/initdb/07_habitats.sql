@@ -1,0 +1,12 @@
+INSERT INTO habitats (habitat_id, habitat_name, ecosystem_id, is_visible) VALUES (1, 'Aerial', 3, TRUE);
+INSERT INTO habitats (habitat_id, habitat_name, ecosystem_id, is_visible) VALUES (2, 'Benthos', 3, TRUE);
+INSERT INTO habitats (habitat_id, habitat_name, ecosystem_id, is_visible) VALUES (3, 'Littoral', 3, TRUE);
+INSERT INTO habitats (habitat_id, habitat_name, ecosystem_id, is_visible) VALUES (4, 'Multiple', 1, FALSE);
+INSERT INTO habitats (habitat_id, habitat_name, ecosystem_id, is_visible) VALUES (5, 'Other', 1, TRUE);
+INSERT INTO habitats (habitat_id, habitat_name, ecosystem_id, is_visible) VALUES (6, 'Palagic', 3, TRUE);
+INSERT INTO habitats (habitat_id, habitat_name, ecosystem_id, is_visible) VALUES (7, 'Pelagic/Water Column', 3, TRUE);
+INSERT INTO habitats (habitat_id, habitat_name, ecosystem_id, is_visible) VALUES (8, 'Pool', 2, TRUE);
+INSERT INTO habitats (habitat_id, habitat_name, ecosystem_id, is_visible) VALUES (9, 'Reachwide', 2, TRUE);
+INSERT INTO habitats (habitat_id, habitat_name, ecosystem_id, is_visible) VALUES (10, 'Stomach', 1, TRUE);
+INSERT INTO habitats (habitat_id, habitat_name, ecosystem_id, is_visible) VALUES (11, 'Targeted Riffle', 2, TRUE);
+INSERT INTO habitats (habitat_id, habitat_name, ecosystem_id, is_visible) VALUES (12, 'Unspecified', 1, FALSE);
