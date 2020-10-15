@@ -306,39 +306,6 @@ CREATE TABLE plantkton (
     CONSTRAINT ck_plankton_size_interval CHECK (size_interval >= 0)
 );
 
-CREATE TABLE stomachs (
-    sample_id           INT NOT NULL,
-    taxa_id             INT NOT NULL,
-    fish_length         REAL,
-    fish_mass           REAL,
-    notes               TEXT,
-    created_date        TIMESTAMPTZ NOT NULL DEFAULT now(),
-    updated_date        TIMESTAMPTZ NOT NULL DEFAULT now(),
-
-    CONSTRAINT pk_stomachs PRIMARY KEY (sample_id),
-    CONSTRAINT fk_stomachs_sample_id FOREIGN KEY (sample_id) REFERENCES samples(sample_id),
-    CONSTRAINT fk_stomaches_taxa_id FOREIGN KEY (taxa_id) REFERENCES taxa(taxa_id),
-    CONSTRAINT ck_stomachs_fish_length CHECK (fish_length >= 0),
-    CONSTRAINT ck_stomachs_fish_mass CHECK (fish_mass >= 0)
-);
-CREATE INDEX stomachs_taxa_id ON stomachs(taxa_id);
-
--- TODO: constraints on tpoints and spoints?
-CREATE TABLE veg_samples (
-    sample_id           INT NOT NULL,
-    taxa_id             INT NOT NULL,
-    tpoints             REAL,
-    spoints             REAL,
-    notes               TEXT,
-    created_date        TIMESTAMPTZ NOT NULL DEFAULT now(),
-    updated_date        TIMESTAMPTZ NOT NULL DEFAULT now(),
-
-    CONSTRAINT pk_veg_samples PRIMARY KEY (sample_id),
-    CONSTRAINT fk_veg_samples_sample_id FOREIGN KEY (sample_id) REFERENCES samples(sample_id),
-    CONSTRAINT fk_veg_samples_species_id FOREIGN KEY (taxa_id) REFERENCES taxa(taxa_id)
-);
-CREATE INDEX fx_veg_samples_taxa_id ON veg_samples(taxa_id);
-
 CREATE TABLE sample_models (
     sample_id           INT NOT NULL,
     model_id            INT NOT NULL,
@@ -373,3 +340,37 @@ CREATE TABLE taxa (
     CONSTRAINT fk_taxa_parent_taxa_id FOREIGN KEY (parent_taxa_id) REFERENCES taxa(taxa_id)
 );
 CREATE INDEX ix_taxa_taxa_level_id ON taxa_levels(taxa_level_id);
+
+CREATE TABLE stomachs (
+    sample_id           INT NOT NULL,
+    taxa_id             INT NOT NULL,
+    fish_length         REAL,
+    fish_mass           REAL,
+    notes               TEXT,
+    created_date        TIMESTAMPTZ NOT NULL DEFAULT now(),
+    updated_date        TIMESTAMPTZ NOT NULL DEFAULT now(),
+
+    CONSTRAINT pk_stomachs PRIMARY KEY (sample_id),
+    CONSTRAINT fk_stomachs_sample_id FOREIGN KEY (sample_id) REFERENCES samples(sample_id),
+    CONSTRAINT fk_stomaches_taxa_id FOREIGN KEY (taxa_id) REFERENCES taxa(taxa_id),
+    CONSTRAINT ck_stomachs_fish_length CHECK (fish_length >= 0),
+    CONSTRAINT ck_stomachs_fish_mass CHECK (fish_mass >= 0)
+);
+CREATE INDEX stomachs_taxa_id ON stomachs(taxa_id);
+
+-- TODO: constraints on tpoints and spoints?
+CREATE TABLE veg_samples (
+    sample_id           INT NOT NULL,
+    taxa_id             INT NOT NULL,
+    tpoints             REAL,
+    spoints             REAL,
+    notes               TEXT,
+    created_date        TIMESTAMPTZ NOT NULL DEFAULT now(),
+    updated_date        TIMESTAMPTZ NOT NULL DEFAULT now(),
+
+    CONSTRAINT pk_veg_samples PRIMARY KEY (sample_id),
+    CONSTRAINT fk_veg_samples_sample_id FOREIGN KEY (sample_id) REFERENCES samples(sample_id),
+    CONSTRAINT fk_veg_samples_species_id FOREIGN KEY (taxa_id) REFERENCES taxa(taxa_id)
+);
+CREATE INDEX fx_veg_samples_taxa_id ON veg_samples(taxa_id);
+
