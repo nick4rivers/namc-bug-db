@@ -1,0 +1,18 @@
+INSERT INTO agencies (agency_id, agency_name, category_id, is_visible) VALUES (1,  'BLM',1,True);
+INSERT INTO agencies (agency_id, agency_name, category_id, is_visible) VALUES (2,  'DEQ',4,True);
+INSERT INTO agencies (agency_id, agency_name, category_id, is_visible) VALUES (3,  'DFG',4,True);
+INSERT INTO agencies (agency_id, agency_name, category_id, is_visible) VALUES (4,  'DWR',4,True);
+INSERT INTO agencies (agency_id, agency_name, category_id, is_visible) VALUES (5,  'EPA',1,True);
+INSERT INTO agencies (agency_id, agency_name, category_id, is_visible) VALUES (6,  'NPS',1, True);
+INSERT INTO agencies (agency_id, agency_name, category_id, is_visible) VALUES (7,  'NRCS',1, True);
+INSERT INTO agencies (agency_id, agency_name, category_id, is_visible) VALUES (8,  'OTHER',1, True);
+INSERT INTO agencies (agency_id, agency_name, category_id, is_visible) VALUES (9,  'OTHER',3,True);
+INSERT INTO agencies (agency_id, agency_name, category_id, is_visible) VALUES (10, 'OTHER',6, True);
+INSERT INTO agencies (agency_id, agency_name, category_id, is_visible) VALUES (11, 'STATE',4, True);
+INSERT INTO agencies (agency_id, agency_name, category_id, is_visible) VALUES (12, 'TRIBE',5, True);
+INSERT INTO agencies (agency_id, agency_name, category_id, is_visible) VALUES (13, 'Unresolved',1, True);
+INSERT INTO agencies (agency_id, agency_name, category_id, is_visible) VALUES (14, 'Unresolved', 4, True);
+INSERT INTO agencies (agency_id, agency_name, category_id, is_visible) VALUES (15, 'Unresolved',6, True);
+INSERT INTO agencies (agency_id, agency_name, category_id, is_visible) VALUES (16, 'USFS',1, True);
+INSERT INTO agencies (agency_id, agency_name, category_id, is_visible) VALUES (17, 'USFWS',1, True);
+INSERT INTO agencies (agency_id, agency_name, category_id, is_visible) VALUES (18, 'USGS',1, True);
