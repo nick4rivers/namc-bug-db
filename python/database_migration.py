@@ -1,4 +1,6 @@
 import os
+import sys
+import traceback
 import csv
 import json
 import sqlite3
@@ -9,6 +11,7 @@ import getpass
 import datetime
 from psycopg2.extras import execute_values
 import pyodbc
+from migrate_projects import ProjectMigrator
 
 
 def database_migration(mscon, pgcon):
@@ -35,8 +38,12 @@ def database_migration(mscon, pgcon):
         'labs': load_lookup(pgcurs, 'labs', 'lab_id', 'lab_name')
     }
 
-    import_customers(mscon, pgcon, lookup)
-    import_boxes(mscon, pgcon, lookup)
+    # import_customers(mscon, pgcon, lookup)
+
+    project_migrator = ProjectMigrator(mscon)
+    project_migrator.migrate(mscon, pgcon, lookup)
+
+    # import_boxes(mscon, pgcon, lookup)
 
 
 def load_lookup(pgcurs, table, id_col, name_col):
@@ -49,6 +56,22 @@ def import_customers(mscon, pgcon, lookup):
 
     arapaho_count = 0
 
+    # Customers with missing states
+    customer_states = {
+        'BLM-NV-014': 'NV',
+        'DEQ-02': 'UT',
+        'IDEQ': 'ID',
+        'ISU': 'ID',
+        'NPS-KLMN': 'OR',
+        'Private-01': 'OR',
+        'R02F10B': 'CO',
+        'USU-Armstrong': 'UT'
+
+    }
+
+    def customer_sanitize(r, field):
+        return sanitize('Customer', 'CustID', r, field)
+
     pgcurs = pgcon.cursor()
 
     mscurs = mscon.cursor()
@@ -56,46 +79,25 @@ def import_customers(mscon, pgcon, lookup):
     for row in mscurs.fetchall():
         r = dict(zip([t[0] for t in row.cursor_description], row))
         data = {
-            'customer_code': r['CustID'],
+            'customer_code': customer_sanitize(r, 'CustID'),
             'category_id': lookup_id(lookup, 'agency_categories', r, 'Category'),
             'agency_id': lookup_id(lookup, 'agencies', r, 'Agency'),
-            'customer_name': sanitize(r['Customer']),
-            'address1': sanitize(r['Address1']),
-            'address2': sanitize(r['Address2']),
-            'city': sanitize(r['City']),
+            'customer_name': customer_sanitize(r, 'Customer'),
+            'address1': customer_sanitize(r, 'Address1'),
+            'address2': customer_sanitize(r, 'Address2'),
+            'city': customer_sanitize(r, 'City'),
             'state_id': lookup_id(lookup, 'states', r, 'State'),
-            'zip_code': sanitize(r['ZipCode']),
-            'contact': sanitize(r['Contact']),
-            'phone': sanitize(r['Phone']),
-            'fax': sanitize(r['Fax']),
+            'zip_code': customer_sanitize(r, 'ZipCode'),
+            'contact': customer_sanitize(r, 'Contact'),
+            'phone': customer_sanitize(r, 'Phone'),
+            'fax': customer_sanitize(r, 'Fax'),
             'last_contact': r['LastContact'],
-            'notes': sanitize(r['Notes'])
+            'notes': customer_sanitize(r, 'Notes')
         }
 
-        # Missing states
-        if data['customer_code'] == 'BLM-NV-014':
-            data['state_id'] = lookup['states']['NV']
-
-        if data['customer_code'] == 'DEQ-02':
-            data['state_id'] = lookup['states']['UT']
-
-        if data['customer_code'] == 'IDEQ':
-            data['state_id'] = lookup['states']['ID']
-
-        if data['customer_code'] == 'ISU':
-            data['state_id'] = lookup['states']['ID']
-
-        if data['customer_code'] == 'NPS-KLMN':
-            data['state_id'] = lookup['states']['OR']
-
-        if data['customer_code'] == 'Private-01':
-            data['state_id'] = lookup['states']['OR']
-
-        if data['customer_code'] == 'R02F10B':
-            data['state_id'] = lookup['states']['CO']
-
-        if data['customer_code'] == 'USU-Armstrong':
-            data['state_id'] = lookup['states']['UT']
+        # Replace missing states with hard coded values from above
+        if data['customer_code'] in customer_states:
+            data['state_id'] = lookup['states'][customer_states[data['customer_code']]]
 
         if data['customer_name'] == 'USFS Arapaho-Roosevelt National Forest':
             if arapaho_count > 0:
@@ -122,22 +124,27 @@ def lookup_id(lookup, lookup_key, row, row_key):
     return lookup[lookup_key][row[row_key]] if row[row_key] in lookup[lookup_key] else None
 
 
-def sanitize(original):
+def sanitize(table, id_field, row, field):
 
-    if not original:
+    original = row[field]
+
+    if not row[field]:
         return None
 
-    if original.lower() == '<null>':
-        print('literal <null> encountered')
+    if row[field].lower() in ['<null>', 'null']:
+        log = Logger(table)
+        log.info('NULL literal "{}" in field {} with key {}'.format(row[field], field, row[id_field]))
         return None
 
-    if original.lower() == 'null':
-        print('literal null encountered')
-        return None
-
-    original = original.strip()
+    stripped = original.strip()
+    if len(stripped) != len(original):
+        log = Logger(table)
+        log.info('Stripped white space from "{}" in field {} with key {}'.format(row[field], field, row[id_field]))
+        original = stripped
 
     if len(original) < 1:
+        log = Logger(table)
+        log.info('Empty string converted to NULL in field {} with key {}'.format(field, row[id_field]))
         return None
 
     return original
@@ -163,6 +170,8 @@ def main():
     args = dotenv.parse_args_env(parser, os.path.join(os.path.dirname(os.path.realpath(__file__)), '.env'))
 
     log = Logger('DB Migration')
+    log.setup(logPath=os.path.join(os.path.dirname(__file__), "bugdb_migration.log"))
+
     log.info('Postgres database: {}'.format(args.pgdb))
     log.info('SQLServer database: {}'.format(args.msdb))
 
@@ -179,7 +188,11 @@ def main():
         pgcon.commit()
     except Exception as ex:
         pgcon.rollback()
+        traceback.print_exc(file=sys.stdout)
         log.error(ex)
+        sys.exit(1)
+
+    sys.exit(0)
 
 
 if __name__ == '__main__':
