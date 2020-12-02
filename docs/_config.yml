@@ -42,7 +42,7 @@ settings:
   # Options for the sidebar menu      
   sideMenu:
     homeItem: true
-    startExpanded: false
+    startExpanded: true
   # Arbitrary multi-level topbar menu
   # IF you don't need this just comment out everything below
   # ----------------------------------
