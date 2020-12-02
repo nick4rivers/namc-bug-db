@@ -1,0 +1,71 @@
+# Site title will be used everywhere
+title:  NAMC Bug DB
+description: > # this means to ignore newlines until "baseurl:"
+  Online help and documentation site for NAMC Bug DB
+# Final root url of the site. No ending slash. No subdirectory
+url: https://namc-utah.github.io
+# If the site is in a subdirectory you should do it like this: "/subdirectory". Otherwise ""
+baseurl: "/namc-bug-db"
+# When serving locally what port should we use:
+port: 4001
+
+# Markdown style
+markdown: kramdown
+# Syntax highlighter.
+highlighter: rouge
+
+# Choosing "default" layout means we don't need a "layout:default" in all our 
+# front matter
+defaults:
+  -
+    scope:
+      path: "" # an empty string here means all files in the project
+    values:
+      layout: "default"
+
+# Files/Folders to exclude from publishing
+exclude:
+  - src
+  - LICENSE
+  - README.md
+  - _config.yml
+  - Gemfile*
+
+
+# These are theme settings that will be used to turn features on and off
+# They are not part of Jekyll, they are entirely custom.
+settings:
+  # Turn the automatically generated page contents on and off
+  autoPageContents:
+    active: true
+    onHome: false
+  # Options for the sidebar menu      
+  sideMenu:
+    homeItem: true
+    startExpanded: false
+  # Arbitrary multi-level topbar menu
+  # IF you don't need this just comment out everything below
+  # ----------------------------------
+  # topmenu:
+  #   - title: "Nardocs"
+  #     childern:
+  #       - title: "Model Home"
+  #         url: index
+
+# Redirecting from apps can be tricky so we use a key-value system
+# key: must be in the set [A-Za-z0-9_] (no spaces, no dashes)
+# url: must be relative url, no leading slash.
+# 
+# The url you have to call is: http://siteurl.com/baseurl/?APPKEY=KEY1
+# ---------------------------------------------------------------
+AppRedirects:
+  - key: KEY1
+    url: ThingsA
+  - key: KEY2
+    url: ThingsB/subpageB.html
+
+# Here is how we retrieve the remote theme. Changes to this remote theme will show up after you 
+# push the repo with your /docs folder
+remote_theme: NorthArrowResearch/nardocs-jekyll-theme
+plugins:
+  - jekyll-remote-theme 
