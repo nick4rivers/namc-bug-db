@@ -1,0 +1,14 @@
+INSERT INTO geo.units (unit_id, unit_name, abbreviation) VALUES (1, 'Unknown', '??');
+INSERT INTO geo.units (unit_id, unit_name, abbreviation) VALUES (2, 'square kilometers', 'sqkm');
+INSERT INTO geo.units (unit_id, unit_name, abbreviation) VALUES (3, 'millimeters per year', 'mm/yr');
+INSERT INTO geo.units (unit_id, unit_name, abbreviation) VALUES (4, 'number of days', '# days');
+INSERT INTO geo.units (unit_id, unit_name, abbreviation) VALUES (5, 'millimeters per meter', 'mm/m');
+INSERT INTO geo.units (unit_id, unit_name, abbreviation) VALUES (6, 'degrees celcius', 'C');
+INSERT INTO geo.units (unit_id, unit_name, abbreviation) VALUES (7, 'grams per cubic centimeter', 'g/cm3');
+INSERT INTO geo.units (unit_id, unit_name, abbreviation) VALUES (8, 'boolean', 'bool');
+INSERT INTO geo.units (unit_id, unit_name, abbreviation) VALUES (9, 'percent', '%');
+INSERT INTO geo.units (unit_id, unit_name, abbreviation) VALUES (10, 'decimal degrees', 'degrees');
+INSERT INTO geo.units (unit_id, unit_name, abbreviation) VALUES (11, 'kilometers per square kilometer', 'km/km2');
+INSERT INTO geo.units (unit_id, unit_name, abbreviation) VALUES (12, 'grams', 'g');
+INSERT INTO geo.units (unit_id, unit_name, abbreviation) VALUES (13, 'kilograms', 'kg');
+INSERT INTO geo.units (unit_id, unit_name, abbreviation) VALUES (14, 'meters', 'm');

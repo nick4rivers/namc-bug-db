@@ -22,6 +22,42 @@
       ]
   },
   {
+    "name": "Migrate_Taxonomy",
+    "type": "python",
+    "request": "launch",
+    "module": "migrate_taxonomy",
+    "console": "integratedTerminal",
+    "args": [
+        "{env:POSTGRES_HOST}",
+        "{env:POSTGRES_PORT}",
+        "{env:POSTGRES_DB}",
+        "{env:POSTGRES_USER}",
+        "{env:POSTGRES_PASSWORD}",
+        "{env:MS_DB}",
+        "{env:MS_USER}",
+        "{env:MS_PASSWORD}",
+        "14_organism.taxonomy.sql"
+    ]
+},
+  {
+    "name": "Migrate Projects",
+    "type": "python",
+    "request": "launch",
+    "module": "migrate_projects",
+    "console": "integratedTerminal",
+    "args": [
+        "{env:POSTGRES_HOST}",
+        "{env:POSTGRES_PORT}",
+        "{env:POSTGRES_DB}",
+        "{env:POSTGRES_USER}",
+        "{env:POSTGRES_PASSWORD}",
+        "{env:MS_DB}",
+        "{env:MS_USER}",
+        "{env:MS_PASSWORD}",
+        "23_sample.projects.sql"
+    ]
+},
+  {
     "name": "Print Tables",
     "type": "python",
     "request": "launch",
