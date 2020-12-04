@@ -34,7 +34,7 @@ def migrate_projects(mscon, pgcon, output_path):
 
     with open(output_path, 'w') as f:
         for prj in projects:
-            f.write("INSERT INTO sample.projects(project_id, project_name, description, is_private) VALUES({}, '{}', '{}', {});\n".format(
+            f.write("INSERT INTO sample.projects(project_id, project_name, project_type_id, description, is_private) VALUES({}, '{}', 1, '{}', {});\n".format(
                 prj['project_id'],
                 prj['project_name'],
                 prj['description'],
