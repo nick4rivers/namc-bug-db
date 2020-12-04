@@ -57,6 +57,22 @@
         "23_sample.projects.sql"
     ]
 },
+{
+  "name": "Migrate Indicators",
+  "type": "python",
+  "request": "launch",
+  "module": "model_predictors",
+  "console": "integratedTerminal",
+  "args": [
+      "{env:POSTGRES_HOST}",
+      "{env:POSTGRES_PORT}",
+      "{env:POSTGRES_DB}",
+      "{env:POSTGRES_USER}",
+      "{env:POSTGRES_PASSWORD}",
+      "data/model_predictors.csv",
+      "25_geo.indicators.sql"
+  ]
+},
   {
     "name": "Print Tables",
     "type": "python",
