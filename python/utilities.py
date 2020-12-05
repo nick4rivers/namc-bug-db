@@ -30,3 +30,11 @@ def sanitize_string_col(origin_table, id_field, row, field, escape_single_quotes
         return None
 
     return original
+
+
+def get_string_value(original):
+
+    if original:
+        return "'{}'".format(original)
+    else:
+        return 'NULL'

@@ -31,7 +31,8 @@
         "{env:MS_DB}",
         "{env:MS_USER}",
         "{env:MS_PASSWORD}",
-        "27_taxa.taxonomy.sql"
+        "27_taxa.taxonomy.sql",
+        "28_taxa.attributes.sql"
     ]
 },
   {
