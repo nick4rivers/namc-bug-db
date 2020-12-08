@@ -69,6 +69,21 @@
       "25_geo.indicators.sql"
   ]
 },
+{
+  "name": "Migrate Entities",
+  "type": "python",
+  "request": "launch",
+  "module": "migrate_entities",
+  "console": "integratedTerminal",
+  "args": [
+    "{env:MS_DB}",
+    "{env:MS_USER}",
+    "{env:MS_PASSWORD}",
+    "29_entity.organizations.sql",
+    "29_entity.individuals.sql",
+    "29_entity.entities.sql"
+  ]
+},
   {
     "name": "Print Tables",
     "type": "python",

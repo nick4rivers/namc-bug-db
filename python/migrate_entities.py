@@ -8,7 +8,7 @@ import datetime
 from psycopg2.extras import execute_values
 import pyodbc
 from utilities import sanitize_string_col, get_string_value, sanitize_phone_fax
-from lookup_data import lookup_data
+from lookup_data import lookup_data, get_db_id
 
 csv_relative_path = '../data'
 
@@ -18,17 +18,13 @@ def migrate_entities(mscon, organizations_path, individuals_path, entities_path)
     individuals = {}
     organizations = {}
 
-    migrate_customers(mscon, organizations, individuals)
-
     country_file = os.path.join(os.path.dirname(organizations_path), '10_countries.sql')
-    country_table = 'CREATE TABLE countries (country_id INT, country_name TEXT, abbreviation TEXT);'
-    countries_by_name = lookup_data(country_table, country_file, 'country_name')
-    countries_by_abbr = lookup_data(country_table, country_file, 'country_name')
+    countries = lookup_data('CREATE TABLE countries (country_id INT, country_name TEXT, abbreviation TEXT);', country_file, 'country_name')
 
     states_file = os.path.join(os.path.dirname(organizations_path), '11_states.sql')
-    states_table = 'CREATE TABLE states (state_id INT, country_id INT, state_name TEXT, abbreviation TEXT);'
-    states_by_name = lookup_data(states_table, states_file, 'state_name')
-    states_by_abbr = lookup_data(states_table, states_file, 'abbreviation')
+    states = lookup_data('CREATE TABLE states (state_id INT, country_id INT, state_name TEXT, abbreviation TEXT);', states_file, 'state_name')
+
+    migrate_customers(mscon, organizations, individuals, countries, states)
 
     # assign organization IDs
     organization_id = 1
@@ -60,12 +56,15 @@ def migrate_entities(mscon, organizations_path, individuals_path, entities_path)
     #     ))
 
 
-def migrate_customers(mscon, organizations, individuals):
+def migrate_customers(mscon, organizations, individuals, countries, states):
 
     mscurs = mscon.cursor()
     mscurs.execute("SELECT * FROM PilotDB.dbo.Customer")
 
     log = Logger('Entities')
+
+    # USA for use in missing data
+    usa = get_db_id(countries, 'country_id', ['abbreviation'], 'USA')
 
     for msrow in mscurs.fetchall():
         msdata = dict(zip([t[0] for t in msrow.cursor_description], msrow))
@@ -79,6 +78,22 @@ def migrate_customers(mscon, organizations, individuals):
             else:
                 clean_data[clean_key] = msdata[key]
 
+        ###################################################
+        # Individual overrides here
+        if custid == 'IDEQ':
+            clean_data['State'] = 'ID'
+
+        if custid == 'ISU':
+            clean_data['State'] = 'ID'
+
+        if custid == 'Private-01':
+            clean_data['State'] = 'OR'
+
+        if custid == 'R02F10B':
+            clean_data['State'] = 'OR'
+
+       ###################################################
+
         metadata = None
         if clean_data['Notes']:
             metadata = {'notes': clean_data['Notes']}
@@ -90,6 +105,11 @@ def migrate_customers(mscon, organizations, individuals):
 
         phone = sanitize_phone_fax(clean_data['Phone'])
         fax = sanitize_phone_fax(clean_data['Fax'])
+        state_id = get_db_id(states, 'state_id', ['state_name', 'abbreviation'], clean_data['State'])
+        country_id = get_db_id(countries, 'country_id', ['country_name', 'abbreviation'], clean_data['Country'])
+
+        if state_id and not country_id:
+            country_id = usa
 
         organizations[custid] = {
             'abbreviation': custid,
@@ -98,8 +118,10 @@ def migrate_customers(mscon, organizations, individuals):
             'address1': clean_data['Address1'],
             'address2': clean_data['Address2'],
             'state': clean_data['State'],
+            'state_id': state_id,
             'zip_code': clean_data['ZipCode'],
             'country': clean_data['Country'],
+            'country_id': country_id,
             'phone': phone,
             'fax': fax,
             'metadata': metadata
@@ -124,8 +146,10 @@ def migrate_customers(mscon, organizations, individuals):
                 'address1': clean_data['Address1'],
                 'address2': clean_data['Address2'],
                 'state': clean_data['State'],
+                'state_id': state_id,
                 'zip_code': clean_data['ZipCode'],
                 'country': clean_data['Country'],
+                'country_id': country_id,
                 'metadata': metadata
             }
 
