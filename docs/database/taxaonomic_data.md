@@ -1,21 +1,21 @@
 ---
-title: Taxonomic Lookups
+title: Taxonomic Data
 ---
 
+The way that taxonomic data are stored in the NAMC database is of fundamental importance to the overall performance and maintainability of the entire system. The old method of storing taxonomic data was inefficient and error prone. The new method uses an industry standard method for managing hierarchical data. The following video explains the differences. Below are two of the important queries that make it possible to store the data in the new efficient format, but still view and work with it in the ways in which NAMC are familiar.
+
+<div class="responsive-embed widescreen">
+  <iframe width="560" height="315" src="https://www.youtube.com/embed/BldTVDK5A_w" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+</div>
 
 ## Recusrive Function
 
-The following function walks up the taxonomic hierarchy accumulating all taxa higher in the hierarchy:
+The following [function](https://www.postgresql.org/docs/9.1/sql-createfunction.html) walks up the taxonomic hierarchy accumulating all taxa higher in the hierarchy:
 
 ```sql
 
 CREATE OR REPLACE FUNCTION taxa_tree(t INT)
-    returns table
-            (
-                tid INT,
-                lid INT,
-                pid INT
-            )
+    returns table (tid INT, lid INT, pid INT)
     language plpgsql
 as
 $$
@@ -29,7 +29,7 @@ end
 $$;
 ```
 
-This function can be called for a particular taxa:
+This function can be called for a particular taxa with the following simple query:
 
 ```sql
 SELECT * FROM taxa_tree(41);
@@ -45,7 +45,7 @@ and the result looks like this:
 | 662 | 19 | 5711 |
 | 41 | 23 | 662 |
 
-This can be expanded with some joins to show the taxa for each level of the hierarchy:
+This can be expanded with some joins to show the taxa for each level of the hierarchy for the individual taxa:
 
 ```sql
 SELECT t.taxonomy_id, l.level_name, ttt.scientific_name
@@ -68,9 +68,7 @@ to produce:
 
 ## Cross Tab Pivot View
 
-Calling the aforementioned recursive function through a crosstab query produces a pivoted view of the entire taxonomic hierarchy in the original formatted that NAMC used to store the data.
-
-
+Calling the aforementioned recursive function through a [crosstab](https://www.postgresql.org/docs/9.2/tablefunc.html) query produces a pivoted view of the entire taxonomic hierarchy in the original formatted that NAMC used to store the data.
 
 ```sql
 SELECT *
@@ -80,10 +78,9 @@ FROM taxa.taxonomy t,
      taxa_tree(t.taxonomy_id) tt
          INNER JOIN taxa.taxa_levels l ON tt.lid = l.level_id
          INNER JOIN taxa.taxonomy ttt ON tt.tid = ttt.taxonomy_id
-order by t.taxonomy_id limit 100',
-              'SELECT level_name FROM taxa.taxa_levels where is_active = TRUE  and level_id > 1 order BY level_id')
-         AS final_result(
-                         Code INT,
+ORDER BY t.taxonomy_id limit 100',
+'SELECT level_name FROM taxa.taxa_levels where is_active = TRUE  and level_id > 1 order BY level_id')
+         AS final_result(Code INT,
                          Phylum varchar(255),
                          Class varchar(255),
                          Subclass varchar(255),
@@ -124,5 +121,3 @@ to produce:
 | 22 | Annelida | Clitellata | Lumbriculata | Lumbriculida | NULL | Lumbriculidae | NULL | NULL | Lumbriculus | NULL | NULL | NULL |
 | 23 | Annelida | Clitellata | Lumbriculata | Lumbriculida | NULL | Lumbriculidae | NULL | NULL | Stylodrilus | NULL | NULL | NULL |
 | 24 | Annelida | Clitellata | NULL | Haplotaxida | NULL | NULL | NULL | NULL | NULL | NULL | NULL | NULL |
-
-
