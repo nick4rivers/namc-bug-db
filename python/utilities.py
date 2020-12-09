@@ -43,6 +43,14 @@ def get_string_value(original):
         return 'NULL'
 
 
+def get_date_value(original):
+
+    if original:
+        return "'{}'".format(original.strftime("%Y-%m-%d"))
+    else:
+        return 'NULL'
+
+
 def sanitize_phone_fax(original):
 
     phone = sanitize_string(original)
@@ -70,3 +78,12 @@ def sanitize_email(original):
         log.warning("Invalid email address is missing ampersand '{}'".format(email))
 
     return email
+
+
+def sanitize_url(original):
+
+    url = sanitize_string(original)
+    if url:
+        url = url.replace(' ', '')
+
+    return url

@@ -84,6 +84,19 @@
     "29_entity.entities.sql"
   ]
 },
+{
+  "name": "Migrate Boxes",
+  "type": "python",
+  "request": "launch",
+  "module": "migrate_boxes",
+  "console": "integratedTerminal",
+  "args": [
+    "{env:MS_DB}",
+    "{env:MS_USER}",
+    "{env:MS_PASSWORD}",
+    "32_sample.boxes.sql"
+  ]
+},
   {
     "name": "Print Tables",
     "type": "python",

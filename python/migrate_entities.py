@@ -7,7 +7,7 @@ import getpass
 import datetime
 from psycopg2.extras import execute_values
 import pyodbc
-from utilities import sanitize_string_col, get_string_value, sanitize_phone_fax
+from utilities import sanitize_string_col, get_string_value, sanitize_phone_fax, sanitize_email, sanitize_url
 from lookup_data import lookup_data, get_db_id
 
 csv_relative_path = '../data'
@@ -28,6 +28,7 @@ def migrate_entities(mscon, organizations_path, individuals_path, entities_path)
     org_types = lookup_data('CREATE TABLE organization_types (organization_type_id INT, organization_type_name TEXT);', org_types_file, 'organization_type_name')
 
     migrate_customers(mscon, organizations, individuals, countries, states, org_types)
+    migrate_labs(mscon, organizations, states, countries, org_types)
 
     # assign organization IDs
     organization_id = 1
@@ -55,7 +56,7 @@ def migrate_entities(mscon, organizations_path, individuals_path, entities_path)
     # Write organizations
     with open(organizations_path, 'w') as f:
         for data in organizations.values():
-            f.write("INSERT INTO entity.organizations(organization_id, abbreviation, organization_name, entity_id, organization_type_id, is_lab) VALUES({}, {}, {}, {}, {}, {});\n".format(
+            f.write("INSERT INTO entity.organizations (organization_id, abbreviation, organization_name, entity_id, organization_type_id, is_lab) VALUES({}, {}, {}, {}, {}, {});\n".format(
                 data['organization_id'],
                 get_string_value(data['abbreviation']),
                 get_string_value(data['organization_name']),
@@ -67,7 +68,7 @@ def migrate_entities(mscon, organizations_path, individuals_path, entities_path)
     # write individuals
     with open(individuals_path, 'w') as f:
         for data in individuals.values():
-            f.write('INSERT INTO entity.individuals(individual_id, first_name, last_name, initials, entity_id, affiliation_id, email) VALUES ({}, {}, {}, {}, {}, {}, {});\n'.format(
+            f.write('INSERT INTO entity.individuals (individual_id, first_name, last_name, initials, entity_id, affiliation_id, email) VALUES ({}, {}, {}, {}, {}, {}, {});\n'.format(
                 data['individual_id'],
                 get_string_value(data['first_name']),
                 get_string_value(data['last_name']),
@@ -79,7 +80,7 @@ def migrate_entities(mscon, organizations_path, individuals_path, entities_path)
 
     with open(entities_path, 'w') as f:
         for data in individuals.values():
-            f.write('INSERT INTO entity.entities(entity_id, address1, address2, city, state_id, country_id, zip_code, phone, fax, metadata) VALUES ({}, {}, {}, {}, {}, {}, {}, {}, {}, {});\n'.format(
+            f.write('INSERT INTO entity.entities (entity_id, address1, address2, city, state_id, country_id, zip_code, phone, fax, metadata) VALUES ({}, {}, {}, {}, {}, {}, {}, {}, {}, {});\n'.format(
                 data['entity_id'],
                 get_string_value(data['address1']),
                 get_string_value(data['address2']),
@@ -210,6 +211,65 @@ def migrate_customers(mscon, organizations, individuals, countries, states, org_
                 'country_id': country_id,
                 'metadata': metadata
             }
+
+
+def migrate_labs(mscon, organizations, states, countries, org_types):
+
+    mscurs = mscon.cursor()
+    mscurs.execute("SELECT * FROM PilotDB.dbo.Lab")
+
+    log = Logger('Labs')
+
+    # USA for use in missing data
+    usa = get_db_id(countries, 'country_id', ['abbreviation'], 'USA')
+
+    for msrow in mscurs.fetchall():
+        msdata = dict(zip([t[0] for t in msrow.cursor_description], msrow))
+
+        name = sanitize_string_col('Lab', 'LabID', msdata, 'Name')
+        notes = sanitize_string_col('Lab', 'LabID', msdata, 'LabDesc')
+
+        metadata = None
+        if notes:
+            metadata = get_string_value(json.dumps({'LabDesc': notes}))
+
+        if name in organizations:
+            log.warning("Lab name '{}' already exists as customer organization. Setting organization to lab".format(name))
+            organizations[name]['is_lab'] = True
+            continue
+
+        state_id = get_db_id(states, 'state_id', ['state_name'], msdata['State'])
+        country_id = usa
+        phone = sanitize_phone_fax(sanitize_string_col('Lab', 'LabID', msdata, 'PhoneNo'))
+        fax = sanitize_phone_fax(sanitize_string_col('Lab', 'LabID', msdata, 'FaxNo'))
+        website = sanitize_url(msdata['Website'])
+
+        # Organization type not present in old database. Assume all are private/NGO except the explicit ones below
+        org_type_id = get_db_id(org_types, 'organization_type_id', ['organization_type_name'], 'Private/NGO')
+        if name.lower() == 'isu':
+            org_type_id = get_db_id(org_types, 'organization_type_id', ['organization_type_name'], 'University')
+        elif name.lower() == 'CALIFORNIA DFG-ABL':
+            org_type_id = get_db_id(org_types, 'organization_type_id', ['organization_type_name'], 'State')
+
+        lab = {
+            'organization_name': name,
+            'abbreviation': name,
+            'address1': sanitize_string_col('Lab', 'LabID', msdata, 'Address1'),
+            'address1': sanitize_string_col('Lab', 'LabID', msdata, 'Address1'),
+            'city': sanitize_string_col('Lab', 'LabID', msdata, 'City'),
+            'state_id': state_id,
+            'country_id': country_id,
+            'organization_type_id': org_type_id,
+            'zip_code': sanitize_string_col('Lab', 'LabID', msdata, 'ZipCode'),
+            'phone': phone,
+            'fax': fax,
+            'website': website,
+            'email': sanitize_email(sanitize_string_col('Lab', 'LabID', msdata, 'Email')),
+            'is_lab': True,
+            'metadata': metadata
+        }
+
+        organizations[name] = lab
 
 
 def main():
