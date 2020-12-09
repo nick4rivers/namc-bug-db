@@ -79,8 +79,8 @@
     "{env:MS_DB}",
     "{env:MS_USER}",
     "{env:MS_PASSWORD}",
-    "29_entity.organizations.sql",
-    "29_entity.individuals.sql",
+    "30_entity.organizations.sql",
+    "31_entity.individuals.sql",
     "29_entity.entities.sql"
   ]
 },

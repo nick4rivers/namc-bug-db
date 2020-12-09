@@ -216,7 +216,7 @@ CREATE TABLE entity.individuals (
 
     CONSTRAINT fk_individuals_entity_id FOREIGN KEY (entity_id) REFERENCES entity.entities(entity_id),
     CONSTRAINT fk_individuals_affiliation_id FOREIGN KEY (affiliation_id) REFERENCES entity.organizations(organization_id)
-                                );
+);
 CREATE UNIQUE INDEX ux_individuals_entity_id ON entity.individuals(entity_id);
 CREATE INDEX fx_individuals_affiliation_id ON entity.individuals(affiliation_id);
 

@@ -15,7 +15,7 @@ def lookup_data(create_table, sql_path, key):
     with open(sql_path, mode='r') as f:
         sql_statements = f.read()
         individual_statements = sql_statements.split(';')
-        result = re.search('\s([a-z]+\.)([a-z]+)\s', individual_statements[0])
+        result = re.search('\s([a-z]+\.)([a-z_]+)\s', individual_statements[0])
         schema = result[1]
         table = result[2]
 
