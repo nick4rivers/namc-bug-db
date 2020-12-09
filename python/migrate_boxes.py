@@ -17,8 +17,14 @@ def migrate_boxes(mscon, boxes_path):
     box_states_file = os.path.join(os.path.dirname(boxes_path), '16_box_states.sql')
     box_states = lookup_data('CREATE TABLE box_states (box_state_id INT, box_state_name TEXT, box_state_order INT, description TEXT);', box_states_file, 'box_state_name')
 
+    individuals_file = os.path.join(os.path.dirname(boxes_path), '31_entity.individuals.sql')
+    individuals = lookup_data('CREATE TABLE individuals (individual_id INT, first_name TEXT, last_name TEXT, initials TEXT, entity_id INT, affiliation_id INT);', individuals_file, 'individual_id')
+
+    # Recomposite the individual names
+    individuals_by_full_name = {'{} {}'.format(data['first_name'], data['last_name']).replace("'", '').replace('.', ''): individual_id for individual_id, data in individuals.items()}
+
     mscurs = mscon.cursor()
-    mscurs.execute("SELECT * FROM PilotDB.dbo.BoxTracking")
+    mscurs.execute("SELECT BT.*, C.Contact FROM PilotDB.dbo.BoxTracking BT INNER JOIN PilotDB.dbo.Customer C ON BT.CustId = C.CustID")
     log = Logger('Boxes')
 
     boxes = {}
@@ -29,8 +35,23 @@ def migrate_boxes(mscon, boxes_path):
         entity_id = get_db_id(organizations, 'entity_id', ['abbreviation', 'organization_name'], custId)
         box_state_id = get_db_id(box_states, 'box_state_id', ['box_state_name'], 'Complete')
 
+        # Default the submitter to the customer organization
+        submitter_id = entity_id
+        contact = sanitize_string(msdata['Contact'])
+        if contact:
+            contact = contact.replace("'", '').replace('.', '')
+            if contact in individuals_by_full_name:
+                submitter_id = individuals_by_full_name[contact]
+            else:
+                temp = contact + ' Unknown'
+                if temp in individuals_by_full_name:
+                    submitter_id = individuals_by_full_name[temp]
+                else:
+                    raise Exception('failed to find contact')
+
         boxes[msdata['BoxId']] = {
             'customer_id': entity_id,
+            'submitter_id': submitter_id,
             'box_recevied_date': msdata['DateIn'],
             'box_state_id': box_state_id,
             'description': sanitize_string_col('BoxTracking', 'BoxId', msdata, 'Notes')
@@ -39,12 +60,13 @@ def migrate_boxes(mscon, boxes_path):
     # write individuals
     with open(boxes_path, 'w') as f:
         for box_id, data in boxes.items():
-            f.write('INSERT INTO sample.boxes (box_id, customer_id, box_state_id, box_recevied_date, description) VALUES ({}, {}, {}, {}, {});\n'.format(
+            f.write('INSERT INTO sample.boxes (box_id, customer_id, submitter_id, box_state_id, box_recevied_date, description) VALUES ({}, {}, {}, {}, {}, {});\n'.format(
                 box_id,
                 data['customer_id'],
+                data['submitter_id'],
                 data['box_state_id'],
                 get_date_value(data['box_recevied_date']),
-                get_string_value(data['description'])
+                get_string_value(data['description']).replace('\n', '')
             ))
 
 

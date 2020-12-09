@@ -68,30 +68,30 @@ def migrate_entities(mscon, organizations_path, individuals_path, entities_path)
     # write individuals
     with open(individuals_path, 'w') as f:
         for data in individuals.values():
-            f.write('INSERT INTO entity.individuals (individual_id, first_name, last_name, initials, entity_id, affiliation_id, email) VALUES ({}, {}, {}, {}, {}, {}, {});\n'.format(
+            f.write('INSERT INTO entity.individuals (individual_id, first_name, last_name, initials, entity_id, affiliation_id) VALUES ({}, {}, {}, {}, {}, {});\n'.format(
                 data['individual_id'],
                 get_string_value(data['first_name']),
                 get_string_value(data['last_name']),
                 get_string_value(data['initials']),
                 data['entity_id'],
                 data['affiliation_id'],
-                get_string_value(data['email'])
             ))
 
     with open(entities_path, 'w') as f:
-        for data in individuals.values():
-            f.write('INSERT INTO entity.entities (entity_id, address1, address2, city, state_id, country_id, zip_code, phone, fax, metadata) VALUES ({}, {}, {}, {}, {}, {}, {}, {}, {}, {});\n'.format(
-                data['entity_id'],
-                get_string_value(data['address1']),
-                get_string_value(data['address2']),
-                get_string_value(data['city']),
-                data['state_id'],
-                data['country_id'],
-                get_string_value(data['zip_code']),
-                get_string_value(data['phone']),
-                get_string_value(data['fax']),
-                data['metadata']
-            ))
+        for entity in [individuals, organizations]:
+            for data in entity.values():
+                f.write('INSERT INTO entity.entities (entity_id, address1, address2, city, state_id, country_id, zip_code, phone, fax, metadata) VALUES ({}, {}, {}, {}, {}, {}, {}, {}, {}, {});\n'.format(
+                    data['entity_id'],
+                    get_string_value(data['address1']),
+                    get_string_value(data['address2']),
+                    get_string_value(data['city']),
+                    data['state_id'] if data['state_id'] else 'NULL',
+                    data['country_id'] if data['country_id'] else 'NULL',
+                    get_string_value(data['zip_code']),
+                    get_string_value(data['phone']),
+                    get_string_value(data['fax']),
+                    data['metadata']
+                ))
 
 
 def migrate_customers(mscon, organizations, individuals, countries, states, org_types):
@@ -133,7 +133,7 @@ def migrate_customers(mscon, organizations, individuals, countries, states, org_
         # end overrides
         # ###################################################
 
-        metadata = None
+        metadata = {}
         if clean_data['Notes']:
             metadata = {'notes': clean_data['Notes']}
 
@@ -147,7 +147,7 @@ def migrate_customers(mscon, organizations, individuals, countries, states, org_
         state_id = get_db_id(states, 'state_id', ['state_name', 'abbreviation'], clean_data['State'])
         country_id = get_db_id(countries, 'country_id', ['country_name', 'abbreviation'], clean_data['Country'])
         organization_type_id = get_db_id(org_types, 'organization_type_id', ['organization_type_name'], clean_data['Category'])
-        if state_id and not country_id:
+        if not country_id:
             country_id = usa
 
         organizations[custid] = {
@@ -165,14 +165,19 @@ def migrate_customers(mscon, organizations, individuals, countries, states, org_
             'phone': phone,
             'fax': fax,
             'is_lab': 'FALSE',
-            'metadata': metadata
+            'metadata': get_string_value(json.dumps(metadata)) if len(metadata) > 0 else 'NULL'
         }
 
         first_name = None
         last_name = None
         if clean_data['Contact'] or clean_data['Email']:
 
-            key = clean_data['Email'] if clean_data['Email'] else clean_data['Contact']
+            if clean_data['Contact'] and clean_data['Email']:
+                key = '{}_{}'.format(clean_data['Contact'], clean_data['Email'])
+            elif clean_data['Contact']:
+                key = clean_data['Contact']
+            else:
+                key = clean_data['Email']
 
             if key in individuals:
                 log.warning('Duplicate individual with key {} ({}, {})'.format(key, clean_data['Contact'], clean_data['Email']))
@@ -182,10 +187,15 @@ def migrate_customers(mscon, organizations, individuals, countries, states, org_
                 names = clean_data['Contact'].split(' ')
                 if len(names) > 1:
                     first_name = names[0]
-                    last_name = names[1]
+                    # Last name is the rest of the name to ensure we get all the string if there are more than one space!
+                    last_name = clean_data['Contact'][len(names[0]) + 1:]
+
+                    # special case. There's an 'A.J. Donnell' and an 'A.J Donnell' in the Pilot database
+                    if first_name == 'A.J' and last_name == 'Donnell':
+                        first_name = 'A.J.'
                 else:
                     first_name = clean_data['Contact']
-                    last_name = clean_data['Contact']
+                    last_name = 'Unknown'
                     log.warning("Individual with same first and last name {}'".format(clean_data['Contact']))
             else:
                 first_name = clean_data['Email']
@@ -209,7 +219,7 @@ def migrate_customers(mscon, organizations, individuals, countries, states, org_
                 'zip_code': clean_data['ZipCode'],
                 'country': clean_data['Country'],
                 'country_id': country_id,
-                'metadata': metadata
+                'metadata': get_string_value(json.dumps(metadata)) if len(metadata) > 0 else 'NULL'
             }
 
 
@@ -229,9 +239,9 @@ def migrate_labs(mscon, organizations, states, countries, org_types):
         name = sanitize_string_col('Lab', 'LabID', msdata, 'Name')
         notes = sanitize_string_col('Lab', 'LabID', msdata, 'LabDesc')
 
-        metadata = None
+        metadata = {}
         if notes:
-            metadata = get_string_value(json.dumps({'LabDesc': notes}))
+            metadata = {'LabDesc': notes}
 
         if name in organizations:
             log.warning("Lab name '{}' already exists as customer organization. Setting organization to lab".format(name))
@@ -255,7 +265,7 @@ def migrate_labs(mscon, organizations, states, countries, org_types):
             'organization_name': name,
             'abbreviation': name,
             'address1': sanitize_string_col('Lab', 'LabID', msdata, 'Address1'),
-            'address1': sanitize_string_col('Lab', 'LabID', msdata, 'Address1'),
+            'address2': sanitize_string_col('Lab', 'LabID', msdata, 'Address1'),
             'city': sanitize_string_col('Lab', 'LabID', msdata, 'City'),
             'state_id': state_id,
             'country_id': country_id,
@@ -266,7 +276,7 @@ def migrate_labs(mscon, organizations, states, countries, org_types):
             'website': website,
             'email': sanitize_email(sanitize_string_col('Lab', 'LabID', msdata, 'Email')),
             'is_lab': True,
-            'metadata': metadata
+            'metadata': get_string_value(json.dumps(metadata)) if len(metadata) > 0 else 'NULL'
         }
 
         organizations[name] = lab

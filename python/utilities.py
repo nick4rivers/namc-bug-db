@@ -10,10 +10,13 @@ def sanitize_string_col(origin_table, id_field, row, field, escape_single_quotes
     return clean
 
 
-def sanitize_string(original, log=None, context=None, escape_single_quotes=True):
+def sanitize_string(original, log=None, context='', escape_single_quotes=True):
 
     if not original:
         return None
+
+    if not log:
+        log = Logger('String')
 
     if original.lower() in ['<null>', 'null']:
         log.info('NULL literal "{}" {}'.format(original, context))
@@ -23,6 +26,11 @@ def sanitize_string(original, log=None, context=None, escape_single_quotes=True)
     if len(stripped) != len(original):
         log.info('Stripped white space from "{}" {}'.format(original, context))
         original = stripped
+
+    # double spaces
+    if '  ' in original:
+        log.info('Stripped double space from "{}" {}'.format(original, context))
+        original = original.replace('  ', ' ')
 
     if escape_single_quotes and "'" in original:
         log.info('Escaping single quote in field {}'.format(context))
