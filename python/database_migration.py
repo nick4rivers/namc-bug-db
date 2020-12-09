@@ -12,6 +12,9 @@ import datetime
 from psycopg2.extras import execute_values
 import pyodbc
 from migrate_projects import ProjectMigrator
+from model_predictors import import_model_predictors
+
+csv_relative_path = '../data'
 
 
 def database_migration(mscon, pgcon):
@@ -30,7 +33,7 @@ def database_migration(mscon, pgcon):
         'states': load_lookup(pgcurs, 'geo.states', 'state_id', 'state_name'),
         'counties': load_lookup(pgcurs, 'geo.counties', 'county_id', 'county_name'),
         'countries': load_lookup(pgcurs, 'geo.countries', 'country_id', 'abbreviation'),
-        'taxa_levels': load_lookup(pgcurs, 'organism.levels', 'level_id', 'level_name'),
+        'taxa_levels': load_lookup(pgcurs, 'organism.taxa_levels', 'taxa_level_id', 'taxa_level_name'),
         # 'models': load_lookup(pgcurs, 'models', 'model_id', 'model_name'),
         'sample_methods': load_lookup(pgcurs, 'sample.sample_methods', 'sample_method_id', 'sample_method_name'),
         'box_statuses': load_lookup(pgcurs, 'sample.box_states', 'box_state_id', 'box_state_name')
@@ -38,41 +41,12 @@ def database_migration(mscon, pgcon):
         # 'labs': load_lookup(pgcurs, 'labs', 'lab_id', 'lab_name')
     }
 
-    mscurs = mscon.cursor()
-    mscurs.execute('SELECT * FROM PilotDB.dbo.Lab')
-    for msrow in mscurs.fetchall():
-        msdata = dict(zip([t[0] for t in msrow.cursor_description], msrow))
-        # print(msdata)
+    model_predictors_csv = os.path.join(os.path.dirname(__file__), csv_relative_path, 'model_predictors.csv')
 
-        entity = {
-            'address1': msdata['Address1'],
-            'address2': msdata['Address2'],
-            'city': msdata['City'],
-            'country_id': lookup['countries']['USA'],
-            'state_id': get_state(msdata['State'], lookup),
-            'zip_code': msdata['ZipCode'],
-            'phone': msdata['PhoneNo'],
-            'fax': msdata['FaxNo'],
-            # 'email': msdata['Email'],
-            'Website': msdata['Website']
-        }
+    migrate_taxa(mscon, pgcon)
 
-        cols = entity.keys()
-        entity['entity_id'] = pg_insert(pgcurs, 'entity.entities', 'entity_id', entity)
-
-        lab_desc = sanitize_string_col('Lab', 'LabID', msdata, 'LabDesc')
-        lab_name = sanitize_string_col('Lab', 'LabID', msdata, 'Name')
-        new_name = lab_desc if lab_desc else lab_name
-
-        org = {
-            'organization_name': new_name,
-            'entity_id': entity['entity_id'],
-            'abbreviation': lab_name,
-            'is_lab': True,
-            'organization_type_id': lookup['organization_types']['Private/NGO']
-        }
-
-        pg_insert(pgcurs, 'entity.organizations', 'organization_id', org)
+    # migrate_labs(mscon, pgcon, lookup)
+    # migrate_private_orgs(mscon, pgcon, lookup)
 
     # migration_path = os.path.join(os.path.dirname(__file__), 'migration.json')
     # with open(migration_path) as f:
@@ -84,60 +58,34 @@ def database_migration(mscon, pgcon):
     print('Database migration complete')
 
 
-def get_state(original, lookup):
+def migrate_taxa(mscon, pgcon):
 
-    if not original:
-        return None
+    pgcurs = pgcon.cursor()
+    pgcurs.execute('SELECT taxa_level_id, taxa_level_name FROM organism.taxa_levels ORDER BY taxa_level_rank')
+    levels = [(row[0], row[1]) for row in pgcurs.fetchall()]
+    level_lookup = {level_name: level_id for level_id, level_name in levels}
+    level_lookup_by_id = {level_id: level_name for level_id, level_name in levels}
 
-    for state_dict in ['states', 'states_abbr']:
-        if original in lookup[state_dict]:
-            return lookup[state_dict][original]
+    mscurs = mscon.cursor()
+    hierarchy = {'Animalia': {'level': 'Kingdom', ' children': {}}}
+    for level_id, level_name in levels:
 
-        for name, id in lookup[state_dict].items():
-            if name.lower() == original.lower():
-                return id
+        mscurs.execute("SELECT Count(*) FROM PilotDB.dbo.Taxonomy WHERE TaxaLevel = ?", [level_name])
+        # print('Processing', '{}'.format(mscurs.fetchone()[0]), level_name, 'organisms')
 
-    return None
+        mscurs.execute("SELECT * FROM PilotDB.dbo.Taxonomy WHERE TaxaLevel = ?", [level_name])
 
+        for msrow in mscurs.fetchall():
+            msdata = dict(zip([t[0] for t in msrow.cursor_description], msrow))
 
-def pg_insert(pgcurs, table, id_field, data):
+            org_level_id = level_lookup[level_name]
+            org_parent_level_name = level_lookup_by_id[org_level_id - 1]
 
-    cols = list(data.keys())
-    values = [data[col] for col in cols]
-    pgcurs.execute('INSERT INTO {} ({}) VALUES ({}) RETURNING {}'.format(table, ','.join(cols), ','.join('s' * len(cols)).replace('s', '%s'), id_field), values)
-    return pgcurs.fetchone()[0]
+            org_name = sanitize_string_col('PilotDB.Taxonomy', 'Code', msdata, level_name)
+            org_scientific_name = sanitize_string_col('PilotDB.Taxonomy', 'Code', msdata, 'ScientificName')
+            org_parent = sanitize_string_col('PilotDB.Taxonomy', 'Code', msdata, org_parent_level_name)
 
-
-def load_lookup(pgcurs, table, id_col, name_col):
-
-    pgcurs.execute('SELECT {}, {} FROM {}'.format(id_col, name_col, table))
-    return {row[1]: row[0] for row in pgcurs.fetchall()}
-
-
-def sanitize_string_col(origin_table, id_field, row, field):
-
-    original = row[field]
-
-    if not row[field]:
-        return None
-
-    if row[field].lower() in ['<null>', 'null']:
-        log = Logger(origin_table)
-        log.info('NULL literal "{}" in field {} with key {}'.format(row[field], field, row[id_field]))
-        return None
-
-    stripped = original.strip()
-    if len(stripped) != len(original):
-        log = Logger(origin_table)
-        log.info('Stripped white space from "{}" in field {} with key {}'.format(row[field], field, row[id_field]))
-        original = stripped
-
-    if len(original) < 1:
-        log = Logger(origin_table)
-        log.info('Empty string converted to NULL in field {} with key {}'.format(field, row[id_field]))
-        return None
-
-    return original
+            # print(org_name, org_scientific_name, org_parent)
 
 
 # def migrate(mscon, pgcon, lookup, table_info):
