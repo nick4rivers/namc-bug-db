@@ -97,6 +97,19 @@
     "32_sample.boxes.sql"
   ]
 },
+{
+  "name": "Migrate Sites",
+  "type": "python",
+  "request": "launch",
+  "module": "migrate_sites",
+  "console": "integratedTerminal",
+  "args": [
+    "{env:MS_DB}",
+    "{env:MS_USER}",
+    "{env:MS_PASSWORD}",
+    "33_geo_sites.sql"
+  ]
+},
   {
     "name": "Print Tables",
     "type": "python",

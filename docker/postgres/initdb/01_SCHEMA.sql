@@ -108,7 +108,7 @@ CREATE TABLE geo.sites (
     description         TEXT,
     waterbody           VARCHAR(255),
     location            GEOMETRY(Point, 4326) NOT NULL,
-    catchment           GEOMETRY(MultiPolygon, 4326) NOT NULL,
+    catchment           GEOMETRY(MultiPolygon, 4326),
     NHDPlusID           BIGINT,
     COMID               BIGINT,
     metadata            JSON,

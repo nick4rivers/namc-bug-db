@@ -95,3 +95,18 @@ def sanitize_url(original):
         url = url.replace(' ', '')
 
     return url
+
+
+def add_metadata(metadata, key, value):
+
+    if not value:
+        return
+
+    if not metadata:
+        metadata = {}
+
+    if key in metadata:
+        log = Logger('Metadata')
+        log.warning('Duplicate key for metadata {}'.format(key))
+
+    metadata[key] = value
