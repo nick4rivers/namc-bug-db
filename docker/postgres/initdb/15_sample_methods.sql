@@ -26,3 +26,4 @@ INSERT INTO sample.sample_methods (sample_method_id, sample_method_name, is_acti
 INSERT INTO sample.sample_methods (sample_method_id, sample_method_name, is_active) VALUES (26 , 'Surber net', True);
 INSERT INTO sample.sample_methods (sample_method_id, sample_method_name, is_active) VALUES (27 , 'Tee', True);
 INSERT INTO sample.sample_methods (sample_method_id, sample_method_name, is_active) VALUES (28 , 'Unspecified', True);
+INSERT INTO sample.sample_methods (sample_method_id, sample_method_name, is_active) VALUES (29, 'Leaf Decomposition Bags', False);
