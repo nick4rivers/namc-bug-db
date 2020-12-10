@@ -107,7 +107,7 @@ CREATE TABLE geo.sites (
     ecosystem_id        INT,
     description         TEXT,
     waterbody           VARCHAR(255),
-    location            GEOMETRY(Point, 4326),
+    location            GEOMETRY(Point, 4326) NOT NULL,
     catchment           GEOMETRY(MultiPolygon, 4326),
     NHDPlusID           BIGINT,
     COMID               BIGINT,
@@ -612,6 +612,7 @@ CREATE TABLE sample.samples (
     updated_date        TIMESTAMPTZ NOT NULL DEFAULT now(),
     qa_sample_id        INT,
     lab_id              INT,
+    metadata            JSON,
 
     CONSTRAINT pk_samples PRIMARY KEY (sample_id),
     CONSTRAINT fk_samples_box_id FOREIGN KEY (box_id) REFERENCES sample.boxes(box_id),

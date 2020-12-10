@@ -3,14 +3,24 @@ import os
 import re
 from rscommons import Logger
 
+tables = {
+    'organizations': 'CREATE TABLE organizations (organization_id INT, abbreviation TEXT, organization_name TEXT, entity_id INT, organization_type_id INT, is_lab BOOL);',
+    'sample_methods': 'CREATE TABLE sample_methods (sample_method_id INT, sample_method_name TEXT, is_active BOOL);',
+    'habitats': 'CREATE TABLE habitats (habitat_id INT, habitat_name TEXT, ecosystem_id INT, is_active BOOL);',
+    'systems': 'CREATE TABLE systems (system_id INT, system_name TEXT, ecosystem_id INT);',
+    'ecosystems': 'CREATE TABLE ecosystems (ecosystem_id INT, ecosystem_name TEXT);'
+}
 
-def lookup_data(create_table, sql_path, key):
+
+def lookup_data(table_name, sql_file_name, key, where_clause=None):
 
     conn = sqlite3.connect(':memory:')
     conn.row_factory = dict_factory
     curs = conn.cursor()
 
-    curs.execute(create_table)
+    curs.execute(tables[table_name])
+
+    sql_path = os.path.join(os.path.dirname(__file__), '../docker/postgres/initdb', sql_file_name)
 
     with open(sql_path, mode='r') as f:
         sql_statements = f.read()
@@ -22,7 +32,7 @@ def lookup_data(create_table, sql_path, key):
         sql_statements = sql_statements.replace(schema, '')
         conn.executescript(sql_statements)
 
-    curs.execute('SELECT * FROM {}'.format(table))
+    curs.execute('SELECT * FROM {} {}'.format(table, ' WHERE {}'.format(where_clause) if where_clause else ''))
     results = {}
     for row in curs.fetchall():
         results[row[key]] = row

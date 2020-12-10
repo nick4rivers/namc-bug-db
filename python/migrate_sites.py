@@ -12,14 +12,11 @@ from utilities import add_metadata
 
 def migrate_sites(mscon, sites_path):
 
-    systems_file = os.path.join(os.path.dirname(sites_path), '09_systems.sql')
-    systems = lookup_data('CREATE TABLE systems (system_id INT, system_name TEXT, ecosystem_id INT);', systems_file, 'system_name')
-
-    ecosystems_file = os.path.join(os.path.dirname(sites_path), '05_ecosystems.sql')
-    ecosystems = lookup_data('CREATE TABLE ecosystems (ecosystem_id INT, ecosystem_name TEXT);', ecosystems_file, 'ecosystem_name')
+    systems = lookup_data('systems', '09_systems.sql', 'system_name')
+    ecosystems = lookup_data('ecosystems', '05_ecosystems.sql', 'ecosystem_name')
 
     mscurs = mscon.cursor()
-    mscurs.execute("SELECT * FROM PilotDB.dbo.SiteInfo")
+    mscurs.execute("SELECT * FROM PilotDB.dbo.SiteInfo WHERE (Lat IS NOT NULL) AND (Long IS NOT NULL)")
     log = Logger('Sites')
 
     sites = {}
@@ -29,10 +26,7 @@ def migrate_sites(mscon, sites_path):
         site_name = sanitize_string(msdata['Station'])
         ecosystem_id = get_db_id(ecosystems, 'ecosystem_id', ['ecosystem_name'], msdata['System1'])
         system_id = get_db_id(systems, 'system_id', ['system_name'], msdata['System2'])
-
-        point = None
-        if msdata['Lat'] and msdata['Long']:
-            point = "ST_SetSRID(ST_MakePoint({}, {}), 4326)".format(msdata['Lat'], msdata['Long'])
+        point = "ST_SetSRID(ST_MakePoint({}, {}), 4326)".format(msdata['Lat'], msdata['Long'])
 
         metadata = None
         add_metadata(metadata, 'location', msdata['Location'])
@@ -58,7 +52,7 @@ def migrate_sites(mscon, sites_path):
             'reach_name': sanitize_string_col('SiteInfo', 'Station', msdata, 'ReachName'),
             'system_id': system_id if system_id else 'NULL',
             'ecosystem_id': ecosystem_id if ecosystem_id else 'NULL',
-            'location': point if point else 'NULL',
+            'location': point,
             'description': sanitize_string_col('BoxTracking', 'Station', msdata, 'SiteDesc'),
             'metadata': metadata
         }
