@@ -29,7 +29,10 @@ def migrate_sites(mscon, sites_path):
         site_name = sanitize_string(msdata['Station'])
         ecosystem_id = get_db_id(ecosystems, 'ecosystem_id', ['ecosystem_name'], msdata['System1'])
         system_id = get_db_id(systems, 'system_id', ['system_name'], msdata['System2'])
-        point = "ST_GeomFromText('POINT({}, {})', 4326)".format(msdata['Lat'], msdata['Long'])
+
+        point = None
+        if msdata['Lat'] and msdata['Long']:
+            point = "ST_SetSRID(ST_MakePoint({}, {}), 4326)".format(msdata['Lat'], msdata['Long'])
 
         metadata = None
         add_metadata(metadata, 'location', msdata['Location'])
@@ -53,9 +56,9 @@ def migrate_sites(mscon, sites_path):
 
         sites[site_name] = {
             'reach_name': sanitize_string_col('SiteInfo', 'Station', msdata, 'ReachName'),
-            'system_id': system_id,
-            'ecosystem_id': ecosystem_id,
-            'location': point,
+            'system_id': system_id if system_id else 'NULL',
+            'ecosystem_id': ecosystem_id if ecosystem_id else 'NULL',
+            'location': point if point else 'NULL',
             'description': sanitize_string_col('BoxTracking', 'Station', msdata, 'SiteDesc'),
             'metadata': metadata
         }

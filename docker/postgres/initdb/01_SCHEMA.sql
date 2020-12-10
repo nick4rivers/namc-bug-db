@@ -107,7 +107,7 @@ CREATE TABLE geo.sites (
     ecosystem_id        INT,
     description         TEXT,
     waterbody           VARCHAR(255),
-    location            GEOMETRY(Point, 4326) NOT NULL,
+    location            GEOMETRY(Point, 4326),
     catchment           GEOMETRY(MultiPolygon, 4326),
     NHDPlusID           BIGINT,
     COMID               BIGINT,
