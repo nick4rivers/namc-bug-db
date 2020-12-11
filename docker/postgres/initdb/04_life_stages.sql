@@ -1,5 +1,6 @@
-INSERT INTO taxa.life_stages (life_stage_id, abbreviation, life_stage_name) VALUES (1, 'A', 'Adult');
-INSERT INTO taxa.life_stages (life_stage_id, abbreviation, life_stage_name) VALUES (2, 'E', 'Egg');
-INSERT INTO taxa.life_stages (life_stage_id, abbreviation, life_stage_name) VALUES (3, 'L', 'Larvae');
-INSERT INTO taxa.life_stages (life_stage_id, abbreviation, life_stage_name) VALUES (4, 'P', 'Pupae');
-INSERT INTO taxa.life_stages (life_stage_id, abbreviation, life_stage_name) VALUES (5, 'X', 'Exuvia');
+INSERT INTO taxa.life_stages (life_stage_id, abbreviation, life_stage_name, is_active) VALUES (1, 'A', 'Adult', TRUE);
+INSERT INTO taxa.life_stages (life_stage_id, abbreviation, life_stage_name, is_active) VALUES (2, 'E', 'Egg', TRUE);
+INSERT INTO taxa.life_stages (life_stage_id, abbreviation, life_stage_name, is_active) VALUES (3, 'L', 'Larvae', TRUE);
+INSERT INTO taxa.life_stages (life_stage_id, abbreviation, life_stage_name, is_active) VALUES (4, 'P', 'Pupae', TRUE);
+INSERT INTO taxa.life_stages (life_stage_id, abbreviation, life_stage_name, is_active) VALUES (5, 'X', 'Exuvia', TRUE);
+INSERT INTO taxa.life_stages (life_stage_id, abbreviation, life_stage_name, is_active) VALUES (8, 'U', 'Unspecified', FALSE);

@@ -8,7 +8,10 @@ tables = {
     'sample_methods': 'CREATE TABLE sample_methods (sample_method_id INT, sample_method_name TEXT, is_active BOOL);',
     'habitats': 'CREATE TABLE habitats (habitat_id INT, habitat_name TEXT, ecosystem_id INT, is_active BOOL);',
     'systems': 'CREATE TABLE systems (system_id INT, system_name TEXT, ecosystem_id INT);',
-    'ecosystems': 'CREATE TABLE ecosystems (ecosystem_id INT, ecosystem_name TEXT);'
+    'ecosystems': 'CREATE TABLE ecosystems (ecosystem_id INT, ecosystem_name TEXT);',
+    'sites': 'CREATE TABLE sites (site_id INT, site_name TEXT, system_id INT, ecosystem_id INT, location TEXT, description TEXT, metadata TEXT);',
+    'sample_types': 'CREATE TABLE sample_types (sample_type_id INT, sample_type_name TEXT);',
+    'life_stages': 'CREATE TABLE life_stages (life_stage_id INT, abbreviation TEXT, life_stage_name TEXT);'
 }
 
 
@@ -30,6 +33,10 @@ def lookup_data(table_name, sql_file_name, key, where_clause=None):
         table = result[2]
 
         sql_statements = sql_statements.replace(schema, '')
+
+        # Need to remove any PostGIS functions
+        sql_statements = sql_statements.replace('ST_SetSRID(ST_MakePoint(', "'").replace('), 4326)', "'")
+
         conn.executescript(sql_statements)
 
     curs.execute('SELECT * FROM {} {}'.format(table, ' WHERE {}'.format(where_clause) if where_clause else ''))

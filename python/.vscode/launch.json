@@ -110,6 +110,32 @@
     "33_geo_sites.sql"
   ]
 },
+{
+  "name": "Migrate Samples",
+  "type": "python",
+  "request": "launch",
+  "module": "migrate_samples",
+  "console": "integratedTerminal",
+  "args": [
+    "{env:MS_DB}",
+    "{env:MS_USER}",
+    "{env:MS_PASSWORD}",
+    "34_sample.samples.sql"
+  ]
+},
+{
+  "name": "Migrate Organisms",
+  "type": "python",
+  "request": "launch",
+  "module": "migrate_organisms",
+  "console": "integratedTerminal",
+  "args": [
+    "{env:MS_DB}",
+    "{env:MS_USER}",
+    "{env:MS_PASSWORD}",
+    "35_sample.organisms.sql"
+  ]
+},
   {
     "name": "Print Tables",
     "type": "python",

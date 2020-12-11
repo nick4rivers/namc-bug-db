@@ -8,6 +8,7 @@ from rscommons import Logger, ProgressBar, dotenv
 from lookup_data import lookup_data, get_db_id
 from utilities import get_string_value, sanitize_string_col, sanitize_string, get_date_value, get_string_value
 from utilities import add_metadata
+from utilities import write_sql_file
 
 
 def migrate_sites(mscon, sites_path):
@@ -19,7 +20,7 @@ def migrate_sites(mscon, sites_path):
     mscurs.execute("SELECT * FROM PilotDB.dbo.SiteInfo WHERE (Lat IS NOT NULL) AND (Long IS NOT NULL)")
     log = Logger('Sites')
 
-    sites = {}
+    postgres_data = {}
     for msrow in mscurs.fetchall():
         msdata = dict(zip([t[0] for t in msrow.cursor_description], msrow))
 
@@ -48,29 +49,16 @@ def migrate_sites(mscon, sites_path):
                         log.error('System ({}) and Ecosystem ({}) IDs do not match'.format(system_id, ecosystem_id))
                         # raise Exception('system and ecosystem mismatch')
 
-        sites[site_name] = {
-            'reach_name': sanitize_string_col('SiteInfo', 'Station', msdata, 'ReachName'),
-            'system_id': system_id if system_id else 'NULL',
-            'ecosystem_id': ecosystem_id if ecosystem_id else 'NULL',
+        postgres_data[site_name] = {
+            'site_name': site_name,
+            'system_id': system_id,
+            'ecosystem_id': ecosystem_id,
             'location': point,
             'description': sanitize_string_col('BoxTracking', 'Station', msdata, 'SiteDesc'),
             'metadata': metadata
         }
 
-    # write sites
-    site_id = 1
-    with open(sites_path, 'w') as f:
-        for site_name, data in sites.items():
-            f.write('INSERT INTO geo.sites (site_id, site_name, system_id, ecosystem_id, location, description, metadata) VALUES ({}, {}, {}, {}, {}, {}, {});\n'.format(
-                site_id,
-                get_string_value(site_name),
-                data['system_id'],
-                data['ecosystem_id'],
-                data['location'],
-                get_string_value(data['description']),
-                '{}'.format(json.dumps(metadata)) if data['metadata'] else 'NULL'
-            ))
-            site_id += 1
+    write_sql_file(sites_path, 'geo.sites', postgres_data)
 
 
 def main():

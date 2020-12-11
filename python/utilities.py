@@ -1,3 +1,4 @@
+import json
 from rscommons import Logger
 
 
@@ -110,3 +111,31 @@ def add_metadata(metadata, key, value):
         log.warning('Duplicate key for metadata {}'.format(key))
 
     metadata[key] = value
+
+
+def write_sql_file(output_path, table_name, data):
+
+    columns = next(iter(data)).keys()
+
+    sql_statement = 'INSERT INTO {} ({}) VALUES ({});\n'.format(table_name, ','.join(columns), (','.join('{' * len(columns)).replace('{', '{}')))
+
+    with open(output_path, 'w') as f:
+        for item in data:
+            values = []
+            for col in columns:
+                value = item[col]
+                if value:
+                    if isinstance(value, str):
+                        if value.lower().startswith('st_setsrid('):
+                            # PostGIS operation. Write as literal string.
+                            values.append(value)
+                        else:
+                            values.append(get_string_value(value))
+                    elif isinstance(value, dict):
+                        values.append("'{}'".format(json.dumps(value)))
+                    else:
+                        values.append(value)
+                else:
+                    values.append('NULL')
+
+            f.write(sql_statement.format(*values))
