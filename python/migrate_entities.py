@@ -1,6 +1,7 @@
-from rscommons import Logger, ProgressBar, dotenv
+from rscommons import Logger, ProgressBar
 import pyodbc
-from utilities import sanitize_string_col, get_string_value, sanitize_phone_fax, sanitize_email, sanitize_url, write_sql_file, add_metadata
+from utilities import sanitize_string_col, log_record_count
+from utilities import sanitize_phone_fax, sanitize_email, sanitize_url, write_sql_file, add_metadata
 from lookup_data import lookup_data, get_db_id
 
 
@@ -63,14 +64,13 @@ def migrate(mscon, organizations_path, individuals_path, entities_path):
 
 def migrate_customers(mscon, organizations, individuals, countries, states, org_types):
 
-    mscurs = mscon.cursor()
-    mscurs.execute("SELECT * FROM PilotDB.dbo.Customer")
-
     log = Logger('Entities')
 
     # USA for use in missing data
     usa = get_db_id(countries, 'country_id', ['abbreviation'], 'USA')
 
+    mscurs = mscon.cursor()
+    mscurs.execute("SELECT * FROM PilotDB.dbo.Customer")
     for msrow in mscurs.fetchall():
         msdata = dict(zip([t[0] for t in msrow.cursor_description], msrow))
 
@@ -192,9 +192,10 @@ def migrate_labs(mscon, organizations, states, countries, org_types):
 
     log = Logger('Labs')
 
-    # USA for use in missing data
-    usa = get_db_id(countries, 'country_id', ['abbreviation'], 'USA')
+    row_count = log_record_count(mscon, 'PilotDB.dbo.Lab')
+    progbar = ProgressBar(len(row_count), 50, "labs")
 
+    counter = 0
     for msrow in mscurs.fetchall():
         msdata = dict(zip([t[0] for t in msrow.cursor_description], msrow))
 
@@ -210,7 +211,7 @@ def migrate_labs(mscon, organizations, states, countries, org_types):
             continue
 
         state_id = get_db_id(states, 'state_id', ['state_name'], msdata['State'])
-        country_id = usa
+        country_id = get_db_id(countries, 'country_id', ['abbreviation'], 'USA')
         phone = sanitize_phone_fax(sanitize_string_col('Lab', 'LabID', msdata, 'PhoneNo'))
         fax = sanitize_phone_fax(sanitize_string_col('Lab', 'LabID', msdata, 'FaxNo'))
         website = sanitize_url(msdata['Website'])
@@ -241,3 +242,7 @@ def migrate_labs(mscon, organizations, states, countries, org_types):
         }
 
         organizations[name] = lab
+        progbar.update(counter)
+        counter += 1
+
+    progbar.finish()

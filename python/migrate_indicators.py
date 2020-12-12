@@ -1,10 +1,12 @@
 import csv
-from rscommons import Logger, ProgressBar, dotenv
+from rscommons import Logger, ProgressBar
 from utilities import sanitize_string_col, write_sql_file, add_metadata
 from lookup_data import lookup_data, get_db_id
 
 
 def migrate(csv_path, output_path):
+
+    log = Logger('geo.indicators')
 
     indicator_types = lookup_data('indicator_types', '24_geo_indicator_types.sql', 'indicator_type_name')
     translations = lookup_data('translations', '14_translations.sql', 'translation_name')
@@ -12,6 +14,9 @@ def migrate(csv_path, output_path):
 
     raw_data = csv.DictReader(open(csv_path))
 
+    log.info('Processing {:,} records for table geo.indicators'.format(len(raw_data)))
+
+    progbar = ProgressBar(len(raw_data), 50, "Migrating indicators")
     postgres_data = {}
     for row in raw_data:
         indicator = row['Variable']
@@ -50,16 +55,8 @@ def migrate(csv_path, output_path):
                 'unit_id': get_db_id(units, 'unit_id', ['abbreviation'], unit),
                 'metadata': metadata
             }
+        progbar.update(len(postgres_data))
+
+    progbar.finish()
 
     write_sql_file(output_path, 'geo.indicators', postgres_data.values())
-
-    with open(output_path, 'w') as f:
-        for indicator_name, indicator in postgres_data.items():
-            f.write("INSERT INTO geo.indicators(indicator_id, indicator_name, unit_id, abbreviation, description, metadata) VALUES ({}, '{}', {}, '{}', '{}', '{}');\n".format(
-                indicator['indicator_id'],
-                indicator_name,
-                indicator['unit_id'],
-                indicator_name,
-                indicator['description'],
-                json.dumps(indicator['metadata'])
-            ))

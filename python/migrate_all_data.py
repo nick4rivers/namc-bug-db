@@ -10,6 +10,7 @@ from migrate_entities import migrate as entities
 from migrate_boxes import migrate as boxes
 from migrate_sites import migrate as sites
 from migrate_samples import migrate as samples
+from migrate_organisms import migrate as organisms
 
 
 def migrate_all_data(mscon, indicator_csv_path):
@@ -26,6 +27,7 @@ def migrate_all_data(mscon, indicator_csv_path):
     boxes(mscon, os.path.join(output_dir, '32_sample.boxes.sql'))
     sites(mscon, os.path.join(output_dir, '33_geo_sites.sql'))
     samples(mscon, os.path.join(output_dir, '34_sample.samples.sql'))
+    organisms(mscon, os.path.join(output_dir, '35_sample.organisms.sql'))
 
 
 def main():
@@ -37,6 +39,9 @@ def main():
     args = dotenv.parse_args_env(parser, os.path.join(os.path.dirname(os.path.realpath(__file__)), '.env'))
 
     indicator_csv_path = os.path.join(os.path.dirname(__file__), args.csv_path)
+
+    log = Logger('DB Migration')
+    log.setup(logPath=os.path.join(os.path.dirname(__file__), "bugdb_migration.log"), verbose=args.verbose)
 
     # Microsoft SQL Server Connection
     # https://github.com/mkleehammer/pyodbc/wiki/Connecting-to-SQL-Server-from-Mac-OSX

@@ -205,5 +205,7 @@ def log_record_count(mscon, table_name, sql=None):
 
     mscurs = mscon.cursor()
     mscurs.execute(sql)
+    row_count = scurs.fetchone()[0]
     log = Logger(table_name)
-    log.info('Processing {:,} records for table {}'.format(mscurs.fetchone()[0], table_name))
+    log.info('Processing {:,} records for table {}'.format(row_count, table_name))
+    return row_count

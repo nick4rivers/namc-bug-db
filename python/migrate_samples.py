@@ -1,9 +1,7 @@
 import pyodbc
-from rscommons import Logger, ProgressBar, dotenv
+from rscommons import Logger
 from lookup_data import lookup_data, get_db_id
-from utilities import get_string_value, sanitize_string_col, sanitize_string, get_date_value, get_string_value
-from utilities import add_metadata
-from utilities import write_sql_file
+from utilities import sanitize_string_col, sanitize_string, add_metadata, write_sql_file
 
 
 def migrate(mscon, samples_path):
@@ -18,9 +16,9 @@ def migrate(mscon, samples_path):
 
     mscurs = mscon.cursor()
     mscurs.execute("""SELECT P.*, L.Name LabName, FE.SampleType FROM
-PilotDB.dbo.BugSample P
-LEFT JOIN BugLab.dbo.BugSample FE ON P.SampleID = FE.SampleID
-LEFT JOIN PilotDB.dbo.Lab L ON P.LabID = L.LabID""")
+        PilotDB.dbo.BugSample P
+        LEFT JOIN BugLab.dbo.BugSample FE ON P.SampleID = FE.SampleID
+        LEFT JOIN PilotDB.dbo.Lab L ON P.LabID = L.LabID""")
 
     postgres_data = {}
     for msrow in mscurs.fetchall():

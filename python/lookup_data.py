@@ -20,7 +20,9 @@ tables = {
     'life_stages': 'life_stage_id INT, abbreviation TEXT, life_stage_name TEXT',
     'countries': 'country_id INT, country_name TEXT, abbreviation TEXT',
     'states': 'state_id INT, country_id INT, state_name TEXT, abbreviation TEXT',
-    'organization_types': 'organization_type_id INT, organization_type_name TEXT'
+    'organization_types': 'organization_type_id INT, organization_type_name TEXT',
+    'box_states': 'box_state_id INT, box_state_name TEXT, box_state_order INT, description TEXT',
+    'individuals': 'individual_id INT, first_name TEXT, last_name TEXT, initials TEXT, entity_id INT, affiliation_id INT'
 }
 
 

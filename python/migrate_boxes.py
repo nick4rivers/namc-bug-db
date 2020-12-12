@@ -1,7 +1,7 @@
 import pyodbc
-from rscommons import Logger, ProgressBar
+from rscommons import Logger
 from lookup_data import lookup_data, get_db_id
-from utilities import get_string_value, sanitize_string_col, sanitize_string, get_date_value, get_string_value, write_sql_file
+from utilities import sanitize_string_col, sanitize_string, write_sql_file
 
 
 def migrate(mscon, boxes_path):
