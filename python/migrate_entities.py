@@ -1,31 +1,17 @@
-import os
-import sys
-import json
-import argparse
 from rscommons import Logger, ProgressBar, dotenv
-import getpass
-import datetime
-from psycopg2.extras import execute_values
 import pyodbc
-from utilities import sanitize_string_col, get_string_value, sanitize_phone_fax, sanitize_email, sanitize_url
+from utilities import sanitize_string_col, get_string_value, sanitize_phone_fax, sanitize_email, sanitize_url, write_sql_file, add_metadata
 from lookup_data import lookup_data, get_db_id
 
-csv_relative_path = '../data'
 
-
-def migrate_entities(mscon, organizations_path, individuals_path, entities_path):
+def migrate(mscon, organizations_path, individuals_path, entities_path):
 
     individuals = {}
     organizations = {}
 
-    country_file = os.path.join(os.path.dirname(organizations_path), '10_countries.sql')
-    countries = lookup_data('CREATE TABLE countries (country_id INT, country_name TEXT, abbreviation TEXT);', country_file, 'country_name')
-
-    states_file = os.path.join(os.path.dirname(organizations_path), '11_states.sql')
-    states = lookup_data('CREATE TABLE states (state_id INT, country_id INT, state_name TEXT, abbreviation TEXT);', states_file, 'state_name')
-
-    org_types_file = os.path.join(os.path.dirname(organizations_path), '02_organization_types.sql')
-    org_types = lookup_data('CREATE TABLE organization_types (organization_type_id INT, organization_type_name TEXT);', org_types_file, 'organization_type_name')
+    countries = lookup_data('countries', '10_countries.sql', 'country_name')
+    states = lookup_data('states', '11_states.sql', 'state_name')
+    org_types = lookup_data('organization_types', '02_organization_types.sql', 'organization_type_name')
 
     migrate_customers(mscon, organizations, individuals, countries, states, org_types)
     migrate_labs(mscon, organizations, states, countries, org_types)
@@ -53,45 +39,26 @@ def migrate_entities(mscon, organizations_path, individuals_path, entities_path)
         individual_id += 1
         entity_id += 1
 
-    # Write organizations
-    with open(organizations_path, 'w') as f:
-        for data in organizations.values():
-            f.write("INSERT INTO entity.organizations (organization_id, abbreviation, organization_name, entity_id, organization_type_id, is_lab) VALUES({}, {}, {}, {}, {}, {});\n".format(
-                data['organization_id'],
-                get_string_value(data['abbreviation']),
-                get_string_value(data['organization_name']),
-                data['entity_id'],
-                data['organization_type_id'],
-                data['is_lab']
-            ))
+    # Merge organizations and individuals into entities
+    entities = []
+    for entity in [individuals, organizations]:
+        for data in entity.values():
+            entities.append({
+                'entity_id': data['entity_id'],
+                'address1': data['address1'],
+                'address2': data['address2'],
+                'city': data['city'],
+                'state_id': data['state_id'],
+                'country_id': data['country_id'],
+                'zip_code': data['zip_code'],
+                'phone': data['phone'],
+                'fax': data['fax'],
+                'metadata': data['metadata']
+            })
 
-    # write individuals
-    with open(individuals_path, 'w') as f:
-        for data in individuals.values():
-            f.write('INSERT INTO entity.individuals (individual_id, first_name, last_name, initials, entity_id, affiliation_id) VALUES ({}, {}, {}, {}, {}, {});\n'.format(
-                data['individual_id'],
-                get_string_value(data['first_name']),
-                get_string_value(data['last_name']),
-                get_string_value(data['initials']),
-                data['entity_id'],
-                data['affiliation_id'],
-            ))
-
-    with open(entities_path, 'w') as f:
-        for entity in [individuals, organizations]:
-            for data in entity.values():
-                f.write('INSERT INTO entity.entities (entity_id, address1, address2, city, state_id, country_id, zip_code, phone, fax, metadata) VALUES ({}, {}, {}, {}, {}, {}, {}, {}, {}, {});\n'.format(
-                    data['entity_id'],
-                    get_string_value(data['address1']),
-                    get_string_value(data['address2']),
-                    get_string_value(data['city']),
-                    data['state_id'] if data['state_id'] else 'NULL',
-                    data['country_id'] if data['country_id'] else 'NULL',
-                    get_string_value(data['zip_code']),
-                    get_string_value(data['phone']),
-                    get_string_value(data['fax']),
-                    data['metadata']
-                ))
+    write_sql_file(organizations_path, 'entity.organizations', organizations.values())
+    write_sql_file(individuals_path, 'entity.individuals', individuals.values())
+    write_sql_file(entities_path, 'entity.entities', entities)
 
 
 def migrate_customers(mscon, organizations, individuals, countries, states, org_types):
@@ -134,13 +101,8 @@ def migrate_customers(mscon, organizations, individuals, countries, states, org_
         # ###################################################
 
         metadata = {}
-        if clean_data['Notes']:
-            metadata = {'notes': clean_data['Notes']}
-
-        if clean_data['Group']:
-            if not metadata:
-                metadata = {}
-            metadata['Group'] = clean_data['Group']
+        add_metadata(metadata, 'notes', clean_data['Notes'])
+        add_metadata(metadata, 'group', clean_data['Group'])
 
         phone = sanitize_phone_fax(clean_data['Phone'])
         fax = sanitize_phone_fax(clean_data['Fax'])
@@ -165,7 +127,7 @@ def migrate_customers(mscon, organizations, individuals, countries, states, org_
             'phone': phone,
             'fax': fax,
             'is_lab': 'FALSE',
-            'metadata': get_string_value(json.dumps(metadata)) if len(metadata) > 0 else 'NULL'
+            'metadata': metadata
         }
 
         first_name = None
@@ -219,7 +181,7 @@ def migrate_customers(mscon, organizations, individuals, countries, states, org_
                 'zip_code': clean_data['ZipCode'],
                 'country': clean_data['Country'],
                 'country_id': country_id,
-                'metadata': get_string_value(json.dumps(metadata)) if len(metadata) > 0 else 'NULL'
+                'metadata': metadata
             }
 
 
@@ -240,8 +202,7 @@ def migrate_labs(mscon, organizations, states, countries, org_types):
         notes = sanitize_string_col('Lab', 'LabID', msdata, 'LabDesc')
 
         metadata = {}
-        if notes:
-            metadata = {'LabDesc': notes}
+        add_metadata(metadata, 'labDesc', notes)
 
         if name in organizations:
             log.warning("Lab name '{}' already exists as customer organization. Setting organization to lab".format(name))
@@ -276,38 +237,7 @@ def migrate_labs(mscon, organizations, states, countries, org_types):
             'website': website,
             'email': sanitize_email(sanitize_string_col('Lab', 'LabID', msdata, 'Email')),
             'is_lab': True,
-            'metadata': get_string_value(json.dumps(metadata)) if len(metadata) > 0 else 'NULL'
+            'metadata': metadata
         }
 
         organizations[name] = lab
-
-
-def main():
-    parser = argparse.ArgumentParser()
-    parser.add_argument('msdb', help='SQLServer password', type=str)
-    parser.add_argument('msuser_name', help='SQLServer user name', type=str)
-    parser.add_argument('mspassword', help='SQLServer password', type=str)
-    parser.add_argument('organizations_path', help='Output SQL file', type=str)
-    parser.add_argument('individuals_path', help='Output SQL file', type=str)
-    parser.add_argument('entities_path', help='Output SQL file', type=str)
-
-    args = dotenv.parse_args_env(parser, os.path.join(os.path.dirname(os.path.realpath(__file__)), '.env'))
-
-    log = Logger('DB Migration')
-    log.setup(logPath=os.path.join(os.path.dirname(__file__), "bugdb_migration.log"))
-
-    log.info('SQLServer database: {}'.format(args.msdb))
-
-    # Microsoft SQL Server Connection
-    # https://github.com/mkleehammer/pyodbc/wiki/Connecting-to-SQL-Server-from-Mac-OSX
-    mscon = pyodbc.connect('DSN={};UID={};PWD={}'.format(args.msdb, args.msuser_name, args.mspassword))
-
-    organizations_path = os.path.join(os.path.dirname(__file__), '../docker/postgres/initdb', args.organizations_path)
-    individuals_path = os.path.join(os.path.dirname(__file__), '../docker/postgres/initdb', args.individuals_path)
-    entities_path = os.path.join(os.path.dirname(__file__), '../docker/postgres/initdb', args.entities_path)
-
-    migrate_entities(mscon, organizations_path, individuals_path, entities_path)
-
-
-if __name__ == '__main__':
-    main()

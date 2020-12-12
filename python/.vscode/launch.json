@@ -3,150 +3,17 @@
   // Hover to view descriptions of existing attributes.
   // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
   "version": "0.2.0",
-  "configurations": [
-    {
-      "name": "Database Migration",
-      "type": "python",
-      "request": "launch",
-      "module": "database_migration",
-      "console": "integratedTerminal",
-      "args": [
-          "{env:POSTGRES_HOST}",
-          "{env:POSTGRES_PORT}",
-          "{env:POSTGRES_DB}",
-          "{env:POSTGRES_USER}",
-          "{env:POSTGRES_PASSWORD}",
-          "{env:MS_DB}",
-          "{env:MS_USER}",
-          "{env:MS_PASSWORD}"
-      ]
-  },
-  {
-    "name": "Migrate_Taxonomy",
+  "configurations": [{
+    "name": "Database Migration",
     "type": "python",
     "request": "launch",
-    "module": "migrate_taxonomy_new",
+    "module": "migrate_all_data",
     "console": "integratedTerminal",
     "args": [
-        "{env:MS_DB}",
-        "{env:MS_USER}",
-        "{env:MS_PASSWORD}",
-        "27_taxa.taxonomy.sql",
-        "28_taxa.attributes.sql"
+      "{env:MS_DB}",
+      "{env:MS_USER}",
+      "{env:MS_PASSWORD}",
+      "data/model_predictors.csv"
     ]
-},
-  {
-    "name": "Migrate Projects",
-    "type": "python",
-    "request": "launch",
-    "module": "migrate_projects",
-    "console": "integratedTerminal",
-    "args": [
-        "{env:POSTGRES_HOST}",
-        "{env:POSTGRES_PORT}",
-        "{env:POSTGRES_DB}",
-        "{env:POSTGRES_USER}",
-        "{env:POSTGRES_PASSWORD}",
-        "{env:MS_DB}",
-        "{env:MS_USER}",
-        "{env:MS_PASSWORD}",
-        "23_sample.projects.sql"
-    ]
-},
-{
-  "name": "Migrate Indicators",
-  "type": "python",
-  "request": "launch",
-  "module": "model_predictors",
-  "console": "integratedTerminal",
-  "args": [
-      "{env:POSTGRES_HOST}",
-      "{env:POSTGRES_PORT}",
-      "{env:POSTGRES_DB}",
-      "{env:POSTGRES_USER}",
-      "{env:POSTGRES_PASSWORD}",
-      "data/model_predictors.csv",
-      "25_geo.indicators.sql"
-  ]
-},
-{
-  "name": "Migrate Entities",
-  "type": "python",
-  "request": "launch",
-  "module": "migrate_entities",
-  "console": "integratedTerminal",
-  "args": [
-    "{env:MS_DB}",
-    "{env:MS_USER}",
-    "{env:MS_PASSWORD}",
-    "30_entity.organizations.sql",
-    "31_entity.individuals.sql",
-    "29_entity.entities.sql"
-  ]
-},
-{
-  "name": "Migrate Boxes",
-  "type": "python",
-  "request": "launch",
-  "module": "migrate_boxes",
-  "console": "integratedTerminal",
-  "args": [
-    "{env:MS_DB}",
-    "{env:MS_USER}",
-    "{env:MS_PASSWORD}",
-    "32_sample.boxes.sql"
-  ]
-},
-{
-  "name": "Migrate Sites",
-  "type": "python",
-  "request": "launch",
-  "module": "migrate_sites",
-  "console": "integratedTerminal",
-  "args": [
-    "{env:MS_DB}",
-    "{env:MS_USER}",
-    "{env:MS_PASSWORD}",
-    "33_geo_sites.sql"
-  ]
-},
-{
-  "name": "Migrate Samples",
-  "type": "python",
-  "request": "launch",
-  "module": "migrate_samples",
-  "console": "integratedTerminal",
-  "args": [
-    "{env:MS_DB}",
-    "{env:MS_USER}",
-    "{env:MS_PASSWORD}",
-    "34_sample.samples.sql"
-  ]
-},
-{
-  "name": "Migrate Organisms",
-  "type": "python",
-  "request": "launch",
-  "module": "migrate_organisms",
-  "console": "integratedTerminal",
-  "args": [
-    "{env:MS_DB}",
-    "{env:MS_USER}",
-    "{env:MS_PASSWORD}",
-    "35_sample.organisms.sql"
-  ]
-},
-  {
-    "name": "Print Tables",
-    "type": "python",
-    "request": "launch",
-    "module": "print_tables",
-    "console": "integratedTerminal",
-    "args": [
-        "{env:MS_DB}",
-        "{env:MS_USER}",
-        "{env:MS_PASSWORD}"
-    ]
-}
-  ]
+  }]
 }
