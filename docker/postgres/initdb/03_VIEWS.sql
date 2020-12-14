@@ -1,7 +1,7 @@
 /******************************************************************************************************************
  geo SCHEMA
  */
-CREATE VIEW geo.sites AS
+CREATE VIEW geo.vw_sites AS
 (
 SELECT s.site_id,
        s.site_name,
