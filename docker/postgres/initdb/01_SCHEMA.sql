@@ -6,7 +6,7 @@ CREATE FUNCTION fn_before_update()
 RETURNS trigger AS
     $$
     BEGIN
-        NEW.updated_on = now();
+        NEW.updated_date = now();
         RETURN NEW;
     END ;
 $$
