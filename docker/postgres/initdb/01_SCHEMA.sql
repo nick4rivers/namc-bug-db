@@ -200,8 +200,6 @@ CREATE TABLE entity.organizations (
     entity_id               SMALLINT NOT NULL,
     organization_type_id    SMALLINT NOT NULL,
     is_lab                  BOOLEAN NOT NULL DEFAULT FALSE,
-    created_date            TIMESTAMPTZ NOT NULL DEFAULT now(),
-    updated_date            TIMESTAMPTZ NOT NULL DEFAULT now(),
 
     CONSTRAINT fk_organizations_entity_id FOREIGN KEY (entity_id) REFERENCES entity.entities(entity_id),
     CONSTRAINT fk_organizations_organization_type_id FOREIGN KEY (organization_type_id) REFERENCES entity.organization_types(organization_type_id)
@@ -218,8 +216,7 @@ CREATE TABLE entity.individuals (
     initials            VARCHAR(3),
     entity_id           SMALLINT NOT NULL,
     affiliation_id      SMALLINT,
-    created_date        TIMESTAMPTZ NOT NULL DEFAULT now(),
-    updated_date        TIMESTAMPTZ NOT NULL DEFAULT now(),
+    email               VARCHAR(255),
 
     CONSTRAINT fk_individuals_entity_id FOREIGN KEY (entity_id) REFERENCES entity.entities(entity_id),
     CONSTRAINT fk_individuals_affiliation_id FOREIGN KEY (affiliation_id) REFERENCES entity.organizations(organization_id)
@@ -841,6 +838,7 @@ CREATE TABLE sample.organisms (
     CONSTRAINT fk_organisms_taxonomy_id FOREIGN KEY (taxonomy_id) REFERENCES taxa.taxonomy(taxonomy_id),
     CONSTRAINT fk_organisms_life_stage_id FOREIGN KEY (life_stage_id) REFERENCES taxa.life_stages(life_stage_id)
 );
+
 
 CREATE UNIQUE INDEX ux_organism_organisms ON sample.organisms(sample_id, taxonomy_id, life_stage_id, bug_size);
 
