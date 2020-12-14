@@ -20,7 +20,9 @@ def migrate(mscon, sites_path):
         site_name = sanitize_string(msdata['Station'])
         ecosystem_id = get_db_id(ecosystems, 'ecosystem_id', ['ecosystem_name'], msdata['System1'])
         system_id = get_db_id(systems, 'system_id', ['system_name'], msdata['System2'])
-        point = "ST_SetSRID(ST_MakePoint({}, {}), 4326)".format(msdata['Lat'], msdata['Long'])
+
+        # Make Point requires X then Y
+        point = "ST_SetSRID(ST_MakePoint({}, {}), 4326)".format(msdata['Long'], msdata['Lat'])
 
         metadata = None
         add_metadata(metadata, 'location', msdata['Location'])
