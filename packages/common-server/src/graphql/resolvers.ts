@@ -1,5 +1,6 @@
 // import path from 'path'
-import { HelloResponse } from '@namcbugdb/common'
+import { HelloResponse, Sample } from '@namcbugdb/common'
+import { getSamples, getPool } from '../pg'
 // import config from '../config'
 // import downloadTaskLog from './downloadLogs'
 import {} from '../types'
@@ -17,9 +18,19 @@ export default {
     Query: {
         helloWorld: (obj, { name }, ctx, info): HelloResponse => {
             return {
-                message: `Hello ${name}!`,
+                message: `Good bye forever ${name}!`,
                 friendly: Math.random() < 0.5
             }
+        },
+
+        samples: async (obj, args, ctx, info): Promise<Sample[]> => {
+            const pool = getPool()
+            const data = await getSamples(pool)
+            return [
+                {
+                    sampleId: 24
+                }
+            ]
         }
     }
     // Mutation: {

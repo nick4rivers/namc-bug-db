@@ -1,6 +1,13 @@
 declare const _default: {
     development: boolean;
     apiUrl: string;
+    pg: {
+        user: string;
+        password: string;
+        database: string;
+        port: string | number;
+        host: string;
+    };
     loginUrl: string;
     aws: {
         region: string;

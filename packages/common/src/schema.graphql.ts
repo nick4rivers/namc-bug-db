@@ -11,6 +11,7 @@ const typeDefs = gql`
     type Query {
         # Get a project and associated metadata
         helloWorld(name: String!): HelloResponse
+        samples: [Sample]
     }
 
     # this schema allows the following mutation:
@@ -21,6 +22,10 @@ const typeDefs = gql`
     type HelloResponse {
         message: String
         friendly: Boolean
+    }
+
+    type Sample {
+        sampleId: ID!
     }
 `
 
