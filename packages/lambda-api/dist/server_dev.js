@@ -57,7 +57,7 @@ var cors_1 = __importDefault(require("cors"));
 var dotenv_1 = __importDefault(require("dotenv"));
 var express_graphql_1 = __importDefault(require("express-graphql"));
 var loglevel_1 = __importDefault(require("loglevel"));
-var graphql_1 = __importDefault(require("./graphql"));
+var common_server_1 = require("@namcbugdb/common-server");
 loglevel_1.default.enableAll();
 loglevel_1.default.info('\n\n\n==============================================\nLAUNCHING...\n==============================================\n');
 dotenv_1.default.config();
@@ -70,8 +70,10 @@ var app = express_1.default();
 app.use(cors_1.default(corsOptions));
 app.use(morgan_1.default('dev', { skip: function (req, res) { return res.statusCode < 400; } }));
 app.use('/api', function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
+    var user;
     return __generator(this, function (_a) {
-        req.context = __assign({}, res.context);
+        user = {};
+        req.context = __assign(__assign({}, res.context), { user: user });
         next();
         return [2];
     });
@@ -79,7 +81,7 @@ app.use('/api', function (req, res, next) { return __awaiter(void 0, void 0, voi
 app.use('/api', express_graphql_1.default(function (req, res, graphQLParams) { return __awaiter(void 0, void 0, void 0, function () {
     return __generator(this, function (_a) {
         return [2, {
-                schema: graphql_1.default,
+                schema: common_server_1.graphqlSchema,
                 context: req.context,
                 graphiql: false
             }];

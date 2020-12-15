@@ -13,8 +13,7 @@ import dotenv from 'dotenv'
 import graphqlHTTP from 'express-graphql'
 import log from 'loglevel'
 
-import schema from './graphql'
-// import { awsLib, config } from '@namcbugdb/common-server'
+import { config, graphqlSchema } from '@namcbugdb/common-server'
 
 log.enableAll()
 
@@ -35,7 +34,6 @@ const API_PORT = process.env.API_PORT || 3002
 // This is for our local testing only
 const app = express()
 
-// const docClient = awsLib.dynamo.getDynamoClient(config.aws.region)
 // const cognitoClient = awsLib.cognito.getCognitoClient(config.aws.region)
 app.use(cors(corsOptions))
 
@@ -47,9 +45,10 @@ app.use('/api', async (req, res, next) => {
     //     log.error(err)
     //     return {}
     // })
+    const user = {}
     req.context = {
-        ...res.context
-        // user,
+        ...res.context,
+        user
         // docClient,
         // cognitoClient
     }
@@ -61,7 +60,7 @@ app.use(
     graphqlHTTP(async (req: any, res, graphQLParams) => {
         // log.info(req, graphQLParams)
         return {
-            schema,
+            schema: graphqlSchema,
             context: req.context,
             graphiql: false
         }

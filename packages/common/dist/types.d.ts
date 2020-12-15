@@ -1,3 +1,4 @@
-export declare type BType = {
-    b: string;
+export declare type HelloResponse = {
+    message: string;
+    friendly: boolean;
 };

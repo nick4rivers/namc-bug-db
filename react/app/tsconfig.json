@@ -9,7 +9,8 @@
     "module": "esnext",
     "isolatedModules": true,
     "noEmit": true,
-    "strict": true
+    "strict": true,
+    "noFallthroughCasesInSwitch": true
   },
   "include": [
     "./src"

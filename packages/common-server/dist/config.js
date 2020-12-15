@@ -1,14 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-var mandatoryKeys = [
-    'PRODUCT_CODE',
-    'AWS_REGION_DEPLOY',
-    'AWS_USERPOOLID',
-    'AUTH_TABLE',
-    'SCRIPTS_URL',
-    'AWS_USERPOOLWEBCLIENTID',
-    'AWS_USERPOOL_HOSTED_DOMAIN'
-];
+var mandatoryKeys = [];
 mandatoryKeys.forEach(function (key) {
     if (!process.env[key]) {
         throw new Error("Missing environment variable: " + key);

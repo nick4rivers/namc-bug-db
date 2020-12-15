@@ -15,4 +15,6 @@ var config_1 = require("./config");
 Object.defineProperty(exports, "config", { enumerable: true, get: function () { return config_1.default; } });
 __exportStar(require("./types"), exports);
 exports.awsLib = {};
+var graphql_1 = require("./graphql");
+Object.defineProperty(exports, "graphqlSchema", { enumerable: true, get: function () { return graphql_1.default; } });
 //# sourceMappingURL=index.js.map

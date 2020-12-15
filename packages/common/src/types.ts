@@ -1,5 +1,4 @@
-// import { FargateTaskDefinitionProps } from '@aws-cdk/aws-ecs'
-
-export type BType = {
-    b: string
+export type HelloResponse = {
+    message: string
+    friendly: boolean
 }

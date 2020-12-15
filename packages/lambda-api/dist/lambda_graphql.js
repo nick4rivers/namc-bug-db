@@ -40,8 +40,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.handler = void 0;
-var graphql_1 = __importDefault(require("./graphql"));
-var graphql_2 = require("graphql");
+var common_server_1 = require("@namcbugdb/common-server");
+var graphql_1 = require("graphql");
 var loglevel_1 = __importDefault(require("loglevel"));
 loglevel_1.default.enableAll();
 exports.handler = function (event) { return __awaiter(void 0, void 0, void 0, function () {
@@ -50,7 +50,7 @@ exports.handler = function (event) { return __awaiter(void 0, void 0, void 0, fu
         loglevel_1.default.info("========= STARTING GraphQL " + process.env.VERSION + " ========= ");
         ctx = {};
         body = JSON.parse(event.body);
-        return [2, graphql_2.graphql(graphql_1.default, body.query, null, ctx, body.variables).then(function (result) { return ({
+        return [2, graphql_1.graphql(common_server_1.graphqlSchema, body.query, null, ctx, body.variables).then(function (result) { return ({
                 statusCode: 200,
                 headers: {
                     'Access-Control-Allow-Origin': '*',

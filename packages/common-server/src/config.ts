@@ -3,13 +3,7 @@
 // Sanity check here for mandatory environment variabels
 const mandatoryKeys = [
     // List here
-    'PRODUCT_CODE',
-    'AWS_REGION_DEPLOY',
-    'AWS_USERPOOLID',
-    'AUTH_TABLE',
-    'SCRIPTS_URL',
-    'AWS_USERPOOLWEBCLIENTID',
-    'AWS_USERPOOL_HOSTED_DOMAIN'
+    // 'PRODUCT_CODE'
 ]
 
 mandatoryKeys.forEach((key) => {

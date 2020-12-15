@@ -3,30 +3,25 @@ import gql from 'graphql-tag'
 // is in the mix
 
 const typeDefs = gql`
-schema {
-    query: Query
-    mutation: Mutation
-}
+    schema {
+        query: Query
+        # mutation: Mutation
+    }
 
-type Query {
-    # Get a project and associated metadata
-    auth: AuthParams
-}
+    type Query {
+        # Get a project and associated metadata
+        helloWorld(name: String!): HelloResponse
+    }
 
-# this schema allows the following mutation:
-type Mutation {
+    # this schema allows the following mutation:
+    # type Mutation {
 
-}
+    # }
 
-
-type AuthParams {
-    loggedIn: Boolean
-    userPool: String
-    clientId: String
-    region: String
-    domain: String
-}
-
+    type HelloResponse {
+        message: String
+        friendly: Boolean
+    }
 `
 
 export default typeDefs

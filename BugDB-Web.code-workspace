@@ -1,0 +1,25 @@
+{
+	"folders": [
+		{
+			"name": "React App",
+			"path": "react/app"
+		},		
+		{
+			"name": "common",
+			"path": "packages/common"
+		},
+		{
+			"name": "common-server",
+			"path": "packages/common-server"
+		},
+		{
+			"name": "lampda-api",
+			"path": "packages/lambda-api"
+		},
+		{
+			"name": "NAMC-BUG-DB (Root)",
+			"path": "."
+		}
+	],
+	"settings": {}
+}
