@@ -23,6 +23,6 @@ var pgPromise = function (pool, query, vars) {
         pool.query(query, vars, cb);
     });
 };
-var samplesQuery = 'SELECT sample_id FROM /"sample/"./"samples/"';
+var samplesQuery = 'SELECT sample_id FROM "sample"."samples"';
 exports.getSamples = function (pool) { return pgPromise(pool, samplesQuery); };
 //# sourceMappingURL=index.js.map

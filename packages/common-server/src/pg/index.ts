@@ -18,6 +18,6 @@ const pgPromise = (pool: Pool, query: string, vars?: any): Promise<any> => {
     })
 }
 
-const samplesQuery = 'SELECT sample_id FROM /"sample/"./"samples/"'
+const samplesQuery = 'SELECT sample_id FROM "sample"."samples"'
 
 export const getSamples = (pool): Promise<any> => pgPromise(pool, samplesQuery)
