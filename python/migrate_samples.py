@@ -14,16 +14,43 @@ def migrate(mscon, output_path):
     sites = lookup_data('sites', '33_geo_sites.sql', 'site_name')
     types = lookup_data('sample_types', '08_sample_types.sql', 'sample_type_name')
 
-    # SampleType is only available in the FRONT
-
     mscurs = mscon.cursor()
+
+    # SampleType is only available in the front end database. Use table joins to determine the sample type
+    mscurs.execute("""
+    SELECT S.SampleID,
+        Count(BP.SampleID) CountBugPlankton,
+        Count(BD.SampleID) CountBugDrift,
+        Count(BS.SampleID) AS CountBugStomachs
+    FROM PilotDB.dbo.BugSample S
+        LEFT JOIN PilotDB.dbo.BugPlankton BP on S.SampleID = BP.SampleID
+        LEFT JOIN PilotDB.dbo.BugDrift BD ON S.SampleID = BD.SampleID
+        LEFT JOIN PilotDB.dbo.BugStomachs BS on S.SampleID = BS.SampleID
+    GROUP BY S.SampleID    
+    """)
+    sample_types = {}
+    for msrow in mscurs.fetchall():
+        msdata = dict(zip([t[0] for t in msrow.cursor_description], msrow))
+        sample_id = msdata['SampleID']
+
+        if msdata['CountBugPlankton'] > 0:
+            sample_types[sample_id] = types['Zooplankton']['sample_type_id']
+        elif msdata['CountBugDrift'] > 0:
+            sample_types[sample_id] = types['Drift']['sample_type_id']
+        elif msdata['CountBugStomachs'] > 0:
+            sample_types[sample_id] = types['Fish Diet']['sample_type_id']
+        else:
+            sample_types[sample_id] = types['Benthic']['sample_type_id']
+
     mscurs.execute("""SELECT P.*, L.Name LabName, FE.SampleType FROM
         PilotDB.dbo.BugSample P
         LEFT JOIN BugLab.dbo.BugSample FE ON P.SampleID = FE.SampleID
         LEFT JOIN PilotDB.dbo.Lab L ON P.LabID = L.LabID""")
 
-    cols = ['box_id',
+    cols = ['sample_id',
+            'box_id',
             'sample_date',
+            'type_id',
             'sample_time',
             'site_id',
             'type_id',
@@ -60,7 +87,6 @@ def migrate(mscon, output_path):
             lab_id = get_db_id(labs, 'organization_id', ['organization_name', 'abbreviation'], sanitize_string(msdata['LabName']))
             method_id = get_db_id(methods, 'sample_method_id', ['sample_method_name'], sanitize_string(msdata['Method']))
             habitat_id = get_db_id(habitats, 'habitat_id', ['habitat_name'], sanitize_string(msdata['Habitat']))
-            type_id = get_db_id(types, 'sample_type_id', ['sample_type_name'], sanitize_string(msdata['SampleType']))
             station = sanitize_string(msdata['Station'])
             site_id = get_db_id(sites, 'site_id', ['site_name'], station)
 
@@ -70,11 +96,12 @@ def migrate(mscon, output_path):
                 add_metadata(metadata, 'missingStation', station)
 
             data = {
+                'sample_id': msdata['SampleID'],
                 'box_id': msdata['BoxID'],
                 'sample_date': msdata['SampDate'],
                 'sample_time': msdata['SampleTime'],
                 'site_id': site_id,
-                'type_id': type_id,
+                'type_id': sample_types[msdata['SampleID']],
                 'method_id': method_id,
                 'habitat_id': habitat_id,
                 'area': msdata['Area'],

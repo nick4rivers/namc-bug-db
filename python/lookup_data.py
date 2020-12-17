@@ -17,7 +17,7 @@ tables = {
     'ecosystems': 'ecosystem_id INT, ecosystem_name TEXT',
     'sites': 'site_id INT, site_name TEXT, system_id INT, ecosystem_id INT, location TEXT, description TEXT, metadata TEXT',
     'sample_types': 'sample_type_id INT, sample_type_name TEXT',
-    'life_stages': 'life_stage_id INT, abbreviation TEXT, life_stage_name TEXT',
+    'life_stages': 'life_stage_id INT, abbreviation TEXT, life_stage_name TEXT, is_active TEXT',
     'countries': 'country_id INT, country_name TEXT, abbreviation TEXT',
     'states': 'state_id INT, country_id INT, state_name TEXT, abbreviation TEXT',
     'organization_types': 'organization_type_id INT, organization_type_name TEXT',
