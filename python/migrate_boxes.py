@@ -6,7 +6,7 @@ from utilities import sanitize_string_col, sanitize_string, write_sql_file
 
 def migrate(mscon, boxes_path):
 
-    organizations = lookup_data('organizations', '30_entity.organizations.sql', 'organization_name')
+    organizations = lookup_data('organizations', '30_entity.organizations.sql', 'organization_id')
     box_states = lookup_data('box_states', '16_box_states.sql', 'box_state_name')
     individuals = lookup_data('individuals', '31_entity.individuals.sql', 'individual_id')
 
@@ -22,8 +22,11 @@ def migrate(mscon, boxes_path):
         msdata = dict(zip([t[0] for t in msrow.cursor_description], msrow))
 
         custId = sanitize_string(msdata['CustId'])
-        entity_id = get_db_id(organizations, 'entity_id', ['abbreviation', 'organization_name'], custId)
+        entity_id = get_db_id(organizations, 'entity_id', ['abbreviation'], custId)
         box_state_id = get_db_id(box_states, 'box_state_id', ['box_state_name'], 'Complete')
+
+        if not entity_id:
+            log.error("Missing entity for customer '{}' for box {}".format(custId, msdata['BoxId']))
 
         # Default the submitter to the customer organization
         submitter_id = entity_id

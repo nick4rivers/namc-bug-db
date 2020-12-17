@@ -22,12 +22,12 @@ def migrate_all_data(mscon, indicator_csv_path):
     taxonomy(mscon, os.path.join(output_dir, '27_taxa.taxonomy.sql'))
     attributes(mscon, os.path.join(output_dir, '28_taxa.attributes.sql'))
     entities(mscon, os.path.join(output_dir, '29_entity.entities.sql'),
-             os.path.join(output_dir, '30_entity.organization.sql'),
+             os.path.join(output_dir, '30_entity.organizations.sql'),
              os.path.join(output_dir, '31_entity.individuals.sql'))
     boxes(mscon, os.path.join(output_dir, '32_sample.boxes.sql'))
     sites(mscon, os.path.join(output_dir, '33_geo_sites.sql'))
     samples(mscon, os.path.join(output_dir, '34_sample.samples.sql'))
-    organisms(mscon, os.path.join(output_dir, '35_sample.organisms.sql'))
+    # organisms(mscon, os.path.join(output_dir, '35_sample.organisms.sql'))
 
 
 def main():
@@ -36,6 +36,8 @@ def main():
     parser.add_argument('msuser_name', help='SQLServer user name', type=str)
     parser.add_argument('mspassword', help='SQLServer password', type=str)
     parser.add_argument('csv_path', help='Input translation indicator CSV', type=str)
+    parser.add_argument('--verbose', help='verbose logging', default=False)
+
     args = dotenv.parse_args_env(parser, os.path.join(os.path.dirname(os.path.realpath(__file__)), '.env'))
 
     indicator_csv_path = os.path.join(os.path.dirname(__file__), args.csv_path)

@@ -5,7 +5,7 @@ from utilities import sanitize_phone_fax, sanitize_email, sanitize_url, write_sq
 from lookup_data import lookup_data, get_db_id
 
 
-def migrate(mscon, organizations_path, individuals_path, entities_path):
+def migrate(mscon, entities_path, organizations_path, individuals_path):
 
     individuals = {}
     organizations = {}
@@ -57,8 +57,24 @@ def migrate(mscon, organizations_path, individuals_path, entities_path):
                 'metadata': data['metadata']
             })
 
-    write_sql_file(organizations_path, 'entity.organizations', organizations.values())
-    write_sql_file(individuals_path, 'entity.individuals', individuals.values())
+    # Strip down organizations to just the essential fields
+    cleaned_organizations = []
+    for entity in organizations.values():
+        data = {}
+        for key in ['organization_id', 'abbreviation', 'organization_name', 'entity_id', 'organization_type_id', 'is_lab']:
+            data[key] = entity[key]
+        cleaned_organizations.append(data)
+
+    # Strip down the individuals to just the essential fields
+    cleaned_individuals = []
+    for entity in individuals.values():
+        data = {}
+        for key in ['individual_id', 'first_name', 'last_name', 'initials', 'entity_id', 'affiliation_id', 'email']:
+            data[key] = entity[key]
+        cleaned_individuals.append(data)
+
+    write_sql_file(organizations_path, 'entity.organizations', cleaned_organizations)
+    write_sql_file(individuals_path, 'entity.individuals', cleaned_individuals)
     write_sql_file(entities_path, 'entity.entities', entities)
 
 
@@ -119,14 +135,12 @@ def migrate_customers(mscon, organizations, individuals, countries, states, org_
             'city': clean_data['City'],
             'address1': clean_data['Address1'],
             'address2': clean_data['Address2'],
-            'state': clean_data['State'],
             'state_id': state_id,
             'zip_code': clean_data['ZipCode'],
-            'country': clean_data['Country'],
             'country_id': country_id,
             'phone': phone,
             'fax': fax,
-            'is_lab': 'FALSE',
+            'is_lab': False,
             'metadata': metadata
         }
 
@@ -187,14 +201,13 @@ def migrate_customers(mscon, organizations, individuals, countries, states, org_
 
 def migrate_labs(mscon, organizations, states, countries, org_types):
 
-    mscurs = mscon.cursor()
-    mscurs.execute("SELECT * FROM PilotDB.dbo.Lab")
-
     log = Logger('Labs')
 
     row_count = log_record_count(mscon, 'PilotDB.dbo.Lab')
-    progbar = ProgressBar(len(row_count), 50, "labs")
+    progbar = ProgressBar(row_count, 50, "labs")
 
+    mscurs = mscon.cursor()
+    mscurs.execute("SELECT * FROM PilotDB.dbo.Lab")
     counter = 0
     for msrow in mscurs.fetchall():
         msdata = dict(zip([t[0] for t in msrow.cursor_description], msrow))

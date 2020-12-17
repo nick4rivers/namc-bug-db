@@ -24,7 +24,7 @@ def migrate(mscon, sites_path):
         # Make Point requires X then Y
         point = "ST_SetSRID(ST_MakePoint({}, {}), 4326)".format(msdata['Long'], msdata['Lat'])
 
-        metadata = None
+        metadata = {}
         add_metadata(metadata, 'location', msdata['Location'])
         add_metadata(metadata, 'cardinalDirection', msdata['CardinalDirection'])
         add_metadata(metadata, 'hucCode', msdata['HucCode'])

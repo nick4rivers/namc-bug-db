@@ -1,5 +1,6 @@
 import os
 import json
+import datetime
 from rscommons import Logger, ProgressBar
 
 
@@ -21,25 +22,25 @@ def sanitize_string(original, log=None, context='', escape_single_quotes=True):
         log = Logger('String')
 
     if original.lower() in ['<null>', 'null']:
-        log.info('NULL literal "{}" {}'.format(original, context))
+        log.debug('NULL literal "{}" {}'.format(original, context))
         return None
 
     stripped = original.strip()
     if len(stripped) != len(original):
-        log.info('Stripped white space from "{}" {}'.format(original, context))
+        log.debug('Stripped white space from "{}" {}'.format(original, context))
         original = stripped
 
     # double spaces
     while '  ' in original:
-        log.info('Stripped double space from "{}" {}'.format(original, context))
+        log.debug('Stripped double space from "{}" {}'.format(original, context))
         original = original.replace('  ', ' ')
 
     if escape_single_quotes and "'" in original:
-        log.info('Escaping single quote in field {}'.format(context))
+        log.debug('Escaping single quote in field {}'.format(context))
         original = original.replace("'", "''")
 
     if len(original) < 1:
-        log.info('Empty string converted to NULL in field {} with key {}'.format(original, context))
+        log.debug('Empty string converted to NULL in field {} with key {}'.format(original, context))
         return None
 
     return original
@@ -139,9 +140,6 @@ def add_metadata(metadata, key, value):
     if not value:
         return
 
-    if not metadata:
-        metadata = {}
-
     if key in metadata:
         log = Logger('Metadata')
         log.warning('Duplicate key for metadata {}'.format(key))
@@ -166,36 +164,54 @@ def write_sql_file(output_path, table_name, data):
     # Get the column names from the keys in the first item in the list.
     columns = next(iter(data)).keys()
 
-    sql_statement = 'INSERT INTO {} ({}) VALUES ({});\n'.format(table_name, ','.join(columns), (','.join('{' * len(columns)).replace('{', '{}')))
+    sql_statement = 'INSERT INTO {} ({}) VALUES {};\n'.format(table_name, ','.join(columns), (','.join('{' * len(columns)).replace('{', '{}')))
 
     progbar = ProgressBar(len(data), 50, "Writing {} SQL".format(table_name))
     with open(output_path, 'w') as f:
         counter = 1
         for item in data:
-            values = []
-            for col in columns:
-                value = item[col]
-                if value:
-                    if isinstance(value, str):
-                        if value.lower().startswith('st_setsrid('):
-                            # PostGIS operation. Write as literal string.
-                            values.append(value)
-                        else:
-                            values.append(get_string_value(value))
-                    elif isinstance(value, dict):
-                        values.append("'{}'".format(json.dumps(value)))
-                    else:
-                        values.append(value)
-                else:
-                    values.append('NULL')
-
-            counter += 1
-            progbar.update(counter)
-            f.write(sql_statement.format(*values))
+            sql_statement = 'INSERT INTO {} ({}) VALUES ({});\n'.format(table_name, ','.join(columns), format_values(columns, item))
+            f.write(sql_statement)
 
     progbar.finish()
     log = Logger(table_name)
     print('{:,} records written to {}'.format(len(data), os.path.basename(output_path)))
+
+
+def format_values(columns, data):
+    """format the VALUES list for an SQL insert query
+    used for verbose queries as well as brief lists of values
+
+    returns: (xxx, NULL, 'xxx')
+
+    Args:
+        cols ([type]): [description]
+        values ([type]): [description]
+    """
+
+    values = []
+    for col in columns:
+        value = data[col]
+        if value is not None:
+            if isinstance(value, str):
+                if value.lower().startswith('st_setsrid('):
+                    # PostGIS operation. Write as literal string.
+                    values.append(value)
+                else:
+                    values.append(get_string_value(value))
+            elif isinstance(value, dict):
+                values.append("'{}'".format(json.dumps(value)))
+            elif isinstance(value, bool):
+                values.append(str(value))
+            elif isinstance(value, datetime.datetime):
+                values.append(value.strftime("'%Y-%m-%d'"))
+            else:
+                values.append(value)
+        else:
+            values.append('NULL')
+
+    format_string = ','.join('{' * len(columns)).replace('{', '{}')
+    return format_string.format(*values)
 
 
 def log_record_count(mscon, table_name, sql=None):
@@ -205,7 +221,7 @@ def log_record_count(mscon, table_name, sql=None):
 
     mscurs = mscon.cursor()
     mscurs.execute(sql)
-    row_count = scurs.fetchone()[0]
+    row_count = mscurs.fetchone()[0]
     log = Logger(table_name)
     log.info('Processing {:,} records for table {}'.format(row_count, table_name))
     return row_count
