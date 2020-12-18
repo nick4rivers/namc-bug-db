@@ -1,91 +1,64 @@
 from rscommons import Logger, ProgressBar
 import pyodbc
 from utilities import sanitize_string_col, log_record_count
-from utilities import sanitize_phone_fax, sanitize_email, sanitize_url, write_sql_file, add_metadata
-from lookup_data import lookup_data, get_db_id
+from utilities import sanitize_phone_fax, sanitize_email, sanitize_url, add_metadata
+from postgres_lookup_data import lookup_data, insert_row, log_row_count
+from lookup_data import get_db_id
+
+entity_cols = ['address1', 'address2', 'city', 'state_id', 'country_id', 'zip_code', 'phone', 'fax', 'metadata']
+organization_cols = ['abbreviation', 'organization_name', 'entity_id', 'organization_type_id', 'is_lab']
+indivisual_cols = ['first_name', 'last_name', 'initials', 'entity_id', 'affiliation_id', 'email']
 
 
-def migrate(mscon, entities_path, organizations_path, individuals_path):
+def migrate(mscurs, pgcurs):
 
     individuals = {}
     organizations = {}
 
-    countries = lookup_data('countries', '10_countries.sql', 'country_name')
-    states = lookup_data('states', '11_states.sql', 'state_name')
-    org_types = lookup_data('organization_types', '02_organization_types.sql', 'organization_type_name')
+    countries = lookup_data(pgcurs, 'geo.countries', 'country_name')
+    states = lookup_data(pgcurs, 'geo.states', 'state_name')
+    org_types = lookup_data(pgcurs, 'entity.organization_types', 'organization_type_name')
 
-    migrate_customers(mscon, organizations, individuals, countries, states, org_types)
-    migrate_labs(mscon, organizations, states, countries, org_types)
+    # Unpsecified user for associating with boxes that don't have a contact
+    individuals['Unspecified'] = {key: None for key in entity_cols + indivisual_cols}
+    individuals['Unspecified']['first_name'] = 'Unspecified'
+    individuals['Unspecified']['last_name'] = 'Unspecified'
+    individuals['Unspecified']['country_id'] = get_db_id(countries, 'country_id', ['abbreviation'], 'USA')
+    individuals['Unspecified']['affiliation'] = None
 
-    # assign organization IDs
-    organization_id = 1
-    entity_id = 1
-    for orgdata in organizations.values():
-        orgdata['organization_id'] = organization_id
-        orgdata['entity_id'] = entity_id
+    migrate_customers(mscurs, organizations, individuals, countries, states, org_types)
+    migrate_labs(mscurs, organizations, states, countries, org_types)
 
-        # Assign affiliations for any individuals with this custID
-        for individual in individuals.values():
-            if individual['affiliation'].lower() == orgdata['abbreviation'].lower():
-                individual['affiliation_id'] = organization_id
-
-        organization_id += 1
-        entity_id += 1
-
-    # assign individuals IDs
-    individual_id = 1
-    for indidividual_data in individuals.values():
-        indidividual_data['individual_id'] = individual_id
-        indidividual_data['entity_id'] = entity_id
-        individual_id += 1
-        entity_id += 1
-
-    # Merge organizations and individuals into entities
-    entities = []
+    # insert entities
     for entity in [individuals, organizations]:
-        for data in entity.values():
-            entities.append({
-                'entity_id': data['entity_id'],
-                'address1': data['address1'],
-                'address2': data['address2'],
-                'city': data['city'],
-                'state_id': data['state_id'],
-                'country_id': data['country_id'],
-                'zip_code': data['zip_code'],
-                'phone': data['phone'],
-                'fax': data['fax'],
-                'metadata': data['metadata']
-            })
+        for raw_data in entity.values():
+            data = {key: raw_data[key] for key in entity_cols}
+            raw_data['entity_id'] = insert_row(pgcurs, 'entity.entities', data, 'entity_id')
+    log_row_count(pgcurs, 'entity.entities')
 
-    # Strip down organizations to just the essential fields
-    cleaned_organizations = []
+    # insert organizations
     for entity in organizations.values():
-        data = {}
-        for key in ['organization_id', 'abbreviation', 'organization_name', 'entity_id', 'organization_type_id', 'is_lab']:
-            data[key] = entity[key]
-        cleaned_organizations.append(data)
+        data = {key: entity[key] for key in organization_cols}
+        entity['organization_id'] = insert_row(pgcurs, 'entity.organizations', data, 'organization_id')
+        # TODO: assign individuals with the organization ID of their affiliation
 
-    # Strip down the individuals to just the essential fields
-    cleaned_individuals = []
+    log_row_count(pgcurs, 'entity.organizations')
+
+    # insert individuals
     for entity in individuals.values():
-        data = {}
-        for key in ['individual_id', 'first_name', 'last_name', 'initials', 'entity_id', 'affiliation_id', 'email']:
-            data[key] = entity[key]
-        cleaned_individuals.append(data)
-
-    write_sql_file(organizations_path, 'entity.organizations', cleaned_organizations)
-    write_sql_file(individuals_path, 'entity.individuals', cleaned_individuals)
-    write_sql_file(entities_path, 'entity.entities', entities)
+        entity['affiliation_id'] = organizations[entity['affiliation']]['organization_id'] if entity['affiliation'] else None
+        data = {key: entity[key] for key in indivisual_cols}
+        insert_row(pgcurs, 'entity.individuals', data)
+    log_row_count(pgcurs, 'entity.individuals')
 
 
-def migrate_customers(mscon, organizations, individuals, countries, states, org_types):
+def migrate_customers(mscurs, organizations, individuals, countries, states, org_types):
 
     log = Logger('Entities')
 
     # USA for use in missing data
     usa = get_db_id(countries, 'country_id', ['abbreviation'], 'USA')
 
-    mscurs = mscon.cursor()
     mscurs.execute("SELECT * FROM PilotDB.dbo.Customer")
     for msrow in mscurs.fetchall():
         msdata = dict(zip([t[0] for t in msrow.cursor_description], msrow))
@@ -199,14 +172,13 @@ def migrate_customers(mscon, organizations, individuals, countries, states, org_
             }
 
 
-def migrate_labs(mscon, organizations, states, countries, org_types):
+def migrate_labs(mscurs, organizations, states, countries, org_types):
 
     log = Logger('Labs')
 
-    row_count = log_record_count(mscon, 'PilotDB.dbo.Lab')
+    row_count = log_record_count(mscurs, 'PilotDB.dbo.Lab')
     progbar = ProgressBar(row_count, 50, "labs")
 
-    mscurs = mscon.cursor()
     mscurs.execute("SELECT * FROM PilotDB.dbo.Lab")
     counter = 0
     for msrow in mscurs.fetchall():

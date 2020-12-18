@@ -1,8 +1,10 @@
 import os
 import argparse
 import pyodbc
+import psycopg2
+from psycopg2.extras import execute_values
 from rscommons import Logger, dotenv
-from migrate_indicators import migrate as indicators
+from migrate_predictors import migrate as predictors
 from migrate_projects import migrate as projects
 from migrate_taxonomy import migrate_taxonomy as taxonomy
 from migrate_taxonomy import migrate_attributes as attributes
@@ -13,21 +15,26 @@ from migrate_samples import migrate as samples
 from migrate_organisms import migrate as organisms
 
 
-def migrate_all_data(mscon, indicator_csv_path):
+def migrate_all_data(mscon, pgcon, predictor_csv_path):
 
-    output_dir = os.path.join(os.path.dirname(__file__), '../docker/postgres/initdb')
+    # output_dir = os.path.join(os.path.dirname(__file__), '../docker/postgres/initdb')
+    pgcurs = pgcon.cursor(cursor_factory=psycopg2.extras.DictCursor)
+    mscurs = mscon.cursor()
 
-    indicators(indicator_csv_path, os.path.join(output_dir, '25_geo.indicators.sql'))
-    projects(mscon, os.path.join(output_dir, '26_sample.projects.sql'))
-    taxonomy(mscon, os.path.join(output_dir, '27_taxa.taxonomy.sql'))
-    attributes(mscon, os.path.join(output_dir, '28_taxa.attributes.sql'))
-    entities(mscon, os.path.join(output_dir, '29_entity.entities.sql'),
-             os.path.join(output_dir, '30_entity.organizations.sql'),
-             os.path.join(output_dir, '31_entity.individuals.sql'))
-    boxes(mscon, os.path.join(output_dir, '32_sample.boxes.sql'))
-    sites(mscon, os.path.join(output_dir, '33_geo_sites.sql'))
-    samples(mscon, os.path.join(output_dir, '34_sample.samples.sql'))
+    predictors(predictor_csv_path, pgcurs)
+    projects(mscurs, pgcurs)
+    # taxonomy(mscon, pgcon)
+    # attributes(mscon, pgcon)
+    entities(mscurs, pgcurs)
+    boxes(mscurs, pgcurs)
+    sites(mscurs, pgcurs)
+    samples(mscurs, pgcurs)
     # organisms(mscon, os.path.join(output_dir, '35_sample.organisms.sql'))
+
+    log = Logger('Migration')
+    pgcurs = pgcon.cursor()
+    pgcurs.execute("SELECT pg_size_pretty( pg_database_size('bugdb') );")
+    log.info('Migration complete. Postgres database is {}'.format(pgcurs.fetchone()[0]))
 
 
 def main():
@@ -35,6 +42,13 @@ def main():
     parser.add_argument('msdb', help='SQLServer password', type=str)
     parser.add_argument('msuser_name', help='SQLServer user name', type=str)
     parser.add_argument('mspassword', help='SQLServer password', type=str)
+
+    parser.add_argument('pghost', help='Postgres password', type=str)
+    parser.add_argument('pgport', help='Postgres password', type=str)
+    parser.add_argument('pgdb', help='Postgres password', type=str)
+    parser.add_argument('pguser_name', help='Postgres user name', type=str)
+    parser.add_argument('pgpassword', help='Postgres password', type=str)
+
     parser.add_argument('csv_path', help='Input translation indicator CSV', type=str)
     parser.add_argument('--verbose', help='verbose logging', default=False)
 
@@ -49,7 +63,15 @@ def main():
     # https://github.com/mkleehammer/pyodbc/wiki/Connecting-to-SQL-Server-from-Mac-OSX
     mscon = pyodbc.connect('DSN={};UID={};PWD={}'.format(args.msdb, args.msuser_name, args.mspassword))
 
-    migrate_all_data(mscon, indicator_csv_path)
+    # Postgres connection
+    pgcon = psycopg2.connect(user=args.pguser_name, password=args.pgpassword, host=args.pghost, port=args.pgport, database=args.pgdb)
+
+    try:
+        migrate_all_data(mscon, pgcon, indicator_csv_path)
+        pgcon.commit()
+    except Exception as ex:
+        log.error(str(ex))
+        pgcon.rollback()
 
 
 if __name__ == '__main__':

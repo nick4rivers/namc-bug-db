@@ -214,12 +214,11 @@ def format_values(columns, data):
     return format_string.format(*values)
 
 
-def log_record_count(mscon, table_name, sql=None):
+def log_record_count(mscurs, table_name, sql=None):
 
     if not sql:
         sql = 'SELECT Count(*) FROM {}'.format(table_name)
 
-    mscurs = mscon.cursor()
     mscurs.execute(sql)
     row_count = mscurs.fetchone()[0]
     log = Logger(table_name)

@@ -1,34 +1,37 @@
 import pyodbc
+import psycopg2
+from psycopg2.extras import execute_values
 from rscommons import Logger, ProgressBar
-from utilities import sanitize_string_col, log_record_count, write_sql_file
-from lookup_data import lookup_data, get_db_id
+from utilities import sanitize_string_col, log_record_count
+from postgres_lookup_data import lookup_data, insert_row, log_row_count
+from lookup_data import get_db_id
+
+table_name = 'sample.projects'
 
 
-def migrate(mscon, output_path):
+def migrate(mscurs, pgcurs):
 
-    log = Logger('projects')
-
-    row_count = log_record_count(mscon, 'PilotDB.dbo.Project')
+    row_count = log_record_count(mscurs, 'PilotDB.dbo.Project')
 
     # Default all historical projects to customer project types
-    project_types = lookup_data('project_types', '23_sample.project_types.sql', 'project_type_name')
+    project_types = lookup_data(pgcurs, 'sample.project_types', 'project_type_name')
     cust_project_type_id = get_db_id(project_types, 'project_type_id', ['project_type_name'], 'Customer Projects')
 
-    progbar = ProgressBar(row_count, 50, "Migrating projects")
-    mscurs = mscon.cursor()
+    progbar = ProgressBar(row_count, 50, "projects")
     mscurs.execute("SELECT * FROM PilotDB.dbo.Project")
-    postgres_data = []
+    counter = 0
     for msrow in mscurs.fetchall():
         msdata = dict(zip([t[0] for t in msrow.cursor_description], msrow))
-        postgres_data.append({
+        data = {
             'project_id': msdata['ProjectID'],
             'project_name': sanitize_string_col('Project', 'ProjectID', msdata, 'Name'),
             'description': sanitize_string_col('Project', 'ProjectID', msdata, 'ProjectDesc'),
             'project_type_id': cust_project_type_id,
             'is_private': True if not msdata['Privacy'] or msdata['Privacy'].lower() == 'p' else False
-        })
-        progbar.update(len(postgres_data))
+        }
+        insert_row(pgcurs, table_name, data)
+        counter += 1
+        progbar.update(counter)
 
     progbar.finish()
-
-    write_sql_file(output_path, 'sample.projects', postgres_data)
+    log_row_count(pgcurs, table_name, row_count)

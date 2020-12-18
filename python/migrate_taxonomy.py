@@ -1,40 +1,47 @@
 import pyodbc
 from rscommons import Logger, ProgressBar
-from utilities import sanitize_string_col, write_sql_file, log_record_count, add_metadata
+from utilities import sanitize_string_col, log_record_count, add_metadata
+from postgres_lookup_data import lookup_data, insert_row, log_row_count
 
 
-def migrate_taxonomy(mscon, output_path):
+def migrate_taxonomy(mscon, pgcon):
 
     row_count = log_record_count(mscon, 'PilotDB.taxa.Taxonomy')
+
+    pgcurs = pgcon.cursor()
 
     progbar = ProgressBar(row_count, 50, "Taxa")
     mscurs = mscon.cursor()
     mscurs.execute("SELECT * FROM PilotDB.taxa.Taxonomy")
-    taxa = []
+    taxa = {}
     for msrow in mscurs.fetchall():
         msdata = dict(zip([t[0] for t in msrow.cursor_description], msrow))
 
         if msdata['code'] in taxa:
             raise Exception('duplicate code {} in raw data'.format(msdata['code']))
 
-        taxa.append({
+        data = {
             'taxonomy_id': msdata['code'],
             'parent_id': msdata['parent_code'],
             'level_id': msdata['taxa_level_id'],
             'scientific_name': sanitize_string_col('taxaonomy', 'code', msdata, 'scientific_name'),
             'author': None,
             'year': None
-        })
+        }
         progbar.update(len(taxa))
+
+        taxa[msdata['code']] = insert_row(pgcurs, 'taxa.taxonomy', data, 'taxonomy_id')
+
+    log_row_count(pgcurs, 'taxa.taxonomy', len(taxa))
 
     progbar.finish()
 
-    write_sql_file(output_path, 'taxa.taxonomy', taxa)
 
-
-def migrate_attributes(mscon, output_path):
+def migrate_attributes(mscon, pgcon):
 
     row_count = log_record_count(mscon, 'PilotDB.taxa.type_attribute')
+
+    pgcurs = pgcon.cursor()
 
     progbar = ProgressBar(row_count, 50, "Attributes")
     mscurs = mscon.cursor()
@@ -62,7 +69,7 @@ def migrate_attributes(mscon, output_path):
         add_metadata(metadata, 'range_high', msdata['range_high'])
         add_metadata(metadata, 'allowable_values', msdata['allowable_values'])
 
-        atts[msdata['attribute_id']] = {
+        data = {
             'attribute_id': msdata['attribute_id'],
             'attribute_name': name,
             'label': label,
@@ -73,6 +80,8 @@ def migrate_attributes(mscon, output_path):
 
         progbar.update(len(atts))
 
-    progbar.finish()
+        insert_row(pgcurs, 'taxa.attributes', data)
 
-    write_sql_file(output_path, 'taxa.attributes', atts.values())
+    log_row_count(pgcurs, 'taxa.taxonomy')
+
+    progbar.finish()

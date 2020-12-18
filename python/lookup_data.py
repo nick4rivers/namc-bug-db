@@ -80,7 +80,7 @@ def dict_factory(cursor, row):
     return {col[0]: row[idx] for idx, col in enumerate(cursor.description)}
 
 
-def get_db_id(data, id_field, keys, lookup_value):
+def get_db_id(data, id_field, keys, lookup_value, raise_exception=False):
     """Get the postgres database ID of an item in a
     dictionary by looking up one or more keys
 
@@ -104,4 +104,8 @@ def get_db_id(data, id_field, keys, lookup_value):
 
     log = Logger('DBLookup')
     log.error("Failed to find {} ID for value '{}'".format(id_field, lookup_value))
+
+    if raise_exception:
+        raise 'Database ID lookup failure'
+
     return None

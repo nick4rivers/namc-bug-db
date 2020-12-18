@@ -13,6 +13,11 @@
       "{env:MS_DB}",
       "{env:MS_USER}",
       "{env:MS_PASSWORD}",
+      "{env:POSTGRES_HOST}",
+      "{env:POSTGRES_PORT}",
+      "{env:POSTGRES_DB}",
+      "{env:POSTGRES_USER}",
+      "{env:POSTGRES_PASSWORD}",
       "data/model_predictors.csv"
     ]
   }]
