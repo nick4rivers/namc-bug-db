@@ -26,6 +26,22 @@ def insert_row(pgcurs, table, data, id_field=None):
     return pgcurs.fetchone()[0] if id_field else None
 
 
+def insert_many_rows(pgcurs, table, columns, data, sql=None):
+
+    # Convert dictionaries to JSON
+    values = []
+    for item in data:
+        values.append([json.dumps(value) if isinstance(value, dict) else value for value in item])
+
+    if not sql:
+        sql = 'INSERT INTO {} ({}) VALUES ({});'.format(
+            table,
+            ','.join(columns),
+            ','.join('s' * len(columns)).replace('s', '%s'))
+
+    pgcurs.executemany(sql, values)
+
+
 def log_row_count(pgcurs, table, expected_rows=None):
 
     log = Logger(table)

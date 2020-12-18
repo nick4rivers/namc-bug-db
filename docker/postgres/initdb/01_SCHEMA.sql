@@ -568,7 +568,7 @@ CREATE TABLE sample.samples (
     box_id              INT NOT NULL,
     site_id             INT,
     sample_date         DATE,
-    sample_time         SMALLINT,
+    sample_time         TIME,
     type_id             SMALLINT NOT NULL,
     method_id           SMALLINT NOT NULL,
     habitat_id          SMALLINT NOT NULL,
@@ -669,16 +669,16 @@ CREATE TRIGGER tr_plankton_update BEFORE UPDATE ON sample.plankton FOR EACH ROW 
 -- TODO: confirm that velo means velocity
 CREATE TABLE sample.drift (
     sample_id           INT NOT NULL PRIMARY KEY,
-    diameter            FLOAT,
-    net_time            FLOAT,
+    net_area            FLOAT,
+    net_duration        FLOAT,
     stream_depth        FLOAT,
     net_depth           FLOAT,
     net_velo            FLOAT,
     notes               TEXT,
     updated_date        TIMESTAMPTZ NOT NULL DEFAULT now(),
 
-    CONSTRAINT ck_bug_drift_diameter CHECK (diameter > 0),
-    CONSTRAINT ck_bug_drift_net_time CHECK (net_time > 0),
+    CONSTRAINT ck_bug_drift_net_area CHECK (net_area > 0),
+    CONSTRAINT ck_bug_drift_net_duration CHECK (net_duration > 0),
     CONSTRAINT ck_bug_drift_stream_depth CHECK (stream_depth > 0),
     CONSTRAINT ck_bug_drift_net_depth CHECK (net_depth > 0),
     CONSTRAINT ck_bug_drift_net_velo CHECK (net_velo >= 0)

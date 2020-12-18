@@ -126,6 +126,46 @@ def sanitize_url(original):
     return url
 
 
+def sanitize_time(original):
+
+    if not original:
+        return None
+
+    if original in ['0', '1111', '11:11', '00:00']:
+        return None
+
+    # There's one value of '30 minutes'
+    if len(original) > 5 or len(original) < 3:
+        return None
+
+    clean = original.replace(':', '').replace(',', '').replace('.', '')
+
+    return datetime.time(hour=int(clean[0:-2]), minute=int(clean[-2:]))
+
+
+def merge_string_fields(str1, str2):
+
+    clean1 = sanitize_string(str1)
+    clean2 = sanitize_string(str2)
+
+    if not clean1 and not clean2:
+        return None
+
+    if clean1:
+        if clean2:
+            if clean1.lower() == clean2.lower():
+                return clean1
+            else:
+                return clean1 + ' - ' + clean2
+        else:
+            return clean1
+    else:
+        if clean2:
+            return clean2
+
+    return None
+
+
 def add_metadata(metadata, key, value):
     """ Add an item to a metadata dictionary
     that will be writen to the SQL files as JSON.

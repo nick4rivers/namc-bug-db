@@ -1,10 +1,12 @@
 import pyodbc
 from rscommons import Logger, ProgressBar
-from utilities import sanitize_string_col, sanitize_string, add_metadata, format_values, log_record_count
-from postgres_lookup_data import lookup_data, insert_row, log_row_count
+from utilities import sanitize_string_col, sanitize_string, sanitize_time, add_metadata, format_values, log_record_count
+from postgres_lookup_data import lookup_data, insert_row, log_row_count, insert_many_rows
 from lookup_data import get_db_id
 
 table_name = 'sample.samples'
+
+block_size = 1000
 
 
 def migrate(mscurs, pgcurs):
@@ -14,6 +16,9 @@ def migrate(mscurs, pgcurs):
     habitats = lookup_data(pgcurs, 'geo.habitats', 'habitat_name')
     sites = lookup_data(pgcurs, 'geo.sites', 'site_name')
     types = lookup_data(pgcurs, 'sample.sample_types', 'sample_type_name')
+
+    unspecified_habitat = get_db_id(habitats, 'habitat_id', ['habitat_name'], 'Unspecified')
+    unspecified_method = get_db_id(methods, 'sample_method_id', ['sample_method_name'], 'Unspecified')
 
     row_count = log_record_count(mscurs, 'PilotDB.dbo.BugSample')
 
@@ -35,7 +40,9 @@ def migrate(mscurs, pgcurs):
     """)
 
     counter = 0
-    progbar = ProgressBar(row_count, 50, "projects")
+    progbar = ProgressBar(row_count, 50, "samples")
+    block_data = []
+    columns = None
     for msrow in mscurs.fetchall():
         msdata = dict(zip([t[0] for t in msrow.cursor_description], msrow))
 
@@ -44,6 +51,12 @@ def migrate(mscurs, pgcurs):
         habitat_id = get_db_id(habitats, 'habitat_id', ['habitat_name'], sanitize_string(msdata['Habitat']))
         station = sanitize_string(msdata['Station'])
         site_id = get_db_id(sites, 'site_id', ['site_name'], station)
+
+        # > 5,000 samples with NULL habitats
+        habitat_id = habitat_id if habitat_id else unspecified_habitat
+
+        # Method was not required in the old database
+        method_id = method_id if method_id else unspecified_method
 
         sample_type = 'Benthic'
         if msdata['Plankton'] > 0:
@@ -62,7 +75,7 @@ def migrate(mscurs, pgcurs):
             'sample_id': msdata['SampleID'],
             'box_id': msdata['BoxID'],
             'sample_date': msdata['SampDate'],
-            'sample_time': msdata['SampleTime'],
+            'sample_time': sanitize_time(msdata['SampleTime']),
             'site_id': site_id,
             'type_id': get_db_id(types, 'sample_type_id', ['sample_type_name'], sample_type),
             'method_id': method_id,
@@ -89,9 +102,21 @@ def migrate(mscurs, pgcurs):
             'metadata': metadata
         }
 
-        insert_row(pgcurs, table_name, data)
+        if not columns:
+            columns = list(data.keys())
+
+        block_data.append([data[key] for key in columns])
+
+        if len(block_data) == block_size:
+            insert_many_rows(pgcurs, table_name, columns, block_data)
+            block_data = []
+            progbar.update(counter)
+
         counter += 1
-        progbar.update(counter)
+
+    # insert remaining rows
+    if len(block_data) > 0:
+        insert_many_rows(pgcurs, table_name, columns, block_data)
 
     progbar.finish()
     log_row_count(pgcurs, table_name, row_count)

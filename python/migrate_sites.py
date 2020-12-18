@@ -1,9 +1,16 @@
 import json
 import pyodbc
 from lookup_data import get_db_id
-from postgres_lookup_data import lookup_data, insert_row, log_row_count
-from utilities import sanitize_string_col, sanitize_string, add_metadata, write_sql_file, log_record_count
+from postgres_lookup_data import lookup_data, log_row_count, insert_many_rows
+from utilities import sanitize_string_col, sanitize_string, add_metadata, write_sql_file, log_record_count, merge_string_fields
 from rscommons import Logger, ProgressBar
+
+columns = ['site_name', 'system_id', 'ecosystem_id', 'location', 'description', 'metadata']
+sql = """INSERT INTO geo.sites (site_name, system_id, ecosystem_id, location, description, metadata)
+            VALUES (%s, %s, %s, ST_SetSRID(ST_MakePoint(%s, %s), 4326), %s, %s);"""
+
+block_size = 1000
+table_name = 'geo.sites'
 
 
 def migrate(mscurs, pgcurs):
@@ -19,6 +26,7 @@ def migrate(mscurs, pgcurs):
     progbar = ProgressBar(expected_rows, 50, "sites")
     counter = 0
     duplicate_count = 0
+    block_data = []
     for msrow in mscurs.fetchall():
         msdata = dict(zip([t[0] for t in msrow.cursor_description], msrow))
 
@@ -55,19 +63,25 @@ def migrate(mscurs, pgcurs):
                         log.error('System ({}) and Ecosystem ({}) IDs do not match'.format(system_id, ecosystem_id))
                         # raise Exception('system and ecosystem mismatch')
 
-        # Custom insert because PostGIS functions
-        pgcurs.execute("""INSERT INTO geo.sites (site_name, system_id, ecosystem_id, location, description, metadata)
-            VALUES (%s, %s, %s, ST_SetSRID(ST_MakePoint(%s, %s), 4326), %s, %s);""",
-                       [site_name,
-                        system_id,
-                        ecosystem_id,
-                        msdata['Long'],
-                        msdata['Lat'],
-                        sanitize_string_col('BoxTracking', 'Station', msdata, 'SiteDesc'),
-                        json.dumps(metadata) if len(metadata) > 0 else None])
+        block_data.append([
+            site_name,
+            system_id,
+            ecosystem_id,
+            msdata['Long'],
+            msdata['Lat'],
+            merge_string_fields(msdata['Location'], msdata['SiteDesc']),
+            json.dumps(metadata) if len(metadata) > 0 else None])
+
+        if len(block_data) == block_size:
+            insert_many_rows(pgcurs, table_name, columns, block_data, sql)
+            block_data = []
+            progbar.update(counter)
 
         counter += 1
-        progbar.update(counter)
+
+    # insert remaining rows
+    if len(block_data) > 0:
+        insert_many_rows(pgcurs, table_name, columns, block_data, sql)
 
     progbar.finish()
     log_row_count(pgcurs, 'geo.sites', expected_rows)
