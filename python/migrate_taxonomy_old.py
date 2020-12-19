@@ -1,133 +1,79 @@
-import os
-import sys
-import argparse
-from rscommons import Logger, ProgressBar, dotenv
 import psycopg2
-import getpass
-import datetime
-from psycopg2.extras import execute_values
 import pyodbc
-from utilities import sanitize_string_col
+from psycopg2.extras import execute_values
+from rscommons import Logger, ProgressBar
+from utilities import sanitize_string_col, sanitize_string, sanitize_time, add_metadata, format_values, log_record_count
+from postgres_lookup_data import lookup_data, insert_row, log_row_count, insert_many_rows
+from lookup_data import get_db_id
 
-csv_relative_path = '../data'
 
+def migrate(mscurs, pgcurs):
 
-def migrate_taxonomy(mscon, pgcon, output_path):
+    levels = lookup_data(pgcurs, 'taxa.taxa_levels', 'level_name')
+    levels_by_id = {level['level_id']: level for level in levels.values()}
 
-    log = Logger('taxonomy')
+    pgcurs.execute('SELECT level_id, level_name FROM taxa.taxa_levels WHERE is_active = True ORDER BY level_id DESC')
+    level_names = [row[1].lower() for row in pgcurs.fetchall()]
 
-    pgcurs = pgcon.cursor()
-    pgcurs.execute('SELECT level_id, level_name FROM organism.taxa_levels ORDER BY level_rank')
-    levels = [(row[0], row[1]) for row in pgcurs.fetchall()]
-    level_lookup = {level_name: level_id for level_id, level_name in levels}
-    level_lookup_by_id = {level_id: level_name for level_id, level_name in levels}
+    expected_rows = log_record_count(mscurs, 'PilotDB.dbo.BoxTracking')
 
-    mscurs = mscon.cursor()
+    hierarchy = {level: {} for level in level_names}
 
-    hierarchy = {'Kingdom': [{
-        'taxonomy_id': 1,
+    hierarchy['kingdom']['Animalia'] = {
+        'taxonomy_id': -1,
         'taxonomy_name': 'Animalia',
-        'level_id': level_lookup['Kingdom'],
+        'level_id': get_db_id(levels, 'level_id', ['level_name'], 'Kingdom'),
         'parent_id': None,
         'author': None,
         'year': None
-    }]}
+    }
 
-    for org_level_id, level_name in levels:
+    log = Logger('taxonomy')
+    mscurs.execute('SELECT T.* FROM PilotDB.dbo.Taxonomy T INNER JOIN PilotDB.dbo.TypeTaxaLevels TTL on T.TaxaLevel = TTL.TaxaLevel ORDER BY TTL.TaxaLevelRank')
+    progbar = ProgressBar(expected_rows, 50, "taxonomy")
+    counter = 0
+    for msrow in mscurs.fetchall():
+        msdata = dict(zip([t[0] for t in msrow.cursor_description], msrow))
 
-        mscurs.execute("SELECT Count(*) FROM PilotDB.dbo.Taxonomy WHERE TaxaLevel = ?", [level_name])
-        print('Processing', '{}'.format(mscurs.fetchone()[0]), level_name, 'organisms')
+        # ensure all taxa fields are referred to in lower case
+        for key in list(msdata.keys()):
+            if key.lower() in level_names and key != key.lower():
+                msdata[key.lower()] = msdata[key]
+                del msdata[key]
 
-        if level_name not in hierarchy:
-            hierarchy[level_name] = []
+        msdata['TaxaLevel'] = msdata['TaxaLevel'].lower()
 
-        mscurs.execute("SELECT * FROM PilotDB.dbo.Taxonomy WHERE TaxaLevel = ?", [level_name])
-        for msrow in mscurs.fetchall():
-            msdata = dict(zip([t[0] for t in msrow.cursor_description], msrow))
+        level_name = msdata['TaxaLevel'].lower()
+        org_scientific_name = sanitize_string_col('PilotDB.Taxonomy', 'Code', msdata, 'ScientificName')
+        org_name = sanitize_string_col('PilotDB.Taxonomy', 'Code', msdata, level_name)
 
-            org_parent_level_name = level_lookup_by_id[org_level_id - 1]
-            org_name = sanitize_string_col('PilotDB.Taxonomy', 'Code', msdata, level_name)
-            org_scientific_name = sanitize_string_col('PilotDB.Taxonomy', 'Code', msdata, 'ScientificName')
-            org_parent = sanitize_string_col('PilotDB.Taxonomy', 'Code', msdata, org_parent_level_name)
-            org_author = sanitize_string_col('PilotDB.Taxonomy', 'Code', msdata, 'Author')
-            org_year = int(msdata['Year']) if msdata['Year'] else None
+        level_index = level_names.index(level_name)
+        parent_index = level_index + 1
+        while parent_index < len(level_names):
+            parent_level_name = level_names[parent_index]
+            if msdata[parent_level_name]:
+                if msdata[parent_level_name] in hierarchy[parent_level_name]:
+                    parent = hierarchy[parent_level_name][msdata[parent_level_name]]
+                    break
+                else:
+                    log.error('Failed to find organism in hierarchy called {} at level {} for code {}'.format(msdata[parent_level_name], parent_level_name, msdata['Code']))
 
-            try:
-                org_parent_id = get_parent_id(hierarchy[org_parent_level_name], org_parent)
-            except Exception as ex:
-                log.error("Failed to find parent for '{}' at level {}, with parent '{}' of {}".format(org_name, level_name, org_parent, org_parent_level_name))
-                continue
+            parent_index += 1
 
-            hierarchy[level_name].append({
-                'level': level_name,
-                'taxonomy_id': msdata['Code'],
-                'taxonomy_name': org_name,
-                'scientific_name': org_scientific_name,
-                'level_id': org_level_id,
-                'parent_id': org_parent_id,
-                'author': org_author,
-                'year': org_year})
+        data = {
+            'taxonomy_id': msdata['Code'],
+            'taxonomy_name': org_scientific_name,
+            'level_id': get_db_id(levels, 'level_id', ['level_name'], msdata['TaxaLevel']),
+            'parent_id': parent['taxonomy_id'],
+            'author': sanitize_string(msdata['Author']),
+            'year': int(msdata['Year']) if msdata['Year'] else None
+        }
 
-            # print(org_name, org_scientific_name, org_parent)
+        hierarchy[level_name][org_scientific_name] = data
 
-    with open(output_path, 'w') as f:
-        for level_name, level_data in hierarchy.items():
-            for org_data in level_data:
-                f.write('INSERT INTO organism.taxonomy(taxonomy_id, taxonomy_name, level_id, parent_id, scientific_name, author, year) VALUES({}, {}, {}, {}, {}, {}, {})'.format(
-                    org_data['taxonomy_id'],
-                    org_data['taxonomy_name'],
-                    org_data['level_id'],
-                    org_data['parent_id'],
-                    org_data['scientific_name'],
-                    org_data['author'],
-                    org_data['year']
-                ))
+        # insert_row(pgcurs, 'taxa.taxonomy', data)
+        counter += 1
+        progbar.update(counter)
 
-
-def get_parent_id(items, name):
-
-    if not name:
-        raise Exception('Missing parent')
-
-    for organism in items:
-        if organism['taxonomy_name'].lower() == name.lower():
-            return organism['taxonomy_id']
-
-    raise Exception('Failed to find parent')
-
-
-def main():
-    parser = argparse.ArgumentParser()
-
-    parser.add_argument('pghost', help='Postgres password', type=str)
-    parser.add_argument('pgport', help='Postgres password', type=str)
-    parser.add_argument('pgdb', help='Postgres password', type=str)
-    parser.add_argument('pguser_name', help='Postgres user name', type=str)
-    parser.add_argument('pgpassword', help='Postgres password', type=str)
-    parser.add_argument('msdb', help='SQLServer password', type=str)
-    parser.add_argument('msuser_name', help='SQLServer user name', type=str)
-    parser.add_argument('mspassword', help='SQLServer password', type=str)
-    parser.add_argument('output_path', help='Output SQL file', type=str)
-
-    args = dotenv.parse_args_env(parser, os.path.join(os.path.dirname(os.path.realpath(__file__)), '.env'))
-
-    log = Logger('DB Migration')
-    log.setup(logPath=os.path.join(os.path.dirname(__file__), "bugdb_migration.log"))
-
-    log.info('Postgres database: {}'.format(args.pgdb))
-    log.info('SQLServer database: {}'.format(args.msdb))
-
-    # Postgres Connection
-    pgcon = psycopg2.connect(user=args.pguser_name, password=args.pgpassword, host=args.pghost, port=args.pgport, database=args.pgdb)
-
-    # Microsoft SQL Server Connection
-    # https://github.com/mkleehammer/pyodbc/wiki/Connecting-to-SQL-Server-from-Mac-OSX
-    mscon = pyodbc.connect('DSN={};UID={};PWD={}'.format(args.msdb, args.msuser_name, args.mspassword))
-
-    output_path = os.path.join(os.path.dirname(__file__), 'docker/postgres/initdb', args.output_path)
-
-    migrate_taxonomy(mscon, pgcon, output_path)
-
-
-if __name__ == '__main__':
-    main()
+    progbar.finish()
+    log_row_count(pgcurs, 'taxa.taxonomy', expected_rows)

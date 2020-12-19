@@ -8,8 +8,6 @@ def migrate_taxonomy(mscon, pgcon):
 
     row_count = log_record_count(mscon, 'PilotDB.taxa.Taxonomy')
 
-    pgcurs = pgcon.cursor()
-
     progbar = ProgressBar(row_count, 50, "Taxa")
     mscurs = mscon.cursor()
     mscurs.execute("SELECT * FROM PilotDB.taxa.Taxonomy")
