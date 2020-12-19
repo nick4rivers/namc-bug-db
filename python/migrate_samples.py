@@ -1,3 +1,4 @@
+import math
 import pyodbc
 from rscommons import Logger, ProgressBar
 from utilities import sanitize_string_col, sanitize_string, sanitize_time, add_metadata, format_values, log_record_count
@@ -6,10 +7,17 @@ from lookup_data import get_db_id
 
 table_name = 'sample.samples'
 
-block_size = 1000
+block_size = 5000
 
 
 def migrate(mscurs, pgcurs):
+
+    # migrate_samples(mscurs, pgcurs)
+    process_sample_table(mscurs, pgcurs, 'PilotDB.dbo.BugDrift', 'sample.drift', drift_callback)
+    process_sample_table(mscurs, pgcurs, 'PilotDB.dbo.BugPlankton', 'sample.plankton', plankton_callback)
+
+
+def migrate_samples(mscurs, pgcurs):
 
     labs = lookup_data(pgcurs, 'entity.organizations', 'organization_name', 'is_lab = True')
     methods = lookup_data(pgcurs, 'sample.sample_methods', 'sample_method_name')
@@ -120,3 +128,67 @@ def migrate(mscurs, pgcurs):
 
     progbar.finish()
     log_row_count(pgcurs, table_name, row_count)
+
+
+def drift_callback(msdata):
+
+    return {
+        'sample_id': msdata['SampleID'],
+        'net_area': math.pi * msdata['Diameter']**2 if msdata['Diameter'] else None,
+        'net_duration': msdata['NetTime'],
+        'stream_depth': msdata['StreamDepth'],
+        'net_depth': msdata['NetDepth'],
+        'net_velo': msdata['NetVelo'],
+        'notes': sanitize_string(msdata['Notes'])
+    }
+
+
+def plankton_callback(msdata):
+
+    tow_type = msdata['TowType'][0].upper() + msdata['TowType'][1:].lower() if msdata['TowType'] else None
+
+    return {
+        'sample_id': msdata['SampleID'],
+        'diameter': msdata['Diameter'],
+        'sub_sample_count': msdata['SubSampleCount'],
+        'tow_length': msdata['TowLength'],
+        'volume': msdata['Volume'],
+        'all_quot': msdata['AllQuot'],
+        'size_interval': msdata['SizeInterval'],
+        'tow_type': tow_type,
+        'notes': sanitize_string(msdata['Notes'])
+    }
+
+
+def process_sample_table(mscurs, pgcurs, source_table, target_table, call_back):
+
+    row_count = log_record_count(mscurs, source_table)
+
+    mscurs.execute('SELECT * FROM {}'.format(source_table))
+    counter = 0
+    progbar = ProgressBar(row_count, 50, target_table)
+    block_data = []
+    columns = None
+    for msrow in mscurs.fetchall():
+        msdata = dict(zip([t[0] for t in msrow.cursor_description], msrow))
+
+        data = call_back(msdata)
+
+        if not columns:
+            columns = list(data.keys())
+
+        block_data.append([data[key] for key in columns])
+
+        if len(block_data) == block_size:
+            insert_many_rows(pgcurs, target_table, columns, block_data)
+            block_data = []
+            progbar.update(counter)
+
+        counter += 1
+
+    # insert remaining rows
+    if len(block_data) > 0:
+        insert_many_rows(pgcurs, target_table, columns, block_data)
+
+    progbar.finish()
+    log_row_count(pgcurs, target_table, row_count)
