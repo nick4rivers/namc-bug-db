@@ -12,9 +12,18 @@ block_size = 5000
 
 def migrate(mscurs, pgcurs):
 
-    # migrate_samples(mscurs, pgcurs)
-    process_sample_table(mscurs, pgcurs, 'PilotDB.dbo.BugDrift', 'sample.drift', drift_callback)
-    process_sample_table(mscurs, pgcurs, 'PilotDB.dbo.BugPlankton', 'sample.plankton', plankton_callback)
+    lookup = {
+        'mass_methods': lookup_data(pgcurs, 'sample.mass_methods', 'mass_method_name'),
+        'mass_types': lookup_data(pgcurs, 'sample.mass_types', 'mass_type_name')
+    }
+
+    migrate_samples(mscurs, pgcurs)
+    process_sample_table(mscurs, pgcurs, 'PilotDB.dbo.BugDrift', 'sample.drift', drift_callback, None)
+    process_sample_table(mscurs, pgcurs, 'PilotDB.dbo.BugPlankton', 'sample.plankton', plankton_callback, None)
+
+    # Sample ID 16988 exists in BugOMatter but not in BugSample. Use inner join to omit this record
+    process_sample_table(mscurs, pgcurs, 'PilotDB.dbo.BugOMatter', 'sample.mass', mass_callback, lookup,
+                         'SELECT B.* FROM PilotDB.dbo.BugOMatter B INNER JOIN PilotDB.dbo.BugSample S ON B.SampleID = S.SampleID')
 
 
 def migrate_samples(mscurs, pgcurs):
@@ -130,7 +139,7 @@ def migrate_samples(mscurs, pgcurs):
     log_row_count(pgcurs, table_name, row_count)
 
 
-def drift_callback(msdata):
+def drift_callback(msdata, lookup):
 
     return {
         'sample_id': msdata['SampleID'],
@@ -143,7 +152,7 @@ def drift_callback(msdata):
     }
 
 
-def plankton_callback(msdata):
+def plankton_callback(msdata, lookup):
 
     tow_type = msdata['TowType'][0].upper() + msdata['TowType'][1:].lower() if msdata['TowType'] else None
 
@@ -160,11 +169,28 @@ def plankton_callback(msdata):
     }
 
 
-def process_sample_table(mscurs, pgcurs, source_table, target_table, call_back):
+def mass_callback(msdata, lookup):
+
+    type_id = get_db_id(lookup['mass_types'], 'mass_type_id', ['mass_type_name', 'abbreviation'], msdata['Type'])
+    method_id = get_db_id(lookup['mass_methods'], 'mass_method_id', ['abbreviation'], 'AFDM')
+
+    return {
+        'sample_id': msdata['SampleID'],
+        'mass_type_id': type_id,
+        'mass_method_id': method_id,
+        'mass': msdata['AFDM'],
+        'notes': sanitize_string(msdata['Notes'])
+    }
+
+
+def process_sample_table(mscurs, pgcurs, source_table, target_table, call_back, lookup, select_sql=None):
 
     row_count = log_record_count(mscurs, source_table)
 
-    mscurs.execute('SELECT * FROM {}'.format(source_table))
+    if not select_sql:
+        select_sql = 'SELECT * FROM {}'.format(source_table)
+
+    mscurs.execute(select_sql)
     counter = 0
     progbar = ProgressBar(row_count, 50, target_table)
     block_data = []
@@ -172,7 +198,7 @@ def process_sample_table(mscurs, pgcurs, source_table, target_table, call_back):
     for msrow in mscurs.fetchall():
         msdata = dict(zip([t[0] for t in msrow.cursor_description], msrow))
 
-        data = call_back(msdata)
+        data = call_back(msdata, lookup)
 
         if not columns:
             columns = list(data.keys())
