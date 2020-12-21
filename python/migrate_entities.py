@@ -1,6 +1,6 @@
 from rscommons import Logger, ProgressBar
 import pyodbc
-from utilities import sanitize_string_col, log_record_count
+from utilities import sanitize_string_col, log_record_count, sanitize_string
 from utilities import sanitize_phone_fax, sanitize_email, sanitize_url, add_metadata
 from postgres_lookup_data import lookup_data, insert_row, log_row_count
 from lookup_data import get_db_id
@@ -19,15 +19,33 @@ def migrate(mscurs, pgcurs):
     states = lookup_data(pgcurs, 'geo.states', 'state_name')
     org_types = lookup_data(pgcurs, 'entity.organization_types', 'organization_type_name')
 
-    # Unpsecified user for associating with boxes that don't have a contact
+    # Unspecified user for associating with boxes that don't have a contact
     individuals['Unspecified'] = {key: None for key in entity_cols + indivisual_cols}
     individuals['Unspecified']['first_name'] = 'Unspecified'
     individuals['Unspecified']['last_name'] = 'Unspecified'
     individuals['Unspecified']['country_id'] = get_db_id(countries, 'country_id', ['abbreviation'], 'USA')
     individuals['Unspecified']['affiliation'] = None
 
+    # NAMC organization (for employees)
+    organizations['NAMC'] = {
+        'abbreviation': 'NAMC',
+        'organization_name': 'National Aquatic Monitoring Center',
+        'organization_type_id': get_db_id(org_types, 'organization_type_id', ['organization_type_name'], 'Other'),
+        'city': 'Logan',
+        'address1': 'Utah State University',
+        'address2': '5210 Old Main Hill',
+        'state_id': get_db_id(states, 'state_id', ['abbreviation'], 'UT'),
+        'zip_code': '84322-5210',
+        'country_id': get_db_id(countries, 'country_id', ['abbreviation'], 'USA'),
+        'phone': '760-709-1210',
+        'fax': '435-797-1871',
+        'is_lab': True,
+        'metadata': None
+    }
+
     migrate_customers(mscurs, organizations, individuals, countries, states, org_types)
     migrate_labs(mscurs, organizations, states, countries, org_types)
+    migrate_employees(mscurs, organizations, individuals, countries)
 
     # insert entities
     for entity in [individuals, organizations]:
@@ -156,6 +174,7 @@ def migrate_customers(mscurs, organizations, individuals, countries, states, org
                 'last_name': last_name,
                 'initials': None,
                 'phone': phone,
+                'title': None,
                 'fax': fax,
                 'email': clean_data['Email'],
                 'last_contact': clean_data['LastContact'],
@@ -231,3 +250,39 @@ def migrate_labs(mscurs, organizations, states, countries, org_types):
         counter += 1
 
     progbar.finish()
+
+
+def migrate_employees(mscurs, organizations, individuals, countries):
+
+    row_count = log_record_count(mscurs, 'PilotDB.dbo.Employee')
+    usa = get_db_id(countries, 'country_id', ['abbreviation'], 'USA')
+
+    mscurs.execute("SELECT * FROM PilotDB.dbo.Employee")
+    for msrow in mscurs.fetchall():
+        msdata = dict(zip([t[0] for t in msrow.cursor_description], msrow))
+
+        key = 'name_{}_{}'.format(msdata['FirstName'], msdata['LastName'])
+
+        individuals[key] = {
+            'first_name': sanitize_string(msdata['FirstName']),
+            'last_name': sanitize_string(msdata['LastName']),
+            'initials': msdata['Initials'],
+            'affiliation': 'NAMC',
+            'title': sanitize_string(msdata['JobTitle']),
+            'address1': None,
+            'address2': None,
+            'city': None,
+            'zip_code': None,
+            'phone': None,
+            'email': None,
+            'fax': None,
+            'state_id': None,
+            'country_id': usa,
+            'metadata': {
+                'ider': msdata['Ider'],
+                'sorter': msdata['Sorter'],
+                'notes': sanitize_string(msdata['Notes']),
+                'employeeId': msdata['EmployeeID'],
+
+            }
+        }
