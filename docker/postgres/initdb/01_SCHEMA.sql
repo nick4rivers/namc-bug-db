@@ -12,6 +12,17 @@ RETURNS trigger AS
 $$
 LANGUAGE 'plpgsql';
 
+-- /******************************************************************************************************************
+--  METADATA SCHEMA
+--  */
+--
+--  CREATE SCHEMA metadata;
+--  GRANT USAGE ON SCHEMA metadata TO PUBLIC;
+--
+--  CREATE TABLE metadata.data_dictionary (
+--
+--  );
+
 /******************************************************************************************************************
  GEO SCHEMA
  */
