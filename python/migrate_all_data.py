@@ -6,8 +6,7 @@ from psycopg2.extras import execute_values
 from rscommons import Logger, dotenv
 from migrate_predictors import migrate as predictors
 from migrate_projects import migrate as projects
-from migrate_taxonomy import migrate_taxonomy as taxonomy
-from migrate_taxonomy import migrate_attributes as attributes
+from migrate_taxonomy_pivot import migrate as taxonomy
 from migrate_entities import migrate as entities
 from migrate_boxes import migrate as boxes
 from migrate_sites import migrate as sites
@@ -23,13 +22,12 @@ def migrate_all_data(mscon, pgcon, predictor_csv_path):
 
     predictors(predictor_csv_path, pgcurs)
     projects(mscurs, pgcurs)
-    # taxonomy(mscon, pgcon)
-    # attributes(mscon, pgcon)
+    taxonomy(mscurs, pgcurs)
     entities(mscurs, pgcurs)
     boxes(mscurs, pgcurs)
     sites(mscurs, pgcurs)
     samples(mscurs, pgcurs)
-    # organisms(mscon, os.path.join(output_dir, '35_sample.organisms.sql'))
+    organisms(mscurs, pgcurs)
 
     log = Logger('Migration')
     pgcurs = pgcon.cursor()

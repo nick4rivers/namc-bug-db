@@ -1,7 +1,7 @@
 import pyodbc
 from rscommons import Logger, ProgressBar
 from lookup_data import get_db_id
-from utilities import log_record_count, format_values
+from utilities import log_record_count, format_values, sanitize_string
 from postgres_lookup_data import process_table, lookup_data
 
 
@@ -11,7 +11,9 @@ def migrate(mscurs, pgcurs):
         'life_stages': lookup_data(pgcurs, 'taxa.life_stages', 'abbreviation')
     }
 
-    process_table(mscurs, pgcurs, 'PilotDB.dbo.BugData', 'sample.organisms', organisms_callback, lookup)
+    sql = 'SELECT TOP 20000 B.* FROM PilotDB.dbo.BugData B INNER JOIN PilotDB.dbo.BugSample S ON B.SampleID = S.SampleID ORDER BY B.SampleID DESC'
+    process_table(mscurs, pgcurs, 'PilotDB.dbo.BugData', 'sample.organisms', organisms_callback, lookup, sql)
+    process_notes(pgcurs)
 
 
 def organisms_callback(msdata, lookup):
@@ -22,14 +24,51 @@ def organisms_callback(msdata, lookup):
     if not life_stage_id:
         life_stage_id = lookup['life_stages']['U']['life_stage_id']
 
+    # Sanitize the notes string here so empty strings get converted to NULL
+    # but notes are post-processed using a different method
+
     return {
         'sample_id': int(msdata['SampleID']),
         'taxonomy_id': int(msdata['Code']),
         'life_stage_id': life_stage_id,
         'bug_size': msdata['BugSize'],
         'split_count': msdata['SplitCount'],
-        'big_rare_count': msdata['BigRareCount']
+        'big_rare_count': msdata['BigRareCount'],
+        'notes': sanitize_string(msdata['Notes'])
     }
+
+
+def process_notes(pgcurs):
+
+    # Get the official notes lookups and convert to lower
+    note_types = lookup_data(pgcurs, 'sample.note_types', 'abbreviation')
+    note_types_clean = {key.lower(): val['note_id'] for key, val in note_types.items()}
+
+    log = Logger('Organisms')
+    pgcurs.execute('SELECT COUNT(*) FROM sample.organisms WHERE (Notes IS NOT NULL)')
+    total_rows = pgcurs.fetchone()[0]
+    log.info('{:,} records in sample.organisms with non-NULL notes'.format(total_rows))
+
+    # iterate over all bug data that has non-NULL notes field.
+    # The original insert should have sanitized the notes to remove whitespace
+    # issues and set some records to NULL
+    progbar = ProgressBar(total_rows, 50, 'organism notes')
+    counter = 0
+    pgcurs.execute('SELECT organism_id, notes FROM sample.organisms WHERE (Notes IS NOT NULL)')
+    for row in pgcurs.fetchall():
+        original = row[1]
+        entries = original.split(',')
+        for entry in entries:
+            clean = entry.replace(' ', '').lower()
+            if clean in note_types_clean:
+                pgcurs.execute('INSERT INTO sample.organism_notes (organism_id, note_id) VALUES (%s, %s)',
+                               (row[0], note_types_clean[clean]))
+
+        counter += 1
+        progbar.update(counter)
+
+    progbar.finish()
+    log_record_count(pgcurs, 'sample.organism_notes')
 
     # log = Logger('Organisms')
     # total_rows = log_record_count(mscon, 'PilotDB.dbo.BugData')
