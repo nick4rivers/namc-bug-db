@@ -263,6 +263,11 @@ def migrate_employees(mscurs, organizations, individuals, countries):
 
         key = 'name_{}_{}'.format(msdata['FirstName'], msdata['LastName'])
 
+        # Beth Carlson (235, 236) and Carlos Frias (201, 202) appear twice in PilotDB.Employee
+        if key in individuals:
+            individuals[key]['metadata']['employeeId2'] = msdata['EmployeeID']
+            continue
+
         individuals[key] = {
             'first_name': sanitize_string(msdata['FirstName']),
             'last_name': sanitize_string(msdata['LastName']),
@@ -282,7 +287,6 @@ def migrate_employees(mscurs, organizations, individuals, countries):
                 'ider': msdata['Ider'],
                 'sorter': msdata['Sorter'],
                 'notes': sanitize_string(msdata['Notes']),
-                'employeeId': msdata['EmployeeID'],
-
+                'employeeId': msdata['EmployeeID']
             }
         }

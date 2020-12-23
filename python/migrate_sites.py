@@ -9,7 +9,7 @@ columns = ['site_name', 'system_id', 'ecosystem_id', 'location', 'description', 
 sql = """INSERT INTO geo.sites (site_name, system_id, ecosystem_id, location, description, metadata)
             VALUES (%s, %s, %s, ST_SetSRID(ST_MakePoint(%s, %s), 4326), %s, %s);"""
 
-block_size = 1000
+block_size = 5000
 table_name = 'geo.sites'
 
 

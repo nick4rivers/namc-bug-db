@@ -1,7 +1,10 @@
 import json
 import psycopg2
-from rscommons import Logger
+from rscommons import Logger, ProgressBar
 from psycopg2.extras import execute_values
+from utilities import log_record_count
+
+block_size = 5000
 
 
 def lookup_data(pgcurs, table, id_field, where_clause=None):
@@ -58,3 +61,40 @@ def log_row_count(pgcurs, table, expected_rows=None):
         log.warning('{}. Expected {:,}'.format(msg, expected_rows))
     else:
         log.info(msg)
+
+
+def process_table(mscurs, pgcurs, source_table, target_table, call_back, lookup, select_sql=None):
+
+    row_count = log_record_count(mscurs, source_table)
+
+    if not select_sql:
+        select_sql = 'SELECT * FROM {}'.format(source_table)
+
+    mscurs.execute(select_sql)
+    counter = 0
+    progbar = ProgressBar(row_count, 50, target_table)
+    block_data = []
+    columns = None
+    for msrow in mscurs.fetchall():
+        msdata = dict(zip([t[0] for t in msrow.cursor_description], msrow))
+
+        data = call_back(msdata, lookup)
+
+        if not columns:
+            columns = list(data.keys())
+
+        block_data.append([data[key] for key in columns])
+
+        if len(block_data) == block_size:
+            insert_many_rows(pgcurs, target_table, columns, block_data)
+            block_data = []
+            progbar.update(counter)
+
+        counter += 1
+
+    # insert remaining rows
+    if len(block_data) > 0:
+        insert_many_rows(pgcurs, target_table, columns, block_data)
+
+    progbar.finish()
+    log_row_count(pgcurs, target_table, row_count)
