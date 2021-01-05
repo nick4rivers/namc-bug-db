@@ -32,7 +32,7 @@
     "@northarrowresearch/react-auth": "^1.x",
     "@northarrowresearch/react-common": "^1.x",
     "@northarrowresearch/react-maps": "^1.x",
-    "axios": "^0.19.2",
+    "axios": ">=0.21.1",
     "d3-ease": "^1.0.6",
     "lodash": "^4.17.11",
     "moment": "^2.23.0",

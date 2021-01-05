@@ -19,7 +19,7 @@
   "dependencies": {
     "@northarrowresearch/common": "^1.0.4",
     "aws-sdk": "^2.530.0",
-    "axios": "^0.19.2",
+    "axios": ">=0.21.1",
     "graphql": "^14.6.0",
     "graphql-import": "^0.7.1",
     "graphql-tag": "^2.10.1",
