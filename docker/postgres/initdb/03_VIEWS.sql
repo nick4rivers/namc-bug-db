@@ -1,144 +1,141 @@
 /******************************************************************************************************************
  geo SCHEMA
  */
-CREATE VIEW geo.vw_sites AS
+CREATE VIEW Geo.vwSites AS
 (
-SELECT s.site_id,
-       s.site_name,
-       s.system_id,
-       sy.system_name,
-       s.ecosystem_id,
-       e.ecosystem_name,
-       s.waterbody,
-       ST_X(s.location) longitude,
-       ST_Y(s.location) latitude,
-       s.created_date,
-       s.updated_date
-FROM geo.sites s
-         LEFT JOIN geo.systems sy ON s.system_id = sy.system_id
-         LEFT JOIN geo.ecosystems e ON s.ecosystem_id = e.ecosystem_id
+SELECT s.SiteID,
+       s.SiteName,
+       s.SystemID,
+       sy.SystemName,
+       s.EcosystemID,
+       e.EcosystemName,
+       s.Waterbody,
+       ST_X(s.location) Longitude,
+       ST_Y(s.location) Latitude,
+       s.CreatedDate,
+       s.UpdatedDate
+FROM Geo.sites s
+         LEFT JOIN Geo.Systems sy ON s.SystemID = sy.systemID
+         LEFT JOIN Geo.Ecosystems e ON s.EcosystemID = e.EcosystemID
     );
 
 /******************************************************************************************************************
 entity SCHEMA
 */
 
-CREATE VIEW entity.vw_organizations AS
+CREATE VIEW Entity.vwOrganizations AS
 (
 SELECT o.*,
-       t.organization_type_name,
-       e.address1,
-       e.address2,
-       e.city,
-       s.state_name,
-       c.country_name,
-       e.zip_code,
-       e.phone,
-       e.fax
-FROM entity.organizations o
-         INNER JOIN entity.entities e ON o.entity_id = e.entity_id
-         INNER JOIN entity.organization_types t ON o.organization_type_id = t.organization_type_id
-         INNER JOIN geo.countries c ON e.country_id = c.country_id
-         LEFT JOIN geo.states s ON e.state_id = s.state_id
+       t.OrganizationTypeName,
+       e.Address1,
+       e.Address2,
+       e.City,
+       s.StateName,
+       c.CountryName,
+       e.ZipCode,
+       e.Phone,
+       e.Fax
+FROM Entity.Organizations o
+         INNER JOIN Entity.Entities e ON o.EntityID = e.EntityID
+         INNER JOIN Entity.OrganizationTypes t ON o.OrganizationTypeID = t.OrganizationTypeID
+         INNER JOIN Geo.Countries c ON e.countryID = c.CountryID
+         LEFT JOIN Geo.States s ON e.StateID = s.StateID
     );
 
-CREATE VIEW entity.vw_individuals AS
+CREATE VIEW Entity.vwIndividuals AS
 (
 SELECT i.*,
-       o.organization_name AS affiliation,
-       e.address1,
-       e.address2,
-       e.city,
-       s.state_name,
-       c.country_name,
-       e.zip_code,
-       e.phone,
-       e.fax
-FROM entity.individuals i
-         INNER JOIN entity.entities e ON i.entity_id = e.entity_id
-         INNER JOIN geo.countries c ON e.country_id = c.country_id
-         LEFT JOIN geo.states s ON e.state_id = s.state_id
-         LEFT JOIN entity.organizations o ON i.affiliation_id = o.organization_id
+       o.OrganizationName AS Affiliation,
+       e.Address1,
+       e.Address2,
+       e.City,
+       s.StateName,
+       c.CountryName,
+       e.ZipCode,
+       e.Phone,
+       e.Fax
+FROM Entity.Individuals i
+         INNER JOIN Entity.Entities e ON i.EntityID = e.EntityID
+         INNER JOIN Geo.Countries c ON e.CountryID = c.CountryID
+         LEFT JOIN Geo.States s ON e.StateID = s.StateID
+         LEFT JOIN Entity.Organizations o ON i.AffiliationID = o.OrganizationID
     );
 
 /******************************************************************************************************************
  sample SCHEMA
  */
 
-CREATE VIEW sample.vw_boxes AS
+CREATE VIEW sample.vwBoxes AS
 (
-SELECT b.box_id,
-       b.customer_id,
-       COUNT(sample_id) AS samples,
-       b.submitter_id,
-       b.box_state_id,
-       t.box_state_name,
-       b.box_recevied_date,
-       b.processing_complete_date,
-       b.projected_complete_date,
-       b.sort_time,
-       b.id_time,
-       b.project_id,
-       p.project_name
-FROM sample.boxes b
-         INNER JOIN sample.box_states t ON b.box_state_id = t.box_state_id
-         LEFT JOIN sample.samples s ON b.box_id = s.box_id
-         LEFT JOIN sample.projects p ON b.project_id = p.project_id
-GROUP BY b.box_id,
-         b.customer_id,
-         b.submitter_id,
-         b.box_state_id,
-         t.box_state_name,
-         b.box_recevied_date,
-         b.processing_complete_date,
-         b.projected_complete_date,
-         b.sort_time,
-         b.id_time,
-         b.project_id,
-         b.project_id,
-         p.project_name
+SELECT b.BoxID,
+       b.CustomerID,
+       COUNT(SampleID) AS Samples,
+       b.SubmitterID,
+       b.BoxStateID,
+       t.BoxStateName,
+       b.BoxReceviedDate,
+       b.ProcessingCompleteDate,
+       b.ProjectedCompleteDate,
+       Sum(s.SortTime) SortTime,
+       Sum(s.IDTime) IDTime,
+       b.ProjectID,
+       p.ProjectName
+FROM Sample.Boxes b
+         INNER JOIN Sample.BoxStates t ON b.BoxStateID = t.BoxStateID
+         LEFT JOIN Sample.Samples s ON b.BoxID = s.BoxID
+         LEFT JOIN Sample.Projects p ON b.ProjectID = p.ProjectID
+GROUP BY b.BoxID,
+         b.CustomerID,
+         b.SubmitterID,
+         b.BoxStateID,
+         t.BoxStateName,
+         b.BoxReceviedDate,
+         b.ProcessingCompleteDate,
+         b.ProjectedCompleteDate,
+         b.ProjectID,
+         b.ProjectID,
+         p.ProjectName
     );
 
-CREATE VIEW sample.vw_samples AS
+CREATE VIEW sample.vwSamples AS
 (
-SELECT s.sample_id,
-       s.box_id,
-       s.site_id,
-       si.site_name,
-       s.sample_date,
-       s.sample_time,
-       s.type_id,
-       t.sample_type_name,
-       s.method_id,
-       m.sample_method_name,
-       s.habitat_id,
-       h.habitat_name,
-       s.area,
-       s.field_split,
-       s.lab_split,
-       s.jar_count,
-       s.qualitative,
-       s.mesh,
-       s.sorter_count,
-       s.sorter_id,
-       s.sort_time,
-       s.sort_start_date,
-       s.sort_end_date,
-       s.ider_id,
-       s.id_time,
-       s.id_start_date,
-       s.id_end_date,
-       s.created_date,
-       s.updated_date,
-       s.qa_sample_id,
-       s.lab_id,
-       l.organization_name AS lab_name
+SELECT s.SampleID,
+       s.BoxID,
+       s.SiteID,
+       si.SiteName,
+       s.SampleDate,
+       s.SampleTime,
+       s.TypeID,
+       t.SampleTypeName,
+       s.MethodID,
+       m.SampleMethodName,
+       s.HabitatID,
+       h.HabitatName,
+       s.Area,
+       s.FieldSplit,
+       s.LabSplit,
+       s.JarCount,
+       s.Qualitative,
+       s.Mesh,
+       s.SorterCount,
+       s.SorterID,
+       s.SortTime,
+       s.SortStartDate,
+       s.SortEndDate,
+       s.IDerID,
+       s.IDTime,
+       s.IDStartDate,
+       s.IDEndDate,
+       s.CreatedDate,
+       s.UpdatedDate,
+       s.QASampleID,
+       s.LabID,
+       l.OrganizationName AS LabName
 
 FROM sample.samples s
-         INNER JOIN sample.sample_types t ON s.type_id = t.sample_type_id
-         INNER JOIN sample.sample_methods m ON s.method_id = m.sample_method_id
-         INNER JOIN geo.habitats h ON s.habitat_id = h.habitat_id
-         LEFT JOIN geo.sites si ON s.site_id = si.site_id
-         LEFT JOIN entity.organizations l ON s.lab_id = l.organization_id
-
+         INNER JOIN Sample.sampleTypes t ON s.TypeID = t.SampleTypeID
+         INNER JOIN Sample.SampleMethods m ON s.MethodID = m.SampleMethodID
+         INNER JOIN Geo.Habitats h ON s.HabitatID = h.HabitatID
+         LEFT JOIN Geo.Sites si ON s.SiteID = si.SiteID
+         LEFT JOIN Entity.Organizations l ON s.LabID = l.OrganizationID
     );

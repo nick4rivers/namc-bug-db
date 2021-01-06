@@ -1,7 +1,7 @@
 /******************************************************************************************************************
 taxa SCHEMA
 */
-CREATE FUNCTION taxa.fn_tree(t INT)
+CREATE FUNCTION Taxa.fnTree(t INT)
     returns table (tid INT, lid INT, pid INT)
     language plpgsql
 as
