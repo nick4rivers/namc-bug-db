@@ -20,5 +20,19 @@
       "{env:POSTGRES_PASSWORD}",
       "data/model_predictors.csv"
     ]
+  },
+  {
+    "name": "Data Dictionary",
+    "type": "python",
+    "request": "launch",
+    "module": "data_dictionary",
+    "console": "integratedTerminal",
+    "args": [
+      "{env:POSTGRES_HOST}",
+      "{env:POSTGRES_PORT}",
+      "{env:POSTGRES_DB}",
+      "{env:POSTGRES_USER}",
+      "{env:POSTGRES_PASSWORD}",
+    ]
   }]
 }

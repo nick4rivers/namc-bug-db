@@ -8,10 +8,9 @@
 			"name": "docker",
 			"path": "docker"
 		},
-		// {
-		// 	"name": "NAMC-BUG-DB (Root)",
-		// 	"path": "."
-		// },
+		{
+			"path": "docs"
+		}
 	],
 	"settings": {
 	}

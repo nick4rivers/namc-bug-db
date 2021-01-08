@@ -1,0 +1,67 @@
+INSERT INTO meta.tables (table_id, schema_id, table_name, description) VALUES (1, 1, 'countries', NULL);
+INSERT INTO meta.tables (table_id, schema_id, table_name, description) VALUES (2, 1, 'states', NULL);
+INSERT INTO meta.tables (table_id, schema_id, table_name, description) VALUES (3, 1, 'counties', NULL);
+INSERT INTO meta.tables (table_id, schema_id, table_name, description) VALUES (4, 1, 'land_uses', NULL);
+INSERT INTO meta.tables (table_id, schema_id, table_name, description) VALUES (5, 1, 'ecosystems', NULL);
+INSERT INTO meta.tables (table_id, schema_id, table_name, description) VALUES (6, 1, 'habitats', NULL);
+INSERT INTO meta.tables (table_id, schema_id, table_name, description) VALUES (7, 1, 'units', NULL);
+INSERT INTO meta.tables (table_id, schema_id, table_name, description) VALUES (8, 1, 'systems', NULL);
+INSERT INTO meta.tables (table_id, schema_id, table_name, description) VALUES (9, 1, 'sites', NULL);
+INSERT INTO meta.tables (table_id, schema_id, table_name, description) VALUES (10, 1, 'predictor_types', NULL);
+INSERT INTO meta.tables (table_id, schema_id, table_name, description) VALUES (11, 1, 'predictors', NULL);
+
+INSERT INTO meta.tables (table_id, schema_id, table_name, description) VALUES (20, 2, 'entities', NULL);
+INSERT INTO meta.tables (table_id, schema_id, table_name, description) VALUES (21, 2, 'organization_types', NULL);
+INSERT INTO meta.tables (table_id, schema_id, table_name, description) VALUES (22, 2, 'organizations', NULL);
+INSERT INTO meta.tables (table_id, schema_id, table_name, description) VALUES (23, 2, 'individuals', NULL);
+INSERT INTO meta.tables (table_id, schema_id, table_name, description) VALUES (24, 2, 'roles', NULL);
+INSERT INTO meta.tables (table_id, schema_id, table_name, description) VALUES (25, 2, 'individual_roles', NULL);
+INSERT INTO meta.tables (table_id, schema_id, table_name, description) VALUES (26, 2, 'lab_types', NULL);
+
+INSERT INTO meta.tables (table_id, schema_id, table_name, description) VALUES (30, 3, 'taxa_levels', NULL);
+INSERT INTO meta.tables (table_id, schema_id, table_name, description) VALUES (31, 3, 'life_stages', NULL);
+INSERT INTO meta.tables (table_id, schema_id, table_name, description) VALUES (32, 3, 'taxonomy', NULL);
+INSERT INTO meta.tables (table_id, schema_id, table_name, description) VALUES (33, 3, 'synonyms', NULL);
+INSERT INTO meta.tables (table_id, schema_id, table_name, description) VALUES (34, 3, 'taxa_attributes', NULL);
+INSERT INTO meta.tables (table_id, schema_id, table_name, description) VALUES (35, 3, 'taxa_sources', NULL);
+INSERT INTO meta.tables (table_id, schema_id, table_name, description) VALUES (36, 3, 'external_ids', NULL);
+INSERT INTO meta.tables (table_id, schema_id, table_name, description) VALUES (37, 3, 'translations', NULL);
+INSERT INTO meta.tables (table_id, schema_id, table_name, description) VALUES (38, 3, 'translation_predictors', NULL);
+
+INSERT INTO meta.tables (table_id, schema_id, table_name, description) VALUES (50, 4, 'sample_methods', NULL);
+INSERT INTO meta.tables (table_id, schema_id, table_name, description) VALUES (51, 4, 'sample_types', NULL);
+INSERT INTO meta.tables (table_id, schema_id, table_name, description) VALUES (52, 4, 'box_states', NULL);
+INSERT INTO meta.tables (table_id, schema_id, table_name, description) VALUES (53, 4, 'project_types', NULL);
+INSERT INTO meta.tables (table_id, schema_id, table_name, description) VALUES (54, 4, 'projects', NULL);
+INSERT INTO meta.tables (table_id, schema_id, table_name, description) VALUES (55, 4, 'boxes', NULL);
+INSERT INTO meta.tables (table_id, schema_id, table_name, description) VALUES (56, 4, 'submission_data', NULL);
+INSERT INTO meta.tables (table_id, schema_id, table_name, description) VALUES (57, 4, 'samples', NULL);
+INSERT INTO meta.tables (table_id, schema_id, table_name, description) VALUES (58, 4, 'sample_labs', NULL);
+INSERT INTO meta.tables (table_id, schema_id, table_name, description) VALUES (59, 4, 'benthic', NULL);
+INSERT INTO meta.tables (table_id, schema_id, table_name, description) VALUES (60, 4, 'plankton', NULL);
+INSERT INTO meta.tables (table_id, schema_id, table_name, description) VALUES (61, 4, 'drift', NULL);
+INSERT INTO meta.tables (table_id, schema_id, table_name, description) VALUES (62, 4, 'mass_methods', NULL);
+INSERT INTO meta.tables (table_id, schema_id, table_name, description) VALUES (63, 4, 'mass_types', NULL);
+INSERT INTO meta.tables (table_id, schema_id, table_name, description) VALUES (64, 4, 'mass', NULL);
+INSERT INTO meta.tables (table_id, schema_id, table_name, description) VALUES (65, 4, 'fish', NULL);
+INSERT INTO meta.tables (table_id, schema_id, table_name, description) VALUES (66, 4, 'sort_qa', NULL);
+INSERT INTO meta.tables (table_id, schema_id, table_name, description) VALUES (67, 4, 'taxa_qa', NULL);
+INSERT INTO meta.tables (table_id, schema_id, table_name, description) VALUES (68, 4, 'organisms', NULL);
+INSERT INTO meta.tables (table_id, schema_id, table_name, description) VALUES (69, 4, 'note_types', NULL);
+INSERT INTO meta.tables (table_id, schema_id, table_name, description) VALUES (70, 4, 'organism_notes', NULL);
+INSERT INTO meta.tables (table_id, schema_id, table_name, description) VALUES (71, 4, 'assets', NULL);
+INSERT INTO meta.tables (table_id, schema_id, table_name, description) VALUES (72, 4, 'sample_assets', NULL);
+INSERT INTO meta.tables (table_id, schema_id, table_name, description) VALUES (73, 4, 'sample_predictors', NULL);
+INSERT INTO meta.tables (table_id, schema_id, table_name, description) VALUES (74, 4, 'project_samples', NULL);
+
+INSERT INTO meta.tables (table_id, schema_id, table_name, description) VALUES (90, 5, 'metric_types', NULL);
+INSERT INTO meta.tables (table_id, schema_id, table_name, description) VALUES (91, 5, 'metrics', NULL);
+INSERT INTO meta.tables (table_id, schema_id, table_name, description) VALUES (92, 5, 'reports', NULL);
+INSERT INTO meta.tables (table_id, schema_id, table_name, description) VALUES (93, 5, 'analysis_types', NULL);
+INSERT INTO meta.tables (table_id, schema_id, table_name, description) VALUES (94, 5, 'analysis', NULL);
+
+INSERT INTO meta.tables (table_id, schema_id, table_name, description) VALUES (100, 6, 'billing', NULL);
+INSERT INTO meta.tables (table_id, schema_id, table_name, description) VALUES (101, 6, 'quotes', NULL);
+INSERT INTO meta.tables (table_id, schema_id, table_name, description) VALUES (102, 6, 'quote_items', NULL);
+INSERT INTO meta.tables (table_id, schema_id, table_name, description) VALUES (103, 6, 'agreement_types', NULL);
+INSERT INTO meta.tables (table_id, schema_id, table_name, description) VALUES (104, 6, 'agreements', NULL);
