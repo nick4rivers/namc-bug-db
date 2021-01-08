@@ -35,9 +35,22 @@ def data_dictionary(pgcon):
 
                 f.write('\n|Column|Data Type|Null|Description|\n')
                 f.write('|---|---|---|---|\n')
-                pgcurs.execute('SELECT column_name, data_type, is_nullable FROM information_schema.columns WHERE table_schema = %s AND table_name = %s ORDER BY ordinal_position;', [schema_name, row['table_name']])
+                pgcurs.execute('SELECT * FROM information_schema.columns WHERE table_schema = %s AND table_name = %s ORDER BY ordinal_position;', [schema_name, row['table_name']])
                 for c in pgcurs.fetchall():
-                    f.write('|{}|{}|{}|{}|\n'.format(c['column_name'], c['data_type'], c['is_nullable'], None))
+
+                    pk = ''
+                    if c['is_identity'].lower() == 'yes':
+                        pk = ' (PK)'
+
+                    nullable = 'Y' if c['is_nullable'] == 'YES' else 'N'
+
+                    data_type = c['data_type']
+                    if data_type.lower() == 'character varying':
+                        data_type = 'VarChar({})'.format(c['character_maximum_length'])
+                    elif data_type.lower() == 'timestamp with time zone':
+                        data_type = 'TimeStamp'
+
+                    f.write('|{}{}|{}|{}|{}|\n'.format(c['column_name'], pk, data_type, nullable, ''))
     print('data dictionary complete')
 
 

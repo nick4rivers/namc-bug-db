@@ -10,71 +10,71 @@ Information pertaining to customers, organizations, laboratories, individuals an
 
 |Column|Data Type|Null|Description|
 |---|---|---|---|
-|entity_id|smallint|NO|None|
-|parent_id|smallint|YES|None|
-|address1|character varying|YES|None|
-|address2|character varying|YES|None|
-|city|character varying|YES|None|
-|state_id|smallint|YES|None|
-|country_id|smallint|NO|None|
-|zip_code|character varying|YES|None|
-|phone|character varying|YES|None|
-|fax|character varying|YES|None|
-|website|character varying|YES|None|
-|notes|text|YES|None|
-|metadata|json|YES|None|
-|created_date|timestamp with time zone|NO|None|
-|updated_date|timestamp with time zone|NO|None|
+|entity_id (PK)|smallint|N||
+|parent_id|smallint|Y||
+|address1|VarChar(255)|Y||
+|address2|VarChar(255)|Y||
+|city|VarChar(255)|Y||
+|state_id|smallint|Y||
+|country_id|smallint|N||
+|zip_code|VarChar(20)|Y||
+|phone|VarChar(50)|Y||
+|fax|VarChar(50)|Y||
+|website|VarChar(255)|Y||
+|notes|text|Y||
+|metadata|json|Y||
+|created_date|TimeStamp|N||
+|updated_date|TimeStamp|N||
 
 # individual_roles
 
 |Column|Data Type|Null|Description|
 |---|---|---|---|
-|individual_id|smallint|NO|None|
-|role_id|smallint|NO|None|
+|individual_id|smallint|N||
+|role_id|smallint|N||
 
 # individuals
 
 |Column|Data Type|Null|Description|
 |---|---|---|---|
-|individual_id|smallint|NO|None|
-|first_name|character varying|NO|None|
-|last_name|character varying|NO|None|
-|initials|character varying|YES|None|
-|entity_id|smallint|NO|None|
-|affiliation_id|smallint|YES|None|
-|email|character varying|YES|None|
-|title|character varying|YES|None|
+|individual_id (PK)|smallint|N||
+|first_name|VarChar(50)|N||
+|last_name|VarChar(50)|N||
+|initials|VarChar(3)|Y||
+|entity_id|smallint|N||
+|affiliation_id|smallint|Y||
+|email|VarChar(255)|Y||
+|title|VarChar(255)|Y||
 
 # lab_types
 
 |Column|Data Type|Null|Description|
 |---|---|---|---|
-|lab_type_id|smallint|NO|None|
-|lab_type_name|character varying|NO|None|
+|lab_type_id (PK)|smallint|N||
+|lab_type_name|VarChar(255)|N||
 
 # organizations
 
 |Column|Data Type|Null|Description|
 |---|---|---|---|
-|organization_id|smallint|NO|None|
-|abbreviation|character varying|YES|None|
-|organization_name|character varying|YES|None|
-|entity_id|smallint|NO|None|
-|organization_type_id|smallint|NO|None|
-|is_lab|boolean|NO|None|
+|organization_id (PK)|smallint|N||
+|abbreviation|VarChar(50)|Y||
+|organization_name|VarChar(255)|Y||
+|entity_id|smallint|N||
+|organization_type_id|smallint|N||
+|is_lab|boolean|N||
 
 # organization_types
 
 |Column|Data Type|Null|Description|
 |---|---|---|---|
-|organization_type_id|smallint|NO|None|
-|organization_type_name|character varying|NO|None|
+|organization_type_id (PK)|smallint|N||
+|organization_type_name|VarChar(50)|N||
 
 # roles
 
 |Column|Data Type|Null|Description|
 |---|---|---|---|
-|role_id|smallint|NO|None|
-|role_name|character varying|NO|None|
-|description|text|YES|None|
+|role_id (PK)|smallint|N||
+|role_name|VarChar(255)|N||
+|description|text|Y||

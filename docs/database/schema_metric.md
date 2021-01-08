@@ -15,39 +15,39 @@ Metrics, models and reporting.
 
 |Column|Data Type|Null|Description|
 |---|---|---|---|
-|analysis_type_id|smallint|NO|None|
-|analysis_type_name|character varying|NO|None|
-|report_id|smallint|NO|None|
-|created_date|timestamp with time zone|NO|None|
-|updated_date|timestamp with time zone|NO|None|
+|analysis_type_id (PK)|smallint|N||
+|analysis_type_name|VarChar(255)|N||
+|report_id|smallint|N||
+|created_date|TimeStamp|N||
+|updated_date|TimeStamp|N||
 
 # metrics
 
 |Column|Data Type|Null|Description|
 |---|---|---|---|
-|metric_id|integer|NO|None|
-|sample_id|integer|NO|None|
-|metric_type_id|smallint|NO|None|
-|translation_id|smallint|NO|None|
+|metric_id (PK)|integer|N||
+|sample_id|integer|N||
+|metric_type_id|smallint|N||
+|translation_id|smallint|N||
 
 # metric_types
 
 |Column|Data Type|Null|Description|
 |---|---|---|---|
-|metric_type_id|smallint|NO|None|
-|metric_name|character varying|NO|None|
-|description|text|YES|None|
-|unit_id|smallint|NO|None|
-|created_date|timestamp with time zone|NO|None|
-|updated_date|timestamp with time zone|NO|None|
+|metric_type_id (PK)|smallint|N||
+|metric_name|VarChar(255)|N||
+|description|text|Y||
+|unit_id|smallint|N||
+|created_date|TimeStamp|N||
+|updated_date|TimeStamp|N||
 
 # reports
 
 |Column|Data Type|Null|Description|
 |---|---|---|---|
-|report_id|smallint|NO|None|
-|report_name|character varying|NO|None|
-|description|text|YES|None|
-|is_active|boolean|NO|None|
-|created_date|timestamp with time zone|NO|None|
-|updated_date|timestamp with time zone|NO|None|
+|report_id (PK)|smallint|N||
+|report_name|VarChar(255)|N||
+|description|text|Y||
+|is_active|boolean|N||
+|created_date|TimeStamp|N||
+|updated_date|TimeStamp|N||

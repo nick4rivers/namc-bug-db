@@ -10,127 +10,127 @@ Geospatial data and contextual layers.
 
 |Column|Data Type|Null|Description|
 |---|---|---|---|
-|county_id|smallint|NO|None|
-|state_id|smallint|NO|None|
-|county_name|character varying|NO|None|
-|geom|USER-DEFINED|YES|None|
-|created_date|timestamp with time zone|NO|None|
-|updated_date|timestamp with time zone|NO|None|
+|county_id (PK)|smallint|N||
+|state_id|smallint|N||
+|county_name|VarChar(255)|N||
+|geom|USER-DEFINED|Y||
+|created_date|TimeStamp|N||
+|updated_date|TimeStamp|N||
 
 # countries
 
 |Column|Data Type|Null|Description|
 |---|---|---|---|
-|country_id|smallint|NO|None|
-|country_name|character varying|NO|None|
-|abbreviation|character varying|NO|None|
-|geom|USER-DEFINED|YES|None|
-|created_date|timestamp with time zone|NO|None|
-|updated_date|timestamp with time zone|NO|None|
+|country_id (PK)|smallint|N||
+|country_name|VarChar(50)|N||
+|abbreviation|VarChar(5)|N||
+|geom|USER-DEFINED|Y||
+|created_date|TimeStamp|N||
+|updated_date|TimeStamp|N||
 
 # ecosystems
 
 |Column|Data Type|Null|Description|
 |---|---|---|---|
-|ecosystem_id|smallint|NO|None|
-|ecosystem_name|character varying|NO|None|
-|is_active|boolean|NO|None|
-|description|text|YES|None|
-|created_date|timestamp with time zone|NO|None|
-|updated_date|timestamp with time zone|NO|None|
+|ecosystem_id (PK)|smallint|N||
+|ecosystem_name|VarChar(10)|N||
+|is_active|boolean|N||
+|description|text|Y||
+|created_date|TimeStamp|N||
+|updated_date|TimeStamp|N||
 
 # habitats
 
 |Column|Data Type|Null|Description|
 |---|---|---|---|
-|habitat_id|smallint|NO|None|
-|habitat_name|character varying|NO|None|
-|ecosystem_id|smallint|NO|None|
-|is_active|boolean|NO|None|
-|created_date|timestamp with time zone|NO|None|
-|updated_date|timestamp with time zone|NO|None|
+|habitat_id (PK)|smallint|N||
+|habitat_name|VarChar(50)|N||
+|ecosystem_id|smallint|N||
+|is_active|boolean|N||
+|created_date|TimeStamp|N||
+|updated_date|TimeStamp|N||
 
 # land_uses
 
 |Column|Data Type|Null|Description|
 |---|---|---|---|
-|land_use_id|smallint|NO|None|
-|land_use_name|character varying|NO|None|
-|is_active|boolean|NO|None|
-|created_date|timestamp with time zone|NO|None|
-|updated_date|timestamp with time zone|NO|None|
+|land_use_id (PK)|smallint|N||
+|land_use_name|VarChar(50)|N||
+|is_active|boolean|N||
+|created_date|TimeStamp|N||
+|updated_date|TimeStamp|N||
 
 # predictors
 
 |Column|Data Type|Null|Description|
 |---|---|---|---|
-|predictor_id|smallint|NO|None|
-|predictor_name|character varying|NO|None|
-|abbreviation|character varying|NO|None|
-|unit_id|smallint|NO|None|
-|predictor_type_id|smallint|NO|None|
-|description|text|YES|None|
-|metadata|json|YES|None|
-|created_date|timestamp with time zone|NO|None|
-|updated_date|timestamp with time zone|NO|None|
+|predictor_id (PK)|smallint|N||
+|predictor_name|VarChar(255)|N||
+|abbreviation|VarChar(25)|N||
+|unit_id|smallint|N||
+|predictor_type_id|smallint|N||
+|description|text|Y||
+|metadata|json|Y||
+|created_date|TimeStamp|N||
+|updated_date|TimeStamp|N||
 
 # predictor_types
 
 |Column|Data Type|Null|Description|
 |---|---|---|---|
-|predictor_type_id|smallint|NO|None|
-|predictor_type_name|character varying|NO|None|
-|created_date|timestamp with time zone|NO|None|
-|updated_date|timestamp with time zone|NO|None|
+|predictor_type_id (PK)|smallint|N||
+|predictor_type_name|VarChar(255)|N||
+|created_date|TimeStamp|N||
+|updated_date|TimeStamp|N||
 
 # sites
 
 |Column|Data Type|Null|Description|
 |---|---|---|---|
-|site_id|integer|NO|None|
-|site_name|character varying|NO|None|
-|system_id|smallint|YES|None|
-|ecosystem_id|smallint|YES|None|
-|description|text|YES|None|
-|waterbody|character varying|YES|None|
-|location|USER-DEFINED|NO|None|
-|catchment|USER-DEFINED|YES|None|
-|nhdplusid|bigint|YES|None|
-|comid|bigint|YES|None|
-|metadata|json|YES|None|
-|created_date|timestamp with time zone|NO|None|
-|updated_date|timestamp with time zone|NO|None|
+|site_id (PK)|integer|N||
+|site_name|VarChar(50)|N||
+|system_id|smallint|Y||
+|ecosystem_id|smallint|Y||
+|description|text|Y||
+|waterbody|VarChar(255)|Y||
+|location|USER-DEFINED|N||
+|catchment|USER-DEFINED|Y||
+|nhdplusid|bigint|Y||
+|comid|bigint|Y||
+|metadata|json|Y||
+|created_date|TimeStamp|N||
+|updated_date|TimeStamp|N||
 
 # states
 
 |Column|Data Type|Null|Description|
 |---|---|---|---|
-|state_id|smallint|NO|None|
-|country_id|smallint|NO|None|
-|state_name|character varying|NO|None|
-|abbreviation|character varying|NO|None|
-|geom|USER-DEFINED|YES|None|
-|created_date|timestamp with time zone|NO|None|
-|updated_date|timestamp with time zone|NO|None|
+|state_id (PK)|smallint|N||
+|country_id|smallint|N||
+|state_name|VarChar(50)|N||
+|abbreviation|VarChar(2)|N||
+|geom|USER-DEFINED|Y||
+|created_date|TimeStamp|N||
+|updated_date|TimeStamp|N||
 
 # systems
 
 |Column|Data Type|Null|Description|
 |---|---|---|---|
-|system_id|smallint|NO|None|
-|system_name|character varying|NO|None|
-|ecosystem_id|smallint|NO|None|
-|is_active|boolean|NO|None|
-|created_date|timestamp with time zone|NO|None|
-|updated_date|timestamp with time zone|NO|None|
+|system_id (PK)|smallint|N||
+|system_name|VarChar(20)|N||
+|ecosystem_id|smallint|N||
+|is_active|boolean|N||
+|created_date|TimeStamp|N||
+|updated_date|TimeStamp|N||
 
 # units
 
 |Column|Data Type|Null|Description|
 |---|---|---|---|
-|unit_id|smallint|NO|None|
-|unit_name|character varying|NO|None|
-|abbreviation|character varying|NO|None|
-|description|text|YES|None|
-|created_date|timestamp with time zone|NO|None|
-|updated_date|timestamp with time zone|NO|None|
+|unit_id (PK)|smallint|N||
+|unit_name|VarChar(50)|N||
+|abbreviation|VarChar(10)|N||
+|description|text|Y||
+|created_date|TimeStamp|N||
+|updated_date|TimeStamp|N||
