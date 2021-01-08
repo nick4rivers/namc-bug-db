@@ -79,7 +79,12 @@ def data_dictionary(pgcon):
         f.write('|---|---|\n')
 
         for old_table, new_tables in migrations.items():
-            f.write('|{}|{}|\n'.format(old_table, ', '.join(t for t in new_tables)))
+            new_table_markdown = []
+            for t in new_tables:
+                schema, table = t.split('.')
+                new_table_markdown.append('[{}](schema_{}.html#{})'.format(t, schema, table))
+
+            f.write('|{}|{}|\n'.format(old_table, ', '.join(t for t in new_table_markdown)))
 
     print('data dictionary complete')
 
