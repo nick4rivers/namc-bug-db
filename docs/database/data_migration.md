@@ -7,6 +7,8 @@ The table below describes where data has moved from in the old front and back en
         Note that some data has been split into two or more tables.
 
         
+ Last updated 11 January 2021
+
 |Old Table|New Table(s)|
 |---|---|
 |GeoCounties|[geo.counties](schema_geo.html#counties)|

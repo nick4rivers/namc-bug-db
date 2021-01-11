@@ -1,6 +1,7 @@
 import os
 import argparse
 import psycopg2
+import datetime
 from psycopg2.extras import execute_values
 from rscommons import Logger, dotenv
 
@@ -115,6 +116,9 @@ def data_dictionary(pgcon):
         You can search for the name of an old front or back end database table and see which tables in the new system now hold the relevant data.
         Note that some data has been split into two or more tables.\n
         """)
+
+        f.write('\n Last updated {}\n'.format(datetime.datetime.now().strftime('%d %B %Y')))
+
         f.write('\n|Old Table|New Table(s)|\n')
         f.write('|---|---|\n')
 
