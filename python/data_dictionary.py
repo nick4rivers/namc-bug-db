@@ -4,6 +4,46 @@ import psycopg2
 from psycopg2.extras import execute_values
 from rscommons import Logger, dotenv
 
+deprecated_pilot_tables = {
+    'BugCount_OTU': None,
+    'BugDataOTU': 'Data available via view using Translations',
+    'BugOTU_pivot': None,
+    'BugSiData': None,
+    'BugSummary': 'TODO: Uncertain',
+    'BugSummaryOTU': 'TODO: Uncertain',
+    'BugVegSample': None,
+    'Collection': None,
+    'disCodes': None,
+    'Fishdata': None,
+    'FishSample': None,
+    'GIS': None,
+    'GISData': None,
+    'GISData_SITE': None,
+    'GISDefinition': None,
+    'GISQuery': None,
+    'Habitat': None,
+    'HabitatData': None,
+    'HabitatElement': None,
+    'MOTU': None,
+    'sysdiagrams': None,
+    'Taxaonomy_backup': None,
+    'tempCodes': None,
+    'topcodeOtu': None,
+    'topcodeOtu1': None,
+    'topcodeOtu2': None,
+    'topcodeOtu3': None,
+    'topcodeOtuNV': None,
+    'topcodeOtuPIBO': None,
+    'TypeCategories': None,
+    'TypeDatums': None
+}
+
+deprecated_front_end_tables = {
+    'lkp_GTRS_SiteInfo': None,
+    'TEST_GEO': None,
+    'Web*': None
+}
+
 
 def data_dictionary(pgcon):
 
@@ -85,6 +125,13 @@ def data_dictionary(pgcon):
                 new_table_markdown.append('[{}](schema_{}.html#{})'.format(t, schema, table))
 
             f.write('|{}|{}|\n'.format(old_table, ', '.join(t for t in new_table_markdown)))
+
+        for db_dict in [deprecated_front_end_tables, deprecated_pilot_tables]:
+            for old_table, message in db_dict.items():
+                if not message:
+                    message = 'Deprecated'
+
+                f.write('|{}|{}|\n'.format(old_table, message))
 
     print('data dictionary complete')
 
