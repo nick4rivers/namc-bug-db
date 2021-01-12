@@ -4,6 +4,8 @@ title: billing Schema
 
 Quotes, billing and financial aspects to box submissions.
 
+![diagram](https://docs.google.com/drawings/d/e/2PACX-1vRiz3VzDePLBAiMvbUZJjn-YwIrf33A_eYmlemy8gDJYvbiBDKzGiaJfDaDfnUzYnqyXurY7q0XsTa4/pub?w=1434&h=763)
+
 # agreements
 
 |Column|Data Type|Null|Description|

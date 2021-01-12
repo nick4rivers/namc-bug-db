@@ -45,6 +45,7 @@ Information pertaining to customers, organizations, laboratories, individuals an
 |affiliation_id|smallint|Y||
 |email|VarChar(255)|Y||
 |title|VarChar(255)|Y||
+|cognito_sub|VarChar(255)|Y||
 
 # lab_types
 
