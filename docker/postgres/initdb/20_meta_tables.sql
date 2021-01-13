@@ -56,7 +56,11 @@ insert into meta.tables (table_id, table_name, schema_id, description, source_da
 insert into meta.tables (table_id, table_name, schema_id, description, source_data) values (93, 'analysis_types', 5, null, null);
 insert into meta.tables (table_id, table_name, schema_id, description, source_data) values (94, 'analysis', 5, null, null);
 insert into meta.tables (table_id, table_name, schema_id, description, source_data) values (100, 'billing', 6, null, 'Box_Billing');
-insert into meta.tables (table_id, table_name, schema_id, description, source_data) values (101, 'quotes', 6, null, 'Box_Billing_Quote');
-insert into meta.tables (table_id, table_name, schema_id, description, source_data) values (102, 'quote_items', 6, null, null);
+insert into meta.tables (table_id, table_name, schema_id, description, source_data) values (101, 'agreements', 6, null, 'Box_Billing_Quote,Box_Billing_Contract');
+insert into meta.tables (table_id, table_name, schema_id, description, source_data) values (102, 'agreement_items', 6, null, null);
 insert into meta.tables (table_id, table_name, schema_id, description, source_data) values (103, 'agreement_types', 6, null, null);
-insert into meta.tables (table_id, table_name, schema_id, description, source_data) values (104, 'agreements', 6, null, 'Box_Billing_Contract');
+insert into meta.tables (table_id, table_name, schema_id, description, source_data) values (104, 'line_item_types', 6, null, null);
+insert into meta.tables (table_id, table_name, schema_id, description, source_data) values (105, 'invoices', 6, null, null); 
+insert into meta.tables (table_id, table_name, schema_id, description, source_data) values (106, 'invoice_items', 6, null, null);
+insert into meta.tables (table_id, table_name, schema_id, description, source_data) values (107, 'invoice_boxes', 6, null, null);
+

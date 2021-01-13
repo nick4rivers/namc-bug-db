@@ -53,9 +53,9 @@ The table below describes where data has moved from in the old front and back en
 |TaxaQaQcStats|[metric.metrics](schema_metric.html#metrics)|
 |QaQcStatsSorter|[metric.metrics](schema_metric.html#metrics)|
 |QaQcStatsTaxa|[metric.metrics](schema_metric.html#metrics)|
+|Box_Billing_Quote|[billing.agreements](schema_billing.html#agreements)|
 |Box_Billing_Contract|[billing.agreements](schema_billing.html#agreements)|
 |Box_Billing|[billing.billing](schema_billing.html#billing)|
-|Box_Billing_Quote|[billing.quotes](schema_billing.html#quotes)|
 |lkp_GTRS_SiteInfo|Deprecated|
 |TEST_GEO|Deprecated|
 |Web*|Deprecated|
