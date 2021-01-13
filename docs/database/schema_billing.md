@@ -74,6 +74,8 @@ Quotes, billing and financial aspects to box submissions.
 |invoice_date|date|N||
 |due_date|date|N||
 |invoice_number|smallint|N||
+|received_amount|integer|Y||
+|received_date|date|Y||
 |created_date|TimeStamp|N||
 |updated_date|TimeStamp|N||
 
