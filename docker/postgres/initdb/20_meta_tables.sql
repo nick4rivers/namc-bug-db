@@ -63,4 +63,5 @@ insert into meta.tables (table_id, table_name, schema_id, description, source_da
 insert into meta.tables (table_id, table_name, schema_id, description, source_data) values (105, 'invoices', 6, null, null); 
 insert into meta.tables (table_id, table_name, schema_id, description, source_data) values (106, 'invoice_items', 6, null, null);
 insert into meta.tables (table_id, table_name, schema_id, description, source_data) values (107, 'invoice_boxes', 6, null, null);
+insert into meta.tables (table_id, table_name, schema_id, description, source_data) values (108, 'communications', 2, null, null);
 

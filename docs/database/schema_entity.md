@@ -6,6 +6,18 @@ Information pertaining to customers, organizations, laboratories, individuals an
 
 ![diagram](https://docs.google.com/drawings/d/e/2PACX-1vTRwXAmzNu33Fi78sR1WkjNCTWaW26mOSS7KuQCZCc3j-1FwcnS628sqgcCClQgucp-xCxqp1fd5xG4/pub?w=984&h=671)
 
+# communications
+
+|Column|Data Type|Null|Description|
+|---|---|---|---|
+|history_id (PK)|integer|N||
+|entity_id|smallint|Y||
+|employee_id|smallint|N||
+|notes|text|Y||
+|metadata|json|Y||
+|created_date|TimeStamp|N||
+|updated_date|TimeStamp|N||
+
 # entities
 
 |Column|Data Type|Null|Description|
