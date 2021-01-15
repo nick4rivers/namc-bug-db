@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<database name="bugdb" schema="billing" type="PostgreSQL - 12.4 (Debian 12.4-1.pgdg100+1)">
+   <tables>
+      <table name="agreement_items" numRows="0" remarks="" schema="billing" type="TABLE">
+         <column autoUpdated="true" defaultValue="null" digits="0" id="0" name="agreement_item_id" nullable="false" remarks="" size="10" type="int4" typeCode="4"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="agreement_id" nullable="false" remarks="" size="5" type="int2" typeCode="5">
+            <parent column="agreement_id" foreignKey="fk_agreement_items_agreement_id" implied="false" onDeleteCascade="false" schema="billing" table="agreements"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="2" name="line_item_type_id" nullable="false" remarks="" size="5" type="int2" typeCode="5">
+            <parent column="line_item_type_id" foreignKey="fk_agreement_items_line_item_type_id" implied="false" onDeleteCascade="false" schema="billing" table="line_item_types"/>
+         </column>
+         <column autoUpdated="false" defaultValue="0" digits="0" id="3" name="units" nullable="false" remarks="" size="5" type="int2" typeCode="5"/>
+         <column autoUpdated="false" defaultValue="0" digits="0" id="4" name="unit_cost" nullable="false" remarks="" size="10" type="int4" typeCode="4"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="5" name="description" nullable="true" remarks="" size="2147483647" type="text" typeCode="12"/>
+         <primaryKey column="agreement_item_id" sequenceNumberInPK="1"/>
+         <index name="agreement_items_pkey" unique="true">
+            <column ascending="true" name="agreement_item_id"/>
+         </index>
+         <index name="fx_agreement_items_agreement_id" unique="true">
+            <column ascending="true" name="agreement_id"/>
+            <column ascending="true" name="line_item_type_id"/>
+         </index>
+         <checkConstraint constraint="((unit_cost &gt;= 0))" name="ck_agreement_items_unit_cost"/>
+         <checkConstraint constraint="((units &gt;= 0))" name="ck_agreement_items_units"/>
+      </table>
+      <table name="agreement_types" numRows="0" remarks="" schema="billing" type="TABLE">
+         <column autoUpdated="true" defaultValue="null" digits="0" id="0" name="agreement_type_id" nullable="false" remarks="" size="5" type="int2" typeCode="5">
+            <child column="agreement_type_id" foreignKey="fk_agreements_agreement_type_id" implied="false" onDeleteCascade="false" schema="billing" table="agreements"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="agreement_type_name" nullable="false" remarks="" size="255" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="2" name="description" nullable="true" remarks="" size="2147483647" type="text" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="true" digits="0" id="3" name="is_active" nullable="false" remarks="" size="1" type="bool" typeCode="-7"/>
+         <column autoUpdated="false" defaultValue="now()" digits="6" id="4" name="created_date" nullable="false" remarks="" size="35" type="timestamptz" typeCode="93"/>
+         <column autoUpdated="false" defaultValue="now()" digits="6" id="5" name="updated_date" nullable="false" remarks="" size="35" type="timestamptz" typeCode="93"/>
+         <primaryKey column="agreement_type_id" sequenceNumberInPK="1"/>
+         <index name="agreement_types_pkey" unique="true">
+            <column ascending="true" name="agreement_type_id"/>
+         </index>
+         <index name="agreement_types_agreement_type_name_key" unique="true">
+            <column ascending="true" name="agreement_type_name"/>
+         </index>
+      </table>
+      <table name="agreements" numRows="0" remarks="" schema="billing" type="TABLE">
+         <column autoUpdated="true" defaultValue="null" digits="0" id="0" name="agreement_id" nullable="false" remarks="" size="5" type="int2" typeCode="5">
+            <child column="agreement_id" foreignKey="fk_agreement_items_agreement_id" implied="false" onDeleteCascade="false" schema="billing" table="agreement_items"/>
+            <child column="agreement_id" foreignKey="fk_invoices_agreement_id" implied="false" onDeleteCascade="false" schema="billing" table="invoices"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="entity_id" nullable="false" remarks="" size="5" type="int2" typeCode="5">
+            <parent column="entity_id" foreignKey="fk_agreements_entity_id" implied="false" onDeleteCascade="false" schema="entity" table="entities"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="2" name="agreement_type_id" nullable="false" remarks="" size="5" type="int2" typeCode="5">
+            <parent column="agreement_type_id" foreignKey="fk_agreements_agreement_type_id" implied="false" onDeleteCascade="false" schema="billing" table="agreement_types"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="3" name="a_number" nullable="true" remarks="" size="20" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="4" name="start_date" nullable="true" remarks="" size="13" type="date" typeCode="91"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="5" name="end_date" nullable="true" remarks="" size="13" type="date" typeCode="91"/>
+         <column autoUpdated="false" defaultValue="true" digits="0" id="6" name="is_editable" nullable="false" remarks="" size="1" type="bool" typeCode="-7"/>
+         <column autoUpdated="false" defaultValue="now()" digits="6" id="7" name="created_date" nullable="false" remarks="" size="35" type="timestamptz" typeCode="93"/>
+         <column autoUpdated="false" defaultValue="now()" digits="6" id="8" name="updated_date" nullable="false" remarks="" size="35" type="timestamptz" typeCode="93"/>
+         <primaryKey column="agreement_id" sequenceNumberInPK="1"/>
+         <index name="agreements_pkey" unique="true">
+            <column ascending="true" name="agreement_id"/>
+         </index>
+         <index name="fx_agreements_agreement_type_id" unique="false">
+            <column ascending="true" name="agreement_type_id"/>
+         </index>
+         <index name="fx_agreements_entity_id" unique="false">
+            <column ascending="true" name="entity_id"/>
+         </index>
+      </table>
+      <table name="invoice_boxes" numRows="0" remarks="" schema="billing" type="TABLE">
+         <column autoUpdated="false" defaultValue="null" digits="0" id="0" name="invoice_id" nullable="false" remarks="" size="5" type="int2" typeCode="5">
+            <parent column="invoice_id" foreignKey="fk_invoice_boxes_invoice_id" implied="false" onDeleteCascade="false" schema="billing" table="invoices"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="box_id" nullable="false" remarks="" size="5" type="int2" typeCode="5">
+            <parent column="box_id" foreignKey="fk_invoice_boxes_box_id" implied="false" onDeleteCascade="false" schema="sample" table="boxes"/>
+         </column>
+         <primaryKey column="invoice_id" sequenceNumberInPK="1"/>
+         <primaryKey column="box_id" sequenceNumberInPK="2"/>
+         <index name="pk_invoice_boxes" unique="true">
+            <column ascending="true" name="invoice_id"/>
+            <column ascending="true" name="box_id"/>
+         </index>
+      </table>
+      <table name="invoice_items" numRows="0" remarks="" schema="billing" type="TABLE">
+         <column autoUpdated="true" defaultValue="null" digits="0" id="0" name="invoice_item_id" nullable="false" remarks="" size="10" type="int4" typeCode="4"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="invoice_id" nullable="false" remarks="" size="5" type="int2" typeCode="5">
+            <parent column="invoice_id" foreignKey="fk_invoice_items_invoice_id" implied="false" onDeleteCascade="false" schema="billing" table="invoices"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="2" name="line_item_type_id" nullable="false" remarks="" size="5" type="int2" typeCode="5">
+            <parent column="line_item_type_id" foreignKey="fk_invoice_items_line_item_type_id" implied="false" onDeleteCascade="false" schema="billing" table="line_item_types"/>
+         </column>
+         <column autoUpdated="false" defaultValue="0" digits="0" id="3" name="units" nullable="false" remarks="" size="5" type="int2" typeCode="5"/>
+         <column autoUpdated="false" defaultValue="0" digits="0" id="4" name="unit_price" nullable="false" remarks="" size="10" type="int4" typeCode="4"/>
+         <primaryKey column="invoice_item_id" sequenceNumberInPK="1"/>
+         <index name="invoice_items_pkey" unique="true">
+            <column ascending="true" name="invoice_item_id"/>
+         </index>
+         <index name="fx_invoice_items_invoice_id" unique="false">
+            <column ascending="true" name="invoice_id"/>
+         </index>
+         <index name="fx_invoice_items_line_item_type_id" unique="false">
+            <column ascending="true" name="line_item_type_id"/>
+         </index>
+         <checkConstraint constraint="((unit_price &gt;= 0))" name="ck_invoice_items_unit_price"/>
+         <checkConstraint constraint="((units &gt;= 0))" name="ck_invoice_items_units"/>
+      </table>
+      <table name="invoices" numRows="0" remarks="" schema="billing" type="TABLE">
+         <column autoUpdated="true" defaultValue="null" digits="0" id="0" name="invoice_id" nullable="false" remarks="" size="5" type="int2" typeCode="5">
+            <child column="invoice_id" foreignKey="fk_invoice_boxes_invoice_id" implied="false" onDeleteCascade="false" schema="billing" table="invoice_boxes"/>
+            <child column="invoice_id" foreignKey="fk_invoice_items_invoice_id" implied="false" onDeleteCascade="false" schema="billing" table="invoice_items"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="entity_id" nullable="false" remarks="" size="5" type="int2" typeCode="5">
+            <parent column="entity_id" foreignKey="fk_invoices_entity_id" implied="false" onDeleteCascade="false" schema="entity" table="entities"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="2" name="agreement_id" nullable="true" remarks="" size="5" type="int2" typeCode="5">
+            <parent column="agreement_id" foreignKey="fk_invoices_agreement_id" implied="false" onDeleteCascade="false" schema="billing" table="agreements"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="3" name="invoice_date" nullable="false" remarks="" size="13" type="date" typeCode="91"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="4" name="due_date" nullable="false" remarks="" size="13" type="date" typeCode="91"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="5" name="invoice_number" nullable="false" remarks="" size="5" type="int2" typeCode="5"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="6" name="received_amount" nullable="true" remarks="" size="10" type="int4" typeCode="4"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="7" name="received_date" nullable="true" remarks="" size="13" type="date" typeCode="91"/>
+         <column autoUpdated="false" defaultValue="now()" digits="6" id="8" name="created_date" nullable="false" remarks="" size="35" type="timestamptz" typeCode="93"/>
+         <column autoUpdated="false" defaultValue="now()" digits="6" id="9" name="updated_date" nullable="false" remarks="" size="35" type="timestamptz" typeCode="93"/>
+         <primaryKey column="invoice_id" sequenceNumberInPK="1"/>
+         <index name="invoices_pkey" unique="true">
+            <column ascending="true" name="invoice_id"/>
+         </index>
+         <index name="fx_invoices_agreement_id" unique="false">
+            <column ascending="true" name="agreement_id"/>
+         </index>
+         <index name="fx_invoices_entity_id" unique="false">
+            <column ascending="true" name="entity_id"/>
+         </index>
+         <index name="invoices_invoice_number_key" unique="true">
+            <column ascending="true" name="invoice_number"/>
+         </index>
+         <checkConstraint constraint="((received_amount &gt;= 0))" name="ck_received_amount"/>
+         <checkConstraint constraint="((received_date &gt;= invoice_date))" name="ck_received_date"/>
+      </table>
+      <table name="line_item_types" numRows="0" remarks="" schema="billing" type="TABLE">
+         <column autoUpdated="true" defaultValue="null" digits="0" id="0" name="line_item_type_id" nullable="false" remarks="" size="5" type="int2" typeCode="5">
+            <child column="line_item_type_id" foreignKey="fk_agreement_items_line_item_type_id" implied="false" onDeleteCascade="false" schema="billing" table="agreement_items"/>
+            <child column="line_item_type_id" foreignKey="fk_invoice_items_line_item_type_id" implied="false" onDeleteCascade="false" schema="billing" table="invoice_items"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="line_item_type_name" nullable="false" remarks="" size="255" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="true" digits="0" id="2" name="is_active" nullable="false" remarks="" size="1" type="bool" typeCode="-7"/>
+         <column autoUpdated="false" defaultValue="now()" digits="6" id="3" name="created_date" nullable="false" remarks="" size="35" type="timestamptz" typeCode="93"/>
+         <column autoUpdated="false" defaultValue="now()" digits="6" id="4" name="updated_date" nullable="false" remarks="" size="35" type="timestamptz" typeCode="93"/>
+         <primaryKey column="line_item_type_id" sequenceNumberInPK="1"/>
+         <index name="line_item_types_pkey" unique="true">
+            <column ascending="true" name="line_item_type_id"/>
+         </index>
+         <index name="line_item_types_line_item_type_name_key" unique="true">
+            <column ascending="true" name="line_item_type_name"/>
+         </index>
+      </table>
+   </tables>
+</database>

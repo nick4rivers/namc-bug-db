@@ -1,0 +1,12 @@
+ecosystems
+countries
+units
+predictor_types
+states
+systems
+predictors
+habitats
+sites
+counties
+site_predictors
+land_uses

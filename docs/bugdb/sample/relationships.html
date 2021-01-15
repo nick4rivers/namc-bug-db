@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>bugdb Database</title>
+        <!-- Tell the browser to be responsive to screen width -->
+        <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+        <link rel="icon" type="image/png" sizes="16x16" href="favicon.png">
+        <!-- Bootstrap 3.3.5 -->
+        <link rel="stylesheet" href="bower/admin-lte/bootstrap/css/bootstrap.min.css">
+        <!-- Font Awesome -->
+        <link rel="stylesheet" href="bower/font-awesome/css/font-awesome.min.css">
+        <!-- Ionicons -->
+        <link rel="stylesheet" href="bower/ionicons/css/ionicons.min.css">
+        <!-- DataTables -->
+        <link rel="stylesheet" href="bower/datatables.net-bs/css/dataTables.bootstrap.min.css">
+        <link rel="stylesheet" href="bower/datatables.net-buttons-bs/css/buttons.bootstrap.min.css">
+        <!-- Code Mirror -->
+        <link rel="stylesheet" href="bower/codemirror/codemirror.css">
+        <!-- Fonts -->
+        <link href='fonts/indieflower/indie-flower.css' rel='stylesheet' type='text/css'>
+        <link href='fonts/source-sans-pro/source-sans-pro.css' rel='stylesheet' type='text/css'>
+
+        <!-- Theme style -->
+        <link rel="stylesheet" href="bower/admin-lte/dist/css/AdminLTE.min.css">
+        <!-- Salvattore -->
+        <link rel="stylesheet" href="bower/salvattore/salvattore.css">
+        <!-- AdminLTE Skins. Choose a skin from the css/skins
+           folder instead of downloading all of them to reduce the load. -->
+        <link rel="stylesheet" href="bower/admin-lte/dist/css/skins/_all-skins.min.css">
+        <!-- SchemaSpy -->
+        <link rel="stylesheet" href="schemaSpy.css">
+
+        <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+        <!--[if lt IE 9]>
+        <script src="bower/html5shiv/html5shiv.min.js"></script>
+        <script src="bower/respond/respond.min.js"></script>
+        <![endif]-->
+    </head>
+    <!-- ADD THE CLASS layout-top-nav TO REMOVE THE SIDEBAR. -->
+    <body class="hold-transition skin-blue layout-top-nav">
+        <div class="wrapper">
+            <header class="main-header">
+                <nav class="navbar navbar-static-top">
+                    <div class="container">
+                        <div class="navbar-header">
+                            <a href="../index.html" class="navbar-brand"><b>bugdb</b> Database</a>
+                            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse"><i class="fa fa-bars"></i></button>
+                        </div>
+
+                        <!-- Collect the nav links, forms, and other content for toggling -->
+                        <div class="collapse navbar-collapse pull-left" id="navbar-collapse">
+                            <ul class="nav navbar-nav">
+                                <li><a href="index.html">Tables <span class="sr-only">(current)</span></a></li>
+                                <li><a href="columns.html" title="All of the columns in the schema">Columns</a></li>
+                                <li><a href="constraints.html" title="Useful for diagnosing error messages that just give constraint name or number">Constraints</a></li>
+                                <li><a href="relationships.html" title="Diagram of table relationships">Relationships</a></li>
+                                <li><a href="orphans.html" title="View of tables with neither parents nor children">Orphan&nbsp;Tables</a></li>
+                                <li><a href="anomalies.html" title="Things that might not be quite right">Anomalies</a></li>
+                                <li><a href="routines.html" title="Procedures and functions">Routines</a></li>
+                            </ul>
+                        </div>
+                        <!-- /.navbar-collapse -->
+                        <!-- Navbar Right Menu -->
+                    </div>
+                    <!-- /.container-fluid -->
+                </nav>
+            </header>
+            <!-- Main content -->
+            <!-- Full Width Column -->
+            <div class="content-wrapper">
+                <!-- Content Header (Page header) -->
+                <section class="content-header">
+                    <h1>All Relationships</h1>
+                </section>
+                <!-- Main content -->
+                <section class="content">
+                    <div class="box box-primary">
+                        <div class="box-header with-border">
+                            <i class="fa fa-code-fork"></i>
+                            <h3 class="box-title">Diagrams</h3>
+                        </div>
+                        <div class="box-body">
+                            <div class="nav-tabs-custom">
+                                <!-- Tabs within a box -->
+                                <h5>By default only columns that are primary keys, foreign keys or indexes are shown.</h5>
+                                <ul class="nav nav-tabs pull-left ui-sortable-handle">
+                                    <li class="active"><a href="#compactDegreeImg-chart" data-toggle="tab" aria-expanded="true">Compact</a></li>
+                                    <li class=""><a href="#largeDegreeImg-chart" data-toggle="tab" aria-expanded="true">Large</a></li>
+                                    <li class=""><a href="#compactimpliedDegreeImg-chart" data-toggle="tab" aria-expanded="true">Compact Implied</a></li>
+                                    <li class=""><a href="#largeimpliedDegreeImg-chart" data-toggle="tab" aria-expanded="true">Large Implied</a></li>
+                                </ul>
+                                <div class="tab-content no-padding">
+                                    <div class="chart tab-pane active" id="compactDegreeImg-chart" style="position: relative; overflow-x:auto;">
+                                        <map id="compactRelationshipsDiagram" name="compactRelationshipsDiagram">
+<area shape="rect" id="node1" href="../billing/tables/invoice_boxes.html" target="_top" title="billing.invoice_boxes" alt="" coords="804,161,1032,279">
+<area shape="rect" id="node12" href="tables/boxes.html" target="_top" title="boxes" alt="" coords="505,161,760,396">
+<area shape="rect" id="node2" href="../entity/tables/entities.html" target="_top" title="entity.entities" alt="" coords="15,223,190,311">
+<area shape="rect" id="node3" href="../entity/tables/individuals.html" target="_top" title="entity.individuals" alt="" coords="253,1117,453,1205">
+<area shape="rect" id="node4" href="../entity/tables/lab_types.html" target="_top" title="entity.lab_types" alt="" coords="823,1575,1013,1663">
+<area shape="rect" id="node5" href="../entity/tables/organizations.html" target="_top" title="entity.organizations" alt="" coords="523,1447,742,1535">
+<area shape="rect" id="node6" href="../geo/tables/habitats.html" target="_top" title="geo.habitats" alt="" coords="549,883,716,971">
+<area shape="rect" id="node7" href="../geo/tables/sites.html" target="_top" title="geo.sites" alt="" coords="561,449,705,537">
+<area shape="rect" id="node8" href="../metric/tables/metrics.html" target="_top" title="metric.metrics" alt="" coords="1083,359,1265,476">
+<area shape="rect" id="node28" href="tables/samples.html" target="_top" title="samples" alt="" coords="836,572,1000,924">
+<area shape="rect" id="node9" href="tables/assets.html" target="_top" title="assets" alt="" coords="841,1680,995,1827">
+<area shape="rect" id="node10" href="tables/benthic.html" target="_top" title="benthic" alt="" coords="1097,493,1251,611">
+<area shape="rect" id="node11" href="tables/box_states.html" target="_top" title="box_states" alt="" coords="265,293,440,469">
+<area shape="rect" id="node23" href="tables/projects.html" target="_top" title="projects" alt="" coords="244,5,461,240">
+<area shape="rect" id="node13" href="tables/fish.html" target="_top" title="fish" alt="" coords="1097,763,1251,909">
+<area shape="rect" id="node33" href="../taxa/tables/taxonomy.html" target="_top" title="taxa.taxonomy" alt="" coords="827,941,1009,1029">
+<area shape="rect" id="node14" href="tables/mass.html" target="_top" title="mass" alt="" coords="1084,1149,1264,1325">
+<area shape="rect" id="node15" href="tables/mass_methods.html" target="_top" title="mass_methods" alt="" coords="815,1345,1021,1521">
+<area shape="rect" id="node16" href="tables/mass_types.html" target="_top" title="mass_types" alt="" coords="827,1152,1009,1328">
+<area shape="rect" id="node17" href="tables/note_types.html" target="_top" title="note_types" alt="" coords="1095,1701,1253,1877">
+<area shape="rect" id="node18" href="tables/organism_notes.html" target="_top" title="organism_notes" alt="" coords="1316,1300,1509,1423">
+<area shape="rect" id="node19" href="tables/organisms.html" target="_top" title="organisms" alt="" coords="1087,927,1261,1132">
+<area shape="rect" id="node32" href="../taxa/tables/life_stages.html" target="_top" title="taxa.life_stages" alt="" coords="823,1047,1013,1135">
+<area shape="rect" id="node20" href="tables/plankton.html" target="_top" title="plankton" alt="" coords="1077,628,1271,745">
+<area shape="rect" id="node21" href="tables/project_samples.html" target="_top" title="project_samples" alt="" coords="1076,183,1272,305">
+<area shape="rect" id="node22" href="tables/project_types.html" target="_top" title="project_types" alt="" coords="5,59,200,205">
+<area shape="rect" id="node24" href="tables/sample_assets.html" target="_top" title="sample_assets" alt="" coords="1082,1561,1266,1684">
+<area shape="rect" id="node25" href="tables/sample_labs.html" target="_top" title="sample_labs" alt="" coords="1090,1392,1258,1544">
+<area shape="rect" id="node26" href="tables/sample_methods.html" target="_top" title="sample_methods" alt="" coords="522,719,743,865">
+<area shape="rect" id="node27" href="tables/sample_types.html" target="_top" title="sample_types" alt="" coords="535,555,731,701">
+<area shape="rect" id="node29" href="tables/sort_qa.html" target="_top" title="sort_qa" alt="" coords="544,988,721,1135">
+<area shape="rect" id="node30" href="tables/submissions.html" target="_top" title="submissions" alt="" coords="830,308,1006,455">
+<area shape="rect" id="node31" href="tables/taxa_qa.html" target="_top" title="taxa_qa" alt="" coords="541,1224,725,1400">
+</map>
+                                        <a name='diagram'><img id="compactDegreeImg" src="diagrams/summary/relationships.real.compact.png" usemap="#compactRelationshipsDiagram" class="diagram" border="0" align="left"></a>
+                                    </div>
+                                    <div class="chart tab-pane " id="largeDegreeImg-chart" style="position: relative; overflow-x:auto;">
+                                        <map id="largeRelationshipsDiagram" name="largeRelationshipsDiagram">
+<area shape="rect" id="node1" href="../billing/tables/invoice_boxes.html" target="_top" title="billing.invoice_boxes" alt="" coords="804,253,1032,376">
+<area shape="rect" id="node12" href="tables/boxes.html" target="_top" title="boxes" alt="" coords="505,283,760,845">
+<area shape="rect" id="node2" href="../entity/tables/entities.html" target="_top" title="entity.entities" alt="" coords="15,316,190,820">
+<area shape="rect" id="node3" href="../entity/tables/individuals.html" target="_top" title="entity.individuals" alt="" coords="253,2409,453,2737">
+<area shape="rect" id="node4" href="../entity/tables/lab_types.html" target="_top" title="entity.lab_types" alt="" coords="823,3308,1013,3431">
+<area shape="rect" id="node5" href="../entity/tables/organizations.html" target="_top" title="entity.organizations" alt="" coords="523,3204,742,3444">
+<area shape="rect" id="node6" href="../geo/tables/habitats.html" target="_top" title="geo.habitats" alt="" coords="549,1817,716,2057">
+<area shape="rect" id="node7" href="../geo/tables/sites.html" target="_top" title="geo.sites" alt="" coords="555,899,710,1344">
+<area shape="rect" id="node8" href="../metric/tables/metrics.html" target="_top" title="metric.metrics" alt="" coords="1083,1200,1265,1381">
+<area shape="rect" id="node28" href="tables/samples.html" target="_top" title="samples" alt="" coords="836,1399,1000,2343">
+<area shape="rect" id="node9" href="tables/assets.html" target="_top" title="assets" alt="" coords="841,3448,995,3659">
+<area shape="rect" id="node10" href="tables/benthic.html" target="_top" title="benthic" alt="" coords="1097,1399,1251,1551">
+<area shape="rect" id="node11" href="tables/box_states.html" target="_top" title="box_states" alt="" coords="265,445,440,656">
+<area shape="rect" id="node23" href="tables/projects.html" target="_top" title="projects" alt="" coords="244,5,461,392">
+<area shape="rect" id="node13" href="tables/fish.html" target="_top" title="fish" alt="" coords="1097,1993,1251,2233">
+<area shape="rect" id="node33" href="../taxa/tables/taxonomy.html" target="_top" title="taxa.taxonomy" alt="" coords="827,2360,1009,2659">
+<area shape="rect" id="node14" href="tables/mass.html" target="_top" title="mass" alt="" coords="1084,2845,1264,3085">
+<area shape="rect" id="node15" href="tables/mass_methods.html" target="_top" title="mass_methods" alt="" coords="815,3073,1021,3255">
+<area shape="rect" id="node16" href="tables/mass_types.html" target="_top" title="mass_types" alt="" coords="827,2875,1009,3056">
+<area shape="rect" id="node17" href="tables/note_types.html" target="_top" title="note_types" alt="" coords="1095,3461,1253,3731">
+<area shape="rect" id="node18" href="tables/organism_notes.html" target="_top" title="organism_notes" alt="" coords="1316,2901,1509,3024">
+<area shape="rect" id="node19" href="tables/organisms.html" target="_top" title="organisms" alt="" coords="1087,2371,1261,2757">
+<area shape="rect" id="node32" href="../taxa/tables/life_stages.html" target="_top" title="taxa.life_stages" alt="" coords="823,2676,1013,2857">
+<area shape="rect" id="node20" href="tables/plankton.html" target="_top" title="plankton" alt="" coords="1077,1568,1271,1925">
+<area shape="rect" id="node21" href="tables/project_samples.html" target="_top" title="project_samples" alt="" coords="1076,640,1272,763">
+<area shape="rect" id="node22" href="tables/project_types.html" target="_top" title="project_types" alt="" coords="5,64,200,245">
+<area shape="rect" id="node24" href="tables/sample_assets.html" target="_top" title="sample_assets" alt="" coords="1082,3321,1266,3444">
+<area shape="rect" id="node25" href="tables/sample_labs.html" target="_top" title="sample_labs" alt="" coords="1090,3152,1258,3304">
+<area shape="rect" id="node26" href="tables/sample_methods.html" target="_top" title="sample_methods" alt="" coords="522,1589,743,1800">
+<area shape="rect" id="node27" href="tables/sample_types.html" target="_top" title="sample_types" alt="" coords="535,1361,731,1572">
+<area shape="rect" id="node29" href="tables/sort_qa.html" target="_top" title="sort_qa" alt="" coords="544,2075,721,2432">
+<area shape="rect" id="node30" href="tables/submissions.html" target="_top" title="submissions" alt="" coords="830,579,1006,789">
+<area shape="rect" id="node31" href="tables/taxa_qa.html" target="_top" title="taxa_qa" alt="" coords="541,2521,725,3172">
+</map>
+                                        <a name='diagram'><img id="largeDegreeImg" src="diagrams/summary/relationships.real.large.png" usemap="#largeRelationshipsDiagram" class="diagram" border="0" align="left"></a>
+                                    </div>
+                                    <div class="chart tab-pane " id="compactimpliedDegreeImg-chart" style="position: relative; overflow-x:auto;">
+                                        <map id="compactImpliedRelationshipsDiagram" name="compactImpliedRelationshipsDiagram">
+<area shape="rect" id="node1" href="../billing/tables/invoice_boxes.html" target="_top" title="billing.invoice_boxes" alt="" coords="804,251,1032,368">
+<area shape="rect" id="node12" href="tables/boxes.html" target="_top" title="boxes" alt="" coords="505,251,760,485">
+<area shape="rect" id="node2" href="../entity/tables/entities.html" target="_top" title="entity.entities" alt="" coords="15,416,190,504">
+<area shape="rect" id="node3" href="../entity/tables/individuals.html" target="_top" title="entity.individuals" alt="" coords="253,1171,453,1259">
+<area shape="rect" id="node4" href="../entity/tables/lab_types.html" target="_top" title="entity.lab_types" alt="" coords="823,1789,1013,1877">
+<area shape="rect" id="node5" href="../entity/tables/organizations.html" target="_top" title="entity.organizations" alt="" coords="523,1579,742,1667">
+<area shape="rect" id="node6" href="../geo/tables/habitats.html" target="_top" title="geo.habitats" alt="" coords="549,1329,716,1417">
+<area shape="rect" id="node7" href="../geo/tables/sites.html" target="_top" title="geo.sites" alt="" coords="561,703,705,791">
+<area shape="rect" id="node8" href="../metric/tables/metrics.html" target="_top" title="metric.metrics" alt="" coords="1083,573,1265,691">
+<area shape="rect" id="node28" href="tables/samples.html" target="_top" title="samples" alt="" coords="836,787,1000,1139">
+<area shape="rect" id="node9" href="tables/assets.html" target="_top" title="assets" alt="" coords="841,1895,995,2041">
+<area shape="rect" id="node10" href="tables/benthic.html" target="_top" title="benthic" alt="" coords="1097,708,1251,825">
+<area shape="rect" id="node11" href="tables/box_states.html" target="_top" title="box_states" alt="" coords="265,5,440,181">
+<area shape="rect" id="node23" href="tables/projects.html" target="_top" title="projects" alt="" coords="244,199,461,433">
+<area shape="rect" id="node13" href="tables/fish.html" target="_top" title="fish" alt="" coords="1097,977,1251,1124">
+<area shape="rect" id="node34" href="../taxa/tables/taxonomy.html" target="_top" title="taxa.taxonomy" alt="" coords="827,1156,1009,1244">
+<area shape="rect" id="node14" href="tables/mass.html" target="_top" title="mass" alt="" coords="1084,1364,1264,1540">
+<area shape="rect" id="node15" href="tables/mass_methods.html" target="_top" title="mass_methods" alt="" coords="815,1560,1021,1736">
+<area shape="rect" id="node16" href="tables/mass_types.html" target="_top" title="mass_types" alt="" coords="827,1367,1009,1543">
+<area shape="rect" id="node17" href="tables/note_types.html" target="_top" title="note_types" alt="" coords="1095,1916,1253,2092">
+<area shape="rect" id="node18" href="tables/organism_notes.html" target="_top" title="organism_notes" alt="" coords="1316,1515,1509,1637">
+<area shape="rect" id="node19" href="tables/organisms.html" target="_top" title="organisms" alt="" coords="1087,1141,1261,1347">
+<area shape="rect" id="node33" href="../taxa/tables/life_stages.html" target="_top" title="taxa.life_stages" alt="" coords="823,1261,1013,1349">
+<area shape="rect" id="node20" href="tables/plankton.html" target="_top" title="plankton" alt="" coords="1077,843,1271,960">
+<area shape="rect" id="node21" href="tables/project_samples.html" target="_top" title="project_samples" alt="" coords="1076,324,1272,447">
+<area shape="rect" id="node22" href="tables/project_types.html" target="_top" title="project_types" alt="" coords="5,252,200,399">
+<area shape="rect" id="node24" href="tables/sample_assets.html" target="_top" title="sample_assets" alt="" coords="1082,1776,1266,1899">
+<area shape="rect" id="node25" href="tables/sample_labs.html" target="_top" title="sample_labs" alt="" coords="1090,1607,1258,1759">
+<area shape="rect" id="node26" href="tables/sample_methods.html" target="_top" title="sample_methods" alt="" coords="522,972,743,1119">
+<area shape="rect" id="node27" href="tables/sample_types.html" target="_top" title="sample_types" alt="" coords="535,808,731,955">
+<area shape="rect" id="node29" href="tables/sort_qa.html" target="_top" title="sort_qa" alt="" coords="544,503,721,649">
+<area shape="rect" id="node30" href="tables/submissions.html" target="_top" title="submissions" alt="" coords="830,471,1006,617">
+<area shape="rect" id="node31" href="tables/taxa_qa.html" target="_top" title="taxa_qa" alt="" coords="541,1136,725,1312">
+<area shape="rect" id="node32" href="tables/vw_boxes.html" target="_top" title="vw_boxes" alt="" coords="505,52,760,175">
+</map>
+                                        <a name='diagram'><img id="compactimpliedDegreeImg" src="diagrams/summary/relationships.implied.compact.png" usemap="#compactImpliedRelationshipsDiagram" class="diagram" border="0" align="left"></a>
+                                    </div>
+                                    <div class="chart tab-pane " id="largeimpliedDegreeImg-chart" style="position: relative; overflow-x:auto;">
+                                        <map id="largeImpliedRelationshipsDiagram" name="largeImpliedRelationshipsDiagram">
+<area shape="rect" id="node1" href="../billing/tables/invoice_boxes.html" target="_top" title="billing.invoice_boxes" alt="" coords="804,480,1032,603">
+<area shape="rect" id="node12" href="tables/boxes.html" target="_top" title="boxes" alt="" coords="505,480,760,1043">
+<area shape="rect" id="node2" href="../entity/tables/entities.html" target="_top" title="entity.entities" alt="" coords="15,688,190,1192">
+<area shape="rect" id="node3" href="../entity/tables/individuals.html" target="_top" title="entity.individuals" alt="" coords="253,2507,453,2835">
+<area shape="rect" id="node4" href="../entity/tables/lab_types.html" target="_top" title="entity.lab_types" alt="" coords="823,3795,1013,3917">
+<area shape="rect" id="node5" href="../entity/tables/organizations.html" target="_top" title="entity.organizations" alt="" coords="523,3503,742,3743">
+<area shape="rect" id="node6" href="../geo/tables/habitats.html" target="_top" title="geo.habitats" alt="" coords="549,3057,716,3297">
+<area shape="rect" id="node7" href="../geo/tables/sites.html" target="_top" title="geo.sites" alt="" coords="555,1471,710,1916">
+<area shape="rect" id="node8" href="../metric/tables/metrics.html" target="_top" title="metric.metrics" alt="" coords="1083,1687,1265,1868">
+<area shape="rect" id="node28" href="tables/samples.html" target="_top" title="samples" alt="" coords="836,1885,1000,2829">
+<area shape="rect" id="node9" href="tables/assets.html" target="_top" title="assets" alt="" coords="841,3935,995,4145">
+<area shape="rect" id="node10" href="tables/benthic.html" target="_top" title="benthic" alt="" coords="1097,1885,1251,2037">
+<area shape="rect" id="node11" href="tables/box_states.html" target="_top" title="box_states" alt="" coords="265,136,440,347">
+<area shape="rect" id="node23" href="tables/projects.html" target="_top" title="projects" alt="" coords="244,377,461,764">
+<area shape="rect" id="node13" href="tables/fish.html" target="_top" title="fish" alt="" coords="1097,2480,1251,2720">
+<area shape="rect" id="node34" href="../taxa/tables/taxonomy.html" target="_top" title="taxa.taxonomy" alt="" coords="827,2847,1009,3145">
+<area shape="rect" id="node14" href="tables/mass.html" target="_top" title="mass" alt="" coords="1084,3332,1264,3572">
+<area shape="rect" id="node15" href="tables/mass_methods.html" target="_top" title="mass_methods" alt="" coords="815,3560,1021,3741">
+<area shape="rect" id="node16" href="tables/mass_types.html" target="_top" title="mass_types" alt="" coords="827,3361,1009,3543">
+<area shape="rect" id="node17" href="tables/note_types.html" target="_top" title="note_types" alt="" coords="1095,3948,1253,4217">
+<area shape="rect" id="node18" href="tables/organism_notes.html" target="_top" title="organism_notes" alt="" coords="1316,3388,1509,3511">
+<area shape="rect" id="node19" href="tables/organisms.html" target="_top" title="organisms" alt="" coords="1087,2857,1261,3244">
+<area shape="rect" id="node33" href="../taxa/tables/life_stages.html" target="_top" title="taxa.life_stages" alt="" coords="823,3163,1013,3344">
+<area shape="rect" id="node20" href="tables/plankton.html" target="_top" title="plankton" alt="" coords="1077,2055,1271,2412">
+<area shape="rect" id="node21" href="tables/project_samples.html" target="_top" title="project_samples" alt="" coords="1076,1025,1272,1148">
+<area shape="rect" id="node22" href="tables/project_types.html" target="_top" title="project_types" alt="" coords="5,436,200,617">
+<area shape="rect" id="node24" href="tables/sample_assets.html" target="_top" title="sample_assets" alt="" coords="1082,3808,1266,3931">
+<area shape="rect" id="node25" href="tables/sample_labs.html" target="_top" title="sample_labs" alt="" coords="1090,3639,1258,3791">
+<area shape="rect" id="node26" href="tables/sample_methods.html" target="_top" title="sample_methods" alt="" coords="522,2161,743,2372">
+<area shape="rect" id="node27" href="tables/sample_types.html" target="_top" title="sample_types" alt="" coords="535,1933,731,2144">
+<area shape="rect" id="node29" href="tables/sort_qa.html" target="_top" title="sort_qa" alt="" coords="544,1060,721,1417">
+<area shape="rect" id="node30" href="tables/submissions.html" target="_top" title="submissions" alt="" coords="830,977,1006,1188">
+<area shape="rect" id="node31" href="tables/taxa_qa.html" target="_top" title="taxa_qa" alt="" coords="541,2389,725,3040">
+<area shape="rect" id="node32" href="tables/vw_boxes.html" target="_top" title="vw_boxes" alt="" coords="505,5,760,427">
+</map>
+                                        <a name='diagram'><img id="largeimpliedDegreeImg" src="diagrams/summary/relationships.implied.large.png" usemap="#largeImpliedRelationshipsDiagram" class="diagram" border="0" align="left"></a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div><!-- /.box-body -->
+                    </div>
+                </section>
+            </div>
+            <!-- /.content-wrapper -->
+            <footer class="main-footer">
+                <div>
+                    <div class="pull-right hidden-xs">
+                        <a href="https://github.com/schemaspy/schemaspy" title="GitHub for SchemaSpy"><i class="fa fa-github-square fa-2x"></i></a>
+                        <a href="http://stackoverflow.com/questions/tagged/schemaspy" title="StackOverflow for SchemaSpy"><i class="fa fa-stack-overflow fa-2x"></i></a>
+                    </div>
+                    <strong>Generated by <a href="http://schemaspy.org/" class="logo-text"><i class="fa fa-database"></i> SchemaSpy 6.1.0</a></strong>
+                </div>
+                <!-- /.container -->
+            </footer>
+        </div>
+        <!-- ./wrapper -->
+
+        <!-- jQuery 2.2.3 -->
+        <script src="bower/admin-lte/plugins/jQuery/jquery-2.2.3.min.js"></script>
+        <script src="bower/admin-lte/plugins/jQueryUI/jquery-ui.min.js"></script>
+        <!-- Bootstrap 3.3.5 -->
+        <script src="bower/admin-lte/bootstrap/js/bootstrap.min.js"></script>
+        <!-- DataTables -->
+        <script src="bower/datatables.net/jquery.dataTables.min.js"></script>
+        <script src="bower/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
+        <script src="bower/datatables.net-buttons/dataTables.buttons.min.js"></script>
+        <script src="bower/datatables.net-buttons-bs/js/buttons.bootstrap.min.js"></script>
+        <script src="bower/datatables.net-buttons/buttons.html5.min.js"></script>
+        <script src="bower/datatables.net-buttons/buttons.print.min.js"></script>
+        <script src="bower/datatables.net-buttons/buttons.colVis.min.js"></script>
+        <!-- SheetJS -->
+        <script src="bower/js-xlsx/xlsx.full.min.js"></script>
+        <!-- pdfmake -->
+        <script src="bower/pdfmake/pdfmake.min.js"></script>
+        <script src="bower/pdfmake/vfs_fonts.js"></script>
+        <!-- SlimScroll -->
+        <script src="bower/admin-lte/plugins/slimScroll/jquery.slimscroll.min.js"></script>
+        <!-- FastClick -->
+        <script src="bower/admin-lte/plugins/fastclick/fastclick.js"></script>
+        <!-- Salvattore -->
+        <script src="bower/salvattore/salvattore.min.js"></script>
+        <!-- AnchorJS -->
+        <script src="bower/anchor-js/anchor.min.js"></script>
+        <!-- CodeMirror -->
+        <script src="bower/codemirror/codemirror.js"></script>
+        <script src="bower/codemirror/sql.js"></script>
+        <!-- AdminLTE App -->
+        <script src="bower/admin-lte/dist/js/app.min.js"></script>
+        <script src="relationships.js"></script>
+        <script src="schemaSpy.js"></script>
+    </body>
+</html>

@@ -1,0 +1,8 @@
+organization_types
+lab_types
+roles
+entities
+organizations
+individuals
+communications
+individual_roles

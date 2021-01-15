@@ -1,0 +1,11 @@
+taxa_translations
+translation_predictors
+taxa_attributes
+external_ids
+synonyms
+taxonomy
+taxa_levels
+life_stages
+external_sources
+attributes
+translations

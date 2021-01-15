@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<database name="bugdb" schema="taxa" type="PostgreSQL - 12.4 (Debian 12.4-1.pgdg100+1)">
+   <tables>
+      <table name="attributes" numRows="0" remarks="" schema="taxa" type="TABLE">
+         <column autoUpdated="true" defaultValue="null" digits="0" id="0" name="attribute_id" nullable="false" remarks="" size="5" type="int2" typeCode="5">
+            <child column="attribute_id" foreignKey="fk_taxa_attributes_attribute_id" implied="false" onDeleteCascade="false" schema="taxa" table="taxa_attributes"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="attribute_name" nullable="false" remarks="" size="255" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="2" name="attribute_type" nullable="false" remarks="" size="2147483647" type="attribute_types" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="3" name="label" nullable="true" remarks="" size="255" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="4" name="description" nullable="true" remarks="" size="2147483647" type="text" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="5" name="metadata" nullable="true" remarks="" size="2147483647" type="json" typeCode="1111"/>
+         <column autoUpdated="false" defaultValue="now()" digits="6" id="6" name="created_date" nullable="false" remarks="" size="35" type="timestamptz" typeCode="93"/>
+         <column autoUpdated="false" defaultValue="now()" digits="6" id="7" name="updated_date" nullable="false" remarks="" size="35" type="timestamptz" typeCode="93"/>
+         <primaryKey column="attribute_id" sequenceNumberInPK="1"/>
+         <index name="attributes_pkey" unique="true">
+            <column ascending="true" name="attribute_id"/>
+         </index>
+         <index name="attributes_attribute_name_key" unique="true">
+            <column ascending="true" name="attribute_name"/>
+         </index>
+      </table>
+      <table name="external_ids" numRows="0" remarks="" schema="taxa" type="TABLE">
+         <column autoUpdated="false" defaultValue="null" digits="0" id="0" name="source_id" nullable="false" remarks="" size="5" type="int2" typeCode="5">
+            <parent column="source_id" foreignKey="fk_external_ids_source_id" implied="false" onDeleteCascade="true" schema="taxa" table="external_sources"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="taxonomy_id" nullable="false" remarks="" size="5" type="int2" typeCode="5">
+            <parent column="taxonomy_id" foreignKey="fk_external_ids_taxonomy_id" implied="false" onDeleteCascade="false" schema="taxa" table="taxonomy"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="2" name="external_source_id" nullable="true" remarks="" size="255" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="3" name="scientific_name" nullable="true" remarks="" size="255" type="varchar" typeCode="12"/>
+         <primaryKey column="source_id" sequenceNumberInPK="1"/>
+         <primaryKey column="taxonomy_id" sequenceNumberInPK="2"/>
+         <index name="pk_external_ids" unique="true">
+            <column ascending="true" name="source_id"/>
+            <column ascending="true" name="taxonomy_id"/>
+         </index>
+      </table>
+      <table name="external_sources" numRows="0" remarks="" schema="taxa" type="TABLE">
+         <column autoUpdated="true" defaultValue="null" digits="0" id="0" name="source_id" nullable="false" remarks="" size="5" type="int2" typeCode="5">
+            <child column="source_id" foreignKey="fk_external_ids_source_id" implied="false" onDeleteCascade="true" schema="taxa" table="external_ids"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="source_name" nullable="false" remarks="" size="255" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="2" name="abbreviation" nullable="false" remarks="" size="10" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="3" name="description" nullable="true" remarks="" size="2147483647" type="text" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="4" name="metadata" nullable="true" remarks="" size="2147483647" type="jsonb" typeCode="1111"/>
+         <primaryKey column="source_id" sequenceNumberInPK="1"/>
+         <index name="external_sources_pkey" unique="true">
+            <column ascending="true" name="source_id"/>
+         </index>
+         <index name="external_sources_abbreviation_key" unique="true">
+            <column ascending="true" name="abbreviation"/>
+         </index>
+         <index name="external_sources_source_name_key" unique="true">
+            <column ascending="true" name="source_name"/>
+         </index>
+      </table>
+      <table name="life_stages" numRows="6" remarks="" schema="taxa" type="TABLE">
+         <column autoUpdated="true" defaultValue="null" digits="0" id="0" name="life_stage_id" nullable="false" remarks="" size="5" type="int2" typeCode="5">
+            <child column="life_stage_id" foreignKey="fk_organisms_life_stage_id" implied="false" onDeleteCascade="false" schema="sample" table="organisms"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="abbreviation" nullable="false" remarks="" size="1" type="bpchar" typeCode="1"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="2" name="life_stage_name" nullable="false" remarks="" size="50" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="true" digits="0" id="3" name="is_active" nullable="false" remarks="" size="1" type="bool" typeCode="-7"/>
+         <primaryKey column="life_stage_id" sequenceNumberInPK="1"/>
+         <index name="life_stages_pkey" unique="true">
+            <column ascending="true" name="life_stage_id"/>
+         </index>
+         <index name="life_stages_abbreviation_key" unique="true">
+            <column ascending="true" name="abbreviation"/>
+         </index>
+         <index name="life_stages_life_stage_name_key" unique="true">
+            <column ascending="true" name="life_stage_name"/>
+         </index>
+      </table>
+      <table name="synonyms" numRows="0" remarks="" schema="taxa" type="TABLE">
+         <column autoUpdated="true" defaultValue="null" digits="0" id="0" name="synonym_id" nullable="false" remarks="" size="5" type="int2" typeCode="5"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="taxonomy_id" nullable="false" remarks="" size="5" type="int2" typeCode="5">
+            <parent column="taxonomy_id" foreignKey="fk_synonyms_taxonomy_id" implied="false" onDeleteCascade="true" schema="taxa" table="taxonomy"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="2" name="synonym" nullable="false" remarks="" size="255" type="varchar" typeCode="12"/>
+         <primaryKey column="synonym_id" sequenceNumberInPK="1"/>
+         <index name="synonyms_pkey" unique="true">
+            <column ascending="true" name="synonym_id"/>
+         </index>
+         <index name="fx_synonyms_taxonomy_id" unique="false">
+            <column ascending="true" name="taxonomy_id"/>
+         </index>
+      </table>
+      <table name="taxa_attributes" numRows="0" remarks="" schema="taxa" type="TABLE">
+         <column autoUpdated="false" defaultValue="null" digits="0" id="0" name="taxonomy_id" nullable="false" remarks="" size="5" type="int2" typeCode="5">
+            <parent column="taxonomy_id" foreignKey="fk_taxa_attributes_taxonomy_id" implied="false" onDeleteCascade="true" schema="taxa" table="taxonomy"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="attribute_id" nullable="false" remarks="" size="5" type="int2" typeCode="5">
+            <parent column="attribute_id" foreignKey="fk_taxa_attributes_attribute_id" implied="false" onDeleteCascade="false" schema="taxa" table="attributes"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="2" name="attribute_value" nullable="false" remarks="" size="100" type="varchar" typeCode="12"/>
+         <primaryKey column="taxonomy_id" sequenceNumberInPK="1"/>
+         <primaryKey column="attribute_id" sequenceNumberInPK="2"/>
+         <index name="pk_taxa_attributes" unique="true">
+            <column ascending="true" name="taxonomy_id"/>
+            <column ascending="true" name="attribute_id"/>
+         </index>
+      </table>
+      <table name="taxa_levels" numRows="26" remarks="" schema="taxa" type="TABLE">
+         <column autoUpdated="true" defaultValue="null" digits="0" id="0" name="level_id" nullable="false" remarks="" size="5" type="int2" typeCode="5">
+            <child column="parent_level_id" foreignKey="fk_taxa_levels_parent_level_id" implied="false" onDeleteCascade="false" schema="taxa" table="taxa_levels"/>
+            <child column="level_id" foreignKey="fk_organism_taxonomy_taxa_level_id" implied="false" onDeleteCascade="false" schema="taxa" table="taxonomy"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="level_name" nullable="false" remarks="" size="50" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="2" name="parent_level_id" nullable="true" remarks="" size="5" type="int2" typeCode="5">
+            <parent column="level_id" foreignKey="fk_taxa_levels_parent_level_id" implied="false" onDeleteCascade="false" schema="taxa" table="taxa_levels"/>
+         </column>
+         <column autoUpdated="false" defaultValue="true" digits="0" id="3" name="is_active" nullable="false" remarks="" size="1" type="bool" typeCode="-7"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="4" name="description" nullable="true" remarks="" size="2147483647" type="text" typeCode="12"/>
+         <primaryKey column="level_id" sequenceNumberInPK="1"/>
+         <index name="taxa_levels_pkey" unique="true">
+            <column ascending="true" name="level_id"/>
+         </index>
+         <index name="taxa_levels_level_name_key" unique="true">
+            <column ascending="true" name="level_name"/>
+         </index>
+         <index name="taxa_levels_parent_level_id_key" unique="true">
+            <column ascending="true" name="parent_level_id"/>
+         </index>
+      </table>
+      <table name="taxa_translations" numRows="0" remarks="" schema="taxa" type="TABLE">
+         <column autoUpdated="false" defaultValue="null" digits="0" id="0" name="translation_id" nullable="false" remarks="" size="5" type="int2" typeCode="5">
+            <parent column="translation_id" foreignKey="fk_taxa_translations_translation_id" implied="false" onDeleteCascade="true" schema="taxa" table="translations"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="taxonomy_id" nullable="false" remarks="" size="5" type="int2" typeCode="5">
+            <parent column="taxonomy_id" foreignKey="fk_taxa_translations_taxonomy_id" implied="false" onDeleteCascade="false" schema="taxa" table="taxonomy"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="2" name="translation_taxonomy_id" nullable="false" remarks="" size="5" type="int2" typeCode="5">
+            <parent column="taxonomy_id" foreignKey="fk_taxa_translation_translation_taxonomy_id" implied="false" onDeleteCascade="false" schema="taxa" table="taxonomy"/>
+         </column>
+         <primaryKey column="translation_id" sequenceNumberInPK="1"/>
+         <primaryKey column="taxonomy_id" sequenceNumberInPK="2"/>
+         <index name="pk_taxa_translations" unique="true">
+            <column ascending="true" name="translation_id"/>
+            <column ascending="true" name="taxonomy_id"/>
+         </index>
+         <index name="fx_taxa_translations_taxonomy_id" unique="false">
+            <column ascending="true" name="taxonomy_id"/>
+         </index>
+         <index name="fx_taxa_translations_translation_taxonomy_id" unique="false">
+            <column ascending="true" name="translation_taxonomy_id"/>
+         </index>
+      </table>
+      <table name="taxonomy" numRows="0" remarks="" schema="taxa" type="TABLE">
+         <column autoUpdated="true" defaultValue="null" digits="0" id="0" name="taxonomy_id" nullable="false" remarks="" size="5" type="int2" typeCode="5">
+            <child column="taxonomy_id" foreignKey="fk_fish_taxonomy_id" implied="false" onDeleteCascade="false" schema="sample" table="fish"/>
+            <child column="taxonomy_id" foreignKey="fk_organisms_taxonomy_id" implied="false" onDeleteCascade="false" schema="sample" table="organisms"/>
+            <child column="taxonomy_id" foreignKey="fk_external_ids_taxonomy_id" implied="false" onDeleteCascade="false" schema="taxa" table="external_ids"/>
+            <child column="taxonomy_id" foreignKey="fk_synonyms_taxonomy_id" implied="false" onDeleteCascade="true" schema="taxa" table="synonyms"/>
+            <child column="taxonomy_id" foreignKey="fk_taxa_attributes_taxonomy_id" implied="false" onDeleteCascade="true" schema="taxa" table="taxa_attributes"/>
+            <child column="taxonomy_id" foreignKey="fk_taxa_translations_taxonomy_id" implied="false" onDeleteCascade="false" schema="taxa" table="taxa_translations"/>
+            <child column="translation_taxonomy_id" foreignKey="fk_taxa_translation_translation_taxonomy_id" implied="false" onDeleteCascade="false" schema="taxa" table="taxa_translations"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="scientific_name" nullable="false" remarks="" size="255" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="2" name="level_id" nullable="false" remarks="" size="5" type="int2" typeCode="5">
+            <parent column="level_id" foreignKey="fk_organism_taxonomy_taxa_level_id" implied="false" onDeleteCascade="false" schema="taxa" table="taxa_levels"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="3" name="parent_id" nullable="true" remarks="" size="5" type="int2" typeCode="5"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="4" name="author" nullable="true" remarks="" size="255" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="5" name="year" nullable="true" remarks="" size="5" type="int2" typeCode="5"/>
+         <column autoUpdated="false" defaultValue="now()" digits="6" id="6" name="created_date" nullable="false" remarks="" size="35" type="timestamptz" typeCode="93"/>
+         <column autoUpdated="false" defaultValue="now()" digits="6" id="7" name="updated_date" nullable="false" remarks="" size="35" type="timestamptz" typeCode="93"/>
+         <primaryKey column="taxonomy_id" sequenceNumberInPK="1"/>
+         <index name="taxonomy_pkey" unique="true">
+            <column ascending="true" name="taxonomy_id"/>
+         </index>
+         <index name="fx_organism_taxonomy_taxa_level_id" unique="false">
+            <column ascending="true" name="level_id"/>
+         </index>
+      </table>
+      <table name="translation_predictors" numRows="0" remarks="" schema="taxa" type="TABLE">
+         <column autoUpdated="false" defaultValue="null" digits="0" id="0" name="translation_id" nullable="false" remarks="" size="5" type="int2" typeCode="5">
+            <parent column="translation_id" foreignKey="fk_taxa_translation_predictors_translation_id" implied="false" onDeleteCascade="true" schema="taxa" table="translations"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="predictor_id" nullable="false" remarks="" size="5" type="int2" typeCode="5">
+            <parent column="predictor_id" foreignKey="fk_taxa_translation_predictors_predictor_id" implied="false" onDeleteCascade="false" schema="geo" table="predictors"/>
+         </column>
+         <primaryKey column="translation_id" sequenceNumberInPK="1"/>
+         <primaryKey column="predictor_id" sequenceNumberInPK="2"/>
+         <index name="pk_taxa_translation_predictors" unique="true">
+            <column ascending="true" name="translation_id"/>
+            <column ascending="true" name="predictor_id"/>
+         </index>
+      </table>
+      <table name="translations" numRows="13" remarks="" schema="taxa" type="TABLE">
+         <column autoUpdated="true" defaultValue="null" digits="0" id="0" name="translation_id" nullable="false" remarks="" size="5" type="int2" typeCode="5">
+            <child column="translation_id" foreignKey="fk_metrics_translation_id" implied="false" onDeleteCascade="true" schema="metric" table="metrics"/>
+            <child column="translation_id" foreignKey="fk_taxa_translations_translation_id" implied="false" onDeleteCascade="true" schema="taxa" table="taxa_translations"/>
+            <child column="translation_id" foreignKey="fk_taxa_translation_predictors_translation_id" implied="false" onDeleteCascade="true" schema="taxa" table="translation_predictors"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="translation_name" nullable="false" remarks="" size="255" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="2" name="description" nullable="true" remarks="" size="2147483647" type="text" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="true" digits="0" id="3" name="is_active" nullable="false" remarks="" size="1" type="bool" typeCode="-7"/>
+         <column autoUpdated="false" defaultValue="now()" digits="6" id="4" name="created_date" nullable="false" remarks="" size="35" type="timestamptz" typeCode="93"/>
+         <column autoUpdated="false" defaultValue="now()" digits="6" id="5" name="updated_date" nullable="false" remarks="" size="35" type="timestamptz" typeCode="93"/>
+         <primaryKey column="translation_id" sequenceNumberInPK="1"/>
+         <index name="translations_pkey" unique="true">
+            <column ascending="true" name="translation_id"/>
+         </index>
+         <index name="translations_translation_name_key" unique="true">
+            <column ascending="true" name="translation_name"/>
+         </index>
+      </table>
+   </tables>
+</database>
