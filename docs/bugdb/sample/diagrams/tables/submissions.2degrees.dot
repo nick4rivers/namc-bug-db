@@ -19,19 +19,19 @@ digraph "twoDegreesRelationshipsDiagram" {
     arrowsize="0.8"
   ];
   "billing.invoice_boxes":"elipses":w -> "boxes":"box_id":e [arrowhead=none dir=back arrowtail=crowodot];
+  "public.sample_box_assets":"elipses":w -> "boxes":"box_id":e [arrowhead=none dir=back arrowtail=crowodot];
   "boxes":"box_state_id":w -> "box_states":"elipses":e [arrowhead=none dir=back arrowtail=crowodot];
   "boxes":"customer_id":w -> "entity.entities":"elipses":e [arrowhead=none dir=back arrowtail=crowodot];
   "boxes":"project_id":w -> "projects":"elipses":e [arrowhead=none dir=back arrowtail=crowodot];
-  "boxes":"submitter_id":w -> "entity.individuals":"individual_id":e [arrowhead=none dir=back arrowtail=crowodot];
+  "boxes":"submitter_id":w -> "entity.individuals":"entity_id":e [arrowhead=none dir=back arrowtail=crowodot];
   "projects":"elipses":w -> "entity.entities":"elipses":e [arrowhead=none dir=back arrowtail=crowodot];
   "samples":"elipses":w -> "boxes":"box_id":e [arrowhead=none dir=back arrowtail=crowodot];
-  "samples":"elipses":w -> "entity.individuals":"individual_id":e [arrowhead=none dir=back arrowtail=crowodot];
-  "samples":"elipses":w -> "entity.individuals":"individual_id":e [arrowhead=none dir=back arrowtail=crowodot];
-  "sort_qa":"elipses":w -> "entity.individuals":"individual_id":e [arrowhead=none dir=back arrowtail=crowodot];
-  "submissions":"box_id":w -> "boxes":"box_id":e [arrowhead=none dir=back arrowtail=teeodot];
-  "submissions":"submitted_by_id":w -> "entity.individuals":"individual_id":e [arrowhead=none dir=back arrowtail=crowodot];
-  "taxa_qa":"elipses":w -> "entity.individuals":"individual_id":e [arrowhead=none dir=back arrowtail=crowodot];
-  "taxa_qa":"elipses":w -> "entity.individuals":"individual_id":e [arrowhead=none dir=back arrowtail=crowodot];
+  "sorter_time":"elipses":w -> "samples":"elipses":e [arrowhead=none dir=back arrowtail=crowodot];
+  "sorter_time":"elipses":w -> "entity.individuals":"entity_id":e [arrowhead=none dir=back arrowtail=crowodot];
+  "submissions":"box_id":w -> "boxes":"box_id":e [arrowhead=none dir=back arrowtail=crowodot];
+  "submissions":"submitted_by_id":w -> "entity.individuals":"entity_id":e [arrowhead=none dir=back arrowtail=crowodot];
+  "taxa_time":"elipses":w -> "entity.individuals":"entity_id":e [arrowhead=none dir=back arrowtail=crowodot];
+  "taxa_time":"elipses":w -> "samples":"elipses":e [arrowhead=none dir=back arrowtail=crowodot];
   "billing.invoice_boxes" [
    label=<
     <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" BGCOLOR="#ffffff">
@@ -59,11 +59,22 @@ digraph "twoDegreesRelationshipsDiagram" {
     <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" BGCOLOR="#ffffff">
       <TR><TD COLSPAN="3"  BGCOLOR="#f5f5f5"><TABLE BORDER="0" CELLSPACING="0"><TR><TD ALIGN="LEFT"><B>entity.individuals</B></TD><TD ALIGN="RIGHT">[table]</TD></TR></TABLE></TD></TR>
       <TR><TD PORT="elipses" COLSPAN="3" ALIGN="LEFT">...</TD></TR>
-      <TR><TD ALIGN="LEFT" BGCOLOR="#ffffff">  </TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">0 rows</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">7 &gt;</TD></TR>
+      <TR><TD ALIGN="LEFT" BGCOLOR="#ffffff">  </TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">0 rows</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">4 &gt;</TD></TR>
     </TABLE>>
     URL="../entity/tables/individuals.html"
     target="_top"
     tooltip="entity.individuals"
+  ];
+  "public.sample_box_assets" [
+   label=<
+    <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" BGCOLOR="#ffffff">
+      <TR><TD COLSPAN="3"  BGCOLOR="#f5f5f5"><TABLE BORDER="0" CELLSPACING="0"><TR><TD ALIGN="LEFT"><B>public.sample_box_assets</B></TD><TD ALIGN="RIGHT">[table]</TD></TR></TABLE></TD></TR>
+      <TR><TD PORT="elipses" COLSPAN="3" ALIGN="LEFT">...</TD></TR>
+      <TR><TD ALIGN="LEFT" BGCOLOR="#ffffff">&lt; 2</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">0 rows</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">  </TD></TR>
+    </TABLE>>
+    URL="../public/tables/sample_box_assets.html"
+    target="_top"
+    tooltip="public.sample_box_assets"
   ];
   "box_states" [
    label=<
@@ -86,7 +97,7 @@ digraph "twoDegreesRelationshipsDiagram" {
       <TR><TD PORT="box_state_id" COLSPAN="3" BGCOLOR="#ffffff" ALIGN="LEFT"><TABLE BORDER="0" CELLSPACING="0" ALIGN="LEFT"><TR ALIGN="LEFT"><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="15" HEIGHT="16"><IMG SRC="../../images/foreignKeys.png"/></TD><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="154" HEIGHT="16">box_state_id</TD></TR></TABLE></TD></TR>
       <TR><TD PORT="project_id" COLSPAN="3" BGCOLOR="#ffffff" ALIGN="LEFT"><TABLE BORDER="0" CELLSPACING="0" ALIGN="LEFT"><TR ALIGN="LEFT"><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="15" HEIGHT="16"><IMG SRC="../../images/foreignKeys.png"/></TD><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="154" HEIGHT="16">project_id</TD></TR></TABLE></TD></TR>
       <TR><TD PORT="elipses" COLSPAN="3" ALIGN="LEFT">...</TD></TR>
-      <TR><TD ALIGN="LEFT" BGCOLOR="#ffffff">&lt; 4</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">0 rows</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">3 &gt;</TD></TR>
+      <TR><TD ALIGN="LEFT" BGCOLOR="#ffffff">&lt; 4</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">0 rows</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">4 &gt;</TD></TR>
     </TABLE>>
     URL="boxes.html"
     target="_top"
@@ -108,28 +119,30 @@ digraph "twoDegreesRelationshipsDiagram" {
     <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" BGCOLOR="#ffffff">
       <TR><TD COLSPAN="3"  BGCOLOR="#f5f5f5"><TABLE BORDER="0" CELLSPACING="0"><TR><TD ALIGN="LEFT"><B>samples</B></TD><TD ALIGN="RIGHT">[table]</TD></TR></TABLE></TD></TR>
       <TR><TD PORT="elipses" COLSPAN="3" ALIGN="LEFT">...</TD></TR>
-      <TR><TD ALIGN="LEFT" BGCOLOR="#ffffff">&lt; 8</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">0 rows</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">9 &gt;</TD></TR>
+      <TR><TD ALIGN="LEFT" BGCOLOR="#ffffff">&lt; 5</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">0 rows</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">10 &gt;</TD></TR>
     </TABLE>>
     URL="samples.html"
     target="_top"
     tooltip="samples"
   ];
-  "sort_qa" [
+  "sorter_time" [
    label=<
     <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" BGCOLOR="#ffffff">
-      <TR><TD COLSPAN="3"  BGCOLOR="#f5f5f5"><TABLE BORDER="0" CELLSPACING="0"><TR><TD ALIGN="LEFT"><B>sort_qa</B></TD><TD ALIGN="RIGHT">[table]</TD></TR></TABLE></TD></TR>
+      <TR><TD COLSPAN="3"  BGCOLOR="#f5f5f5"><TABLE BORDER="0" CELLSPACING="0"><TR><TD ALIGN="LEFT"><B>sorter_time</B></TD><TD ALIGN="RIGHT">[table]</TD></TR></TABLE></TD></TR>
       <TR><TD PORT="elipses" COLSPAN="3" ALIGN="LEFT">...</TD></TR>
-      <TR><TD ALIGN="LEFT" BGCOLOR="#ffffff">&lt; 1</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">0 rows</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">  </TD></TR>
+      <TR><TD ALIGN="LEFT" BGCOLOR="#ffffff">&lt; 2</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">0 rows</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">  </TD></TR>
     </TABLE>>
-    URL="sort_qa.html"
+    URL="sorter_time.html"
     target="_top"
-    tooltip="sort_qa"
+    tooltip="sorter_time"
   ];
   "submissions" [
    label=<
     <TABLE BORDER="2" CELLBORDER="1" CELLSPACING="0" BGCOLOR="#ffffff">
       <TR><TD COLSPAN="4"  BGCOLOR="#f5f5f5"><TABLE BORDER="0" CELLSPACING="0"><TR><TD ALIGN="LEFT"><B>submissions</B></TD><TD ALIGN="RIGHT">[table]</TD></TR></TABLE></TD></TR>
-      <TR><TD PORT="box_id" COLSPAN="2" ALIGN="LEFT"><TABLE BORDER="0" CELLSPACING="0" ALIGN="LEFT"><TR ALIGN="LEFT"><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="15" HEIGHT="16"><IMG SRC="../../images/primaryKeys.png"/></TD><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="95" HEIGHT="16">box_id</TD></TR></TABLE></TD><TD PORT="box_id.type" ALIGN="LEFT">int4[10]</TD></TR>
+      <TR><TD PORT="submission_id" COLSPAN="2" ALIGN="LEFT"><TABLE BORDER="0" CELLSPACING="0" ALIGN="LEFT"><TR ALIGN="LEFT"><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="15" HEIGHT="16"><IMG SRC="../../images/primaryKeys.png"/></TD><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="95" HEIGHT="16">submission_id</TD></TR></TABLE></TD><TD PORT="submission_id.type" ALIGN="LEFT">int4[10]</TD></TR>
+      <TR><TD PORT="box_id" COLSPAN="2" BGCOLOR="#ffffff" ALIGN="LEFT"><TABLE BORDER="0" CELLSPACING="0" ALIGN="LEFT"><TR ALIGN="LEFT"><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="15" HEIGHT="16"><IMG SRC="../../images/foreignKeys.png"/></TD><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="95" HEIGHT="16">box_id</TD></TR></TABLE></TD><TD PORT="box_id.type" ALIGN="LEFT">int4[10]</TD></TR>
+      <TR><TD PORT="version_id" COLSPAN="2" BGCOLOR="#ffffff" ALIGN="LEFT"><TABLE BORDER="0" CELLSPACING="0" ALIGN="LEFT"><TR ALIGN="LEFT"><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="15" HEIGHT="16"></TD><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="95" HEIGHT="16">version_id</TD></TR></TABLE></TD><TD PORT="version_id.type" ALIGN="LEFT">int4[10]</TD></TR>
       <TR><TD PORT="metadata" COLSPAN="2" ALIGN="LEFT"><TABLE BORDER="0" CELLSPACING="0" ALIGN="LEFT"><TR ALIGN="LEFT"><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="15" HEIGHT="16"></TD><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="95" HEIGHT="16">metadata</TD></TR></TABLE></TD><TD PORT="metadata.type" ALIGN="LEFT">jsonb[2147483647]</TD></TR>
       <TR><TD PORT="submitted_by_id" COLSPAN="2" BGCOLOR="#ffffff" ALIGN="LEFT"><TABLE BORDER="0" CELLSPACING="0" ALIGN="LEFT"><TR ALIGN="LEFT"><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="15" HEIGHT="16"><IMG SRC="../../images/foreignKeys.png"/></TD><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="95" HEIGHT="16">submitted_by_id</TD></TR></TABLE></TD><TD PORT="submitted_by_id.type" ALIGN="LEFT">int2[5]</TD></TR>
       <TR><TD PORT="created_date" COLSPAN="2" ALIGN="LEFT"><TABLE BORDER="0" CELLSPACING="0" ALIGN="LEFT"><TR ALIGN="LEFT"><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="15" HEIGHT="16"></TD><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="95" HEIGHT="16">created_date</TD></TR></TABLE></TD><TD PORT="created_date.type" ALIGN="LEFT">timestamptz[35,6]</TD></TR>
@@ -140,15 +153,15 @@ digraph "twoDegreesRelationshipsDiagram" {
     target="_top"
     tooltip="submissions"
   ];
-  "taxa_qa" [
+  "taxa_time" [
    label=<
     <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" BGCOLOR="#ffffff">
-      <TR><TD COLSPAN="3"  BGCOLOR="#f5f5f5"><TABLE BORDER="0" CELLSPACING="0"><TR><TD ALIGN="LEFT"><B>taxa_qa</B></TD><TD ALIGN="RIGHT">[table]</TD></TR></TABLE></TD></TR>
+      <TR><TD COLSPAN="3"  BGCOLOR="#f5f5f5"><TABLE BORDER="0" CELLSPACING="0"><TR><TD ALIGN="LEFT"><B>taxa_time</B></TD><TD ALIGN="RIGHT">[table]</TD></TR></TABLE></TD></TR>
       <TR><TD PORT="elipses" COLSPAN="3" ALIGN="LEFT">...</TD></TR>
       <TR><TD ALIGN="LEFT" BGCOLOR="#ffffff">&lt; 2</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">0 rows</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">  </TD></TR>
     </TABLE>>
-    URL="taxa_qa.html"
+    URL="taxa_time.html"
     target="_top"
-    tooltip="taxa_qa"
+    tooltip="taxa_time"
   ];
 }

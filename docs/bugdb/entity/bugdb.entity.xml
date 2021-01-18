@@ -7,7 +7,7 @@
             <parent column="entity_id" foreignKey="fk_history_entity_id" implied="false" onDeleteCascade="false" schema="entity" table="entities"/>
          </column>
          <column autoUpdated="false" defaultValue="null" digits="0" id="2" name="employee_id" nullable="false" remarks="" size="5" type="int2" typeCode="5">
-            <parent column="individual_id" foreignKey="fk_history_namc_staff_id" implied="false" onDeleteCascade="false" schema="entity" table="individuals"/>
+            <parent column="entity_id" foreignKey="fk_history_namc_staff_id" implied="false" onDeleteCascade="false" schema="entity" table="individuals"/>
          </column>
          <column autoUpdated="false" defaultValue="null" digits="0" id="3" name="notes" nullable="true" remarks="" size="2147483647" type="text" typeCode="12"/>
          <column autoUpdated="false" defaultValue="null" digits="0" id="4" name="metadata" nullable="true" remarks="" size="2147483647" type="json" typeCode="1111"/>
@@ -32,8 +32,6 @@
             <child column="parent_id" foreignKey="fk_entities_parent_id" implied="false" onDeleteCascade="false" schema="entity" table="entities"/>
             <child column="entity_id" foreignKey="fk_individuals_entity_id" implied="false" onDeleteCascade="true" schema="entity" table="individuals"/>
             <child column="entity_id" foreignKey="fk_organizations_entity_id" implied="false" onDeleteCascade="true" schema="entity" table="organizations"/>
-            <child column="entity_id" foreignKey="Implied Constraint" implied="true" onDeleteCascade="false" schema="entity" table="vw_individuals"/>
-            <child column="entity_id" foreignKey="Implied Constraint" implied="true" onDeleteCascade="false" schema="entity" table="vw_organizations"/>
             <child column="customer_id" foreignKey="fk_boxes_customer_id" implied="false" onDeleteCascade="false" schema="sample" table="boxes"/>
             <child column="contact_id" foreignKey="fk_projects_contact_id" implied="false" onDeleteCascade="false" schema="sample" table="projects"/>
          </column>
@@ -69,47 +67,41 @@
          </index>
       </table>
       <table name="individual_roles" numRows="0" remarks="" schema="entity" type="TABLE">
-         <column autoUpdated="false" defaultValue="null" digits="0" id="0" name="individual_id" nullable="false" remarks="" size="5" type="int2" typeCode="5">
-            <parent column="individual_id" foreignKey="fk_individual_roles_individual_id" implied="false" onDeleteCascade="true" schema="entity" table="individuals"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="0" name="entity_id" nullable="false" remarks="" size="5" type="int2" typeCode="5">
+            <parent column="entity_id" foreignKey="fk_individual_roles_entity_id" implied="false" onDeleteCascade="true" schema="entity" table="individuals"/>
          </column>
          <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="role_id" nullable="false" remarks="" size="5" type="int2" typeCode="5">
             <parent column="role_id" foreignKey="fk_individual_roles_role_id" implied="false" onDeleteCascade="false" schema="entity" table="roles"/>
          </column>
-         <primaryKey column="individual_id" sequenceNumberInPK="1"/>
+         <primaryKey column="entity_id" sequenceNumberInPK="1"/>
          <primaryKey column="role_id" sequenceNumberInPK="2"/>
          <index name="pk_individuals_roles" unique="true">
-            <column ascending="true" name="individual_id"/>
+            <column ascending="true" name="entity_id"/>
             <column ascending="true" name="role_id"/>
          </index>
       </table>
       <table name="individuals" numRows="0" remarks="" schema="entity" type="TABLE">
-         <column autoUpdated="true" defaultValue="null" digits="0" id="0" name="individual_id" nullable="false" remarks="" size="5" type="int2" typeCode="5">
+         <column autoUpdated="false" defaultValue="null" digits="0" id="0" name="entity_id" nullable="false" remarks="" size="5" type="int2" typeCode="5">
             <child column="employee_id" foreignKey="fk_history_namc_staff_id" implied="false" onDeleteCascade="false" schema="entity" table="communications"/>
-            <child column="individual_id" foreignKey="fk_individual_roles_individual_id" implied="false" onDeleteCascade="true" schema="entity" table="individual_roles"/>
-            <child column="individual_id" foreignKey="Implied Constraint" implied="true" onDeleteCascade="false" schema="entity" table="vw_individuals"/>
+            <child column="entity_id" foreignKey="fk_individual_roles_entity_id" implied="false" onDeleteCascade="true" schema="entity" table="individual_roles"/>
             <child column="submitter_id" foreignKey="fk_boxes_creator_id" implied="false" onDeleteCascade="false" schema="sample" table="boxes"/>
-            <child column="ider_id" foreignKey="fk_samples_ider_id" implied="false" onDeleteCascade="false" schema="sample" table="samples"/>
-            <child column="sorter_id" foreignKey="fk_samples_sorter_id" implied="false" onDeleteCascade="false" schema="sample" table="samples"/>
-            <child column="sorter2_id" foreignKey="fk_sample_sort_qa_sorter2_id" implied="false" onDeleteCascade="false" schema="sample" table="sort_qa"/>
+            <child column="sorter_id" foreignKey="fk_sorter_sorter_id" implied="false" onDeleteCascade="false" schema="sample" table="sorter_time"/>
             <child column="submitted_by_id" foreignKey="fk_submissions_submitted_by_id" implied="false" onDeleteCascade="false" schema="sample" table="submissions"/>
-            <child column="ider1" foreignKey="fk_sample_taxa_qa_ider1" implied="false" onDeleteCascade="false" schema="sample" table="taxa_qa"/>
-            <child column="ider2" foreignKey="fk_sample_taxa_qa_ider2" implied="false" onDeleteCascade="false" schema="sample" table="taxa_qa"/>
+            <child column="id_er" foreignKey="fk_taxa_time_id_ier" implied="false" onDeleteCascade="false" schema="sample" table="taxa_time"/>
+            <parent column="entity_id" foreignKey="fk_individuals_entity_id" implied="false" onDeleteCascade="true" schema="entity" table="entities"/>
          </column>
          <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="first_name" nullable="false" remarks="" size="50" type="varchar" typeCode="12"/>
          <column autoUpdated="false" defaultValue="null" digits="0" id="2" name="last_name" nullable="false" remarks="" size="50" type="varchar" typeCode="12"/>
          <column autoUpdated="false" defaultValue="null" digits="0" id="3" name="initials" nullable="true" remarks="" size="3" type="varchar" typeCode="12"/>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="4" name="entity_id" nullable="false" remarks="" size="5" type="int2" typeCode="5">
-            <parent column="entity_id" foreignKey="fk_individuals_entity_id" implied="false" onDeleteCascade="true" schema="entity" table="entities"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="4" name="affiliation_id" nullable="true" remarks="" size="5" type="int2" typeCode="5">
+            <parent column="entity_id" foreignKey="fk_individuals_affiliation_id" implied="false" onDeleteCascade="false" schema="entity" table="organizations"/>
          </column>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="5" name="affiliation_id" nullable="true" remarks="" size="5" type="int2" typeCode="5">
-            <parent column="organization_id" foreignKey="fk_individuals_affiliation_id" implied="false" onDeleteCascade="false" schema="entity" table="organizations"/>
-         </column>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="6" name="email" nullable="true" remarks="" size="255" type="varchar" typeCode="12"/>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="7" name="title" nullable="true" remarks="" size="255" type="varchar" typeCode="12"/>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="8" name="cognito_sub" nullable="true" remarks="" size="255" type="varchar" typeCode="12"/>
-         <primaryKey column="individual_id" sequenceNumberInPK="1"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="5" name="email" nullable="true" remarks="" size="255" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="6" name="title" nullable="true" remarks="" size="255" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="7" name="cognito_sub" nullable="true" remarks="" size="255" type="varchar" typeCode="12"/>
+         <primaryKey column="entity_id" sequenceNumberInPK="1"/>
          <index name="individuals_pkey" unique="true">
-            <column ascending="true" name="individual_id"/>
+            <column ascending="true" name="entity_id"/>
          </index>
          <index name="fx_individuals_affiliation_id" unique="false">
             <column ascending="true" name="affiliation_id"/>
@@ -146,24 +138,20 @@
          </index>
       </table>
       <table name="organizations" numRows="0" remarks="" schema="entity" type="TABLE">
-         <column autoUpdated="true" defaultValue="null" digits="0" id="0" name="organization_id" nullable="false" remarks="" size="5" type="int2" typeCode="5">
+         <column autoUpdated="false" defaultValue="null" digits="0" id="0" name="entity_id" nullable="false" remarks="" size="5" type="int2" typeCode="5">
             <child column="affiliation_id" foreignKey="fk_individuals_affiliation_id" implied="false" onDeleteCascade="false" schema="entity" table="individuals"/>
-            <child column="organization_id" foreignKey="Implied Constraint" implied="true" onDeleteCascade="false" schema="entity" table="vw_organizations"/>
-            <child column="organization_id" foreignKey="fk_sample_labs_entity_id" implied="false" onDeleteCascade="false" schema="sample" table="sample_labs"/>
-            <child column="lab_id" foreignKey="fk_samples_lab_id" implied="false" onDeleteCascade="false" schema="sample" table="samples"/>
+            <child column="entity_id" foreignKey="fk_sample_labs_entity_id" implied="false" onDeleteCascade="false" schema="sample" table="sample_labs"/>
+            <parent column="entity_id" foreignKey="fk_organizations_entity_id" implied="false" onDeleteCascade="true" schema="entity" table="entities"/>
          </column>
          <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="abbreviation" nullable="true" remarks="" size="50" type="varchar" typeCode="12"/>
          <column autoUpdated="false" defaultValue="null" digits="0" id="2" name="organization_name" nullable="true" remarks="" size="255" type="varchar" typeCode="12"/>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="3" name="entity_id" nullable="false" remarks="" size="5" type="int2" typeCode="5">
-            <parent column="entity_id" foreignKey="fk_organizations_entity_id" implied="false" onDeleteCascade="true" schema="entity" table="entities"/>
-         </column>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="4" name="organization_type_id" nullable="false" remarks="" size="5" type="int2" typeCode="5">
+         <column autoUpdated="false" defaultValue="null" digits="0" id="3" name="organization_type_id" nullable="false" remarks="" size="5" type="int2" typeCode="5">
             <parent column="organization_type_id" foreignKey="fk_organizations_organization_type_id" implied="false" onDeleteCascade="false" schema="entity" table="organization_types"/>
          </column>
-         <column autoUpdated="false" defaultValue="false" digits="0" id="5" name="is_lab" nullable="false" remarks="" size="1" type="bool" typeCode="-7"/>
-         <primaryKey column="organization_id" sequenceNumberInPK="1"/>
+         <column autoUpdated="false" defaultValue="false" digits="0" id="4" name="is_lab" nullable="false" remarks="" size="1" type="bool" typeCode="-7"/>
+         <primaryKey column="entity_id" sequenceNumberInPK="1"/>
          <index name="organizations_pkey" unique="true">
-            <column ascending="true" name="organization_id"/>
+            <column ascending="true" name="entity_id"/>
          </index>
          <index name="fx_organizations_organization_type_id" unique="false">
             <column ascending="true" name="organization_type_id"/>
@@ -186,52 +174,42 @@
             <column ascending="true" name="role_name"/>
          </index>
       </table>
-      <table name="vw_individuals" numRows="0" remarks="" schema="entity" type="VIEW" viewSql=" SELECT i.individual_id,&#10;    i.first_name,&#10;    i.last_name,&#10;    i.initials,&#10;    i.entity_id,&#10;    i.affiliation_id,&#10;    i.email,&#10;    i.title,&#10;    i.cognito_sub,&#10;    o.organization_name AS affiliation,&#10;    e.address1,&#10;    e.address2,&#10;    e.city,&#10;    s.state_name,&#10;    c.country_name,&#10;    e.zip_code,&#10;    e.phone,&#10;    e.fax&#10;   FROM ((((entity.individuals i&#10;     JOIN entity.entities e ON ((i.entity_id = e.entity_id)))&#10;     JOIN geo.countries c ON ((e.country_id = c.country_id)))&#10;     LEFT JOIN geo.states s ON ((e.state_id = s.state_id)))&#10;     LEFT JOIN entity.organizations o ON ((i.affiliation_id = o.organization_id)));">
-         <column autoUpdated="false" defaultValue="null" digits="0" id="0" name="individual_id" nullable="true" remarks="" size="5" type="int2" typeCode="5">
-            <parent column="individual_id" foreignKey="Implied Constraint" implied="true" onDeleteCascade="false" schema="entity" table="individuals"/>
-         </column>
+      <table name="vw_individuals" numRows="0" remarks="" schema="entity" type="VIEW" viewSql=" SELECT i.entity_id,&#10;    i.first_name,&#10;    i.last_name,&#10;    i.initials,&#10;    i.affiliation_id,&#10;    i.email,&#10;    i.title,&#10;    i.cognito_sub,&#10;    o.organization_name AS affiliation,&#10;    e.address1,&#10;    e.address2,&#10;    e.city,&#10;    s.state_name,&#10;    c.country_name,&#10;    e.zip_code,&#10;    e.phone,&#10;    e.fax&#10;   FROM ((((entity.individuals i&#10;     JOIN entity.entities e ON ((i.entity_id = e.entity_id)))&#10;     JOIN geo.countries c ON ((e.country_id = c.country_id)))&#10;     LEFT JOIN geo.states s ON ((e.state_id = s.state_id)))&#10;     LEFT JOIN entity.organizations o ON ((i.affiliation_id = o.entity_id)));">
+         <column autoUpdated="false" defaultValue="null" digits="0" id="0" name="entity_id" nullable="true" remarks="" size="5" type="int2" typeCode="5"/>
          <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="first_name" nullable="true" remarks="" size="50" type="varchar" typeCode="12"/>
          <column autoUpdated="false" defaultValue="null" digits="0" id="2" name="last_name" nullable="true" remarks="" size="50" type="varchar" typeCode="12"/>
          <column autoUpdated="false" defaultValue="null" digits="0" id="3" name="initials" nullable="true" remarks="" size="3" type="varchar" typeCode="12"/>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="4" name="entity_id" nullable="true" remarks="" size="5" type="int2" typeCode="5">
-            <parent column="entity_id" foreignKey="Implied Constraint" implied="true" onDeleteCascade="false" schema="entity" table="entities"/>
-         </column>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="5" name="affiliation_id" nullable="true" remarks="" size="5" type="int2" typeCode="5"/>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="6" name="email" nullable="true" remarks="" size="255" type="varchar" typeCode="12"/>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="7" name="title" nullable="true" remarks="" size="255" type="varchar" typeCode="12"/>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="8" name="cognito_sub" nullable="true" remarks="" size="255" type="varchar" typeCode="12"/>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="9" name="affiliation" nullable="true" remarks="" size="255" type="varchar" typeCode="12"/>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="10" name="address1" nullable="true" remarks="" size="255" type="varchar" typeCode="12"/>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="11" name="address2" nullable="true" remarks="" size="255" type="varchar" typeCode="12"/>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="12" name="city" nullable="true" remarks="" size="255" type="varchar" typeCode="12"/>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="13" name="state_name" nullable="true" remarks="" size="50" type="varchar" typeCode="12"/>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="14" name="country_name" nullable="true" remarks="" size="50" type="varchar" typeCode="12"/>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="15" name="zip_code" nullable="true" remarks="" size="20" type="varchar" typeCode="12"/>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="16" name="phone" nullable="true" remarks="" size="50" type="varchar" typeCode="12"/>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="17" name="fax" nullable="true" remarks="" size="50" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="4" name="affiliation_id" nullable="true" remarks="" size="5" type="int2" typeCode="5"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="5" name="email" nullable="true" remarks="" size="255" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="6" name="title" nullable="true" remarks="" size="255" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="7" name="cognito_sub" nullable="true" remarks="" size="255" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="8" name="affiliation" nullable="true" remarks="" size="255" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="9" name="address1" nullable="true" remarks="" size="255" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="10" name="address2" nullable="true" remarks="" size="255" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="11" name="city" nullable="true" remarks="" size="255" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="12" name="state_name" nullable="true" remarks="" size="50" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="13" name="country_name" nullable="true" remarks="" size="50" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="14" name="zip_code" nullable="true" remarks="" size="20" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="15" name="phone" nullable="true" remarks="" size="50" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="16" name="fax" nullable="true" remarks="" size="50" type="varchar" typeCode="12"/>
       </table>
-      <table name="vw_organizations" numRows="0" remarks="" schema="entity" type="VIEW" viewSql=" SELECT o.organization_id,&#10;    o.abbreviation,&#10;    o.organization_name,&#10;    o.entity_id,&#10;    o.organization_type_id,&#10;    o.is_lab,&#10;    t.organization_type_name,&#10;    e.address1,&#10;    e.address2,&#10;    e.city,&#10;    s.state_name,&#10;    c.country_name,&#10;    e.zip_code,&#10;    e.phone,&#10;    e.fax&#10;   FROM ((((entity.organizations o&#10;     JOIN entity.entities e ON ((o.entity_id = e.entity_id)))&#10;     JOIN entity.organization_types t ON ((o.organization_type_id = t.organization_type_id)))&#10;     JOIN geo.countries c ON ((e.country_id = c.country_id)))&#10;     LEFT JOIN geo.states s ON ((e.state_id = s.state_id)));">
-         <column autoUpdated="false" defaultValue="null" digits="0" id="0" name="organization_id" nullable="true" remarks="" size="5" type="int2" typeCode="5">
-            <parent column="organization_id" foreignKey="Implied Constraint" implied="true" onDeleteCascade="false" schema="entity" table="organizations"/>
-         </column>
+      <table name="vw_organizations" numRows="0" remarks="" schema="entity" type="VIEW" viewSql=" SELECT o.entity_id,&#10;    o.abbreviation,&#10;    o.organization_name,&#10;    o.organization_type_id,&#10;    o.is_lab,&#10;    t.organization_type_name,&#10;    e.address1,&#10;    e.address2,&#10;    e.city,&#10;    s.state_name,&#10;    c.country_name,&#10;    e.zip_code,&#10;    e.phone,&#10;    e.fax&#10;   FROM ((((entity.organizations o&#10;     JOIN entity.entities e ON ((o.entity_id = e.entity_id)))&#10;     JOIN entity.organization_types t ON ((o.organization_type_id = t.organization_type_id)))&#10;     JOIN geo.countries c ON ((e.country_id = c.country_id)))&#10;     LEFT JOIN geo.states s ON ((e.state_id = s.state_id)));">
+         <column autoUpdated="false" defaultValue="null" digits="0" id="0" name="entity_id" nullable="true" remarks="" size="5" type="int2" typeCode="5"/>
          <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="abbreviation" nullable="true" remarks="" size="50" type="varchar" typeCode="12"/>
          <column autoUpdated="false" defaultValue="null" digits="0" id="2" name="organization_name" nullable="true" remarks="" size="255" type="varchar" typeCode="12"/>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="3" name="entity_id" nullable="true" remarks="" size="5" type="int2" typeCode="5">
-            <parent column="entity_id" foreignKey="Implied Constraint" implied="true" onDeleteCascade="false" schema="entity" table="entities"/>
-         </column>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="4" name="organization_type_id" nullable="true" remarks="" size="5" type="int2" typeCode="5">
+         <column autoUpdated="false" defaultValue="null" digits="0" id="3" name="organization_type_id" nullable="true" remarks="" size="5" type="int2" typeCode="5">
             <parent column="organization_type_id" foreignKey="Implied Constraint" implied="true" onDeleteCascade="false" schema="entity" table="organization_types"/>
          </column>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="5" name="is_lab" nullable="true" remarks="" size="1" type="bool" typeCode="-7"/>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="6" name="organization_type_name" nullable="true" remarks="" size="50" type="varchar" typeCode="12"/>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="7" name="address1" nullable="true" remarks="" size="255" type="varchar" typeCode="12"/>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="8" name="address2" nullable="true" remarks="" size="255" type="varchar" typeCode="12"/>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="9" name="city" nullable="true" remarks="" size="255" type="varchar" typeCode="12"/>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="10" name="state_name" nullable="true" remarks="" size="50" type="varchar" typeCode="12"/>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="11" name="country_name" nullable="true" remarks="" size="50" type="varchar" typeCode="12"/>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="12" name="zip_code" nullable="true" remarks="" size="20" type="varchar" typeCode="12"/>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="13" name="phone" nullable="true" remarks="" size="50" type="varchar" typeCode="12"/>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="14" name="fax" nullable="true" remarks="" size="50" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="4" name="is_lab" nullable="true" remarks="" size="1" type="bool" typeCode="-7"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="5" name="organization_type_name" nullable="true" remarks="" size="50" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="6" name="address1" nullable="true" remarks="" size="255" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="7" name="address2" nullable="true" remarks="" size="255" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="8" name="city" nullable="true" remarks="" size="255" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="9" name="state_name" nullable="true" remarks="" size="50" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="10" name="country_name" nullable="true" remarks="" size="50" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="11" name="zip_code" nullable="true" remarks="" size="20" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="12" name="phone" nullable="true" remarks="" size="50" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="13" name="fax" nullable="true" remarks="" size="50" type="varchar" typeCode="12"/>
       </table>
    </tables>
 </database>

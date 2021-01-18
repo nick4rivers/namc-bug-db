@@ -20,32 +20,24 @@ digraph "twoDegreesRelationshipsDiagramImplied" {
   ];
   "billing.agreements":"elipses":w -> "entities":"entity_id":e [arrowhead=none dir=back arrowtail=crowodot];
   "billing.invoices":"elipses":w -> "entities":"entity_id":e [arrowhead=none dir=back arrowtail=crowodot];
-  "communications":"elipses":w -> "individuals":"individual_id":e [arrowhead=none dir=back arrowtail=crowodot];
+  "communications":"elipses":w -> "individuals":"entity_id":e [arrowhead=none dir=back arrowtail=crowodot];
   "communications":"elipses":w -> "entities":"entity_id":e [arrowhead=none dir=back arrowtail=crowodot];
   "entities":"country_id":w -> "geo.countries":"elipses":e [arrowhead=none dir=back arrowtail=crowodot];
   "entities":"state_id":w -> "geo.states":"elipses":e [arrowhead=none dir=back arrowtail=crowodot];
-  "individual_roles":"elipses":w -> "individuals":"individual_id":e [arrowhead=none dir=back arrowtail=crowodot];
-  "individuals":"affiliation_id":w -> "organizations":"organization_id.type":e [arrowhead=none dir=back arrowtail=crowodot];
+  "individual_roles":"elipses":w -> "individuals":"entity_id":e [arrowhead=none dir=back arrowtail=crowodot];
+  "individuals":"affiliation_id":w -> "organizations":"entity_id.type":e [arrowhead=none dir=back arrowtail=crowodot];
   "individuals":"entity_id":w -> "entities":"entity_id":e [arrowhead=none dir=back arrowtail=teeodot];
   "organizations":"entity_id":w -> "entities":"entity_id":e [arrowhead=none dir=back arrowtail=teeodot];
   "organizations":"organization_type_id":w -> "organization_types":"organization_type_id":e [arrowhead=none dir=back arrowtail=crowodot];
-  "vw_individuals":"elipses":w -> "entities":"entity_id":e [arrowhead=none dir=back arrowtail=crowodot style=dashed];
-  "vw_individuals":"elipses":w -> "individuals":"individual_id":e [arrowhead=none dir=back arrowtail=crowodot style=dashed];
-  "vw_organizations":"entity_id":w -> "entities":"entity_id":e [arrowhead=none dir=back arrowtail=crowodot style=dashed];
-  "vw_organizations":"organization_id":w -> "organizations":"organization_id.type":e [arrowhead=none dir=back arrowtail=crowodot style=dashed];
-  "vw_organizations":"organization_type_id":w -> "organization_types":"organization_type_id":e [arrowhead=none dir=back arrowtail=crowodot style=dashed];
+  "vw_organizations":"elipses":w -> "organization_types":"organization_type_id":e [arrowhead=none dir=back arrowtail=crowodot style=dashed];
   "sample.boxes":"elipses":w -> "entities":"entity_id":e [arrowhead=none dir=back arrowtail=crowodot];
-  "sample.boxes":"elipses":w -> "individuals":"individual_id":e [arrowhead=none dir=back arrowtail=crowodot];
+  "sample.boxes":"elipses":w -> "individuals":"entity_id":e [arrowhead=none dir=back arrowtail=crowodot];
   "sample.projects":"elipses":w -> "entities":"entity_id":e [arrowhead=none dir=back arrowtail=crowodot];
+  "sample.sample_labs":"entity_id":w -> "organizations":"entity_id.type":e [arrowhead=none dir=back arrowtail=crowodot];
   "sample.sample_labs":"lab_type_id":w -> "lab_types":"elipses":e [arrowhead=none dir=back arrowtail=crowodot];
-  "sample.sample_labs":"organization_id":w -> "organizations":"organization_id.type":e [arrowhead=none dir=back arrowtail=crowodot];
-  "sample.samples":"ider_id":w -> "individuals":"individual_id":e [arrowhead=none dir=back arrowtail=crowodot];
-  "sample.samples":"lab_id":w -> "organizations":"organization_id.type":e [arrowhead=none dir=back arrowtail=crowodot];
-  "sample.samples":"sorter_id":w -> "individuals":"individual_id":e [arrowhead=none dir=back arrowtail=crowodot];
-  "sample.sort_qa":"elipses":w -> "individuals":"individual_id":e [arrowhead=none dir=back arrowtail=crowodot];
-  "sample.submissions":"elipses":w -> "individuals":"individual_id":e [arrowhead=none dir=back arrowtail=crowodot];
-  "sample.taxa_qa":"elipses":w -> "individuals":"individual_id":e [arrowhead=none dir=back arrowtail=crowodot];
-  "sample.taxa_qa":"elipses":w -> "individuals":"individual_id":e [arrowhead=none dir=back arrowtail=crowodot];
+  "sample.sorter_time":"elipses":w -> "individuals":"entity_id":e [arrowhead=none dir=back arrowtail=crowodot];
+  "sample.submissions":"elipses":w -> "individuals":"entity_id":e [arrowhead=none dir=back arrowtail=crowodot];
+  "sample.taxa_time":"elipses":w -> "individuals":"entity_id":e [arrowhead=none dir=back arrowtail=crowodot];
   "billing.agreements" [
    label=<
     <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" BGCOLOR="#ffffff">
@@ -88,7 +80,7 @@ digraph "twoDegreesRelationshipsDiagramImplied" {
       <TR><TD PORT="state_id" COLSPAN="3" BGCOLOR="#ffffff" ALIGN="LEFT"><TABLE BORDER="0" CELLSPACING="0" ALIGN="LEFT"><TR ALIGN="LEFT"><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="15" HEIGHT="16"><IMG SRC="../../images/foreignKeys.png"/></TD><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="78" HEIGHT="16">state_id</TD></TR></TABLE></TD></TR>
       <TR><TD PORT="country_id" COLSPAN="3" BGCOLOR="#ffffff" ALIGN="LEFT"><TABLE BORDER="0" CELLSPACING="0" ALIGN="LEFT"><TR ALIGN="LEFT"><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="15" HEIGHT="16"><IMG SRC="../../images/foreignKeys.png"/></TD><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="78" HEIGHT="16">country_id</TD></TR></TABLE></TD></TR>
       <TR><TD PORT="elipses" COLSPAN="3" ALIGN="LEFT">...</TD></TR>
-      <TR><TD ALIGN="LEFT" BGCOLOR="#ffffff">&lt; 3</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">0 rows</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">10 &gt;</TD></TR>
+      <TR><TD ALIGN="LEFT" BGCOLOR="#ffffff">&lt; 3</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">0 rows</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">8 &gt;</TD></TR>
     </TABLE>>
     URL="entities.html"
     target="_top"
@@ -109,11 +101,10 @@ digraph "twoDegreesRelationshipsDiagramImplied" {
    label=<
     <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" BGCOLOR="#ffffff">
       <TR><TD COLSPAN="3"  BGCOLOR="#f5f5f5"><TABLE BORDER="0" CELLSPACING="0"><TR><TD ALIGN="LEFT"><B>individuals</B></TD><TD ALIGN="RIGHT">[table]</TD></TR></TABLE></TD></TR>
-      <TR><TD PORT="individual_id" COLSPAN="3" ALIGN="LEFT"><TABLE BORDER="0" CELLSPACING="0" ALIGN="LEFT"><TR ALIGN="LEFT"><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="15" HEIGHT="16"><IMG SRC="../../images/primaryKeys.png"/></TD><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="73" HEIGHT="16">individual_id</TD></TR></TABLE></TD></TR>
-      <TR><TD PORT="entity_id" COLSPAN="3" BGCOLOR="#ffffff" ALIGN="LEFT"><TABLE BORDER="0" CELLSPACING="0" ALIGN="LEFT"><TR ALIGN="LEFT"><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="15" HEIGHT="16"><IMG SRC="../../images/foreignKeys.png"/></TD><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="73" HEIGHT="16">entity_id</TD></TR></TABLE></TD></TR>
-      <TR><TD PORT="affiliation_id" COLSPAN="3" BGCOLOR="#ffffff" ALIGN="LEFT"><TABLE BORDER="0" CELLSPACING="0" ALIGN="LEFT"><TR ALIGN="LEFT"><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="15" HEIGHT="16"><IMG SRC="../../images/foreignKeys.png"/></TD><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="73" HEIGHT="16">affiliation_id</TD></TR></TABLE></TD></TR>
+      <TR><TD PORT="entity_id" COLSPAN="3" ALIGN="LEFT"><TABLE BORDER="0" CELLSPACING="0" ALIGN="LEFT"><TR ALIGN="LEFT"><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="15" HEIGHT="16"><IMG SRC="../../images/primaryKeys.png"/></TD><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="71" HEIGHT="16">entity_id</TD></TR></TABLE></TD></TR>
+      <TR><TD PORT="affiliation_id" COLSPAN="3" BGCOLOR="#ffffff" ALIGN="LEFT"><TABLE BORDER="0" CELLSPACING="0" ALIGN="LEFT"><TR ALIGN="LEFT"><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="15" HEIGHT="16"><IMG SRC="../../images/foreignKeys.png"/></TD><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="71" HEIGHT="16">affiliation_id</TD></TR></TABLE></TD></TR>
       <TR><TD PORT="elipses" COLSPAN="3" ALIGN="LEFT">...</TD></TR>
-      <TR><TD ALIGN="LEFT" BGCOLOR="#ffffff">&lt; 2</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">0 rows</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">10 &gt;</TD></TR>
+      <TR><TD ALIGN="LEFT" BGCOLOR="#ffffff">&lt; 2</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">0 rows</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">6 &gt;</TD></TR>
     </TABLE>>
     URL="individuals.html"
     target="_top"
@@ -146,35 +137,21 @@ digraph "twoDegreesRelationshipsDiagramImplied" {
    label=<
     <TABLE BORDER="2" CELLBORDER="1" CELLSPACING="0" BGCOLOR="#ffffff">
       <TR><TD COLSPAN="4"  BGCOLOR="#f5f5f5"><TABLE BORDER="0" CELLSPACING="0"><TR><TD ALIGN="LEFT"><B>organizations</B></TD><TD ALIGN="RIGHT">[table]</TD></TR></TABLE></TD></TR>
-      <TR><TD PORT="organization_id" COLSPAN="2" ALIGN="LEFT"><TABLE BORDER="0" CELLSPACING="0" ALIGN="LEFT"><TR ALIGN="LEFT"><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="15" HEIGHT="16"><IMG SRC="../../images/primaryKeys.png"/></TD><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="120" HEIGHT="16">organization_id</TD></TR></TABLE></TD><TD PORT="organization_id.type" ALIGN="LEFT">int2[5]</TD></TR>
+      <TR><TD PORT="entity_id" COLSPAN="2" ALIGN="LEFT"><TABLE BORDER="0" CELLSPACING="0" ALIGN="LEFT"><TR ALIGN="LEFT"><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="15" HEIGHT="16"><IMG SRC="../../images/primaryKeys.png"/></TD><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="120" HEIGHT="16">entity_id</TD></TR></TABLE></TD><TD PORT="entity_id.type" ALIGN="LEFT">int2[5]</TD></TR>
       <TR><TD PORT="abbreviation" COLSPAN="2" ALIGN="LEFT"><TABLE BORDER="0" CELLSPACING="0" ALIGN="LEFT"><TR ALIGN="LEFT"><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="15" HEIGHT="16"></TD><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="120" HEIGHT="16">abbreviation</TD></TR></TABLE></TD><TD PORT="abbreviation.type" ALIGN="LEFT">varchar[50]</TD></TR>
       <TR><TD PORT="organization_name" COLSPAN="2" ALIGN="LEFT"><TABLE BORDER="0" CELLSPACING="0" ALIGN="LEFT"><TR ALIGN="LEFT"><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="15" HEIGHT="16"></TD><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="120" HEIGHT="16">organization_name</TD></TR></TABLE></TD><TD PORT="organization_name.type" ALIGN="LEFT">varchar[255]</TD></TR>
-      <TR><TD PORT="entity_id" COLSPAN="2" BGCOLOR="#ffffff" ALIGN="LEFT"><TABLE BORDER="0" CELLSPACING="0" ALIGN="LEFT"><TR ALIGN="LEFT"><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="15" HEIGHT="16"><IMG SRC="../../images/foreignKeys.png"/></TD><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="120" HEIGHT="16">entity_id</TD></TR></TABLE></TD><TD PORT="entity_id.type" ALIGN="LEFT">int2[5]</TD></TR>
       <TR><TD PORT="organization_type_id" COLSPAN="2" BGCOLOR="#ffffff" ALIGN="LEFT"><TABLE BORDER="0" CELLSPACING="0" ALIGN="LEFT"><TR ALIGN="LEFT"><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="15" HEIGHT="16"><IMG SRC="../../images/foreignKeys.png"/></TD><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="120" HEIGHT="16">organization_type_id</TD></TR></TABLE></TD><TD PORT="organization_type_id.type" ALIGN="LEFT">int2[5]</TD></TR>
       <TR><TD PORT="is_lab" COLSPAN="2" ALIGN="LEFT"><TABLE BORDER="0" CELLSPACING="0" ALIGN="LEFT"><TR ALIGN="LEFT"><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="15" HEIGHT="16"></TD><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="120" HEIGHT="16">is_lab</TD></TR></TABLE></TD><TD PORT="is_lab.type" ALIGN="LEFT">bool[1]</TD></TR>
-      <TR><TD ALIGN="LEFT" BGCOLOR="#ffffff">&lt; 2</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">0 rows</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">4 &gt;</TD></TR>
+      <TR><TD ALIGN="LEFT" BGCOLOR="#ffffff">&lt; 2</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">0 rows</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">2 &gt;</TD></TR>
     </TABLE>>
     URL="organizations.html"
     target="_top"
     tooltip="organizations"
   ];
-  "vw_individuals" [
-   label=<
-    <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" BGCOLOR="#ffffff">
-      <TR><TD COLSPAN="3"  BGCOLOR="#f5f5f5"><TABLE BORDER="0" CELLSPACING="0"><TR><TD ALIGN="LEFT"><B>vw_individuals</B></TD><TD ALIGN="RIGHT">[view]</TD></TR></TABLE></TD></TR>
-      <TR><TD PORT="elipses" COLSPAN="3" ALIGN="LEFT">...</TD></TR>
-    </TABLE>>
-    URL="vw_individuals.html"
-    target="_top"
-    tooltip="vw_individuals"
-  ];
   "vw_organizations" [
    label=<
     <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" BGCOLOR="#ffffff">
       <TR><TD COLSPAN="3"  BGCOLOR="#f5f5f5"><TABLE BORDER="0" CELLSPACING="0"><TR><TD ALIGN="LEFT"><B>vw_organizations</B></TD><TD ALIGN="RIGHT">[view]</TD></TR></TABLE></TD></TR>
-      <TR><TD PORT="organization_id" COLSPAN="3" ALIGN="LEFT"><TABLE BORDER="0" CELLSPACING="0" ALIGN="LEFT"><TR ALIGN="LEFT"><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="15" HEIGHT="16"><IMG SRC="../../images/foreignKeys.png"/></TD><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="140" HEIGHT="16">organization_id</TD></TR></TABLE></TD></TR>
-      <TR><TD PORT="entity_id" COLSPAN="3" ALIGN="LEFT"><TABLE BORDER="0" CELLSPACING="0" ALIGN="LEFT"><TR ALIGN="LEFT"><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="15" HEIGHT="16"><IMG SRC="../../images/foreignKeys.png"/></TD><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="140" HEIGHT="16">entity_id</TD></TR></TABLE></TD></TR>
-      <TR><TD PORT="organization_type_id" COLSPAN="3" ALIGN="LEFT"><TABLE BORDER="0" CELLSPACING="0" ALIGN="LEFT"><TR ALIGN="LEFT"><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="15" HEIGHT="16"><IMG SRC="../../images/foreignKeys.png"/></TD><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="140" HEIGHT="16">organization_type_id</TD></TR></TABLE></TD></TR>
       <TR><TD PORT="elipses" COLSPAN="3" ALIGN="LEFT">...</TD></TR>
     </TABLE>>
     URL="vw_organizations.html"
@@ -229,8 +206,8 @@ digraph "twoDegreesRelationshipsDiagramImplied" {
    label=<
     <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" BGCOLOR="#ffffff">
       <TR><TD COLSPAN="3"  BGCOLOR="#f5f5f5"><TABLE BORDER="0" CELLSPACING="0"><TR><TD ALIGN="LEFT"><B>sample.sample_labs</B></TD><TD ALIGN="RIGHT">[table]</TD></TR></TABLE></TD></TR>
-      <TR><TD PORT="organization_id" COLSPAN="3" ALIGN="LEFT"><TABLE BORDER="0" CELLSPACING="0" ALIGN="LEFT"><TR ALIGN="LEFT"><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="15" HEIGHT="16"><IMG SRC="../../images/foreignKeys.png"/></TD><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="88" HEIGHT="16">organization_id</TD></TR></TABLE></TD></TR>
-      <TR><TD PORT="lab_type_id" COLSPAN="3" ALIGN="LEFT"><TABLE BORDER="0" CELLSPACING="0" ALIGN="LEFT"><TR ALIGN="LEFT"><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="15" HEIGHT="16"><IMG SRC="../../images/foreignKeys.png"/></TD><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="88" HEIGHT="16">lab_type_id</TD></TR></TABLE></TD></TR>
+      <TR><TD PORT="entity_id" COLSPAN="3" ALIGN="LEFT"><TABLE BORDER="0" CELLSPACING="0" ALIGN="LEFT"><TR ALIGN="LEFT"><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="15" HEIGHT="16"><IMG SRC="../../images/foreignKeys.png"/></TD><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="72" HEIGHT="16">entity_id</TD></TR></TABLE></TD></TR>
+      <TR><TD PORT="lab_type_id" COLSPAN="3" ALIGN="LEFT"><TABLE BORDER="0" CELLSPACING="0" ALIGN="LEFT"><TR ALIGN="LEFT"><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="15" HEIGHT="16"><IMG SRC="../../images/foreignKeys.png"/></TD><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="72" HEIGHT="16">lab_type_id</TD></TR></TABLE></TD></TR>
       <TR><TD PORT="elipses" COLSPAN="3" ALIGN="LEFT">...</TD></TR>
       <TR><TD ALIGN="LEFT" BGCOLOR="#ffffff">&lt; 2</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">0 rows</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">  </TD></TR>
     </TABLE>>
@@ -238,30 +215,16 @@ digraph "twoDegreesRelationshipsDiagramImplied" {
     target="_top"
     tooltip="sample.sample_labs"
   ];
-  "sample.samples" [
+  "sample.sorter_time" [
    label=<
     <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" BGCOLOR="#ffffff">
-      <TR><TD COLSPAN="3"  BGCOLOR="#f5f5f5"><TABLE BORDER="0" CELLSPACING="0"><TR><TD ALIGN="LEFT"><B>sample.samples</B></TD><TD ALIGN="RIGHT">[table]</TD></TR></TABLE></TD></TR>
-      <TR><TD PORT="sorter_id" COLSPAN="3" ALIGN="LEFT"><TABLE BORDER="0" CELLSPACING="0" ALIGN="LEFT"><TR ALIGN="LEFT"><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="15" HEIGHT="16"><IMG SRC="../../images/foreignKeys.png"/></TD><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="86" HEIGHT="16">sorter_id</TD></TR></TABLE></TD></TR>
-      <TR><TD PORT="ider_id" COLSPAN="3" ALIGN="LEFT"><TABLE BORDER="0" CELLSPACING="0" ALIGN="LEFT"><TR ALIGN="LEFT"><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="15" HEIGHT="16"><IMG SRC="../../images/foreignKeys.png"/></TD><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="86" HEIGHT="16">ider_id</TD></TR></TABLE></TD></TR>
-      <TR><TD PORT="lab_id" COLSPAN="3" ALIGN="LEFT"><TABLE BORDER="0" CELLSPACING="0" ALIGN="LEFT"><TR ALIGN="LEFT"><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="15" HEIGHT="16"><IMG SRC="../../images/foreignKeys.png"/></TD><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="86" HEIGHT="16">lab_id</TD></TR></TABLE></TD></TR>
-      <TR><TD PORT="elipses" COLSPAN="3" ALIGN="LEFT">...</TD></TR>
-      <TR><TD ALIGN="LEFT" BGCOLOR="#ffffff">&lt; 3</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">0 rows</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">  </TD></TR>
-    </TABLE>>
-    URL="../sample/tables/samples.html"
-    target="_top"
-    tooltip="sample.samples"
-  ];
-  "sample.sort_qa" [
-   label=<
-    <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" BGCOLOR="#ffffff">
-      <TR><TD COLSPAN="3"  BGCOLOR="#f5f5f5"><TABLE BORDER="0" CELLSPACING="0"><TR><TD ALIGN="LEFT"><B>sample.sort_qa</B></TD><TD ALIGN="RIGHT">[table]</TD></TR></TABLE></TD></TR>
+      <TR><TD COLSPAN="3"  BGCOLOR="#f5f5f5"><TABLE BORDER="0" CELLSPACING="0"><TR><TD ALIGN="LEFT"><B>sample.sorter_time</B></TD><TD ALIGN="RIGHT">[table]</TD></TR></TABLE></TD></TR>
       <TR><TD PORT="elipses" COLSPAN="3" ALIGN="LEFT">...</TD></TR>
       <TR><TD ALIGN="LEFT" BGCOLOR="#ffffff">&lt; 1</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">0 rows</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">  </TD></TR>
     </TABLE>>
-    URL="../sample/tables/sort_qa.html"
+    URL="../sample/tables/sorter_time.html"
     target="_top"
-    tooltip="sample.sort_qa"
+    tooltip="sample.sorter_time"
   ];
   "sample.submissions" [
    label=<
@@ -274,15 +237,15 @@ digraph "twoDegreesRelationshipsDiagramImplied" {
     target="_top"
     tooltip="sample.submissions"
   ];
-  "sample.taxa_qa" [
+  "sample.taxa_time" [
    label=<
     <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" BGCOLOR="#ffffff">
-      <TR><TD COLSPAN="3"  BGCOLOR="#f5f5f5"><TABLE BORDER="0" CELLSPACING="0"><TR><TD ALIGN="LEFT"><B>sample.taxa_qa</B></TD><TD ALIGN="RIGHT">[table]</TD></TR></TABLE></TD></TR>
+      <TR><TD COLSPAN="3"  BGCOLOR="#f5f5f5"><TABLE BORDER="0" CELLSPACING="0"><TR><TD ALIGN="LEFT"><B>sample.taxa_time</B></TD><TD ALIGN="RIGHT">[table]</TD></TR></TABLE></TD></TR>
       <TR><TD PORT="elipses" COLSPAN="3" ALIGN="LEFT">...</TD></TR>
-      <TR><TD ALIGN="LEFT" BGCOLOR="#ffffff">&lt; 2</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">0 rows</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">  </TD></TR>
+      <TR><TD ALIGN="LEFT" BGCOLOR="#ffffff">&lt; 1</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">0 rows</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">  </TD></TR>
     </TABLE>>
-    URL="../sample/tables/taxa_qa.html"
+    URL="../sample/tables/taxa_time.html"
     target="_top"
-    tooltip="sample.taxa_qa"
+    tooltip="sample.taxa_time"
   ];
 }

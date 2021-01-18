@@ -154,7 +154,7 @@
                                     <td>
                                         <table border='0' cellspacing='0' cellpadding='0'>
                                             <tr>
-                                                <td title="communications.employee_id references individuals.individual_id via fk_history_namc_staff_id"><a href='individuals.html'>individuals</a><span class='relatedKey'>.individual_id</span></td>
+                                                <td title="communications.employee_id references individuals.entity_id via fk_history_namc_staff_id"><a href='individuals.html'>individuals</a><span class='relatedKey'>.entity_id</span></td>
                                                 <td class="constraint detail">fk_history_namc_staff_id<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                         </table>
@@ -290,67 +290,34 @@
                                 <ul class="nav nav-tabs pull-left ui-sortable-handle">
                                     <li class="active"><a href="#oneDegreeImg-chart" data-toggle="tab" aria-expanded="true">One</a></li>
                                     <li class=""><a href="#twodegreesDegreeImg-chart" data-toggle="tab" aria-expanded="true">Two degrees</a></li>
-                                    <li class=""><a href="#oneimpliedDegreeImg-chart" data-toggle="tab" aria-expanded="true">One implied</a></li>
-                                    <li class=""><a href="#twoimpliedDegreeImg-chart" data-toggle="tab" aria-expanded="true">Two implied</a></li>
                                 </ul>
                                 <div class="tab-content no-padding">
                                     <div class="chart tab-pane active" id="oneDegreeImg-chart" style="position: relative; overflow-x:auto;">
                                         <map id="oneDegreeRelationshipsDiagram" name="oneDegreeRelationshipsDiagram">
 <area shape="rect" id="node1" href="communications.html" target="_top" title="communications" alt="" coords="404,5,708,280">
-<area shape="rect" id="node2" href="individuals.html" target="_top" title="individuals" alt="" coords="203,89,360,265">
-<area shape="rect" id="node3" href="entities.html" target="_top" title="entities" alt="" coords="5,67,159,272">
+<area shape="rect" id="node2" href="individuals.html" target="_top" title="individuals" alt="" coords="203,89,360,236">
+<area shape="rect" id="node3" href="entities.html" target="_top" title="entities" alt="" coords="5,52,159,257">
 </map>
                                         <a name='diagram'><img id="oneDegreeImg" src="../diagrams/tables/communications.1degree.png" usemap="#oneDegreeRelationshipsDiagram" class="diagram" border="0" align="left"></a>
                                     </div>
                                     <div class="chart tab-pane " id="twodegreesDegreeImg-chart" style="position: relative; overflow-x:auto;">
                                         <map id="twoDegreesRelationshipsDiagram" name="twoDegreesRelationshipsDiagram">
-<area shape="rect" id="node1" href="../billing/tables/agreements.html" target="_top" title="billing.agreements" alt="" coords="424,288,633,376">
-<area shape="rect" id="node2" href="entities.html" target="_top" title="entities" alt="" coords="227,541,380,747">
-<area shape="rect" id="node6" href="../geo/tables/countries.html" target="_top" title="geo.countries" alt="" coords="5,669,183,757">
-<area shape="rect" id="node7" href="../geo/tables/states.html" target="_top" title="geo.states" alt="" coords="17,564,171,652">
-<area shape="rect" id="node3" href="../billing/tables/invoices.html" target="_top" title="billing.invoices" alt="" coords="436,393,621,481">
+<area shape="rect" id="node1" href="../billing/tables/agreements.html" target="_top" title="billing.agreements" alt="" coords="424,207,633,295">
+<area shape="rect" id="node2" href="entities.html" target="_top" title="entities" alt="" coords="227,413,380,619">
+<area shape="rect" id="node6" href="../geo/tables/countries.html" target="_top" title="geo.countries" alt="" coords="5,541,183,629">
+<area shape="rect" id="node7" href="../geo/tables/states.html" target="_top" title="geo.states" alt="" coords="17,436,171,524">
+<area shape="rect" id="node3" href="../billing/tables/invoices.html" target="_top" title="billing.invoices" alt="" coords="436,312,621,400">
 <area shape="rect" id="node4" href="communications.html" target="_top" title="communications" alt="" coords="879,5,1183,280">
-<area shape="rect" id="node5" href="individuals.html" target="_top" title="individuals" alt="" coords="677,535,835,711">
-<area shape="rect" id="node9" href="organizations.html" target="_top" title="organizations" alt="" coords="441,617,617,705">
-<area shape="rect" id="node8" href="individual_roles.html" target="_top" title="individual_roles" alt="" coords="935,403,1127,491">
-<area shape="rect" id="node10" href="../sample/tables/boxes.html" target="_top" title="sample.boxes" alt="" coords="942,824,1119,912">
-<area shape="rect" id="node11" href="../sample/tables/projects.html" target="_top" title="sample.projects" alt="" coords="433,800,625,888">
-<area shape="rect" id="node12" href="../sample/tables/samples.html" target="_top" title="sample.samples" alt="" coords="934,719,1127,807">
-<area shape="rect" id="node13" href="../sample/tables/sort_qa.html" target="_top" title="sample.sort_qa" alt="" coords="937,508,1125,596">
-<area shape="rect" id="node14" href="../sample/tables/submissions.html" target="_top" title="sample.submissions" alt="" coords="919,613,1143,701">
-<area shape="rect" id="node15" href="../sample/tables/taxa_qa.html" target="_top" title="sample.taxa_qa" alt="" coords="936,297,1125,385">
+<area shape="rect" id="node5" href="individuals.html" target="_top" title="individuals" alt="" coords="677,453,835,600">
+<area shape="rect" id="node9" href="organizations.html" target="_top" title="organizations" alt="" coords="441,489,617,577">
+<area shape="rect" id="node8" href="individual_roles.html" target="_top" title="individual_roles" alt="" coords="935,297,1127,385">
+<area shape="rect" id="node10" href="../sample/tables/boxes.html" target="_top" title="sample.boxes" alt="" coords="942,719,1119,807">
+<area shape="rect" id="node11" href="../sample/tables/projects.html" target="_top" title="sample.projects" alt="" coords="433,653,625,741">
+<area shape="rect" id="node12" href="../sample/tables/sorter_time.html" target="_top" title="sample.sorter_time" alt="" coords="923,403,1138,491">
+<area shape="rect" id="node13" href="../sample/tables/submissions.html" target="_top" title="sample.submissions" alt="" coords="919,508,1143,596">
+<area shape="rect" id="node14" href="../sample/tables/taxa_time.html" target="_top" title="sample.taxa_time" alt="" coords="930,613,1131,701">
 </map>
                                         <a name='diagram'><img id="twodegreesDegreeImg" src="../diagrams/tables/communications.2degrees.png" usemap="#twoDegreesRelationshipsDiagram" class="diagram" border="0" align="left"></a>
-                                    </div>
-                                    <div class="chart tab-pane " id="oneimpliedDegreeImg-chart" style="position: relative; overflow-x:auto;">
-                                        <map id="oneDegreeRelationshipsDiagramImplied" name="oneDegreeRelationshipsDiagramImplied">
-<area shape="rect" id="node1" href="communications.html" target="_top" title="communications" alt="" coords="404,5,708,280">
-<area shape="rect" id="node2" href="individuals.html" target="_top" title="individuals" alt="" coords="203,89,360,265">
-<area shape="rect" id="node3" href="entities.html" target="_top" title="entities" alt="" coords="5,67,159,272">
-</map>
-                                        <a name='diagram'><img id="oneimpliedDegreeImg" src="../diagrams/tables/communications.implied1degrees.png" usemap="#oneDegreeRelationshipsDiagramImplied" class="diagram" border="0" align="left"></a>
-                                    </div>
-                                    <div class="chart tab-pane " id="twoimpliedDegreeImg-chart" style="position: relative; overflow-x:auto;">
-                                        <map id="twoDegreesRelationshipsDiagramImplied" name="twoDegreesRelationshipsDiagramImplied">
-<area shape="rect" id="node1" href="../billing/tables/agreements.html" target="_top" title="billing.agreements" alt="" coords="424,333,633,421">
-<area shape="rect" id="node2" href="entities.html" target="_top" title="entities" alt="" coords="227,733,380,939">
-<area shape="rect" id="node6" href="../geo/tables/countries.html" target="_top" title="geo.countries" alt="" coords="5,861,183,949">
-<area shape="rect" id="node7" href="../geo/tables/states.html" target="_top" title="geo.states" alt="" coords="17,756,171,844">
-<area shape="rect" id="node3" href="../billing/tables/invoices.html" target="_top" title="billing.invoices" alt="" coords="436,439,621,527">
-<area shape="rect" id="node4" href="communications.html" target="_top" title="communications" alt="" coords="921,5,1225,280">
-<area shape="rect" id="node5" href="individuals.html" target="_top" title="individuals" alt="" coords="699,580,856,756">
-<area shape="rect" id="node9" href="organizations.html" target="_top" title="organizations" alt="" coords="441,736,617,824">
-<area shape="rect" id="node8" href="individual_roles.html" target="_top" title="individual_roles" alt="" coords="977,297,1169,385">
-<area shape="rect" id="node10" href="vw_individuals.html" target="_top" title="vw_individuals" alt="" coords="983,824,1164,888">
-<area shape="rect" id="node11" href="vw_organizations.html" target="_top" title="vw_organizations" alt="" coords="677,809,877,873">
-<area shape="rect" id="node12" href="../sample/tables/boxes.html" target="_top" title="sample.boxes" alt="" coords="985,905,1162,993">
-<area shape="rect" id="node13" href="../sample/tables/projects.html" target="_top" title="sample.projects" alt="" coords="433,963,625,1051">
-<area shape="rect" id="node14" href="../sample/tables/samples.html" target="_top" title="sample.samples" alt="" coords="977,719,1170,807">
-<area shape="rect" id="node15" href="../sample/tables/sort_qa.html" target="_top" title="sample.sort_qa" alt="" coords="979,403,1167,491">
-<area shape="rect" id="node16" href="../sample/tables/submissions.html" target="_top" title="sample.submissions" alt="" coords="961,508,1185,596">
-<area shape="rect" id="node17" href="../sample/tables/taxa_qa.html" target="_top" title="sample.taxa_qa" alt="" coords="979,613,1168,701">
-</map>
-                                        <a name='diagram'><img id="twoimpliedDegreeImg" src="../diagrams/tables/communications.implied2degrees.png" usemap="#twoDegreesRelationshipsDiagramImplied" class="diagram" border="0" align="left"></a>
                                     </div>
                                 </div>
                             </div>

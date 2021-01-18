@@ -103,7 +103,7 @@
                                 </thead>
                                 <tbody>
                                 <tr>
-                                    <td class='foreignKey' title='Foreign Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="organization_id">organization_id</span></td>
+                                    <td><span id="entity_id">entity_id</span></td>
                                     <td>int2</td>
                                     <td>5</td>
                                     <td title='nullable'>√</td>
@@ -115,10 +115,6 @@
                                     </td>
                                     <td>
                                         <table border='0' cellspacing='0' cellpadding='0'>
-                                            <tr>
-                                                <td title="vw_organizations.organization_id&#39;s name implies that it&#39;s a child of organizations.organization_id, but it doesn&#39;t reference that column."><a href='organizations.html'>organizations</a><span class='relatedKey'>.organization_id</span></td>
-                                                <td class="constraint detail">Implied Constraint<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
-                                            </tr>
                                         </table>
                                     </td>
                                     <td></td>
@@ -153,27 +149,6 @@
                                     </td>
                                     <td>
                                         <table border='0' cellspacing='0' cellpadding='0'>
-                                        </table>
-                                    </td>
-                                    <td></td>
-                                </tr>
-                                <tr>
-                                    <td class='foreignKey' title='Foreign Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="entity_id">entity_id</span></td>
-                                    <td>int2</td>
-                                    <td>5</td>
-                                    <td title='nullable'>√</td>
-                                    <td title=''></td>
-                                    <td>null</td>
-                                    <td>
-                                        <table border='0' cellspacing='0' cellpadding='0'>
-                                        </table>
-                                    </td>
-                                    <td>
-                                        <table border='0' cellspacing='0' cellpadding='0'>
-                                            <tr>
-                                                <td title="vw_organizations.entity_id&#39;s name implies that it&#39;s a child of entities.entity_id, but it doesn&#39;t reference that column."><a href='entities.html'>entities</a><span class='relatedKey'>.entity_id</span></td>
-                                                <td class="constraint detail">Implied Constraint<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
-                                            </tr>
                                         </table>
                                     </td>
                                     <td></td>
@@ -393,36 +368,22 @@
                                 <div class="tab-content no-padding">
                                     <div class="chart tab-pane active" id="oneDegreeImg-chart" style="position: relative; overflow-x:auto;">
                                         <map id="oneDegreeRelationshipsDiagram" name="oneDegreeRelationshipsDiagram">
-<area shape="rect" id="node1" href="vw_organizations.html" target="_top" title="vw_organizations" alt="" coords="5,5,336,491">
+<area shape="rect" id="node1" href="vw_organizations.html" target="_top" title="vw_organizations" alt="" coords="5,5,336,461">
 </map>
                                         <a name='diagram'><img id="oneDegreeImg" src="../diagrams/tables/vw_organizations.1degree.png" usemap="#oneDegreeRelationshipsDiagram" class="diagram" border="0" align="left"></a>
                                     </div>
                                     <div class="chart tab-pane " id="oneimpliedDegreeImg-chart" style="position: relative; overflow-x:auto;">
                                         <map id="oneDegreeRelationshipsDiagramImplied" name="oneDegreeRelationshipsDiagramImplied">
-<area shape="rect" id="node1" href="organizations.html" target="_top" title="organizations" alt="" coords="285,5,495,181">
-<area shape="rect" id="node2" href="entities.html" target="_top" title="entities" alt="" coords="47,19,200,224">
-<area shape="rect" id="node3" href="organization_types.html" target="_top" title="organization_types" alt="" coords="5,241,241,364">
-<area shape="rect" id="node4" href="vw_organizations.html" target="_top" title="vw_organizations" alt="" coords="539,68,869,553">
+<area shape="rect" id="node1" href="vw_organizations.html" target="_top" title="vw_organizations" alt="" coords="285,5,616,461">
+<area shape="rect" id="node2" href="organization_types.html" target="_top" title="organization_types" alt="" coords="5,96,241,219">
 </map>
                                         <a name='diagram'><img id="oneimpliedDegreeImg" src="../diagrams/tables/vw_organizations.implied1degrees.png" usemap="#oneDegreeRelationshipsDiagramImplied" class="diagram" border="0" align="left"></a>
                                     </div>
                                     <div class="chart tab-pane " id="twoimpliedDegreeImg-chart" style="position: relative; overflow-x:auto;">
                                         <map id="twoDegreesRelationshipsDiagramImplied" name="twoDegreesRelationshipsDiagramImplied">
-<area shape="rect" id="node1" href="../billing/tables/agreements.html" target="_top" title="billing.agreements" alt="" coords="507,323,716,411">
-<area shape="rect" id="node2" href="entities.html" target="_top" title="entities" alt="" coords="268,215,421,420">
-<area shape="rect" id="node6" href="../geo/tables/countries.html" target="_top" title="geo.countries" alt="" coords="5,344,183,432">
-<area shape="rect" id="node7" href="../geo/tables/states.html" target="_top" title="geo.states" alt="" coords="17,239,171,327">
-<area shape="rect" id="node3" href="../billing/tables/invoices.html" target="_top" title="billing.invoices" alt="" coords="519,428,704,516">
-<area shape="rect" id="node4" href="communications.html" target="_top" title="communications" alt="" coords="1135,5,1332,93">
-<area shape="rect" id="node5" href="individuals.html" target="_top" title="individuals" alt="" coords="847,192,1004,280">
-<area shape="rect" id="node8" href="organizations.html" target="_top" title="organizations" alt="" coords="507,533,716,709">
-<area shape="rect" id="node9" href="organization_types.html" target="_top" title="organization_types" alt="" coords="227,657,463,780">
-<area shape="rect" id="node10" href="vw_individuals.html" target="_top" title="vw_individuals" alt="" coords="1143,111,1324,175">
-<area shape="rect" id="node11" href="vw_organizations.html" target="_top" title="vw_organizations" alt="" coords="760,599,1091,1084">
-<area shape="rect" id="node12" href="../sample/tables/boxes.html" target="_top" title="sample.boxes" alt="" coords="1145,192,1322,280">
-<area shape="rect" id="node13" href="../sample/tables/projects.html" target="_top" title="sample.projects" alt="" coords="515,217,707,305">
-<area shape="rect" id="node14" href="../sample/tables/sample_labs.html" target="_top" title="sample.sample_labs" alt="" coords="815,493,1036,581">
-<area shape="rect" id="node15" href="../sample/tables/samples.html" target="_top" title="sample.samples" alt="" coords="1137,297,1330,385">
+<area shape="rect" id="node1" href="organizations.html" target="_top" title="organizations" alt="" coords="363,5,539,93">
+<area shape="rect" id="node2" href="organization_types.html" target="_top" title="organization_types" alt="" coords="5,103,241,225">
+<area shape="rect" id="node3" href="vw_organizations.html" target="_top" title="vw_organizations" alt="" coords="285,111,616,567">
 </map>
                                         <a name='diagram'><img id="twoimpliedDegreeImg" src="../diagrams/tables/vw_organizations.implied2degrees.png" usemap="#twoDegreesRelationshipsDiagramImplied" class="diagram" border="0" align="left"></a>
                                     </div>
@@ -440,7 +401,7 @@
                             </div>
                         </div>
                         <div class="box-body">
-                            <textarea id="sql-script-codemirror" name="sql-script-codemirror" rows="" style="display: none;">SELECT o.organization_id,&#10;    o.abbreviation,&#10;    o.organization_name,&#10;    o.entity_id,&#10;    o.organization_type_id,&#10;    o.is_lab,&#10;    t.organization_type_name,&#10;    e.address1,&#10;    e.address2,&#10;    e.city,&#10;    s.state_name,&#10;    c.country_name,&#10;    e.zip_code,&#10;    e.phone,&#10;    e.fax&#10;   FROM ((((entity.organizations o&#10;     JOIN entity.entities e ON ((o.entity_id = e.entity_id)))&#10;     JOIN entity.organization_types t ON ((o.organization_type_id = t.organization_type_id)))&#10;     JOIN geo.countries c ON ((e.country_id = c.country_id)))&#10;     LEFT JOIN geo.states s ON ((e.state_id = s.state_id)));</textarea>
+                            <textarea id="sql-script-codemirror" name="sql-script-codemirror" rows="" style="display: none;">SELECT o.entity_id,&#10;    o.abbreviation,&#10;    o.organization_name,&#10;    o.organization_type_id,&#10;    o.is_lab,&#10;    t.organization_type_name,&#10;    e.address1,&#10;    e.address2,&#10;    e.city,&#10;    s.state_name,&#10;    c.country_name,&#10;    e.zip_code,&#10;    e.phone,&#10;    e.fax&#10;   FROM ((((entity.organizations o&#10;     JOIN entity.entities e ON ((o.entity_id = e.entity_id)))&#10;     JOIN entity.organization_types t ON ((o.organization_type_id = t.organization_type_id)))&#10;     JOIN geo.countries c ON ((e.country_id = c.country_id)))&#10;     LEFT JOIN geo.states s ON ((e.state_id = s.state_id)));</textarea>
                             <div style="padding-top: 5px;"><hr></div>
                             <div class="box box-solid">
                                 <div class="box-header with-border">

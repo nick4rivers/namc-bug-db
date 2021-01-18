@@ -115,6 +115,10 @@
                                                 <td title="mass.mass_method_id references mass_methods.mass_method_id via fk_mass_method_id"><a href='mass.html'>mass</a><span class='relatedKey'>.mass_method_id</span></td>
                                                 <td class="constraint detail">fk_mass_method_id<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
+                                            <tr>
+                                                <td title="taxa_mass.mass_method_id&#39;s name implies that it&#39;s a child of mass_methods.mass_method_id, but it doesn&#39;t reference that column."><a href='taxa_mass.html'>taxa_mass</a><span class='relatedKey'>.mass_method_id</span></td>
+                                                <td class="constraint detail">Implied Constraint<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                            </tr>
                                         </table>
                                     </td>
                                     <td>
@@ -235,6 +239,8 @@
                                 <ul class="nav nav-tabs pull-left ui-sortable-handle">
                                     <li class="active"><a href="#oneDegreeImg-chart" data-toggle="tab" aria-expanded="true">One</a></li>
                                     <li class=""><a href="#twodegreesDegreeImg-chart" data-toggle="tab" aria-expanded="true">Two degrees</a></li>
+                                    <li class=""><a href="#oneimpliedDegreeImg-chart" data-toggle="tab" aria-expanded="true">One implied</a></li>
+                                    <li class=""><a href="#twoimpliedDegreeImg-chart" data-toggle="tab" aria-expanded="true">Two implied</a></li>
                                 </ul>
                                 <div class="tab-content no-padding">
                                     <div class="chart tab-pane active" id="oneDegreeImg-chart" style="position: relative; overflow-x:auto;">
@@ -249,9 +255,27 @@
 <area shape="rect" id="node1" href="mass.html" target="_top" title="mass" alt="" coords="351,79,531,255">
 <area shape="rect" id="node2" href="mass_methods.html" target="_top" title="mass_methods" alt="" coords="5,216,307,403">
 <area shape="rect" id="node3" href="mass_types.html" target="_top" title="mass_types" alt="" coords="74,111,238,199">
-<area shape="rect" id="node4" href="samples.html" target="_top" title="samples" alt="" coords="87,5,225,93">
+<area shape="rect" id="node4" href="samples.html" target="_top" title="samples" alt="" coords="86,5,226,93">
 </map>
                                         <a name='diagram'><img id="twodegreesDegreeImg" src="../diagrams/tables/mass_methods.2degrees.png" usemap="#twoDegreesRelationshipsDiagram" class="diagram" border="0" align="left"></a>
+                                    </div>
+                                    <div class="chart tab-pane " id="oneimpliedDegreeImg-chart" style="position: relative; overflow-x:auto;">
+                                        <map id="oneDegreeRelationshipsDiagramImplied" name="oneDegreeRelationshipsDiagramImplied">
+<area shape="rect" id="node1" href="mass.html" target="_top" title="mass" alt="" coords="351,5,531,181">
+<area shape="rect" id="node2" href="mass_methods.html" target="_top" title="mass_methods" alt="" coords="5,144,307,331">
+<area shape="rect" id="node3" href="taxa_mass.html" target="_top" title="taxa_mass" alt="" coords="351,199,531,345">
+</map>
+                                        <a name='diagram'><img id="oneimpliedDegreeImg" src="../diagrams/tables/mass_methods.implied1degrees.png" usemap="#oneDegreeRelationshipsDiagramImplied" class="diagram" border="0" align="left"></a>
+                                    </div>
+                                    <div class="chart tab-pane " id="twoimpliedDegreeImg-chart" style="position: relative; overflow-x:auto;">
+                                        <map id="twoDegreesRelationshipsDiagramImplied" name="twoDegreesRelationshipsDiagramImplied">
+<area shape="rect" id="node1" href="mass.html" target="_top" title="mass" alt="" coords="351,5,531,181">
+<area shape="rect" id="node2" href="mass_methods.html" target="_top" title="mass_methods" alt="" coords="5,223,307,409">
+<area shape="rect" id="node3" href="mass_types.html" target="_top" title="mass_types" alt="" coords="74,115,238,203">
+<area shape="rect" id="node4" href="samples.html" target="_top" title="samples" alt="" coords="86,8,226,96">
+<area shape="rect" id="node5" href="taxa_mass.html" target="_top" title="taxa_mass" alt="" coords="351,199,531,345">
+</map>
+                                        <a name='diagram'><img id="twoimpliedDegreeImg" src="../diagrams/tables/mass_methods.implied2degrees.png" usemap="#twoDegreesRelationshipsDiagramImplied" class="diagram" border="0" align="left"></a>
                                     </div>
                                 </div>
                             </div>

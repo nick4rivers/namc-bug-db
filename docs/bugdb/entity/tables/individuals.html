@@ -103,58 +103,46 @@
                                 </thead>
                                 <tbody>
                                 <tr>
-                                    <td class='primaryKey' title='Primary Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="individual_id">individual_id</span></td>
+                                    <td class='primaryKey' title='Primary Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="entity_id">entity_id</span></td>
                                     <td>int2</td>
                                     <td>5</td>
                                     <td title=''></td>
-                                    <td title='Automatically updated by the database'>√</td>
+                                    <td title=''></td>
                                     <td>null</td>
                                     <td>
                                         <table border='0' cellspacing='0' cellpadding='0'>
                                             <tr>
-                                                <td title="communications.employee_id references individuals.individual_id via fk_history_namc_staff_id"><a href='communications.html'>communications</a><span class='relatedKey'>.employee_id</span></td>
+                                                <td title="communications.employee_id references individuals.entity_id via fk_history_namc_staff_id"><a href='communications.html'>communications</a><span class='relatedKey'>.employee_id</span></td>
                                                 <td class="constraint detail">fk_history_namc_staff_id<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                             <tr>
-                                                <td title="individual_roles.individual_id references individuals.individual_id via fk_individual_roles_individual_id"><a href='individual_roles.html'>individual_roles</a><span class='relatedKey'>.individual_id</span></td>
-                                                <td class="constraint detail">fk_individual_roles_individual_id<span title='Cascade on delete:&#10;Deletion of parent deletes child'>C</span></td>
+                                                <td title="individual_roles.entity_id references individuals.entity_id via fk_individual_roles_entity_id"><a href='individual_roles.html'>individual_roles</a><span class='relatedKey'>.entity_id</span></td>
+                                                <td class="constraint detail">fk_individual_roles_entity_id<span title='Cascade on delete:&#10;Deletion of parent deletes child'>C</span></td>
                                             </tr>
                                             <tr>
-                                                <td title="vw_individuals.individual_id&#39;s name implies that it&#39;s a child of individuals.individual_id, but it doesn&#39;t reference that column."><a href='vw_individuals.html'>vw_individuals</a><span class='relatedKey'>.individual_id</span></td>
-                                                <td class="constraint detail">Implied Constraint<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
-                                            </tr>
-                                            <tr>
-                                                <td title="boxes.submitter_id references individuals.individual_id via fk_boxes_creator_id"><a href='../../sample/tables/boxes.html'>boxes</a><span class='relatedKey'>.submitter_id</span></td>
+                                                <td title="boxes.submitter_id references individuals.entity_id via fk_boxes_creator_id"><a href='../../sample/tables/boxes.html'>boxes</a><span class='relatedKey'>.submitter_id</span></td>
                                                 <td class="constraint detail">fk_boxes_creator_id<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                             <tr>
-                                                <td title="samples.ider_id references individuals.individual_id via fk_samples_ider_id"><a href='../../sample/tables/samples.html'>samples</a><span class='relatedKey'>.ider_id</span></td>
-                                                <td class="constraint detail">fk_samples_ider_id<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                                <td title="sorter_time.sorter_id references individuals.entity_id via fk_sorter_sorter_id"><a href='../../sample/tables/sorter_time.html'>sorter_time</a><span class='relatedKey'>.sorter_id</span></td>
+                                                <td class="constraint detail">fk_sorter_sorter_id<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                             <tr>
-                                                <td title="samples.sorter_id references individuals.individual_id via fk_samples_sorter_id"><a href='../../sample/tables/samples.html'>samples</a><span class='relatedKey'>.sorter_id</span></td>
-                                                <td class="constraint detail">fk_samples_sorter_id<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
-                                            </tr>
-                                            <tr>
-                                                <td title="sort_qa.sorter2_id references individuals.individual_id via fk_sample_sort_qa_sorter2_id"><a href='../../sample/tables/sort_qa.html'>sort_qa</a><span class='relatedKey'>.sorter2_id</span></td>
-                                                <td class="constraint detail">fk_sample_sort_qa_sorter2_id<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
-                                            </tr>
-                                            <tr>
-                                                <td title="submissions.submitted_by_id references individuals.individual_id via fk_submissions_submitted_by_id"><a href='../../sample/tables/submissions.html'>submissions</a><span class='relatedKey'>.submitted_by_id</span></td>
+                                                <td title="submissions.submitted_by_id references individuals.entity_id via fk_submissions_submitted_by_id"><a href='../../sample/tables/submissions.html'>submissions</a><span class='relatedKey'>.submitted_by_id</span></td>
                                                 <td class="constraint detail">fk_submissions_submitted_by_id<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                             <tr>
-                                                <td title="taxa_qa.ider1 references individuals.individual_id via fk_sample_taxa_qa_ider1"><a href='../../sample/tables/taxa_qa.html'>taxa_qa</a><span class='relatedKey'>.ider1</span></td>
-                                                <td class="constraint detail">fk_sample_taxa_qa_ider1<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
-                                            </tr>
-                                            <tr>
-                                                <td title="taxa_qa.ider2 references individuals.individual_id via fk_sample_taxa_qa_ider2"><a href='../../sample/tables/taxa_qa.html'>taxa_qa</a><span class='relatedKey'>.ider2</span></td>
-                                                <td class="constraint detail">fk_sample_taxa_qa_ider2<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                                <td title="taxa_time.id_er references individuals.entity_id via fk_taxa_time_id_ier"><a href='../../sample/tables/taxa_time.html'>taxa_time</a><span class='relatedKey'>.id_er</span></td>
+                                                <td class="constraint detail">fk_taxa_time_id_ier<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                         </table>
                                     </td>
                                     <td>
                                         <table border='0' cellspacing='0' cellpadding='0'>
+                                            <tr>
+                                                <td title="individuals.entity_id references entities.entity_id via fk_individuals_entity_id"><a href='entities.html'>entities</a><span class='relatedKey'>.entity_id</span></td>
+                                                <td class="constraint detail">fk_individuals_entity_id<span title='Cascade on delete:&#10;Deletion of parent deletes child'>C</span></td>
+                                            </tr>
                                         </table>
                                     </td>
                                     <td></td>
@@ -211,27 +199,6 @@
                                     <td></td>
                                 </tr>
                                 <tr>
-                                    <td class='foreignKey' title='Foreign Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="entity_id">entity_id</span></td>
-                                    <td>int2</td>
-                                    <td>5</td>
-                                    <td title=''></td>
-                                    <td title=''></td>
-                                    <td>null</td>
-                                    <td>
-                                        <table border='0' cellspacing='0' cellpadding='0'>
-                                        </table>
-                                    </td>
-                                    <td>
-                                        <table border='0' cellspacing='0' cellpadding='0'>
-                                            <tr>
-                                                <td title="individuals.entity_id references entities.entity_id via fk_individuals_entity_id"><a href='entities.html'>entities</a><span class='relatedKey'>.entity_id</span></td>
-                                                <td class="constraint detail">fk_individuals_entity_id<span title='Cascade on delete:&#10;Deletion of parent deletes child'>C</span></td>
-                                            </tr>
-                                        </table>
-                                    </td>
-                                    <td></td>
-                                </tr>
-                                <tr>
                                     <td class='foreignKey' title='Foreign Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="affiliation_id">affiliation_id</span></td>
                                     <td>int2</td>
                                     <td>5</td>
@@ -245,7 +212,7 @@
                                     <td>
                                         <table border='0' cellspacing='0' cellpadding='0'>
                                             <tr>
-                                                <td title="individuals.affiliation_id references organizations.organization_id via fk_individuals_affiliation_id"><a href='organizations.html'>organizations</a><span class='relatedKey'>.organization_id</span></td>
+                                                <td title="individuals.affiliation_id references organizations.entity_id via fk_individuals_affiliation_id"><a href='organizations.html'>organizations</a><span class='relatedKey'>.entity_id</span></td>
                                                 <td class="constraint detail">fk_individuals_affiliation_id<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                         </table>
@@ -331,7 +298,7 @@
                                     <td class='primaryKey' title='Primary Key'><i class='icon ion-key iconkey'></i> individuals_pkey</td>
                                     <td>Primary key</td>
                                     <td><span title='Ascending'>Asc</span></td>
-                                    <td>individual_id</td>
+                                    <td>entity_id</td>
                                 </tr>
                                 <tr>
                                     <td title='Indexed'>fx_individuals_affiliation_id</td>
@@ -364,88 +331,43 @@
                                 <ul class="nav nav-tabs pull-left ui-sortable-handle">
                                     <li class="active"><a href="#oneDegreeImg-chart" data-toggle="tab" aria-expanded="true">One</a></li>
                                     <li class=""><a href="#twodegreesDegreeImg-chart" data-toggle="tab" aria-expanded="true">Two degrees</a></li>
-                                    <li class=""><a href="#oneimpliedDegreeImg-chart" data-toggle="tab" aria-expanded="true">One implied</a></li>
-                                    <li class=""><a href="#twoimpliedDegreeImg-chart" data-toggle="tab" aria-expanded="true">Two implied</a></li>
                                 </ul>
                                 <div class="tab-content no-padding">
                                     <div class="chart tab-pane active" id="oneDegreeImg-chart" style="position: relative; overflow-x:auto;">
                                         <map id="oneDegreeRelationshipsDiagram" name="oneDegreeRelationshipsDiagram">
-<area shape="rect" id="node1" href="communications.html" target="_top" title="communications" alt="" coords="770,5,967,181">
-<area shape="rect" id="node2" href="individuals.html" target="_top" title="individuals" alt="" coords="456,507,697,840">
-<area shape="rect" id="node3" href="entities.html" target="_top" title="entities" alt="" coords="5,680,159,885">
-<area shape="rect" id="node5" href="organizations.html" target="_top" title="organizations" alt="" coords="203,703,412,879">
-<area shape="rect" id="node4" href="individual_roles.html" target="_top" title="individual_roles" alt="" coords="773,632,965,755">
-<area shape="rect" id="node6" href="../sample/tables/boxes.html" target="_top" title="sample.boxes" alt="" coords="741,965,996,1112">
-<area shape="rect" id="node7" href="../sample/tables/samples.html" target="_top" title="sample.samples" alt="" coords="772,772,965,948">
-<area shape="rect" id="node8" href="../sample/tables/sort_qa.html" target="_top" title="sample.sort_qa" alt="" coords="775,199,963,316">
-<area shape="rect" id="node9" href="../sample/tables/submissions.html" target="_top" title="sample.submissions" alt="" coords="757,333,981,451">
-<area shape="rect" id="node10" href="../sample/tables/taxa_qa.html" target="_top" title="sample.taxa_qa" alt="" coords="774,468,963,615">
+<area shape="rect" id="node1" href="communications.html" target="_top" title="communications" alt="" coords="767,5,965,181">
+<area shape="rect" id="node2" href="individuals.html" target="_top" title="individuals" alt="" coords="456,364,695,668">
+<area shape="rect" id="node3" href="entities.html" target="_top" title="entities" alt="" coords="5,421,159,627">
+<area shape="rect" id="node5" href="organizations.html" target="_top" title="organizations" alt="" coords="203,464,412,611">
+<area shape="rect" id="node4" href="individual_roles.html" target="_top" title="individual_roles" alt="" coords="770,468,962,591">
+<area shape="rect" id="node6" href="../sample/tables/boxes.html" target="_top" title="sample.boxes" alt="" coords="739,743,993,889">
+<area shape="rect" id="node7" href="../sample/tables/sorter_time.html" target="_top" title="sample.sorter_time" alt="" coords="759,608,973,725">
+<area shape="rect" id="node8" href="../sample/tables/submissions.html" target="_top" title="sample.submissions" alt="" coords="754,199,978,316">
+<area shape="rect" id="node9" href="../sample/tables/taxa_time.html" target="_top" title="sample.taxa_time" alt="" coords="765,333,967,451">
 </map>
                                         <a name='diagram'><img id="oneDegreeImg" src="../diagrams/tables/individuals.1degree.png" usemap="#oneDegreeRelationshipsDiagram" class="diagram" border="0" align="left"></a>
                                     </div>
                                     <div class="chart tab-pane " id="twodegreesDegreeImg-chart" style="position: relative; overflow-x:auto;">
                                         <map id="twoDegreesRelationshipsDiagram" name="twoDegreesRelationshipsDiagram">
-<area shape="rect" id="node1" href="../billing/tables/agreements.html" target="_top" title="billing.agreements" alt="" coords="484,577,693,665">
-<area shape="rect" id="node2" href="entities.html" target="_top" title="entities" alt="" coords="257,469,410,675">
-<area shape="rect" id="node6" href="../geo/tables/countries.html" target="_top" title="geo.countries" alt="" coords="5,599,183,687">
-<area shape="rect" id="node7" href="../geo/tables/states.html" target="_top" title="geo.states" alt="" coords="17,493,171,581">
-<area shape="rect" id="node3" href="../billing/tables/invoices.html" target="_top" title="billing.invoices" alt="" coords="496,683,681,771">
-<area shape="rect" id="node4" href="communications.html" target="_top" title="communications" alt="" coords="1051,5,1249,181">
-<area shape="rect" id="node5" href="individuals.html" target="_top" title="individuals" alt="" coords="737,544,979,877">
-<area shape="rect" id="node10" href="organizations.html" target="_top" title="organizations" alt="" coords="484,832,693,1008">
-<area shape="rect" id="node8" href="individual_roles.html" target="_top" title="individual_roles" alt="" coords="1054,989,1246,1112">
-<area shape="rect" id="node9" href="roles.html" target="_top" title="roles" alt="" coords="798,976,918,1064">
-<area shape="rect" id="node11" href="organization_types.html" target="_top" title="organization_types" alt="" coords="227,893,440,981">
-<area shape="rect" id="node12" href="../sample/tables/boxes.html" target="_top" title="sample.boxes" alt="" coords="1023,199,1277,345">
-<area shape="rect" id="node13" href="../sample/tables/projects.html" target="_top" title="sample.projects" alt="" coords="493,472,685,560">
-<area shape="rect" id="node14" href="../sample/tables/sample_labs.html" target="_top" title="sample.sample_labs" alt="" coords="747,1081,969,1169">
-<area shape="rect" id="node15" href="../sample/tables/samples.html" target="_top" title="sample.samples" alt="" coords="1053,796,1247,972">
-<area shape="rect" id="node16" href="../sample/tables/sort_qa.html" target="_top" title="sample.sort_qa" alt="" coords="1056,363,1244,480">
-<area shape="rect" id="node17" href="../sample/tables/submissions.html" target="_top" title="sample.submissions" alt="" coords="1038,497,1262,615">
-<area shape="rect" id="node18" href="../sample/tables/taxa_qa.html" target="_top" title="sample.taxa_qa" alt="" coords="1055,632,1245,779">
+<area shape="rect" id="node1" href="../billing/tables/agreements.html" target="_top" title="billing.agreements" alt="" coords="484,416,693,504">
+<area shape="rect" id="node2" href="entities.html" target="_top" title="entities" alt="" coords="257,308,410,513">
+<area shape="rect" id="node6" href="../geo/tables/countries.html" target="_top" title="geo.countries" alt="" coords="5,437,183,525">
+<area shape="rect" id="node7" href="../geo/tables/states.html" target="_top" title="geo.states" alt="" coords="17,332,171,420">
+<area shape="rect" id="node3" href="../billing/tables/invoices.html" target="_top" title="billing.invoices" alt="" coords="496,521,681,609">
+<area shape="rect" id="node4" href="communications.html" target="_top" title="communications" alt="" coords="1049,5,1246,181">
+<area shape="rect" id="node5" href="individuals.html" target="_top" title="individuals" alt="" coords="737,419,976,723">
+<area shape="rect" id="node10" href="organizations.html" target="_top" title="organizations" alt="" coords="484,627,693,773">
+<area shape="rect" id="node8" href="individual_roles.html" target="_top" title="individual_roles" alt="" coords="1051,767,1243,889">
+<area shape="rect" id="node9" href="roles.html" target="_top" title="roles" alt="" coords="797,769,917,857">
+<area shape="rect" id="node11" href="organization_types.html" target="_top" title="organization_types" alt="" coords="227,659,440,747">
+<area shape="rect" id="node12" href="../sample/tables/boxes.html" target="_top" title="sample.boxes" alt="" coords="1020,199,1275,345">
+<area shape="rect" id="node13" href="../sample/tables/projects.html" target="_top" title="sample.projects" alt="" coords="493,311,685,399">
+<area shape="rect" id="node14" href="../sample/tables/sample_labs.html" target="_top" title="sample.sample_labs" alt="" coords="746,875,967,963">
+<area shape="rect" id="node15" href="../sample/tables/sorter_time.html" target="_top" title="sample.sorter_time" alt="" coords="1040,497,1255,615">
+<area shape="rect" id="node16" href="../sample/tables/submissions.html" target="_top" title="sample.submissions" alt="" coords="1035,632,1259,749">
+<area shape="rect" id="node17" href="../sample/tables/taxa_time.html" target="_top" title="sample.taxa_time" alt="" coords="1047,363,1248,480">
 </map>
                                         <a name='diagram'><img id="twodegreesDegreeImg" src="../diagrams/tables/individuals.2degrees.png" usemap="#twoDegreesRelationshipsDiagram" class="diagram" border="0" align="left"></a>
-                                    </div>
-                                    <div class="chart tab-pane " id="oneimpliedDegreeImg-chart" style="position: relative; overflow-x:auto;">
-                                        <map id="oneDegreeRelationshipsDiagramImplied" name="oneDegreeRelationshipsDiagramImplied">
-<area shape="rect" id="node1" href="communications.html" target="_top" title="communications" alt="" coords="770,5,967,181">
-<area shape="rect" id="node2" href="individuals.html" target="_top" title="individuals" alt="" coords="456,579,697,912">
-<area shape="rect" id="node3" href="entities.html" target="_top" title="entities" alt="" coords="5,863,159,1068">
-<area shape="rect" id="node5" href="organizations.html" target="_top" title="organizations" alt="" coords="203,833,412,1009">
-<area shape="rect" id="node4" href="individual_roles.html" target="_top" title="individual_roles" alt="" coords="773,497,965,620">
-<area shape="rect" id="node6" href="vw_individuals.html" target="_top" title="vw_individuals" alt="" coords="778,965,959,1088">
-<area shape="rect" id="node7" href="../sample/tables/boxes.html" target="_top" title="sample.boxes" alt="" coords="741,1105,996,1252">
-<area shape="rect" id="node8" href="../sample/tables/samples.html" target="_top" title="sample.samples" alt="" coords="772,772,965,948">
-<area shape="rect" id="node9" href="../sample/tables/sort_qa.html" target="_top" title="sample.sort_qa" alt="" coords="775,637,963,755">
-<area shape="rect" id="node10" href="../sample/tables/submissions.html" target="_top" title="sample.submissions" alt="" coords="757,199,981,316">
-<area shape="rect" id="node11" href="../sample/tables/taxa_qa.html" target="_top" title="sample.taxa_qa" alt="" coords="774,333,963,480">
-</map>
-                                        <a name='diagram'><img id="oneimpliedDegreeImg" src="../diagrams/tables/individuals.implied1degrees.png" usemap="#oneDegreeRelationshipsDiagramImplied" class="diagram" border="0" align="left"></a>
-                                    </div>
-                                    <div class="chart tab-pane " id="twoimpliedDegreeImg-chart" style="position: relative; overflow-x:auto;">
-                                        <map id="twoDegreesRelationshipsDiagramImplied" name="twoDegreesRelationshipsDiagramImplied">
-<area shape="rect" id="node1" href="../billing/tables/agreements.html" target="_top" title="billing.agreements" alt="" coords="484,269,693,357">
-<area shape="rect" id="node2" href="entities.html" target="_top" title="entities" alt="" coords="257,440,410,645">
-<area shape="rect" id="node6" href="../geo/tables/countries.html" target="_top" title="geo.countries" alt="" coords="5,569,183,657">
-<area shape="rect" id="node7" href="../geo/tables/states.html" target="_top" title="geo.states" alt="" coords="17,464,171,552">
-<area shape="rect" id="node3" href="../billing/tables/invoices.html" target="_top" title="billing.invoices" alt="" coords="496,375,681,463">
-<area shape="rect" id="node4" href="communications.html" target="_top" title="communications" alt="" coords="1051,169,1249,345">
-<area shape="rect" id="node5" href="individuals.html" target="_top" title="individuals" alt="" coords="737,635,979,968">
-<area shape="rect" id="node10" href="organizations.html" target="_top" title="organizations" alt="" coords="484,981,693,1157">
-<area shape="rect" id="node8" href="individual_roles.html" target="_top" title="individual_roles" alt="" coords="1054,1129,1246,1252">
-<area shape="rect" id="node9" href="roles.html" target="_top" title="roles" alt="" coords="798,1127,918,1215">
-<area shape="rect" id="node11" href="organization_types.html" target="_top" title="organization_types" alt="" coords="227,1152,440,1240">
-<area shape="rect" id="node12" href="vw_individuals.html" target="_top" title="vw_individuals" alt="" coords="1059,363,1241,485">
-<area shape="rect" id="node13" href="vw_organizations.html" target="_top" title="vw_organizations" alt="" coords="758,1232,958,1296">
-<area shape="rect" id="node14" href="../sample/tables/boxes.html" target="_top" title="sample.boxes" alt="" coords="1023,5,1277,152">
-<area shape="rect" id="node15" href="../sample/tables/projects.html" target="_top" title="sample.projects" alt="" coords="493,164,685,252">
-<area shape="rect" id="node16" href="../sample/tables/sample_labs.html" target="_top" title="sample.sample_labs" alt="" coords="747,1021,969,1109">
-<area shape="rect" id="node17" href="../sample/tables/samples.html" target="_top" title="sample.samples" alt="" coords="1053,936,1247,1112">
-<area shape="rect" id="node18" href="../sample/tables/sort_qa.html" target="_top" title="sample.sort_qa" alt="" coords="1056,801,1244,919">
-<area shape="rect" id="node19" href="../sample/tables/submissions.html" target="_top" title="sample.submissions" alt="" coords="1038,503,1262,620">
-<area shape="rect" id="node20" href="../sample/tables/taxa_qa.html" target="_top" title="sample.taxa_qa" alt="" coords="1055,637,1245,784">
-</map>
-                                        <a name='diagram'><img id="twoimpliedDegreeImg" src="../diagrams/tables/individuals.implied2degrees.png" usemap="#twoDegreesRelationshipsDiagramImplied" class="diagram" border="0" align="left"></a>
                                     </div>
                                 </div>
                             </div>

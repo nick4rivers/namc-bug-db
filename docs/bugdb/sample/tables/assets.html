@@ -104,13 +104,17 @@
                                 <tbody>
                                 <tr>
                                     <td class='primaryKey' title='Primary Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="asset_id">asset_id</span></td>
-                                    <td>int2</td>
-                                    <td>5</td>
+                                    <td>int4</td>
+                                    <td>10</td>
                                     <td title=''></td>
                                     <td title='Automatically updated by the database'>√</td>
                                     <td>null</td>
                                     <td>
                                         <table border='0' cellspacing='0' cellpadding='0'>
+                                            <tr>
+                                                <td title="sample_box_assets.asset_id references assets.asset_id via fk_sample_box_assets_asset_id"><a href='../../public/tables/sample_box_assets.html'>sample_box_assets</a><span class='relatedKey'>.asset_id</span></td>
+                                                <td class="constraint detail">fk_sample_box_assets_asset_id<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                            </tr>
                                             <tr>
                                                 <td title="sample_assets.asset_id references assets.asset_id via fk_sample_assets_asset_id"><a href='sample_assets.html'>sample_assets</a><span class='relatedKey'>.asset_id</span></td>
                                                 <td class="constraint detail">fk_sample_assets_asset_id<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
@@ -124,9 +128,9 @@
                                     <td></td>
                                 </tr>
                                 <tr>
-                                    <td class='indexedColumn' title='Indexed'><i class='fa fa-sitemap fa-rotate-120' style='padding-right: 5px;'></i><span id="asset_name">asset_name</span></td>
-                                    <td>varchar</td>
-                                    <td>255</td>
+                                    <td class='foreignKey' title='Foreign Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="asset_type_id">asset_type_id</span></td>
+                                    <td>int2</td>
+                                    <td>5</td>
                                     <td title=''></td>
                                     <td title=''></td>
                                     <td>null</td>
@@ -136,15 +140,19 @@
                                     </td>
                                     <td>
                                         <table border='0' cellspacing='0' cellpadding='0'>
+                                            <tr>
+                                                <td title="assets.asset_type_id references asset_types.asset_type_id via fk_sample_assets_asset_type_id"><a href='asset_types.html'>asset_types</a><span class='relatedKey'>.asset_type_id</span></td>
+                                                <td class="constraint detail">fk_sample_assets_asset_type_id<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                            </tr>
                                         </table>
                                     </td>
                                     <td></td>
                                 </tr>
                                 <tr>
-                                    <td><span id="description">description</span></td>
-                                    <td>text</td>
-                                    <td>2147483647</td>
-                                    <td title='nullable'>√</td>
+                                    <td class='indexedColumn' title='Indexed'><i class='fa fa-sitemap fa-rotate-120' style='padding-right: 5px;'></i><span id="uuid">uuid</span></td>
+                                    <td>varchar</td>
+                                    <td>255</td>
+                                    <td title=''></td>
                                     <td title=''></td>
                                     <td>null</td>
                                     <td>
@@ -222,10 +230,22 @@
                                     <td>asset_id</td>
                                 </tr>
                                 <tr>
-                                    <td class='uniqueKey' title='Unique Key'><i class='icon ion-key iconkey'></i> assets_asset_name_key</td>
+                                    <td class='uniqueKey' title='Unique Key'><i class='icon ion-key iconkey'></i> assets_uuid_key</td>
                                     <td>Must be unique</td>
                                     <td><span title='Ascending'>Asc</span></td>
-                                    <td>asset_name</td>
+                                    <td>uuid</td>
+                                </tr>
+                                <tr>
+                                    <td title='Indexed'>fx_sample_assets_asset_type_id</td>
+                                    <td>Performance</td>
+                                    <td><span title='Ascending'>Asc</span></td>
+                                    <td>asset_type_id</td>
+                                </tr>
+                                <tr>
+                                    <td title='Indexed'>fx_sample_assets_uuid</td>
+                                    <td>Performance</td>
+                                    <td><span title='Ascending'>Asc</span></td>
+                                    <td>uuid</td>
                                 </tr>
                                 </tbody>
                             </table>
@@ -250,16 +270,21 @@
                                 <div class="tab-content no-padding">
                                     <div class="chart tab-pane active" id="oneDegreeImg-chart" style="position: relative; overflow-x:auto;">
                                         <map id="oneDegreeRelationshipsDiagram" name="oneDegreeRelationshipsDiagram">
-<area shape="rect" id="node1" href="sample_assets.html" target="_top" title="sample_assets" alt="" coords="329,5,513,128">
-<area shape="rect" id="node2" href="assets.html" target="_top" title="assets" alt="" coords="5,32,285,248">
+<area shape="rect" id="node1" href="../public/tables/sample_box_assets.html" target="_top" title="public.sample_box_assets" alt="" coords="539,5,804,152">
+<area shape="rect" id="node2" href="assets.html" target="_top" title="assets" alt="" coords="213,115,495,331">
+<area shape="rect" id="node3" href="asset_types.html" target="_top" title="asset_types" alt="" coords="5,147,169,293">
+<area shape="rect" id="node4" href="sample_assets.html" target="_top" title="sample_assets" alt="" coords="579,169,763,316">
 </map>
                                         <a name='diagram'><img id="oneDegreeImg" src="../diagrams/tables/assets.1degree.png" usemap="#oneDegreeRelationshipsDiagram" class="diagram" border="0" align="left"></a>
                                     </div>
                                     <div class="chart tab-pane " id="twodegreesDegreeImg-chart" style="position: relative; overflow-x:auto;">
                                         <map id="twoDegreesRelationshipsDiagram" name="twoDegreesRelationshipsDiagram">
-<area shape="rect" id="node1" href="sample_assets.html" target="_top" title="sample_assets" alt="" coords="329,44,513,167">
-<area shape="rect" id="node2" href="assets.html" target="_top" title="assets" alt="" coords="5,111,285,327">
-<area shape="rect" id="node3" href="samples.html" target="_top" title="samples" alt="" coords="76,5,215,93">
+<area shape="rect" id="node1" href="../public/tables/sample_box_assets.html" target="_top" title="public.sample_box_assets" alt="" coords="539,5,804,152">
+<area shape="rect" id="node2" href="assets.html" target="_top" title="assets" alt="" coords="213,195,495,411">
+<area shape="rect" id="node3" href="boxes.html" target="_top" title="boxes" alt="" coords="21,51,153,139">
+<area shape="rect" id="node4" href="asset_types.html" target="_top" title="asset_types" alt="" coords="5,227,169,373">
+<area shape="rect" id="node5" href="sample_assets.html" target="_top" title="sample_assets" alt="" coords="579,169,763,316">
+<area shape="rect" id="node6" href="samples.html" target="_top" title="samples" alt="" coords="284,87,424,175">
 </map>
                                         <a name='diagram'><img id="twodegreesDegreeImg" src="../diagrams/tables/assets.2degrees.png" usemap="#twoDegreesRelationshipsDiagram" class="diagram" border="0" align="left"></a>
                                     </div>

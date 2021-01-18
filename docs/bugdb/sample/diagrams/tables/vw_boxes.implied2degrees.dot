@@ -18,14 +18,34 @@ digraph "twoDegreesRelationshipsDiagramImplied" {
   edge [
     arrowsize="0.8"
   ];
-  "boxes":"elipses":w -> "box_states":"box_state_id":e [arrowhead=none dir=back arrowtail=crowodot];
-  "boxes":"elipses":w -> "entity.entities":"elipses":e [arrowhead=none dir=back arrowtail=crowodot];
-  "boxes":"elipses":w -> "projects":"project_id":e [arrowhead=none dir=back arrowtail=crowodot];
+  "billing.invoice_boxes":"elipses":w -> "boxes":"box_id":e [arrowhead=none dir=back arrowtail=crowodot];
+  "public.sample_box_assets":"elipses":w -> "boxes":"box_id":e [arrowhead=none dir=back arrowtail=crowodot];
+  "boxes":"box_state_id":w -> "box_states":"box_state_id":e [arrowhead=none dir=back arrowtail=crowodot];
+  "boxes":"customer_id":w -> "entity.entities":"elipses":e [arrowhead=none dir=back arrowtail=crowodot];
+  "boxes":"project_id":w -> "projects":"project_id":e [arrowhead=none dir=back arrowtail=crowodot];
+  "boxes":"submitter_id":w -> "entity.individuals":"elipses":e [arrowhead=none dir=back arrowtail=crowodot];
   "project_samples":"elipses":w -> "projects":"project_id":e [arrowhead=none dir=back arrowtail=crowodot];
+  "project_samples":"elipses":w -> "samples":"elipses":e [arrowhead=none dir=back arrowtail=crowodot];
   "projects":"contact_id":w -> "entity.entities":"elipses":e [arrowhead=none dir=back arrowtail=crowodot];
   "projects":"project_type_id":w -> "project_types":"elipses":e [arrowhead=none dir=back arrowtail=crowodot];
+  "samples":"elipses":w -> "boxes":"box_id":e [arrowhead=none dir=back arrowtail=crowodot];
+  "submissions":"elipses":w -> "boxes":"box_id":e [arrowhead=none dir=back arrowtail=crowodot];
+  "submissions":"elipses":w -> "entity.individuals":"elipses":e [arrowhead=none dir=back arrowtail=crowodot];
+  "vw_boxes":"box_id":w -> "boxes":"box_id":e [arrowhead=none dir=back arrowtail=crowodot style=dashed];
   "vw_boxes":"box_state_id":w -> "box_states":"box_state_id":e [arrowhead=none dir=back arrowtail=crowodot style=dashed];
   "vw_boxes":"project_id":w -> "projects":"project_id":e [arrowhead=none dir=back arrowtail=crowodot style=dashed];
+  "vw_samples":"elipses":w -> "boxes":"box_id":e [arrowhead=none dir=back arrowtail=crowodot style=dashed];
+  "billing.invoice_boxes" [
+   label=<
+    <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" BGCOLOR="#ffffff">
+      <TR><TD COLSPAN="3"  BGCOLOR="#f5f5f5"><TABLE BORDER="0" CELLSPACING="0"><TR><TD ALIGN="LEFT"><B>billing.invoice_boxes</B></TD><TD ALIGN="RIGHT">[table]</TD></TR></TABLE></TD></TR>
+      <TR><TD PORT="elipses" COLSPAN="3" ALIGN="LEFT">...</TD></TR>
+      <TR><TD ALIGN="LEFT" BGCOLOR="#ffffff">&lt; 1</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">0 rows</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">  </TD></TR>
+    </TABLE>>
+    URL="../billing/tables/invoice_boxes.html"
+    target="_top"
+    tooltip="billing.invoice_boxes"
+  ];
   "entity.entities" [
    label=<
     <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" BGCOLOR="#ffffff">
@@ -36,6 +56,28 @@ digraph "twoDegreesRelationshipsDiagramImplied" {
     URL="../entity/tables/entities.html"
     target="_top"
     tooltip="entity.entities"
+  ];
+  "entity.individuals" [
+   label=<
+    <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" BGCOLOR="#ffffff">
+      <TR><TD COLSPAN="3"  BGCOLOR="#f5f5f5"><TABLE BORDER="0" CELLSPACING="0"><TR><TD ALIGN="LEFT"><B>entity.individuals</B></TD><TD ALIGN="RIGHT">[table]</TD></TR></TABLE></TD></TR>
+      <TR><TD PORT="elipses" COLSPAN="3" ALIGN="LEFT">...</TD></TR>
+      <TR><TD ALIGN="LEFT" BGCOLOR="#ffffff">  </TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">0 rows</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">4 &gt;</TD></TR>
+    </TABLE>>
+    URL="../entity/tables/individuals.html"
+    target="_top"
+    tooltip="entity.individuals"
+  ];
+  "public.sample_box_assets" [
+   label=<
+    <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" BGCOLOR="#ffffff">
+      <TR><TD COLSPAN="3"  BGCOLOR="#f5f5f5"><TABLE BORDER="0" CELLSPACING="0"><TR><TD ALIGN="LEFT"><B>public.sample_box_assets</B></TD><TD ALIGN="RIGHT">[table]</TD></TR></TABLE></TD></TR>
+      <TR><TD PORT="elipses" COLSPAN="3" ALIGN="LEFT">...</TD></TR>
+      <TR><TD ALIGN="LEFT" BGCOLOR="#ffffff">&lt; 2</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">0 rows</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">  </TD></TR>
+    </TABLE>>
+    URL="../public/tables/sample_box_assets.html"
+    target="_top"
+    tooltip="public.sample_box_assets"
   ];
   "box_states" [
    label=<
@@ -55,8 +97,13 @@ digraph "twoDegreesRelationshipsDiagramImplied" {
    label=<
     <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" BGCOLOR="#ffffff">
       <TR><TD COLSPAN="3"  BGCOLOR="#f5f5f5"><TABLE BORDER="0" CELLSPACING="0"><TR><TD ALIGN="LEFT"><B>boxes</B></TD><TD ALIGN="RIGHT">[table]</TD></TR></TABLE></TD></TR>
+      <TR><TD PORT="box_id" COLSPAN="3" ALIGN="LEFT"><TABLE BORDER="0" CELLSPACING="0" ALIGN="LEFT"><TR ALIGN="LEFT"><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="15" HEIGHT="16"><IMG SRC="../../images/primaryKeys.png"/></TD><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="154" HEIGHT="16">box_id</TD></TR></TABLE></TD></TR>
+      <TR><TD PORT="customer_id" COLSPAN="3" BGCOLOR="#ffffff" ALIGN="LEFT"><TABLE BORDER="0" CELLSPACING="0" ALIGN="LEFT"><TR ALIGN="LEFT"><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="15" HEIGHT="16"><IMG SRC="../../images/foreignKeys.png"/></TD><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="154" HEIGHT="16">customer_id</TD></TR></TABLE></TD></TR>
+      <TR><TD PORT="submitter_id" COLSPAN="3" ALIGN="LEFT"><TABLE BORDER="0" CELLSPACING="0" ALIGN="LEFT"><TR ALIGN="LEFT"><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="15" HEIGHT="16"><IMG SRC="../../images/foreignKeys.png"/></TD><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="154" HEIGHT="16">submitter_id</TD></TR></TABLE></TD></TR>
+      <TR><TD PORT="box_state_id" COLSPAN="3" BGCOLOR="#ffffff" ALIGN="LEFT"><TABLE BORDER="0" CELLSPACING="0" ALIGN="LEFT"><TR ALIGN="LEFT"><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="15" HEIGHT="16"><IMG SRC="../../images/foreignKeys.png"/></TD><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="154" HEIGHT="16">box_state_id</TD></TR></TABLE></TD></TR>
+      <TR><TD PORT="project_id" COLSPAN="3" BGCOLOR="#ffffff" ALIGN="LEFT"><TABLE BORDER="0" CELLSPACING="0" ALIGN="LEFT"><TR ALIGN="LEFT"><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="15" HEIGHT="16"><IMG SRC="../../images/foreignKeys.png"/></TD><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="154" HEIGHT="16">project_id</TD></TR></TABLE></TD></TR>
       <TR><TD PORT="elipses" COLSPAN="3" ALIGN="LEFT">...</TD></TR>
-      <TR><TD ALIGN="LEFT" BGCOLOR="#ffffff">&lt; 4</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">0 rows</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">3 &gt;</TD></TR>
+      <TR><TD ALIGN="LEFT" BGCOLOR="#ffffff">&lt; 4</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">0 rows</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">6 &gt;</TD></TR>
     </TABLE>>
     URL="boxes.html"
     target="_top"
@@ -100,11 +147,33 @@ digraph "twoDegreesRelationshipsDiagramImplied" {
     target="_top"
     tooltip="projects"
   ];
+  "samples" [
+   label=<
+    <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" BGCOLOR="#ffffff">
+      <TR><TD COLSPAN="3"  BGCOLOR="#f5f5f5"><TABLE BORDER="0" CELLSPACING="0"><TR><TD ALIGN="LEFT"><B>samples</B></TD><TD ALIGN="RIGHT">[table]</TD></TR></TABLE></TD></TR>
+      <TR><TD PORT="elipses" COLSPAN="3" ALIGN="LEFT">...</TD></TR>
+      <TR><TD ALIGN="LEFT" BGCOLOR="#ffffff">&lt; 5</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">0 rows</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">10 &gt;</TD></TR>
+    </TABLE>>
+    URL="samples.html"
+    target="_top"
+    tooltip="samples"
+  ];
+  "submissions" [
+   label=<
+    <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" BGCOLOR="#ffffff">
+      <TR><TD COLSPAN="3"  BGCOLOR="#f5f5f5"><TABLE BORDER="0" CELLSPACING="0"><TR><TD ALIGN="LEFT"><B>submissions</B></TD><TD ALIGN="RIGHT">[table]</TD></TR></TABLE></TD></TR>
+      <TR><TD PORT="elipses" COLSPAN="3" ALIGN="LEFT">...</TD></TR>
+      <TR><TD ALIGN="LEFT" BGCOLOR="#ffffff">&lt; 2</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">0 rows</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">  </TD></TR>
+    </TABLE>>
+    URL="submissions.html"
+    target="_top"
+    tooltip="submissions"
+  ];
   "vw_boxes" [
    label=<
     <TABLE BORDER="2" CELLBORDER="1" CELLSPACING="0" BGCOLOR="#ffffff">
       <TR><TD COLSPAN="4"  BGCOLOR="#f5f5f5"><TABLE BORDER="0" CELLSPACING="0"><TR><TD ALIGN="LEFT"><B>vw_boxes</B></TD><TD ALIGN="RIGHT">[view]</TD></TR></TABLE></TD></TR>
-      <TR><TD PORT="box_id" COLSPAN="2" ALIGN="LEFT"><TABLE BORDER="0" CELLSPACING="0" ALIGN="LEFT"><TR ALIGN="LEFT"><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="15" HEIGHT="16"></TD><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="154" HEIGHT="16">box_id</TD></TR></TABLE></TD><TD PORT="box_id.type" ALIGN="LEFT">int4[10]</TD></TR>
+      <TR><TD PORT="box_id" COLSPAN="2" ALIGN="LEFT"><TABLE BORDER="0" CELLSPACING="0" ALIGN="LEFT"><TR ALIGN="LEFT"><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="15" HEIGHT="16"><IMG SRC="../../images/foreignKeys.png"/></TD><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="154" HEIGHT="16">box_id</TD></TR></TABLE></TD><TD PORT="box_id.type" ALIGN="LEFT">int4[10]</TD></TR>
       <TR><TD PORT="customer_id" COLSPAN="2" ALIGN="LEFT"><TABLE BORDER="0" CELLSPACING="0" ALIGN="LEFT"><TR ALIGN="LEFT"><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="15" HEIGHT="16"></TD><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="154" HEIGHT="16">customer_id</TD></TR></TABLE></TD><TD PORT="customer_id.type" ALIGN="LEFT">int2[5]</TD></TR>
       <TR><TD PORT="samples" COLSPAN="2" ALIGN="LEFT"><TABLE BORDER="0" CELLSPACING="0" ALIGN="LEFT"><TR ALIGN="LEFT"><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="15" HEIGHT="16"></TD><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="154" HEIGHT="16">samples</TD></TR></TABLE></TD><TD PORT="samples.type" ALIGN="LEFT">int8[19]</TD></TR>
       <TR><TD PORT="submitter_id" COLSPAN="2" ALIGN="LEFT"><TABLE BORDER="0" CELLSPACING="0" ALIGN="LEFT"><TR ALIGN="LEFT"><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="15" HEIGHT="16"></TD><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="154" HEIGHT="16">submitter_id</TD></TR></TABLE></TD><TD PORT="submitter_id.type" ALIGN="LEFT">int2[5]</TD></TR>
@@ -113,13 +182,21 @@ digraph "twoDegreesRelationshipsDiagramImplied" {
       <TR><TD PORT="box_recevied_date" COLSPAN="2" ALIGN="LEFT"><TABLE BORDER="0" CELLSPACING="0" ALIGN="LEFT"><TR ALIGN="LEFT"><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="15" HEIGHT="16"></TD><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="154" HEIGHT="16">box_recevied_date</TD></TR></TABLE></TD><TD PORT="box_recevied_date.type" ALIGN="LEFT">timestamptz[35,6]</TD></TR>
       <TR><TD PORT="processing_complete_date" COLSPAN="2" ALIGN="LEFT"><TABLE BORDER="0" CELLSPACING="0" ALIGN="LEFT"><TR ALIGN="LEFT"><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="15" HEIGHT="16"></TD><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="154" HEIGHT="16">processing_complete_date</TD></TR></TABLE></TD><TD PORT="processing_complete_date.type" ALIGN="LEFT">timestamptz[35,6]</TD></TR>
       <TR><TD PORT="projected_complete_date" COLSPAN="2" ALIGN="LEFT"><TABLE BORDER="0" CELLSPACING="0" ALIGN="LEFT"><TR ALIGN="LEFT"><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="15" HEIGHT="16"></TD><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="154" HEIGHT="16">projected_complete_date</TD></TR></TABLE></TD><TD PORT="projected_complete_date.type" ALIGN="LEFT">timestamptz[35,6]</TD></TR>
-      <TR><TD PORT="sort_time" COLSPAN="2" ALIGN="LEFT"><TABLE BORDER="0" CELLSPACING="0" ALIGN="LEFT"><TR ALIGN="LEFT"><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="15" HEIGHT="16"></TD><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="154" HEIGHT="16">sort_time</TD></TR></TABLE></TD><TD PORT="sort_time.type" ALIGN="LEFT">float8[17,17]</TD></TR>
-      <TR><TD PORT="id_time" COLSPAN="2" ALIGN="LEFT"><TABLE BORDER="0" CELLSPACING="0" ALIGN="LEFT"><TR ALIGN="LEFT"><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="15" HEIGHT="16"></TD><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="154" HEIGHT="16">id_time</TD></TR></TABLE></TD><TD PORT="id_time.type" ALIGN="LEFT">float8[17,17]</TD></TR>
       <TR><TD PORT="project_id" COLSPAN="2" ALIGN="LEFT"><TABLE BORDER="0" CELLSPACING="0" ALIGN="LEFT"><TR ALIGN="LEFT"><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="15" HEIGHT="16"><IMG SRC="../../images/foreignKeys.png"/></TD><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="154" HEIGHT="16">project_id</TD></TR></TABLE></TD><TD PORT="project_id.type" ALIGN="LEFT">int2[5]</TD></TR>
       <TR><TD PORT="project_name" COLSPAN="2" ALIGN="LEFT"><TABLE BORDER="0" CELLSPACING="0" ALIGN="LEFT"><TR ALIGN="LEFT"><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="15" HEIGHT="16"></TD><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="154" HEIGHT="16">project_name</TD></TR></TABLE></TD><TD PORT="project_name.type" ALIGN="LEFT">varchar[255]</TD></TR>
     </TABLE>>
     URL="vw_boxes.html"
     target="_top"
     tooltip="vw_boxes"
+  ];
+  "vw_samples" [
+   label=<
+    <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" BGCOLOR="#ffffff">
+      <TR><TD COLSPAN="3"  BGCOLOR="#f5f5f5"><TABLE BORDER="0" CELLSPACING="0"><TR><TD ALIGN="LEFT"><B>vw_samples</B></TD><TD ALIGN="RIGHT">[view]</TD></TR></TABLE></TD></TR>
+      <TR><TD PORT="elipses" COLSPAN="3" ALIGN="LEFT">...</TD></TR>
+    </TABLE>>
+    URL="vw_samples.html"
+    target="_top"
+    tooltip="vw_samples"
   ];
 }

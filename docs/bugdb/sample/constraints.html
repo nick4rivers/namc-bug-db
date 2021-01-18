@@ -80,7 +80,7 @@
                     <div class="box box-primary">
                         <div class="box-header with-border">
                             <i class="ion ion-key"></i>
-                            <h3 class="box-title">38 Foreign Key Constraints</h3>
+                            <h3 class="box-title">36 Foreign Key Constraints</h3>
                             <div class="box-tools pull-right">
                                 <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
                                 <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
@@ -97,6 +97,42 @@
                                     </tr>
                                 </thead>
                                 <tbody>
+                                    <tr>
+                                        <td>fk_taxa_time_id_ier</td>
+                                        <td>
+                                            <table border='0' cellspacing='0' cellpadding='0'>
+                                                <tr>
+                                                    <td><a href='tables/taxa_time.html'>taxa_time</a><span>.id_er</span></td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                        <td>
+                                            <table border='0' cellspacing='0' cellpadding='0'>
+                                                <tr>
+                                                    <td><a href='tables/individuals.html'>individuals</a><span>.entity_id</span></td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                        <td><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>Restrict delete</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td>fk_taxa_time_sample_id</td>
+                                        <td>
+                                            <table border='0' cellspacing='0' cellpadding='0'>
+                                                <tr>
+                                                    <td><a href='tables/taxa_time.html'>taxa_time</a><span>.sample_id</span></td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                        <td>
+                                            <table border='0' cellspacing='0' cellpadding='0'>
+                                                <tr>
+                                                    <td><a href='tables/samples.html'>samples</a><span>.sample_id</span></td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                        <td><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>Restrict delete</span></td>
+                                    </tr>
                                     <tr>
                                         <td>fk_organism_types_note_id</td>
                                         <td>
@@ -134,24 +170,6 @@
                                         <td><span title='Cascade on delete:&#10;Deletion of parent deletes child'>Cascade on delete</span></td>
                                     </tr>
                                     <tr>
-                                        <td>fk_sample_sort_qa_sorter2_id</td>
-                                        <td>
-                                            <table border='0' cellspacing='0' cellpadding='0'>
-                                                <tr>
-                                                    <td><a href='tables/sort_qa.html'>sort_qa</a><span>.sorter2_id</span></td>
-                                                </tr>
-                                            </table>
-                                        </td>
-                                        <td>
-                                            <table border='0' cellspacing='0' cellpadding='0'>
-                                                <tr>
-                                                    <td><a href='tables/individuals.html'>individuals</a><span>.individual_id</span></td>
-                                                </tr>
-                                            </table>
-                                        </td>
-                                        <td><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>Restrict delete</span></td>
-                                    </tr>
-                                    <tr>
                                         <td>fk_sample_labs_lab_type_id</td>
                                         <td>
                                             <table border='0' cellspacing='0' cellpadding='0'>
@@ -174,14 +192,14 @@
                                         <td>
                                             <table border='0' cellspacing='0' cellpadding='0'>
                                                 <tr>
-                                                    <td><a href='tables/sample_labs.html'>sample_labs</a><span>.organization_id</span></td>
+                                                    <td><a href='tables/sample_labs.html'>sample_labs</a><span>.entity_id</span></td>
                                                 </tr>
                                             </table>
                                         </td>
                                         <td>
                                             <table border='0' cellspacing='0' cellpadding='0'>
                                                 <tr>
-                                                    <td><a href='tables/organizations.html'>organizations</a><span>.organization_id</span></td>
+                                                    <td><a href='tables/organizations.html'>organizations</a><span>.entity_id</span></td>
                                                 </tr>
                                             </table>
                                         </td>
@@ -350,24 +368,6 @@
                                         <td><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>Restrict delete</span></td>
                                     </tr>
                                     <tr>
-                                        <td>fk_samples_sorter_id</td>
-                                        <td>
-                                            <table border='0' cellspacing='0' cellpadding='0'>
-                                                <tr>
-                                                    <td><a href='tables/samples.html'>samples</a><span>.sorter_id</span></td>
-                                                </tr>
-                                            </table>
-                                        </td>
-                                        <td>
-                                            <table border='0' cellspacing='0' cellpadding='0'>
-                                                <tr>
-                                                    <td><a href='tables/individuals.html'>individuals</a><span>.individual_id</span></td>
-                                                </tr>
-                                            </table>
-                                        </td>
-                                        <td><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>Restrict delete</span></td>
-                                    </tr>
-                                    <tr>
                                         <td>fk_samples_method_id</td>
                                         <td>
                                             <table border='0' cellspacing='0' cellpadding='0'>
@@ -440,42 +440,6 @@
                                         <td><span title='Cascade on delete:&#10;Deletion of parent deletes child'>Cascade on delete</span></td>
                                     </tr>
                                     <tr>
-                                        <td>fk_samples_lab_id</td>
-                                        <td>
-                                            <table border='0' cellspacing='0' cellpadding='0'>
-                                                <tr>
-                                                    <td><a href='tables/samples.html'>samples</a><span>.lab_id</span></td>
-                                                </tr>
-                                            </table>
-                                        </td>
-                                        <td>
-                                            <table border='0' cellspacing='0' cellpadding='0'>
-                                                <tr>
-                                                    <td><a href='tables/organizations.html'>organizations</a><span>.organization_id</span></td>
-                                                </tr>
-                                            </table>
-                                        </td>
-                                        <td><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>Restrict delete</span></td>
-                                    </tr>
-                                    <tr>
-                                        <td>fk_samples_ider_id</td>
-                                        <td>
-                                            <table border='0' cellspacing='0' cellpadding='0'>
-                                                <tr>
-                                                    <td><a href='tables/samples.html'>samples</a><span>.ider_id</span></td>
-                                                </tr>
-                                            </table>
-                                        </td>
-                                        <td>
-                                            <table border='0' cellspacing='0' cellpadding='0'>
-                                                <tr>
-                                                    <td><a href='tables/individuals.html'>individuals</a><span>.individual_id</span></td>
-                                                </tr>
-                                            </table>
-                                        </td>
-                                        <td><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>Restrict delete</span></td>
-                                    </tr>
-                                    <tr>
                                         <td>fk_boxes_customer_id</td>
                                         <td>
                                             <table border='0' cellspacing='0' cellpadding='0'>
@@ -541,7 +505,25 @@
                                         <td>
                                             <table border='0' cellspacing='0' cellpadding='0'>
                                                 <tr>
-                                                    <td><a href='tables/individuals.html'>individuals</a><span>.individual_id</span></td>
+                                                    <td><a href='tables/individuals.html'>individuals</a><span>.entity_id</span></td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                        <td><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>Restrict delete</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td>fk_sample_assets_asset_type_id</td>
+                                        <td>
+                                            <table border='0' cellspacing='0' cellpadding='0'>
+                                                <tr>
+                                                    <td><a href='tables/assets.html'>assets</a><span>.asset_type_id</span></td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                        <td>
+                                            <table border='0' cellspacing='0' cellpadding='0'>
+                                                <tr>
+                                                    <td><a href='tables/asset_types.html'>asset_types</a><span>.asset_type_id</span></td>
                                                 </tr>
                                             </table>
                                         </td>
@@ -595,7 +577,7 @@
                                         <td>
                                             <table border='0' cellspacing='0' cellpadding='0'>
                                                 <tr>
-                                                    <td><a href='tables/individuals.html'>individuals</a><span>.individual_id</span></td>
+                                                    <td><a href='tables/individuals.html'>individuals</a><span>.entity_id</span></td>
                                                 </tr>
                                             </table>
                                         </td>
@@ -692,60 +674,6 @@
                                         <td><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>Restrict delete</span></td>
                                     </tr>
                                     <tr>
-                                        <td>fk_sample_taxa_qa_ider1</td>
-                                        <td>
-                                            <table border='0' cellspacing='0' cellpadding='0'>
-                                                <tr>
-                                                    <td><a href='tables/taxa_qa.html'>taxa_qa</a><span>.ider1</span></td>
-                                                </tr>
-                                            </table>
-                                        </td>
-                                        <td>
-                                            <table border='0' cellspacing='0' cellpadding='0'>
-                                                <tr>
-                                                    <td><a href='tables/individuals.html'>individuals</a><span>.individual_id</span></td>
-                                                </tr>
-                                            </table>
-                                        </td>
-                                        <td><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>Restrict delete</span></td>
-                                    </tr>
-                                    <tr>
-                                        <td>fk_sample_taxa_qa_ider2</td>
-                                        <td>
-                                            <table border='0' cellspacing='0' cellpadding='0'>
-                                                <tr>
-                                                    <td><a href='tables/taxa_qa.html'>taxa_qa</a><span>.ider2</span></td>
-                                                </tr>
-                                            </table>
-                                        </td>
-                                        <td>
-                                            <table border='0' cellspacing='0' cellpadding='0'>
-                                                <tr>
-                                                    <td><a href='tables/individuals.html'>individuals</a><span>.individual_id</span></td>
-                                                </tr>
-                                            </table>
-                                        </td>
-                                        <td><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>Restrict delete</span></td>
-                                    </tr>
-                                    <tr>
-                                        <td>fk_sample_benthic_sample_id</td>
-                                        <td>
-                                            <table border='0' cellspacing='0' cellpadding='0'>
-                                                <tr>
-                                                    <td><a href='tables/benthic.html'>benthic</a><span>.sample_id</span></td>
-                                                </tr>
-                                            </table>
-                                        </td>
-                                        <td>
-                                            <table border='0' cellspacing='0' cellpadding='0'>
-                                                <tr>
-                                                    <td><a href='tables/samples.html'>samples</a><span>.sample_id</span></td>
-                                                </tr>
-                                            </table>
-                                        </td>
-                                        <td><span title='Cascade on delete:&#10;Deletion of parent deletes child'>Cascade on delete</span></td>
-                                    </tr>
-                                    <tr>
                                         <td>fk_fish_taxonomy_id</td>
                                         <td>
                                             <table border='0' cellspacing='0' cellpadding='0'>
@@ -781,6 +709,42 @@
                                         </td>
                                         <td><span title='Cascade on delete:&#10;Deletion of parent deletes child'>Cascade on delete</span></td>
                                     </tr>
+                                    <tr>
+                                        <td>fk_sorter_sorter_id</td>
+                                        <td>
+                                            <table border='0' cellspacing='0' cellpadding='0'>
+                                                <tr>
+                                                    <td><a href='tables/sorter_time.html'>sorter_time</a><span>.sorter_id</span></td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                        <td>
+                                            <table border='0' cellspacing='0' cellpadding='0'>
+                                                <tr>
+                                                    <td><a href='tables/individuals.html'>individuals</a><span>.entity_id</span></td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                        <td><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>Restrict delete</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td>fk_sorter_sample_id</td>
+                                        <td>
+                                            <table border='0' cellspacing='0' cellpadding='0'>
+                                                <tr>
+                                                    <td><a href='tables/sorter_time.html'>sorter_time</a><span>.sample_id</span></td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                        <td>
+                                            <table border='0' cellspacing='0' cellpadding='0'>
+                                                <tr>
+                                                    <td><a href='tables/samples.html'>samples</a><span>.sample_id</span></td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                        <td><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>Restrict delete</span></td>
+                                    </tr>
                                 </tbody>
                             </table>
                         </div>
@@ -805,26 +769,6 @@
                                 </thead>
                                 <tbody>
                                     <tr>
-                                        <td><a href='tables/sort_qa.html'>sort_qa</a></td>
-                                        <td>ck_sample_qaqc_qaqc_split</td>
-                                        <td>(((split &gt;= (0)::double precision) AND (split &lt;= (100)::double precision)))</td>
-                                    </tr>
-                                    <tr>
-                                        <td><a href='tables/sort_qa.html'>sort_qa</a></td>
-                                        <td>ck_sample_qaqc_sort_time</td>
-                                        <td>(((sort_time &gt;= (0)::double precision) AND (sort_time &lt; (24)::double precision)))</td>
-                                    </tr>
-                                    <tr>
-                                        <td><a href='tables/sort_qa.html'>sort_qa</a></td>
-                                        <td>ck_sample_sort_qa_bugs_resorted</td>
-                                        <td>((bugs_resorted &gt;= 0))</td>
-                                    </tr>
-                                    <tr>
-                                        <td><a href='tables/sort_qa.html'>sort_qa</a></td>
-                                        <td>ck_sample_sort_qa_sorter_efficiency</td>
-                                        <td>(((sorter_efficiency &gt;= (0)::double precision) AND (sorter_efficiency &lt;= (100)::double precision)))</td>
-                                    </tr>
-                                    <tr>
                                         <td><a href='tables/box_states.html'>box_states</a></td>
                                         <td>chk_box_states</td>
                                         <td>((box_state_order &gt; 0))</td>
@@ -838,11 +782,6 @@
                                         <td><a href='tables/samples.html'>samples</a></td>
                                         <td>chk_samples_mesh</td>
                                         <td>((mesh &gt; 0))</td>
-                                    </tr>
-                                    <tr>
-                                        <td><a href='tables/samples.html'>samples</a></td>
-                                        <td>chk_samples_sorter_count</td>
-                                        <td>((sorter_count &gt;= 0))</td>
                                     </tr>
                                     <tr>
                                         <td><a href='tables/samples.html'>samples</a></td>
@@ -918,6 +857,11 @@
                                         <td><a href='tables/fish.html'>fish</a></td>
                                         <td>ck_fish_fish_mass</td>
                                         <td>((fish_mass &gt;= (0)::double precision))</td>
+                                    </tr>
+                                    <tr>
+                                        <td><a href='tables/sorter_time.html'>sorter_time</a></td>
+                                        <td>ck_sorter_sorter_count</td>
+                                        <td>((sorter_count &gt;= 0))</td>
                                     </tr>
                                 </tbody>
                             </table>

@@ -1,3 +1,7 @@
+---
+title: Database Documentation
+---
+
 The following documentation describes how to download and run [SchemaSpy](http://schemaspy.org/) to auto-document the bug database.
 
 1. Make sure you have Java 8 runtime installed.
@@ -6,7 +10,14 @@ The following documentation describes how to download and run [SchemaSpy](http:/
 1. Run the following command:
 
 ```bash
-java -jar <schema_spy_jar_path> -t pgsql -dp <postgres_jar_path>  -db bugdb -host <postgres_host> -port <postgres_port> -u <postgres_user> -p <postgres_password> -o <output_folder> -schemas billing,entity,sample,geo,taxa,metric
+java -jar <schema_spy_jar_path> -t pgsql -dp <postgres_jar_path> \
+    -db bugdb \
+    -host <postgres_host> \
+    -port <postgres_port> \
+    -u <postgres_user> \
+    -p <postgres_password> \
+    -o <output_folder> \
+    -schemas billing,entity,sample,geo,taxa,metric
 ```
 
 Note the comma separated list of schemas at the end. Modify this list as needed.

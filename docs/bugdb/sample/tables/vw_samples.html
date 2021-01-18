@@ -120,7 +120,7 @@
                                     <td></td>
                                 </tr>
                                 <tr>
-                                    <td><span id="box_id">box_id</span></td>
+                                    <td class='foreignKey' title='Foreign Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="box_id">box_id</span></td>
                                     <td>int4</td>
                                     <td>10</td>
                                     <td title='nullable'>√</td>
@@ -132,6 +132,10 @@
                                     </td>
                                     <td>
                                         <table border='0' cellspacing='0' cellpadding='0'>
+                                            <tr>
+                                                <td title="vw_samples.box_id&#39;s name implies that it&#39;s a child of boxes.box_id, but it doesn&#39;t reference that column."><a href='boxes.html'>boxes</a><span class='relatedKey'>.box_id</span></td>
+                                                <td class="constraint detail">Implied Constraint<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                            </tr>
                                         </table>
                                     </td>
                                     <td></td>
@@ -409,159 +413,6 @@
                                     <td></td>
                                 </tr>
                                 <tr>
-                                    <td><span id="sorter_count">sorter_count</span></td>
-                                    <td>int2</td>
-                                    <td>5</td>
-                                    <td title='nullable'>√</td>
-                                    <td title=''></td>
-                                    <td>null</td>
-                                    <td>
-                                        <table border='0' cellspacing='0' cellpadding='0'>
-                                        </table>
-                                    </td>
-                                    <td>
-                                        <table border='0' cellspacing='0' cellpadding='0'>
-                                        </table>
-                                    </td>
-                                    <td></td>
-                                </tr>
-                                <tr>
-                                    <td><span id="sorter_id">sorter_id</span></td>
-                                    <td>int2</td>
-                                    <td>5</td>
-                                    <td title='nullable'>√</td>
-                                    <td title=''></td>
-                                    <td>null</td>
-                                    <td>
-                                        <table border='0' cellspacing='0' cellpadding='0'>
-                                        </table>
-                                    </td>
-                                    <td>
-                                        <table border='0' cellspacing='0' cellpadding='0'>
-                                        </table>
-                                    </td>
-                                    <td></td>
-                                </tr>
-                                <tr>
-                                    <td><span id="sort_time">sort_time</span></td>
-                                    <td>float4</td>
-                                    <td>8,8</td>
-                                    <td title='nullable'>√</td>
-                                    <td title=''></td>
-                                    <td>null</td>
-                                    <td>
-                                        <table border='0' cellspacing='0' cellpadding='0'>
-                                        </table>
-                                    </td>
-                                    <td>
-                                        <table border='0' cellspacing='0' cellpadding='0'>
-                                        </table>
-                                    </td>
-                                    <td></td>
-                                </tr>
-                                <tr>
-                                    <td><span id="sort_start_date">sort_start_date</span></td>
-                                    <td>timestamptz</td>
-                                    <td>35,6</td>
-                                    <td title='nullable'>√</td>
-                                    <td title=''></td>
-                                    <td>null</td>
-                                    <td>
-                                        <table border='0' cellspacing='0' cellpadding='0'>
-                                        </table>
-                                    </td>
-                                    <td>
-                                        <table border='0' cellspacing='0' cellpadding='0'>
-                                        </table>
-                                    </td>
-                                    <td></td>
-                                </tr>
-                                <tr>
-                                    <td><span id="sort_end_date">sort_end_date</span></td>
-                                    <td>timestamptz</td>
-                                    <td>35,6</td>
-                                    <td title='nullable'>√</td>
-                                    <td title=''></td>
-                                    <td>null</td>
-                                    <td>
-                                        <table border='0' cellspacing='0' cellpadding='0'>
-                                        </table>
-                                    </td>
-                                    <td>
-                                        <table border='0' cellspacing='0' cellpadding='0'>
-                                        </table>
-                                    </td>
-                                    <td></td>
-                                </tr>
-                                <tr>
-                                    <td><span id="ider_id">ider_id</span></td>
-                                    <td>int2</td>
-                                    <td>5</td>
-                                    <td title='nullable'>√</td>
-                                    <td title=''></td>
-                                    <td>null</td>
-                                    <td>
-                                        <table border='0' cellspacing='0' cellpadding='0'>
-                                        </table>
-                                    </td>
-                                    <td>
-                                        <table border='0' cellspacing='0' cellpadding='0'>
-                                        </table>
-                                    </td>
-                                    <td></td>
-                                </tr>
-                                <tr>
-                                    <td><span id="id_time">id_time</span></td>
-                                    <td>float4</td>
-                                    <td>8,8</td>
-                                    <td title='nullable'>√</td>
-                                    <td title=''></td>
-                                    <td>null</td>
-                                    <td>
-                                        <table border='0' cellspacing='0' cellpadding='0'>
-                                        </table>
-                                    </td>
-                                    <td>
-                                        <table border='0' cellspacing='0' cellpadding='0'>
-                                        </table>
-                                    </td>
-                                    <td></td>
-                                </tr>
-                                <tr>
-                                    <td><span id="id_start_date">id_start_date</span></td>
-                                    <td>timestamptz</td>
-                                    <td>35,6</td>
-                                    <td title='nullable'>√</td>
-                                    <td title=''></td>
-                                    <td>null</td>
-                                    <td>
-                                        <table border='0' cellspacing='0' cellpadding='0'>
-                                        </table>
-                                    </td>
-                                    <td>
-                                        <table border='0' cellspacing='0' cellpadding='0'>
-                                        </table>
-                                    </td>
-                                    <td></td>
-                                </tr>
-                                <tr>
-                                    <td><span id="id_end_date">id_end_date</span></td>
-                                    <td>timestamptz</td>
-                                    <td>35,6</td>
-                                    <td title='nullable'>√</td>
-                                    <td title=''></td>
-                                    <td>null</td>
-                                    <td>
-                                        <table border='0' cellspacing='0' cellpadding='0'>
-                                        </table>
-                                    </td>
-                                    <td>
-                                        <table border='0' cellspacing='0' cellpadding='0'>
-                                        </table>
-                                    </td>
-                                    <td></td>
-                                </tr>
-                                <tr>
                                     <td><span id="created_date">created_date</span></td>
                                     <td>timestamptz</td>
                                     <td>35,6</td>
@@ -612,43 +463,60 @@
                                     </td>
                                     <td></td>
                                 </tr>
-                                <tr>
-                                    <td><span id="lab_id">lab_id</span></td>
-                                    <td>int2</td>
-                                    <td>5</td>
-                                    <td title='nullable'>√</td>
-                                    <td title=''></td>
-                                    <td>null</td>
-                                    <td>
-                                        <table border='0' cellspacing='0' cellpadding='0'>
-                                        </table>
-                                    </td>
-                                    <td>
-                                        <table border='0' cellspacing='0' cellpadding='0'>
-                                        </table>
-                                    </td>
-                                    <td></td>
-                                </tr>
-                                <tr>
-                                    <td><span id="lab_name">lab_name</span></td>
-                                    <td>varchar</td>
-                                    <td>255</td>
-                                    <td title='nullable'>√</td>
-                                    <td title=''></td>
-                                    <td>null</td>
-                                    <td>
-                                        <table border='0' cellspacing='0' cellpadding='0'>
-                                        </table>
-                                    </td>
-                                    <td>
-                                        <table border='0' cellspacing='0' cellpadding='0'>
-                                        </table>
-                                    </td>
-                                    <td></td>
-                                </tr>
                                 </tbody>
                             </table>
                         </div>
+                    </div>
+                    <div class="box box-primary">
+                        <div class="box-header with-border">
+                            <i class="fa fa-code-fork"></i>
+                            <h3 id="Relationships" class="box-title">Relationships</h3>
+                            <div class="box-tools pull-right">
+                                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                                <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
+                            </div>
+                        </div>
+                        <div class="box-body">
+                            <div class="nav-tabs-custom"><!-- Tabs within a box -->
+                                <h5>Close relationships within degrees of separation</h5>
+                                <ul class="nav nav-tabs pull-left ui-sortable-handle">
+                                    <li class="active"><a href="#oneDegreeImg-chart" data-toggle="tab" aria-expanded="true">One</a></li>
+                                    <li class=""><a href="#oneimpliedDegreeImg-chart" data-toggle="tab" aria-expanded="true">One implied</a></li>
+                                    <li class=""><a href="#twoimpliedDegreeImg-chart" data-toggle="tab" aria-expanded="true">Two implied</a></li>
+                                </ul>
+                                <div class="tab-content no-padding">
+                                    <div class="chart tab-pane active" id="oneDegreeImg-chart" style="position: relative; overflow-x:auto;">
+                                        <map id="oneDegreeRelationshipsDiagram" name="oneDegreeRelationshipsDiagram">
+<area shape="rect" id="node1" href="vw_samples.html" target="_top" title="vw_samples" alt="" coords="5,5,353,667">
+</map>
+                                        <a name='diagram'><img id="oneDegreeImg" src="../diagrams/tables/vw_samples.1degree.png" usemap="#oneDegreeRelationshipsDiagram" class="diagram" border="0" align="left"></a>
+                                    </div>
+                                    <div class="chart tab-pane " id="oneimpliedDegreeImg-chart" style="position: relative; overflow-x:auto;">
+                                        <map id="oneDegreeRelationshipsDiagramImplied" name="oneDegreeRelationshipsDiagramImplied">
+<area shape="rect" id="node1" href="vw_samples.html" target="_top" title="vw_samples" alt="" coords="304,5,652,667">
+<area shape="rect" id="node2" href="boxes.html" target="_top" title="boxes" alt="" coords="5,37,260,272">
+</map>
+                                        <a name='diagram'><img id="oneimpliedDegreeImg" src="../diagrams/tables/vw_samples.implied1degrees.png" usemap="#oneDegreeRelationshipsDiagramImplied" class="diagram" border="0" align="left"></a>
+                                    </div>
+                                    <div class="chart tab-pane " id="twoimpliedDegreeImg-chart" style="position: relative; overflow-x:auto;">
+                                        <map id="twoDegreesRelationshipsDiagramImplied" name="twoDegreesRelationshipsDiagramImplied">
+<area shape="rect" id="node1" href="../billing/tables/invoice_boxes.html" target="_top" title="billing.invoice_boxes" alt="" coords="827,87,1055,175">
+<area shape="rect" id="node2" href="boxes.html" target="_top" title="boxes" alt="" coords="468,189,723,424">
+<area shape="rect" id="node4" href="box_states.html" target="_top" title="box_states" alt="" coords="245,204,403,292">
+<area shape="rect" id="node5" href="../entity/tables/entities.html" target="_top" title="entity.entities" alt="" coords="5,220,180,308">
+<area shape="rect" id="node6" href="projects.html" target="_top" title="projects" alt="" coords="255,309,393,397">
+<area shape="rect" id="node7" href="../entity/tables/individuals.html" target="_top" title="entity.individuals" alt="" coords="224,748,424,836">
+<area shape="rect" id="node3" href="../public/tables/sample_box_assets.html" target="_top" title="public.sample_box_assets" alt="" coords="808,192,1073,280">
+<area shape="rect" id="node8" href="samples.html" target="_top" title="samples" alt="" coords="871,297,1011,385">
+<area shape="rect" id="node9" href="submissions.html" target="_top" title="submissions" alt="" coords="856,1081,1025,1169">
+<area shape="rect" id="node10" href="vw_boxes.html" target="_top" title="vw_boxes" alt="" coords="867,5,1014,69">
+<area shape="rect" id="node11" href="vw_samples.html" target="_top" title="vw_samples" alt="" coords="767,403,1115,1064">
+</map>
+                                        <a name='diagram'><img id="twoimpliedDegreeImg" src="../diagrams/tables/vw_samples.implied2degrees.png" usemap="#twoDegreesRelationshipsDiagramImplied" class="diagram" border="0" align="left"></a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div><!-- /.box-body -->
                     </div>
                     <div class="box box-primary">
                         <div class="box-header with-border">
@@ -660,7 +528,7 @@
                             </div>
                         </div>
                         <div class="box-body">
-                            <textarea id="sql-script-codemirror" name="sql-script-codemirror" rows="" style="display: none;">SELECT s.sample_id,&#10;    s.box_id,&#10;    s.site_id,&#10;    si.site_name,&#10;    s.sample_date,&#10;    s.sample_time,&#10;    s.type_id,&#10;    t.sample_type_name,&#10;    s.method_id,&#10;    m.sample_method_name,&#10;    s.habitat_id,&#10;    h.habitat_name,&#10;    s.area,&#10;    s.field_split,&#10;    s.lab_split,&#10;    s.jar_count,&#10;    s.qualitative,&#10;    s.mesh,&#10;    s.sorter_count,&#10;    s.sorter_id,&#10;    s.sort_time,&#10;    s.sort_start_date,&#10;    s.sort_end_date,&#10;    s.ider_id,&#10;    s.id_time,&#10;    s.id_start_date,&#10;    s.id_end_date,&#10;    s.created_date,&#10;    s.updated_date,&#10;    s.qa_sample_id,&#10;    s.lab_id,&#10;    l.organization_name AS lab_name&#10;   FROM (((((sample.samples s&#10;     JOIN sample.sample_types t ON ((s.type_id = t.sample_type_id)))&#10;     JOIN sample.sample_methods m ON ((s.method_id = m.sample_method_id)))&#10;     JOIN geo.habitats h ON ((s.habitat_id = h.habitat_id)))&#10;     LEFT JOIN geo.sites si ON ((s.site_id = si.site_id)))&#10;     LEFT JOIN entity.organizations l ON ((s.lab_id = l.organization_id)));</textarea>
+                            <textarea id="sql-script-codemirror" name="sql-script-codemirror" rows="" style="display: none;">SELECT s.sample_id,&#10;    s.box_id,&#10;    s.site_id,&#10;    si.site_name,&#10;    s.sample_date,&#10;    s.sample_time,&#10;    s.type_id,&#10;    t.sample_type_name,&#10;    s.method_id,&#10;    m.sample_method_name,&#10;    s.habitat_id,&#10;    h.habitat_name,&#10;    s.area,&#10;    s.field_split,&#10;    s.lab_split,&#10;    s.jar_count,&#10;    s.qualitative,&#10;    s.mesh,&#10;    s.created_date,&#10;    s.updated_date,&#10;    s.qa_sample_id&#10;   FROM ((((sample.samples s&#10;     JOIN sample.sample_types t ON ((s.type_id = t.sample_type_id)))&#10;     JOIN sample.sample_methods m ON ((s.method_id = m.sample_method_id)))&#10;     JOIN geo.habitats h ON ((s.habitat_id = h.habitat_id)))&#10;     LEFT JOIN geo.sites si ON ((s.site_id = si.site_id)));</textarea>
                             <div style="padding-top: 5px;"><hr></div>
                             <div class="box box-solid">
                                 <div class="box-header with-border">
