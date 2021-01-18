@@ -21,15 +21,16 @@
     "experimentalDecorators": true,
     "strictPropertyInitialization": false,
     // "typeRoots": [
-    //   "./node_modules/@types"
-    // ],
-    "outDir": "./dist"
-  },
-  "exclude": [
-    "./cdk.out",
-    "./dist"
-  ],
-  "include": [
-    "./src"
-  ]
-}
+      //   "./node_modules/@types"
+      // ],
+      "outDir": "./dist"
+    },
+    "exclude": [
+      "./cdk.out",
+      "./dist"
+    ],
+    // We only export the types
+    "include": [
+      "./src/types*"
+    ]
+  }

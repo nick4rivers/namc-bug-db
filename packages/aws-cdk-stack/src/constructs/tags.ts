@@ -8,6 +8,6 @@ import { AWSTagsDef } from '../types'
  */
 export const addTagsToResource = (scope: cdk.Construct, tags: AWSTagsDef): void => {
     Object.keys(tags).forEach((tkey) => {
-        cdk.Tag.add(scope, tkey, tags[tkey])
+        cdk.Tags.of(scope).add(tkey, tags[tkey])
     })
 }
