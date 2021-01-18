@@ -58,7 +58,7 @@ FROM entity.individuals i
          INNER JOIN entity.entities e ON i.entity_id = e.entity_id
          INNER JOIN geo.countries c ON e.country_id = c.country_id
          LEFT JOIN geo.states s ON e.state_id = s.state_id
-         LEFT JOIN entity.organizations o ON i.affiliation_id = o.organization_id
+         LEFT JOIN entity.organizations o ON i.affiliation_id = o.entity_id
     );
 
 /******************************************************************************************************************
@@ -76,8 +76,8 @@ SELECT b.box_id,
        b.box_recevied_date,
        b.processing_complete_date,
        b.projected_complete_date,
-       b.sort_time,
-       b.id_time,
+    --    b.sort_time,
+    --    b.id_time,
        b.project_id,
        p.project_name
 FROM sample.boxes b
@@ -92,8 +92,8 @@ GROUP BY b.box_id,
          b.box_recevied_date,
          b.processing_complete_date,
          b.projected_complete_date,
-         b.sort_time,
-         b.id_time,
+        --  b.sort_time,
+        --  b.id_time,
          b.project_id,
          b.project_id,
          p.project_name
@@ -119,26 +119,26 @@ SELECT s.sample_id,
        s.jar_count,
        s.qualitative,
        s.mesh,
-       s.sorter_count,
-       s.sorter_id,
-       s.sort_time,
-       s.sort_start_date,
-       s.sort_end_date,
-       s.ider_id,
-       s.id_time,
-       s.id_start_date,
-       s.id_end_date,
+    --    s.sorter_count,
+    --    s.sorter_id,
+    --    s.sort_time,
+    --    s.sort_start_date,
+    --    s.sort_end_date,
+    --    s.ider_id,
+    --    s.id_time,
+    --    s.id_start_date,
+    --    s.id_end_date,
        s.created_date,
        s.updated_date,
-       s.qa_sample_id,
-       s.lab_id,
-       l.organization_name AS lab_name
+       s.qa_sample_id --,
+    --    s.lab_id,
+    --    l.organization_name AS lab_name
 
 FROM sample.samples s
          INNER JOIN sample.sample_types t ON s.type_id = t.sample_type_id
          INNER JOIN sample.sample_methods m ON s.method_id = m.sample_method_id
          INNER JOIN geo.habitats h ON s.habitat_id = h.habitat_id
          LEFT JOIN geo.sites si ON s.site_id = si.site_id
-         LEFT JOIN entity.organizations l ON s.lab_id = l.organization_id
+        --  LEFT JOIN entity.organizations l ON s.lab_id = l.entity_id
 
     );
