@@ -9,6 +9,13 @@ SA_PASSWORD=somestring
 ACCEPT_EULA=Y
 
 ```
+
+Remember that MSSQL Management Studio connects using weird, bespoke format. That's a comma not a colon.
+
+```
+localhost,1400
+```
+
 ## Fun things to do
 
 ***NB: Make sure the docker daemon is running and you're in the same folder as `docker-compose.yml`
