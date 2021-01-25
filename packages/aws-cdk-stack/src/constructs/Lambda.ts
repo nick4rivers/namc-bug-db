@@ -1,10 +1,10 @@
 import * as core from '@aws-cdk/core'
 import * as apigateway from '@aws-cdk/aws-apigateway'
 import * as lambda from '@aws-cdk/aws-lambda'
+import * as iam from '@aws-cdk/aws-iam'
 import * as cw from '@aws-cdk/aws-logs'
 import path from 'path'
-import { globalTags } from '../config'
-import { StackConfigProps } from '../types'
+import { globalTags, stackProps } from '../config'
 import { addTagsToResource } from './tags'
 
 export interface LambdaAPIProps {
@@ -20,7 +20,7 @@ class LambdaAPI extends core.Construct {
     readonly lambdaAPIGateway: apigateway.RestApi
     readonly functions: { [key: string]: string }
 
-    constructor(scope: core.Construct, id: string, stackProps: StackConfigProps, props: LambdaAPIProps) {
+    constructor(scope: core.Construct, id: string, props: LambdaAPIProps) {
         super(scope, id)
 
         // Define the function names before hand so we can reference them without circular dependency problems
@@ -30,40 +30,63 @@ class LambdaAPI extends core.Construct {
 
         // The GraphQL API
         // =============================================================================
-        this.lambdaGQLAPI = new lambda.Function(this, this.functions.api, {
+        this.lambdaGQLAPI = new lambda.Function(this, `GraphQLAPI_${stackProps.stage}`, {
             code: new lambda.AssetCode(lambdaNodePath),
             functionName: this.functions.api,
             handler: 'lambda_graphql.handler',
             memorySize: 512,
-            timeout: core.Duration.minutes(20),
+            timeout: core.Duration.seconds(20),
             runtime: lambda.Runtime.NODEJS_12_X,
             logRetention: cw.RetentionDays.TWO_WEEKS,
             environment: props.env
         })
         addTagsToResource(this.lambdaGQLAPI, globalTags)
 
+        // Give the lambda function access to the DB
+        // https://github.com/goranopacic/dataapi-demo/blob/master/lib/dataapi-demo-stack.ts
+        this.lambdaGQLAPI.addToRolePolicy(
+            new iam.PolicyStatement({
+                resources: [aurora.secretarn],
+                actions: ['secretsmanager:GetSecretValue']
+            })
+        )
+        this.lambdaGQLAPI.addToRolePolicy(
+            new iam.PolicyStatement({
+                resources: [aurora.clusterarn],
+                actions: [
+                    'rds-data:ExecuteStatement',
+                    'rds-data:BatchExecuteStatement',
+                    'rds-data:BeginTransaction',
+                    'rds-data:CommitTransaction',
+                    'rds-data:RollbackTransaction'
+                ]
+            })
+        )
+        this.lambdaGQLAPI.addToRolePolicy(
+            new iam.PolicyStatement({
+                resources: [aurora.clusterarn],
+                actions: ['rds:DescribeDBClusters']
+            })
+        )
+
         // props.dynamoTable.table.grantReadWriteData(lambdaHandler)
 
         const cyberlogs = new apigateway.LogGroupLogDestination(props.logGroup)
 
-        this.lambdaAPIGateway = new apigateway.RestApi(
-            this,
-            `${stackProps.stackPrefix}APIGateway_${stackProps.stage}`,
-            {
-                restApiName: `NAMCBugDb Lambda API Gateway (${stackProps.stage})`,
-                description: 'The main DB connector API.',
-                deployOptions: {
-                    stageName: stackProps.stage,
-                    accessLogDestination: cyberlogs,
-                    loggingLevel: apigateway.MethodLoggingLevel.INFO,
-                    metricsEnabled: true
-                },
-                defaultCorsPreflightOptions: {
-                    allowOrigins: apigateway.Cors.ALL_ORIGINS
-                    //     allowHeaders: ['Content-Type', 'X-Amz-Date', 'Authorization', 'X-Api-Key', 'X-Amz-Security-Token']
-                }
+        this.lambdaAPIGateway = new apigateway.RestApi(this, `APIGateway_${stackProps.stage}`, {
+            restApiName: `NAMCBugDb Lambda API Gateway (${stackProps.stage})`,
+            description: 'The main DB connector API.',
+            deployOptions: {
+                stageName: stackProps.stage,
+                accessLogDestination: cyberlogs,
+                loggingLevel: apigateway.MethodLoggingLevel.INFO,
+                metricsEnabled: true
+            },
+            defaultCorsPreflightOptions: {
+                allowOrigins: apigateway.Cors.ALL_ORIGINS
+                //     allowHeaders: ['Content-Type', 'X-Amz-Date', 'Authorization', 'X-Api-Key', 'X-Amz-Security-Token']
             }
-        )
+        })
         addTagsToResource(this.lambdaGQLAPI, globalTags)
 
         const cyberLambdaIntegration = new apigateway.LambdaIntegration(this.lambdaGQLAPI)

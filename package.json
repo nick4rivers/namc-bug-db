@@ -6,6 +6,7 @@
   "scripts": {
     "test": "lerna run --no-bail --stream --parallel test",
     "build": "lerna run --no-bail --stream --parallel build",
+    "package": "lerna run --no-bail --stream --parallel package",
     "lint": "lerna run --no-bail --stream --parallel lint",
     "watch": "lerna run --no-bail --stream --parallel watch",
     "testVerbose": "lerna run test --stream"
@@ -46,6 +47,7 @@
     "loglevel": "^1.6.7",
     "prettier": "^2.0.5",
     "ts-jest": "^25.4.0",
+    "ts-node": "^9.1.1",
     "typescript": "^3.8.3"
   }
 }

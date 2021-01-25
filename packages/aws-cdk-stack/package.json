@@ -10,8 +10,9 @@
     "build": "tsc",
     "watch": "tsc -w",
     "test": "jest",
-    "diff": "cdk diff",
-    "deploy:dev": "env-cmd -f ../../.env.development cdk deploy",
+    "diff": "dotenv -e ../../.env.staging cdk diff",
+    "deploy:prod": "sh ./scripts/deployProd.sh",
+    "deploy:staging": "sh ./scripts/deployStaging.sh",
     "cdk": "cdk"
   },
   "devDependencies": {
@@ -22,9 +23,11 @@
   },
   "dependencies": {
     "@aws-cdk/aws-apigateway": "1.83.0",
-    "@aws-cdk/aws-cognito ": "1.83.0",
+    "@aws-cdk/aws-cloudfront": "1.83.0",
+    "@aws-cdk/aws-cognito": "1.83.0",
     "@aws-cdk/aws-lambda-nodejs": "1.83.0",
     "@aws-cdk/aws-logs": "1.83.0",
+    "@aws-cdk/aws-rds": "1.83.0",
     "@aws-cdk/aws-s3-assets": "1.83.0",
     "@aws-cdk/core": "1.83.0",
     "source-map-support": "^0.5.16"

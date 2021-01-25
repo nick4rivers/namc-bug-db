@@ -1,0 +1,21 @@
+{
+	"folders": [
+		{
+			"name": "python",
+			"path": "../python"
+		},
+		{
+			"name": "docker",
+			"path": "../docker"
+		},
+		{
+			"path": "../docs"
+		},
+		{
+			"name": "Workspaces",
+			"path": "."
+		}		
+	],
+	"settings": {
+	}
+}

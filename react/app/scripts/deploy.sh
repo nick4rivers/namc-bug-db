@@ -11,7 +11,7 @@ then
     exit 1
 fi
 
-yarn build
+yarn compile
 cp -fr build/* docs/
 
 # Increment the semver patch number

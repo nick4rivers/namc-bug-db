@@ -3,8 +3,7 @@ import * as efs from '@aws-cdk/aws-efs'
 import * as ec2 from '@aws-cdk/aws-ec2'
 // import * as s3 from '@aws-cdk/aws-s3'
 // import { NodejsFunction } from '@aws-cdk/aws-lambda-nodejs'
-import { globalTags, awsConfig } from '../config'
-import { StackConfigProps } from '../types'
+import { globalTags, awsConfig, stackProps } from '../config'
 import { addTagsToResource } from './tags'
 
 export interface EC2BastionProps {
@@ -13,11 +12,11 @@ export interface EC2BastionProps {
 
 // https://github.com/martinbpeters/cdk-vpc-postgres/blob/master/stacks/vpc.py
 class EC2Bastion extends cdk.Construct {
-    efs: efs.FileSystem
-    constructor(scope: cdk.Construct, id: string, stackProps: StackConfigProps, props: EC2BastionProps) {
+    readonly bastionBox: ec2.BastionHostLinux
+    constructor(scope: cdk.Construct, id: string, props: EC2BastionProps) {
         super(scope, id)
 
-        const bastion = new ec2.BastionHostLinux(this, `${stackProps.stackPrefix}EC2Bastion_${stackProps.stage}`, {
+        const bastion = new ec2.BastionHostLinux(this, `EC2Bastion_${stackProps.stage}`, {
             vpc: props.vpc,
             // This instance should be tiny. Smallest possible and we will keep it off most of the time
             // Note: Nano seems to die on aws sync ops so upgrade to Micro

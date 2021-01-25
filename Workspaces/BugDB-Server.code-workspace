@@ -1,0 +1,17 @@
+{
+	"folders": [
+		{
+			"name": "CDK",
+			"path": "../packages/aws-cdk-stack"
+		},
+		{
+			"name": "lampda-api",
+			"path": "../packages/lambda-api"
+		},
+		{
+			"name": "NAMC-BUG-DB (Root)",
+			"path": "../"
+		}
+	],
+	"settings": {}
+}

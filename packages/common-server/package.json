@@ -16,17 +16,20 @@
   },
   "author": "Matt Reimer",
   "license": "ISC",
-  "dependencies": {
-    "@northarrowresearch/common": "^1.0.4",
+  "peerDependencies": {
     "aws-sdk": "^2.530.0",
     "axios": ">=0.21.1",
+    "@northarrowresearch/common": "^1.0.4",
+    "pg": "^7.18.2",
+    "pg-native": "^3.0.0",
+    "node-cache": "^4.2.1"
+  },
+  "dependencies": {
     "graphql": "^14.6.0",
     "graphql-import": "^0.7.1",
     "graphql-tag": "^2.10.1",
     "graphql-tools": "^4.0.5",
     "jsonwebtoken": "^8.5.1",
-    "jwk-to-pem": "^2.0.1",
-    "node-cache": "^4.2.1",
-    "pg": "^7.18.2"
+    "jwk-to-pem": "^2.0.1"
   }
 }

@@ -48,6 +48,7 @@
     "mime": "^2.4.4",
     "node-cache": "^4.2.1",
     "node-fetch": "^2.6.0",
+    "pg": "^7.18.2",
     "sanitize-filename": "^1.6.3",
     "uuid": "^3.3.3"
   }

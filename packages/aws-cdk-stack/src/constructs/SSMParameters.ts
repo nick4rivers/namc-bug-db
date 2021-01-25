@@ -18,7 +18,7 @@ class SSMParameters extends cdk.Construct {
 
         this.parameterName = name
         this.value = props
-        this.param = new ssm.StringParameter(this, `RSWarehouse_Config_${props.stage}`, {
+        this.param = new ssm.StringParameter(this, `Config_${props.stage}`, {
             parameterName: this.parameterName,
             description: 'Configuration object',
             type: ssm.ParameterType.STRING,

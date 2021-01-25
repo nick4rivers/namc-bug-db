@@ -5,49 +5,60 @@ import * as iam from '@aws-cdk/aws-iam'
 // import log from 'loglevel'
 // import { VpcStack } from '@northarrowresearch/nar-aws-cdk'
 
-import { StackConfigProps, AWSConfig } from './types'
-// import { addTagsToResource } from './constructs/tags'
+import { stackProps, awsConfig } from './config'
+import { CDKStages } from './types'
 import LambdaAPI from './constructs/Lambda'
 import EC2Bastion from './constructs/EC2Bastion'
 import SSMParametersConstruct from './constructs/SSMParameters'
 import S3BucketsConstruct from './constructs/S3Buckets'
+import CognitoConstruct from './constructs/Cognito'
+import RDSConstruct from './constructs/RDS'
 
 class NAMCBUgDbStack extends cdk.Stack {
     readonly logGroup: cw.LogGroup
-    constructor(
-        scope: cdk.App,
-        id: string,
-        cdkProps: cdk.StackProps,
-        awsConfig: AWSConfig,
-        stackProps: StackConfigProps
-    ) {
+    constructor(scope: cdk.App, id: string, cdkProps: cdk.StackProps) {
         super(scope, id, cdkProps)
         const stage = stackProps.stage
 
         // VPC Lookup: Instead of creating a new VPC we're going to look ours up from a pre-exisitng external stack
-        const vpc = ec2.Vpc.fromLookup(this, `${stackProps.stackPrefix}VPC_LOOKUP_${stage}`, {
+        const vpc = ec2.Vpc.fromLookup(this, `VPC_LOOKUP_${stage}`, {
             vpcName: awsConfig.vpcName
         })
 
+        const removalPolicy =
+            stackProps.stage === CDKStages.PRODUCTION ? cdk.RemovalPolicy.RETAIN : cdk.RemovalPolicy.DESTROY
+
         // AWS Cloudwatch Logs
-        this.logGroup = new cw.LogGroup(this, `${stackProps.stackPrefix}Logs_${stage}`, {
-            logGroupName: `${stackProps.stackPrefix}_Logs_${stage}`,
-            retention: 14
+        this.logGroup = new cw.LogGroup(this, `Logs_${stage}`, {
+            logGroupName: `${stackProps.stackPrefix}Logs_${stage}`,
+            retention: 14,
+            // Logs are ephemeral
+            removalPolicy
+        })
+
+        const cognito = new CognitoConstruct(this, `Cognito_${stage}`, {
+            thing: 'op'
         })
 
         // EC2 Bastion box to access the rest of our services from:
-        const bastionBox = new EC2Bastion(this, `${stackProps.stackPrefix}EC2Bastion_${stage}`, stackProps, {
+        const bastionBox = new EC2Bastion(this, `EC2Bastion_${stage}`, {
             vpc
         })
 
+        // Now deploy the Database
+        const rdsdb = new RDSConstruct(this, `RDSDB_${stage}`, {
+            vpc,
+            bastion: bastionBox.bastionBox
+        })
+
         // Lambda function for the API
-        const lambdaGraphQLAPI = new LambdaAPI(this, `${stackProps.stackPrefix}LambdaAPI_${stage}`, stackProps, {
+        const lambdaGraphQLAPI = new LambdaAPI(this, `LambdaAPI_${stage}`, {
             logGroup: this.logGroup,
             env: {}
         })
 
         // The secrets get used by our lambda function to find resources related to this stack
-        const secretParamName = `${stackProps.stackPrefix}Config_${stage}`
+        const secretParamName = `Config_${stage}`
 
         const ssmParams = new SSMParametersConstruct(this, secretParamName, secretParamName, {
             ...stackProps,
@@ -56,7 +67,7 @@ class NAMCBUgDbStack extends cdk.Stack {
             functions: lambdaGraphQLAPI.functions
         })
 
-        const s3Buckets = new S3BucketsConstruct(this, `${stackProps.stackPrefix}S3Buckets_${stage}`, stackProps)
+        const s3Buckets = new S3BucketsConstruct(this, `S3Buckets_${stage}`)
 
         const needSSMPermissions = [lambdaGraphQLAPI.lambdaGQLAPI]
         const ssmAccessPolicy = new iam.PolicyStatement({

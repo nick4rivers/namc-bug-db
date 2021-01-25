@@ -1,4 +1,3 @@
-import * as cdk from '@aws-cdk/core'
 import { AWSTagsDef, CDKStages, StackConfigProps } from './types'
 
 // Sanity check here for mandatory environment variabels
@@ -27,7 +26,7 @@ export const stackProps: StackConfigProps = {
     isDev: stage === CDKStages.STAGING,
     stage,
     globalTags,
-    region: cdk.Stack.of(this).region
+    region: process.env.CDK_REGION as string
 }
 
 // These are the global aws config parameters so we shouldn't be accessing process.env

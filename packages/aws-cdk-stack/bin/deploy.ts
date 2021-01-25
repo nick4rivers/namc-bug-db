@@ -13,12 +13,8 @@ log.info('Deploying NAMC Bug DB App stage: ', stackProps.stage)
  */
 const app = new cdk.App()
 
-const newStack = new NAMCBUgDbStack(
-    app,
-    `NAMCBUgDbStack-${stackProps.stage}`,
-    {
-        env: awsConfig
-    },
-    awsConfig,
-    stackProps
-)
+const newStack = new NAMCBUgDbStack(app, `NAMC-BugDB-Stack-${stackProps.stage}`, {
+    env: awsConfig
+})
+
+log.info('Done!')
