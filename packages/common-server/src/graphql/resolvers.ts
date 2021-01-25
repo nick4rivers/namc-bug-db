@@ -1,6 +1,7 @@
 // import path from 'path'
 import { HelloResponse, Sample } from '@namcbugdb/common'
-import { getSamples, getPool } from '../pg'
+import { BoxState, Site, Individual } from '@namcbugdb/common'
+import { getSamples, getPool, getBoxStates, getSites, getIndividuals } from '../pg'
 // import config from '../config'
 // import downloadTaskLog from './downloadLogs'
 import {} from '../types'
@@ -31,6 +32,42 @@ export default {
                     sampleId: 24
                 }
             ]
+        },
+
+        boxStates: async (obj, args, ctx, info): Promise<BoxState[]> => {
+            const pool = getPool()
+            const data = await getBoxStates(pool)
+            return data.map((vals) => ({
+                boxStateId: vals.box_state_id
+            }))
+        },
+
+        sites: async (obj, args, ctx, info): Promise<Site[]> => {
+            const pool = getPool()
+            const data = await getSites(pool)
+            return data.map((vals) => ({
+                siteId: vals.site_id,
+                siteName: vals.site_name,
+                ecosystemId: vals.ecosystem_id,
+                ecosystemName: vals.ecosystem_name,
+                waterbody: vals.waterbody,
+                longitude: vals.longitude,
+                latitude: vals.latitude
+            }))
+        },
+
+        individuals: async (obj, args, ctx, info): Promise<Individual[]> => {
+            const pool = getPool()
+            const data = await getIndividuals(pool)
+            return data.map((vals) => ({
+                siteId: vals.site_id,
+                siteName: vals.site_name,
+                ecosystemId: vals.ecosystem_id,
+                ecosystemName: vals.ecosystem_name,
+                waterbody: vals.waterbody,
+                longitude: vals.longitude,
+                latitude: vals.latitude
+            }))
         }
     }
     // Mutation: {

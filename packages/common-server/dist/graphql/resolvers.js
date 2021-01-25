@@ -62,6 +62,63 @@ exports.default = {
                             ]];
                 }
             });
+        }); },
+        boxStates: function (obj, args, ctx, info) { return __awaiter(void 0, void 0, void 0, function () {
+            var pool, data;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        pool = pg_1.getPool();
+                        return [4, pg_1.getBoxStates(pool)];
+                    case 1:
+                        data = _a.sent();
+                        return [2, data.map(function (vals) { return ({
+                                boxStateId: vals.box_state_id
+                            }); })];
+                }
+            });
+        }); },
+        sites: function (obj, args, ctx, info) { return __awaiter(void 0, void 0, void 0, function () {
+            var pool, data;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        pool = pg_1.getPool();
+                        return [4, pg_1.getSites(pool)];
+                    case 1:
+                        data = _a.sent();
+                        return [2, data.map(function (vals) { return ({
+                                siteId: vals.site_id,
+                                siteName: vals.site_name,
+                                ecosystemId: vals.ecosystem_id,
+                                ecosystemName: vals.ecosystem_name,
+                                waterbody: vals.waterbody,
+                                longitude: vals.longitude,
+                                latitude: vals.latitude
+                            }); })];
+                }
+            });
+        }); },
+        individuals: function (obj, args, ctx, info) { return __awaiter(void 0, void 0, void 0, function () {
+            var pool, data;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        pool = pg_1.getPool();
+                        return [4, pg_1.getIndividuals(pool)];
+                    case 1:
+                        data = _a.sent();
+                        return [2, data.map(function (vals) { return ({
+                                siteId: vals.site_id,
+                                siteName: vals.site_name,
+                                ecosystemId: vals.ecosystem_id,
+                                ecosystemName: vals.ecosystem_name,
+                                waterbody: vals.waterbody,
+                                longitude: vals.longitude,
+                                latitude: vals.latitude
+                            }); })];
+                }
+            });
         }); }
     }
 };

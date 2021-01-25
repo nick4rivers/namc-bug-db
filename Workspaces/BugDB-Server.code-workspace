@@ -9,6 +9,14 @@
 			"path": "../packages/lambda-api"
 		},
 		{
+			"name": "common-server",
+			"path": "../packages/common-server"
+		},
+		{
+			"name": "common",
+			"path": "../packages/common"
+		},
+		{
 			"name": "NAMC-BUG-DB (Root)",
 			"path": "../"
 		}

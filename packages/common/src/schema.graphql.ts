@@ -12,6 +12,9 @@ const typeDefs = gql`
         # Get a project and associated metadata
         helloWorld(name: String!): HelloResponse
         samples: [Sample]
+        boxStates: [BoxState]
+        sites: [Site]
+        individuals: [Individual]
     }
 
     # this schema allows the following mutation:
@@ -26,6 +29,41 @@ const typeDefs = gql`
 
     type Sample {
         sampleId: ID!
+    }
+
+    type BoxState {
+        boxStateId: Int
+    }
+
+    type Site {
+        siteId: Int
+        siteName: String
+        systemId: Int
+        systemName: String
+        ecosystemId: Int
+        ecosystemName: String
+        waterbody: String
+        longitude: Float
+        latitude: Float
+    }
+
+    type Individual {
+        entityId: Int
+        firstName: String
+        lastName: String
+        initials: String
+        affilitationId: Int
+        affiliation: String
+        email: String
+        title: String
+        address1: String
+        address2: String
+        city: String
+        stateName: String
+        countryName: String
+        zipCode: String
+        phone: String
+        fax: String
     }
 `
 
