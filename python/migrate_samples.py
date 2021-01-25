@@ -38,16 +38,16 @@ def migrate_samples(mscurs, pgcurs):
     unspecified_method = get_db_id(methods, 'sample_method_id', ['sample_method_name'], 'Unspecified')
 
     # old EmployeeID keyed to new individual ID for sorter and taxonomist
-    pgcurs.execute('SELECT individual_id, metadata FROM entity.individuals i INNER JOIN entity.entities e ON i.entity_id = e.entity_id WHERE metadata IS NOT NULL')
+    pgcurs.execute('SELECT i.entity_id, metadata FROM entity.individuals i INNER JOIN entity.entities e ON i.entity_id = e.entity_id WHERE metadata IS NOT NULL')
     employees = {}
     for row in pgcurs.fetchall():
         metadata = row['metadata']
         if 'employeeId' in metadata:
-            employees[int(metadata['employeeId'])] = row['individual_id']
+            employees[int(metadata['employeeId'])] = row['entity_id']
 
             # Beth Carlson (235, 236) and Carlos Frias (201, 202) appear twice in PilotDB.Employee
             if 'employeeId2' in metadata:
-                employees[int(metadata['employeeId2'])] = row['individual_id']
+                employees[int(metadata['employeeId2'])] = row['entity_id']
 
     row_count = log_record_count(mscurs, 'PilotDB.dbo.BugSample')
 
@@ -75,7 +75,7 @@ def migrate_samples(mscurs, pgcurs):
     for msrow in mscurs.fetchall():
         msdata = dict(zip([t[0] for t in msrow.cursor_description], msrow))
 
-        lab_id = get_db_id(labs, 'organization_id', ['organization_name', 'abbreviation'], sanitize_string(msdata['LabName']))
+        lab_id = get_db_id(labs, 'entity_id', ['organization_name', 'abbreviation'], sanitize_string(msdata['LabName']))
         method_id = get_db_id(methods, 'sample_method_id', ['sample_method_name'], sanitize_string(msdata['Method']))
         habitat_id = get_db_id(habitats, 'habitat_id', ['habitat_name'], sanitize_string(msdata['Habitat']))
         station = sanitize_string(msdata['Station'])
@@ -116,18 +116,18 @@ def migrate_samples(mscurs, pgcurs):
             'lab_notes': sanitize_string_col('BugSample', 'SampleID', msdata, 'LabNotes'),
             'qualitative': msdata['Qualitative'] == 'Y',
             'mesh': msdata['Mesh'] if msdata['Mesh'] and msdata['Mesh'] > 0 else None,
-            'sorter_count': msdata['SorterCount'],
-            'sorter_id': employees[msdata['SorterID']] if msdata['SorterID'] else None,
-            'sort_time': 0,
-            'sort_start_date': None,
-            'sort_end_date': None,
-            'ider_id': employees[msdata['IderID']] if msdata['IderID'] else None,
-            'id_time': 0,
-            'id_start_date': None,
-            'id_end_date': None,
+            # 'sorter_count': msdata['SorterCount'],
+            # 'sorter_id': employees[msdata['SorterID']] if msdata['SorterID'] else None,
+            # 'sort_time': 0,
+            # 'sort_start_date': None,
+            # 'sort_end_date': None,
+            # 'ider_id': employees[msdata['IderID']] if msdata['IderID'] else None,
+            # 'id_time': 0,
+            # 'id_start_date': None,
+            # 'id_end_date': None,
             'qa_sample_id': None,
             # 'jar_count': msdata['JarCount'],
-            'lab_id': lab_id,
+            # 'lab_id': lab_id,
             'metadata': metadata
         }
 

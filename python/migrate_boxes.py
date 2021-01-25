@@ -7,9 +7,9 @@ from lookup_data import get_db_id
 
 def migrate(mscurs, pgcurs):
 
-    organizations = lookup_data(pgcurs, 'entity.organizations', 'organization_id')
+    organizations = lookup_data(pgcurs, 'entity.organizations', 'entity_id')
     box_states = lookup_data(pgcurs, 'sample.box_states', 'box_state_name')
-    individuals = lookup_data(pgcurs, 'entity.individuals', 'individual_id')
+    individuals = lookup_data(pgcurs, 'entity.individuals', 'entity_id')
 
     # Recomposite the individual names
     individuals_by_full_name = {'{} {}'.format(data['first_name'], data['last_name']).replace("'", '').replace('.', ''): individual_id for individual_id, data in individuals.items()}

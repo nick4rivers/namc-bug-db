@@ -27,7 +27,7 @@ def migrate_all_data(mscon, pgcon, predictor_csv_path):
     boxes(mscurs, pgcurs)
     sites(mscurs, pgcurs)
     samples(mscurs, pgcurs)
-    organisms(mscurs, pgcurs)
+    # organisms(mscurs, pgcurs)
 
     log = Logger('Migration')
     pgcurs = pgcon.cursor()

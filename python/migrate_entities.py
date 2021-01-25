@@ -57,14 +57,14 @@ def migrate(mscurs, pgcurs):
     # insert organizations
     for entity in organizations.values():
         data = {key: entity[key] for key in organization_cols}
-        entity['organization_id'] = insert_row(pgcurs, 'entity.organizations', data, 'organization_id')
+        entity['entity_id'] = insert_row(pgcurs, 'entity.organizations', data, 'entity_id')
         # TODO: assign individuals with the organization ID of their affiliation
 
     log_row_count(pgcurs, 'entity.organizations')
 
     # insert individuals
     for entity in individuals.values():
-        entity['affiliation_id'] = organizations[entity['affiliation']]['organization_id'] if entity['affiliation'] else None
+        entity['affiliation_id'] = organizations[entity['affiliation']]['entity_id'] if entity['affiliation'] else None
         data = {key: entity[key] for key in indivisual_cols}
         insert_row(pgcurs, 'entity.individuals', data)
     log_row_count(pgcurs, 'entity.individuals')
