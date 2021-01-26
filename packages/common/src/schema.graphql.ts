@@ -15,6 +15,7 @@ const typeDefs = gql`
         boxStates: [BoxState]
         sites: [Site]
         individuals: [Individual]
+        boxes: [Box]
     }
 
     # this schema allows the following mutation:
@@ -28,7 +29,29 @@ const typeDefs = gql`
     }
 
     type Sample {
-        sampleId: ID!
+        sampleId: Int
+        boxId: Int
+        customerId: Int
+        customerName: String
+        siteId: Int
+        siteName: String
+        sampleDate: String
+        sampleTime: String
+        typeId: Int
+        typeName: String
+        methodId: Int
+        methodName: String
+        habitatId: Int
+        habitatName: String
+        area: Float
+        fieldSplit: Float
+        labSplit: Float
+        jarCount: Int
+        qualitative: String
+        mesh: Int
+        createdDate: String
+        updatedDate: String
+        qaSampleId: Int
     }
 
     type BoxState {
@@ -64,6 +87,22 @@ const typeDefs = gql`
         zipCode: String
         phone: String
         fax: String
+    }
+
+    type Box {
+        boxId: Int
+        customerId: Int
+        customerName: String
+        samples: Int
+        submitterId: Int
+        SubmitterName: String
+        boxStateId: Int
+        boxStateName: String
+        boxReceivedDate: String
+        processingCompleteDate: String
+        projectedCompleteDate: String
+        projectId: Int
+        projectName: String
     }
 `
 

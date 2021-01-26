@@ -55,11 +55,31 @@ exports.default = {
                         return [4, pg_1.getSamples(pool)];
                     case 1:
                         data = _a.sent();
-                        return [2, [
-                                {
-                                    sampleId: 24
-                                }
-                            ]];
+                        return [2, data.map(function (vals) { return ({
+                                sampleId: vals.sample_id,
+                                boxId: vals.box_id,
+                                customerId: vals.customer_id,
+                                customerName: vals.organization_name,
+                                siteId: vals.site_id,
+                                siteName: vals.site_name,
+                                sampleDate: vals.sample_date,
+                                sampleTime: vals.sample_time,
+                                typeId: vals.type_id,
+                                typeName: vals.sample_type_name,
+                                methodId: vals.method_id,
+                                methodName: vals.sample_method_name,
+                                habitatId: vals.habitat_id,
+                                habitatName: vals.habitat_name,
+                                area: vals.area,
+                                fieldSplit: vals.field_split,
+                                labSplit: vals.lab_split,
+                                jarCount: vals.jar_count,
+                                qualitative: vals.qualitative,
+                                mesh: vals.mesh,
+                                createdDate: vals.created_date,
+                                updatedDate: vals.updated_date,
+                                qaSampleId: vals.qa_sample_id
+                            }); })];
                 }
             });
         }); },
@@ -116,6 +136,33 @@ exports.default = {
                                 waterbody: vals.waterbody,
                                 longitude: vals.longitude,
                                 latitude: vals.latitude
+                            }); })];
+                }
+            });
+        }); },
+        boxes: function (obj, args, ctx, info) { return __awaiter(void 0, void 0, void 0, function () {
+            var pool, data;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        pool = pg_1.getPool();
+                        return [4, pg_1.getBoxes(pool)];
+                    case 1:
+                        data = _a.sent();
+                        return [2, data.map(function (vals) { return ({
+                                boxId: vals.box_id,
+                                customerId: vals.customer_id,
+                                customerName: vals.organization_name,
+                                samples: vals.samples,
+                                submitterId: vals.submitter_id,
+                                SubmitterName: vals.submitter_name,
+                                boxStateId: vals.box_state_id,
+                                boxStateName: vals.box_state_name,
+                                boxReceivedDate: vals.box_received_date,
+                                processingCompleteDate: vals.processing_complete_date,
+                                projectedCompleteDate: vals.projected_complete_date,
+                                projectId: vals.project_id,
+                                projectName: vals.project_name
                             }); })];
                 }
             });

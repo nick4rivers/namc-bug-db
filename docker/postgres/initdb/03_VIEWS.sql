@@ -1,6 +1,9 @@
 /******************************************************************************************************************
  geo SCHEMA
  */
+
+DROP VIEW IF EXISTS geo.vw_sites;
+
 CREATE VIEW geo.vw_sites AS
 (
 SELECT s.site_id,
@@ -23,6 +26,8 @@ FROM geo.sites s
 entity SCHEMA
 */
 
+DROP VIEW IF EXISTS entity.vw_organizations;
+
 CREATE VIEW entity.vw_organizations AS
 (
 SELECT o.*,
@@ -41,6 +46,8 @@ FROM entity.organizations o
          INNER JOIN geo.countries c ON e.country_id = c.country_id
          LEFT JOIN geo.states s ON e.state_id = s.state_id
     );
+
+DROP VIEW IF EXISTS entity.vw_individuals;
 
 CREATE VIEW entity.vw_individuals AS
 (
@@ -65,28 +72,34 @@ FROM entity.individuals i
  sample SCHEMA
  */
 
+DROP VIEW IF EXISTS sample.vw_boxes;
+
 CREATE VIEW sample.vw_boxes AS
 (
 SELECT b.box_id,
        b.customer_id,
+       o.organization_name,
        COUNT(sample_id) AS samples,
        b.submitter_id,
+       i.first_name || ' ' || i.last_name AS submitter_name,
        b.box_state_id,
        t.box_state_name,
        b.box_recevied_date,
        b.processing_complete_date,
        b.projected_complete_date,
-    --    b.sort_time,
-    --    b.id_time,
        b.project_id,
        p.project_name
 FROM sample.boxes b
          INNER JOIN sample.box_states t ON b.box_state_id = t.box_state_id
+            INNER JOIN entity.individuals i ON b.submitter_id = i.entity_id
+    INNER JOIN entity.organizations o ON b.customer_id = o.entity_id
          LEFT JOIN sample.samples s ON b.box_id = s.box_id
          LEFT JOIN sample.projects p ON b.project_id = p.project_id
 GROUP BY b.box_id,
          b.customer_id,
+         o.organization_name,
          b.submitter_id,
+         submitter_name,
          b.box_state_id,
          t.box_state_name,
          b.box_recevied_date,
@@ -99,10 +112,13 @@ GROUP BY b.box_id,
          p.project_name
     );
 
+DROP VIEW IF EXISTS sample.vw_samples;
 CREATE VIEW sample.vw_samples AS
 (
 SELECT s.sample_id,
        s.box_id,
+       b.customer_id,
+       b.organization_name,
        s.site_id,
        si.site_name,
        s.sample_date,
@@ -119,26 +135,14 @@ SELECT s.sample_id,
        s.jar_count,
        s.qualitative,
        s.mesh,
-    --    s.sorter_count,
-    --    s.sorter_id,
-    --    s.sort_time,
-    --    s.sort_start_date,
-    --    s.sort_end_date,
-    --    s.ider_id,
-    --    s.id_time,
-    --    s.id_start_date,
-    --    s.id_end_date,
        s.created_date,
        s.updated_date,
-       s.qa_sample_id --,
-    --    s.lab_id,
-    --    l.organization_name AS lab_name
+       s.qa_sample_id
 
 FROM sample.samples s
+        INNER JOIN sample.vw_boxes b ON s.box_id = b.box_id
          INNER JOIN sample.sample_types t ON s.type_id = t.sample_type_id
          INNER JOIN sample.sample_methods m ON s.method_id = m.sample_method_id
          INNER JOIN geo.habitats h ON s.habitat_id = h.habitat_id
          LEFT JOIN geo.sites si ON s.site_id = si.site_id
-        --  LEFT JOIN entity.organizations l ON s.lab_id = l.entity_id
-
     );

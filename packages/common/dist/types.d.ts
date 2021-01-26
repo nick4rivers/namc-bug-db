@@ -4,6 +4,28 @@ export declare type HelloResponse = {
 };
 export declare type Sample = {
     sampleId: number;
+    boxId: number;
+    customerId: number;
+    customerName: string;
+    siteId: number;
+    siteName: string;
+    sampleDate: string;
+    sampleTime: string;
+    typeId: number;
+    typeName: string;
+    methodId: number;
+    methodName: string;
+    habitatId: number;
+    habitatName: string;
+    area: number;
+    fieldSplit: number;
+    labSplit: number;
+    jarCount: number;
+    qualitative: string;
+    mesh: number;
+    createdDate: string;
+    updatedDate: string;
+    qaSampleId: number;
 };
 export declare type BoxState = {
     boxStateId: number;
@@ -36,4 +58,19 @@ export declare type Individual = {
     zipCode: string;
     phone: string;
     fax: string;
+};
+export declare type Box = {
+    boxId: number;
+    customerId: number;
+    customerName: string;
+    samples: number;
+    submitterId: number;
+    SubmitterName: string;
+    boxStateId: number;
+    boxStateName: string;
+    boxReceivedDate: string;
+    processingCompleteDate: string;
+    projectedCompleteDate: string;
+    projectId: number;
+    projectName: string;
 };
