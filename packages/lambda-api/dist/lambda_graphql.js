@@ -40,24 +40,32 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.handler = void 0;
-var common_server_1 = require("@namcbugdb/common-server");
 var graphql_1 = require("graphql");
 var loglevel_1 = __importDefault(require("loglevel"));
+var common_server_1 = require("@namcbugdb/common-server");
 loglevel_1.default.enableAll();
 exports.handler = function (event) { return __awaiter(void 0, void 0, void 0, function () {
-    var ctx, body;
+    var cognitoClient, user, ctx, body;
     return __generator(this, function (_a) {
-        loglevel_1.default.info("========= STARTING GraphQL " + process.env.VERSION + " ========= ");
-        ctx = {};
-        body = JSON.parse(event.body);
-        return [2, graphql_1.graphql(common_server_1.graphqlSchema, body.query, null, ctx, body.variables).then(function (result) { return ({
-                statusCode: 200,
-                headers: {
-                    'Access-Control-Allow-Origin': '*',
-                    'Access-Control-Allow-Credentials': true
-                },
-                body: JSON.stringify(result)
-            }); })];
+        switch (_a.label) {
+            case 0:
+                loglevel_1.default.info("========= STARTING GraphQL " + process.env.VERSION + " ========= ");
+                loglevel_1.default.debug('nodecache', common_server_1.NODECACHE.getStats());
+                cognitoClient = common_server_1.awsLib.cognito.getCognitoClient(common_server_1.awsRegion);
+                return [4, common_server_1.awsLib.cognito.getAuthCached(event)];
+            case 1:
+                user = _a.sent();
+                ctx = { cognitoClient: cognitoClient, user: user };
+                body = JSON.parse(event.body);
+                return [2, graphql_1.graphql(common_server_1.executableSchema, body.query, null, ctx, body.variables).then(function (result) { return ({
+                        statusCode: 200,
+                        headers: {
+                            'Access-Control-Allow-Origin': '*',
+                            'Access-Control-Allow-Credentials': true
+                        },
+                        body: JSON.stringify(result)
+                    }); })];
+        }
     });
 }); };
 //# sourceMappingURL=lambda_graphql.js.map

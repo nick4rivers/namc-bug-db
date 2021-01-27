@@ -50,17 +50,14 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-require("source-map-support/register");
 var express_1 = __importDefault(require("express"));
 var morgan_1 = __importDefault(require("morgan"));
 var cors_1 = __importDefault(require("cors"));
-var dotenv_1 = __importDefault(require("dotenv"));
 var express_graphql_1 = __importDefault(require("express-graphql"));
 var loglevel_1 = __importDefault(require("loglevel"));
 var common_server_1 = require("@namcbugdb/common-server");
 loglevel_1.default.enableAll();
 loglevel_1.default.info('\n\n\n==============================================\nLAUNCHING...\n==============================================\n');
-dotenv_1.default.config();
 var corsOptions = {
     origin: '*',
     optionsSuccessStatus: 200
@@ -70,18 +67,37 @@ var app = express_1.default();
 app.use(cors_1.default(corsOptions));
 app.use(morgan_1.default('dev', { skip: function (req, res) { return res.statusCode < 400; } }));
 app.use('/api', function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
-    var user;
+    var config, cognitoClient, user;
     return __generator(this, function (_a) {
-        user = {};
-        req.context = __assign(__assign({}, res.context), { user: user });
-        next();
-        return [2];
+        switch (_a.label) {
+            case 0:
+                loglevel_1.default.debug('nodecache', common_server_1.NODECACHE.getStats());
+                return [4, common_server_1.getConfigPromise()];
+            case 1:
+                config = _a.sent();
+                cognitoClient = common_server_1.awsLib.cognito.getCognitoClient(config.region);
+                return [4, common_server_1.awsLib.cognito
+                        .getAuthCached(req)
+                        .then(function (data) {
+                        return data;
+                    })
+                        .catch(function (err) {
+                        loglevel_1.default.error(err);
+                        return {};
+                    })];
+            case 2:
+                user = _a.sent();
+                req.context = __assign(__assign({}, res.context), { user: user,
+                    cognitoClient: cognitoClient });
+                next();
+                return [2];
+        }
     });
 }); });
 app.use('/api', express_graphql_1.default(function (req, res, graphQLParams) { return __awaiter(void 0, void 0, void 0, function () {
     return __generator(this, function (_a) {
         return [2, {
-                schema: common_server_1.graphqlSchema,
+                schema: common_server_1.executableSchema,
                 context: req.context,
                 graphiql: false
             }];

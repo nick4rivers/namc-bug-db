@@ -99,66 +99,48 @@ export async function getCognitoUser(cognitoClient: AWS.CognitoIdentityServicePr
  * so our USER_CACHE above should be retained between sessions (roughly)
  * @param event
  */
-// export async function getAuthCached(event: any, dbClient: any): Promise<UserObj | void> {
-//     let user = null
-//     if (!event || !event.headers) {
-//         return Promise.resolve()
-//     }
-//     const authCode = event.headers.authorization || event.headers.Authorization || event.headers.authorizationToken
-//     if (!authCode) {
-//         return Promise.resolve()
-//     }
-//     const cachedAuthUser = NODECACHE.get(`AUTHCODE::${authCode}`)
+export async function getAuthCached(event: any): Promise<UserObj | void> {
+    let user = null
+    if (!event || !event.headers) {
+        return Promise.resolve()
+    }
+    const authCode = event.headers.authorization || event.headers.Authorization || event.headers.authorizationToken
+    if (!authCode) {
+        return Promise.resolve()
+    }
+    const cachedAuthUser = NODECACHE.get(`AUTHCODE::${authCode}`)
 
-//     if (cachedAuthUser) {
-//         log.debug('getAuthCached:: Got cached user!', cachedAuthUser)
-//         user = cachedAuthUser
-//     } else {
-//         log.debug('getAuthCached:: No cached value. Fetching')
-//         const config = await getConfigPromise()
-//         const auth = new Authorizer(config)
-//         user = await auth
-//             .AuthHandler(event.headers)
-//             .then(async (data: any) => {
-//                 if (data.isAdmin) {
-//                     const newUser = {
-//                         cognito: data,
-//                         dynamo: null
-//                     }
-//                     NODECACHE.set(`AUTHCODE::${authCode}`, newUser)
-//                     return newUser
-//                 }
+    if (cachedAuthUser) {
+        log.debug('getAuthCached:: Got cached user!', cachedAuthUser)
+        user = cachedAuthUser
+    } else {
+        log.debug('getAuthCached:: No cached value. Fetching')
+        const config = await getConfigPromise()
+        const auth = new Authorizer(config)
+        user = await auth
+            .AuthHandler(event.headers)
+            .then(async (data: any) => {
+                if (data.isAdmin) {
+                    const newUser = {
+                        cognito: data,
+                        dynamo: null
+                    }
+                    NODECACHE.set(`AUTHCODE::${authCode}`, newUser)
+                    return newUser
+                }
 
-//                 const dynUser = await getUser(dbClient, config.dynamo.users, data.username, config.productCode)
-//                     .then(async (dynData) => {
-//                         if (data.username && !dynData && !data.isAdmin) {
-//                             return await createUser(dbClient, config.dynamo.users, config.productCode, data.username)
-//                         }
-//                         return dynData
-//                     })
-//                     .catch((err) => {
-//                         log.error('getAuthCached::err', err)
-//                     })
-//                 const { createdOn, updatedOn, product, id, ...params } = dynUser
+                // Build the user object from the pieces we have
+                const newUser: UserObj = {
+                    cognito: data
+                }
+                NODECACHE.set(`AUTHCODE::${authCode}`, newUser)
+                log.info('getAuthCached:: finished fetching', newUser)
+                return newUser
+            })
+            .catch((err) => {
+                log.error(err)
+            })
+    }
 
-//                 // Build the user object from the pieces we have
-//                 const newUser: UserObj = {
-//                     cognito: data,
-//                     dynamo: {
-//                         product,
-//                         createdOn,
-//                         updatedOn,
-//                         params
-//                     }
-//                 }
-//                 NODECACHE.set(`AUTHCODE::${authCode}`, newUser)
-//                 log.info('getAuthCached:: finished fetching', newUser)
-//                 return newUser
-//             })
-//             .catch((err) => {
-//                 log.error(err)
-//             })
-//     }
-
-//     return Promise.resolve(user)
-// }
+    return Promise.resolve(user)
+}

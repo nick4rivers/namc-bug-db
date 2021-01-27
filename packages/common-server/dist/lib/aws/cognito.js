@@ -50,8 +50,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getCognitoUser = exports.getCognitoUsers = exports.getUserAttributes = exports.getCognitoClient = void 0;
+exports.getAuthCached = exports.getCognitoUser = exports.getCognitoUsers = exports.getUserAttributes = exports.getCognitoClient = void 0;
 var aws_sdk_1 = __importDefault(require("aws-sdk"));
+var Authorizer_1 = __importDefault(require("../auth/Authorizer"));
+var loglevel_1 = __importDefault(require("loglevel"));
 var config_1 = require("../../config");
 var MAX_USERS = 100;
 function getCognitoClient(region) {
@@ -152,4 +154,63 @@ function getCognitoUser(cognitoClient, sub) {
     });
 }
 exports.getCognitoUser = getCognitoUser;
+function getAuthCached(event) {
+    return __awaiter(this, void 0, void 0, function () {
+        var user, authCode, cachedAuthUser, config, auth;
+        var _this = this;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    user = null;
+                    if (!event || !event.headers) {
+                        return [2, Promise.resolve()];
+                    }
+                    authCode = event.headers.authorization || event.headers.Authorization || event.headers.authorizationToken;
+                    if (!authCode) {
+                        return [2, Promise.resolve()];
+                    }
+                    cachedAuthUser = config_1.NODECACHE.get("AUTHCODE::" + authCode);
+                    if (!cachedAuthUser) return [3, 1];
+                    loglevel_1.default.debug('getAuthCached:: Got cached user!', cachedAuthUser);
+                    user = cachedAuthUser;
+                    return [3, 4];
+                case 1:
+                    loglevel_1.default.debug('getAuthCached:: No cached value. Fetching');
+                    return [4, config_1.getConfigPromise()];
+                case 2:
+                    config = _a.sent();
+                    auth = new Authorizer_1.default(config);
+                    return [4, auth
+                            .AuthHandler(event.headers)
+                            .then(function (data) { return __awaiter(_this, void 0, void 0, function () {
+                            var newUser_1, newUser;
+                            return __generator(this, function (_a) {
+                                if (data.isAdmin) {
+                                    newUser_1 = {
+                                        cognito: data,
+                                        dynamo: null
+                                    };
+                                    config_1.NODECACHE.set("AUTHCODE::" + authCode, newUser_1);
+                                    return [2, newUser_1];
+                                }
+                                newUser = {
+                                    cognito: data
+                                };
+                                config_1.NODECACHE.set("AUTHCODE::" + authCode, newUser);
+                                loglevel_1.default.info('getAuthCached:: finished fetching', newUser);
+                                return [2, newUser];
+                            });
+                        }); })
+                            .catch(function (err) {
+                            loglevel_1.default.error(err);
+                        })];
+                case 3:
+                    user = _a.sent();
+                    _a.label = 4;
+                case 4: return [2, Promise.resolve(user)];
+            }
+        });
+    });
+}
+exports.getAuthCached = getAuthCached;
 //# sourceMappingURL=cognito.js.map

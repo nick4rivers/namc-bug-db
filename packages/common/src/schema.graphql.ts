@@ -32,11 +32,6 @@ const typeDefs = gql`
         domain: String
     }
 
-    type HelloResponse {
-        message: String
-        friendly: Boolean
-    }
-
     type Sample {
         sampleId: Int
         boxId: Int

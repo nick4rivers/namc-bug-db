@@ -4,25 +4,21 @@
  *
  * NEVER EVER EVER EVER RUN THIS IN PRODUCTION!!!!!!!
  */
-import 'source-map-support/register'
 import express from 'express'
 import morgan from 'morgan'
 import cors from 'cors'
 // Serverless sets our environment variables for us so er need to do it this way
-import dotenv from 'dotenv'
 import graphqlHTTP from 'express-graphql'
 import log from 'loglevel'
 
-import { config, graphqlSchema } from '@namcbugdb/common-server'
+// This has to go second because it does checking for env vars we might not have yet
+import { executableSchema, awsLib, NODECACHE, getConfigPromise } from '@namcbugdb/common-server'
 
 log.enableAll()
 
 log.info(
     '\n\n\n==============================================\nLAUNCHING...\n==============================================\n'
 )
-
-// require and configure dotenv, will load vars in .env in PROCESS.ENV
-dotenv.config()
 
 const corsOptions = {
     origin: '*',
@@ -34,23 +30,63 @@ const API_PORT = process.env.API_PORT || 3002
 // This is for our local testing only
 const app = express()
 
-// const cognitoClient = awsLib.cognito.getCognitoClient(config.aws.region)
 app.use(cors(corsOptions))
 
 // log only 4xx and 5xx responses to console
 app.use(morgan('dev', { skip: (req, res) => res.statusCode < 400 }))
 
 app.use('/api', async (req, res, next) => {
-    // const user = await awsLib.cognito.getAuthCached(req, docClient).catch((err) => {
-    //     log.error(err)
-    //     return {}
-    // })
-    const user = {}
+    log.debug('nodecache', NODECACHE.getStats())
+
+    const config = await getConfigPromise()
+    const cognitoClient = awsLib.cognito.getCognitoClient(config.region)
+
+    const user = await awsLib.cognito
+        .getAuthCached(req)
+        .then((data): any => {
+            // if (!data) {
+            //     return {
+            //         username: null,
+            //         sub: null,
+            //         email: null,
+            //         isLoggedIn: false,
+            //         isAdmin: false
+            //     }
+            // }
+            // If we are a super user and we want to impersonate someone else this is how.
+            // NOTE: THIS WILL NEVER WORK IN PRODUCTION
+            // if (data.isAdmin && req.headers.auth_user) {
+            //     const params = {
+            //         UserPoolId: config.aws.Auth.userPoolId,
+            //         Username: req.headers.auth_user
+            //     }
+            //     return Promise.all([
+            //         cognitoClient.adminGetUser(params).promise(),
+            //         cognitoClient.adminListGroupsForUser(params).promise()
+            //     ])
+            //         .then(([data2, { Groups }]) => {
+            //             return {
+            //                 isLoggedIn: false,
+            //                 username: data2.Username,
+            //                 sub: data2.UserAttributes.find((at) => at.Name === 'sub').Value,
+            //                 email: data2.UserAttributes.find((at) => at.Name === 'email').Value,
+            //                 isAdmin: !!Groups.find((g) => g.GroupName === 'Admin')
+            //             }
+            //         })
+            //         .catch((err) => {
+            //             log.error(err)
+            //         })
+            // } else return data
+            return data
+        })
+        .catch((err) => {
+            log.error(err)
+            return {}
+        })
     req.context = {
         ...res.context,
-        user
-        // docClient,
-        // cognitoClient
+        user,
+        cognitoClient
     }
     next()
 })
@@ -60,7 +96,7 @@ app.use(
     graphqlHTTP(async (req: any, res, graphQLParams) => {
         // log.info(req, graphQLParams)
         return {
-            schema: graphqlSchema,
+            schema: executableSchema,
             context: req.context,
             graphiql: false
         }

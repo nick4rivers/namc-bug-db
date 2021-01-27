@@ -1,8 +1,7 @@
-import { Sample } from '@namcbugdb/common';
-import { BoxState, Site, Individual, Box } from '@namcbugdb/common';
+import { Sample, AuthResponse, BoxState, Site, Individual, Box } from '@namcbugdb/common';
 declare const _default: {
     Query: {
-        auth: (obj: any, args: any, ctx: any, info: any) => Promise<any>;
+        auth: (obj: any, args: any, ctx: any, info: any) => Promise<AuthResponse>;
         samples: (obj: any, { limit, nextToken }: {
             limit: any;
             nextToken: any;

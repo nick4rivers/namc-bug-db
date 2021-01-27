@@ -1,6 +1,9 @@
-export declare type HelloResponse = {
-    message: string;
-    friendly: boolean;
+export declare type AuthResponse = {
+    loggedIn: boolean;
+    userPool: string;
+    clientId: string;
+    region: string;
+    domain: string;
 };
 export declare type Sample = {
     sampleId: number;

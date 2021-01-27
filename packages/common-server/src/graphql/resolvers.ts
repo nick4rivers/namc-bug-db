@@ -1,24 +1,16 @@
 // import path from 'path'
-import { HelloResponse, Sample } from '@namcbugdb/common'
 import { getConfigPromise } from '../config'
-import { BoxState, Site, Individual, Box, util } from '@namcbugdb/common'
+import { Sample, AuthResponse, BoxState, Site, Individual, Box, util } from '@namcbugdb/common'
 import { getSamples, getPool, getBoxStates, getSites, getIndividuals, getBoxes } from '../pg'
-// import config from '../config'
-// import downloadTaskLog from './downloadLogs'
 import {} from '../types'
 
-// some resolvers are big enough to get their own file
-// import log from 'loglevel'
-
 /**
- * I fully expect this file to fragment.
- *
  * The structure must match what's in the `schema.graphql` file
  */
 
 export default {
     Query: {
-        auth: async (obj, args, ctx, info): Promise<any> => {
+        auth: async (obj, args, ctx, info): Promise<AuthResponse> => {
             const config = await getConfigPromise()
             let loggedIn = false
             try {

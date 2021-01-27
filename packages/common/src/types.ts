@@ -1,6 +1,9 @@
-export type HelloResponse = {
-    message: string
-    friendly: boolean
+export type AuthResponse = {
+    loggedIn: boolean
+    userPool: string
+    clientId: string
+    region: string
+    domain: string
 }
 
 export type Sample = {
