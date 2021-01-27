@@ -13,6 +13,7 @@ export interface EC2BastionProps {
 // https://github.com/martinbpeters/cdk-vpc-postgres/blob/master/stacks/vpc.py
 class EC2Bastion extends cdk.Construct {
     readonly bastionBox: ec2.BastionHostLinux
+    readonly bastionIp: string
     constructor(scope: cdk.Construct, id: string, props: EC2BastionProps) {
         super(scope, id)
 
@@ -32,6 +33,15 @@ class EC2Bastion extends cdk.Construct {
         // Allow port 22 and ssh connect
         bastion.instance.instance.addPropertyOverride('KeyName', awsConfig.SSHKeyName)
         bastion.allowSshAccessFrom(ec2.Peer.anyIpv4())
+
+        // Now we assign an elastic IP to this so the IP doesn't change ever
+        const eip = new ec2.CfnEIP(this, `EC2BastionIP_${stackProps.stage}`, {})
+        addTagsToResource(eip, globalTags)
+        new ec2.CfnEIPAssociation(this, `EC2BastionIPAssoc_${stackProps.stage}`, {
+            eip: eip.ref,
+            instanceId: bastion.instanceId
+        })
+        this.bastionIp = eip.domain as string
     }
 }
 

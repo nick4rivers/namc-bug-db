@@ -28,6 +28,7 @@ export declare type SSMParameter = StackConfigProps & {
         userPoolWebClientId: string;
         hostedDomain: string;
     };
+    bastionIp: string;
     s3: {
         [key: string]: string;
     };

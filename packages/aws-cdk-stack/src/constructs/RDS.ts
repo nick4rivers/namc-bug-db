@@ -10,6 +10,7 @@ import { addTagsToResource } from './tags'
 export interface RDSPostgresDBProps {
     dbName: string
     dbUserName: string
+    secretName: string
     vpc: ec2.IVpc
     bastion: ec2.IInstance
 }
@@ -58,7 +59,7 @@ class RDSPostgresDB extends cdk.Construct {
         // use secret manager to configure database username and password
         // cf. https://docs.aws.amazon.com/ja_jp/secretsmanager/latest/userguide/intro.html
         this.secret = new secretsmanager.Secret(this, `DBSecret_${stackProps.stage}`, {
-            secretName: `${stackProps.stackPrefix}Secret_${stackProps.stage}`,
+            secretName: props.secretName,
             description: 'RDS database auto-generated user password',
             generateSecretString: {
                 excludeCharacters: '"@/',

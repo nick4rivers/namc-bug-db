@@ -48,9 +48,11 @@ class NAMCBUgDbStack extends cdk.Stack {
         const dbName = 'bugdb' // default
         const dbUserName = 'bugdb_root' // default
 
+        const secretName = `${stackProps.stackPrefix}Secret_${stackProps.stage}`
         const database = new RDSConstruct(this, `RDSDB_${stage}`, {
             dbName,
             dbUserName,
+            secretName,
             vpc,
             bastion: bastionBox.bastionBox
         })
@@ -62,10 +64,10 @@ class NAMCBUgDbStack extends cdk.Stack {
         const lambdaGraphQLAPI = new LambdaAPI(this, `LambdaAPI_${stage}`, {
             logGroup: this.logGroup,
             dbClusterArn: database.dbClusterArn,
-            dbSecretArn: database.secret.secretArn,
+            dbSecretArn: `${database.secret.secretArn}*`,
             env: {
                 SSM_PARAM: secretParamName,
-                SECRET_NAME: database.secret.secretName,
+                SECRET_NAME: secretName,
                 REGION: stackProps.region
             }
         })
@@ -85,6 +87,7 @@ class NAMCBUgDbStack extends cdk.Stack {
             s3: {
                 webBucket: s3Buckets.webBucket.bucketName
             },
+            bastionIp: bastionBox.bastionIp,
             cdnDomain: s3Buckets.cdn && s3Buckets.cdn.distributionDomainName,
             db: {
                 dbName,
