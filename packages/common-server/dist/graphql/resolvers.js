@@ -69,10 +69,11 @@ exports.default = {
                 var pool, data;
                 return __generator(this, function (_b) {
                     switch (_b.label) {
-                        case 0:
-                            pool = pg_1.getPool();
-                            return [4, pg_1.getSamples(pool, limit, nextToken)];
+                        case 0: return [4, pg_1.getPool()];
                         case 1:
+                            pool = _b.sent();
+                            return [4, pg_1.getSamples(pool, limit, nextToken)];
+                        case 2:
                             data = _b.sent();
                             return [2, data.map(common_1.util.snake2camel)];
                     }
@@ -85,10 +86,11 @@ exports.default = {
                 var pool, data;
                 return __generator(this, function (_b) {
                     switch (_b.label) {
-                        case 0:
-                            pool = pg_1.getPool();
-                            return [4, pg_1.getBoxStates(pool, limit, nextToken)];
+                        case 0: return [4, pg_1.getPool()];
                         case 1:
+                            pool = _b.sent();
+                            return [4, pg_1.getBoxStates(pool, limit, nextToken)];
+                        case 2:
                             data = _b.sent();
                             return [2, data.map(common_1.util.snake2camel)];
                     }
@@ -101,10 +103,11 @@ exports.default = {
                 var pool, data;
                 return __generator(this, function (_b) {
                     switch (_b.label) {
-                        case 0:
-                            pool = pg_1.getPool();
-                            return [4, pg_1.getSites(pool, limit, nextToken)];
+                        case 0: return [4, pg_1.getPool()];
                         case 1:
+                            pool = _b.sent();
+                            return [4, pg_1.getSites(pool, limit, nextToken)];
+                        case 2:
                             data = _b.sent();
                             return [2, data.map(common_1.util.snake2camel)];
                     }
@@ -117,10 +120,11 @@ exports.default = {
                 var pool, data;
                 return __generator(this, function (_b) {
                     switch (_b.label) {
-                        case 0:
-                            pool = pg_1.getPool();
-                            return [4, pg_1.getIndividuals(pool, limit, nextToken)];
+                        case 0: return [4, pg_1.getPool()];
                         case 1:
+                            pool = _b.sent();
+                            return [4, pg_1.getIndividuals(pool, limit, nextToken)];
+                        case 2:
                             data = _b.sent();
                             return [2, data.map(common_1.util.snake2camel)];
                     }
@@ -133,10 +137,11 @@ exports.default = {
                 var pool, data;
                 return __generator(this, function (_b) {
                     switch (_b.label) {
-                        case 0:
-                            pool = pg_1.getPool();
-                            return [4, pg_1.getBoxes(pool, limit, nextToken)];
+                        case 0: return [4, pg_1.getPool()];
                         case 1:
+                            pool = _b.sent();
+                            return [4, pg_1.getBoxes(pool, limit, nextToken)];
+                        case 2:
                             data = _b.sent();
                             return [2, data.map(common_1.util.snake2camel)];
                     }

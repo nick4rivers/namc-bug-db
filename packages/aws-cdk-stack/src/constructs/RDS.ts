@@ -8,12 +8,12 @@ import { globalTags, stackProps } from '../config'
 import { addTagsToResource } from './tags'
 
 export interface RDSPostgresDBProps {
+    dbName: string
+    dbUserName: string
     vpc: ec2.IVpc
     bastion: ec2.IInstance
 }
 
-const DbName = 'bugdb' // default
-const DbUserName = 'bugdb_root' // default
 // DOCS: https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-rds-dbcluster.html#cfn-rds-dbcluster-engine
 // from running: aws rds describe-db-engine-versions --engine aurora-postgresql --query "DBEngineVersions[].EngineVersion"
 // const EngineVersion = '5.6.10a'
@@ -28,6 +28,8 @@ class RDSPostgresDB extends cdk.Construct {
     public readonly dbSGId: string
     public readonly dbClusterArn: string
     public readonly secret: secretsmanager.Secret
+    public readonly endpointUrl: string
+    public readonly endpointPort: string
 
     constructor(scope: cdk.Construct, id: string, props: RDSPostgresDBProps) {
         super(scope, id)
@@ -62,7 +64,7 @@ class RDSPostgresDB extends cdk.Construct {
                 excludeCharacters: '"@/',
                 generateStringKey: 'password',
                 passwordLength: 32,
-                secretStringTemplate: `{"username": "${DbUserName}"}`
+                secretStringTemplate: `{"username": "${props.dbUserName}"}`
             }
         })
         addTagsToResource(this.secret, globalTags)
@@ -83,7 +85,7 @@ class RDSPostgresDB extends cdk.Construct {
 
         const db = new rds.CfnDBCluster(this, `RDS_${stackProps.stage}`, {
             // cannot use upper case characters.
-            databaseName: DbName,
+            databaseName: props.dbName,
             dbClusterIdentifier: `namc-bugdb-${stackProps.stage}`,
             // See above
             // dbClusterParameterGroupName: parameterGroup.ref,
@@ -118,7 +120,8 @@ class RDSPostgresDB extends cdk.Construct {
             vpcSecurityGroupIds: [this.dbSG.securityGroupId]
         })
         addTagsToResource(db, globalTags)
-
+        this.endpointUrl = db.attrEndpointAddress
+        this.endpointPort = db.attrEndpointPort
         this.dbClusterArn = cdk.Stack.of(this).formatArn({
             service: 'rds',
             resource: 'cluster',

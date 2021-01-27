@@ -2,7 +2,7 @@
 import * as cdk from '@aws-cdk/core'
 import * as ssm from '@aws-cdk/aws-ssm'
 import { addTagsToResource } from './tags'
-import { SSMSecret } from '../types'
+import { SSMParameter } from '../types'
 import { globalTags } from '../config'
 
 /**
@@ -13,7 +13,7 @@ class SSMParameters extends cdk.Construct {
     readonly parameterName: string
     readonly value: object
     readonly param: ssm.StringParameter
-    constructor(scope: cdk.Construct, id: string, name: string, props: SSMSecret) {
+    constructor(scope: cdk.Construct, id: string, name: string, props: SSMParameter) {
         super(scope, id)
 
         this.parameterName = name

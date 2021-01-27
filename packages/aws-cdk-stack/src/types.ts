@@ -25,7 +25,7 @@ export type AWSConfig = {
 }
 
 // This is the final shape that gets used as the SSM configuration object that everything else uses
-export type SSMSecret = StackConfigProps & {
+export type SSMParameter = StackConfigProps & {
     // s3: {
     //     warehouse: string
     //     uploads: string
@@ -39,4 +39,14 @@ export type SSMSecret = StackConfigProps & {
     }
     s3: { [key: string]: string }
     cdnDomain?: string
+    db: {
+        dbName: string
+        endpoint: string
+        port: string
+    }
+}
+
+export type SecretDBCredentials = {
+    username: string
+    password: string
 }

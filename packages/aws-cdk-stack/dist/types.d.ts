@@ -18,7 +18,7 @@ export declare type AWSConfig = {
     account: string;
     region: string;
 };
-export declare type SSMSecret = StackConfigProps & {
+export declare type SSMParameter = StackConfigProps & {
     apiUrl: string;
     functions: {
         [key: string]: string;
@@ -32,4 +32,13 @@ export declare type SSMSecret = StackConfigProps & {
         [key: string]: string;
     };
     cdnDomain?: string;
+    db: {
+        dbName: string;
+        endpoint: string;
+        port: string;
+    };
+};
+export declare type SecretDBCredentials = {
+    username: string;
+    password: string;
 };

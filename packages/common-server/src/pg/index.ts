@@ -1,9 +1,18 @@
-import config from '../config'
+import { getConfigPromise, getDBSecretCredentials } from '../config'
 import { Pool } from 'pg'
 import log from 'loglevel'
 
-export const getPool = (): Pool => {
-    return new Pool(config.pg)
+export const getPool = async (): Promise<Pool> => {
+    const config = await getConfigPromise()
+    const credentials = await getDBSecretCredentials()
+    const pool = new Pool({
+        user: credentials.username,
+        password: credentials.password,
+        database: config.db.dbName,
+        port: config.db.port,
+        host: config.db.endpoint
+    })
+    return Promise.resolve(pool)
 }
 
 const pgPromise = (pool: Pool, query: string, vars?: any): Promise<any> => {

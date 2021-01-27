@@ -45,7 +45,12 @@ class NAMCBUgDbStack extends cdk.Stack {
         })
 
         // Now deploy the Database
+        const dbName = 'bugdb' // default
+        const dbUserName = 'bugdb_root' // default
+
         const database = new RDSConstruct(this, `RDSDB_${stage}`, {
+            dbName,
+            dbUserName,
             vpc,
             bastion: bastionBox.bastionBox
         })
@@ -58,7 +63,11 @@ class NAMCBUgDbStack extends cdk.Stack {
             logGroup: this.logGroup,
             dbClusterArn: database.dbClusterArn,
             dbSecretArn: database.secret.secretArn,
-            env: { SSM_PARAM: secretParamName, REGION: stackProps.region }
+            env: {
+                SSM_PARAM: secretParamName,
+                SECRET_NAME: database.secret.secretName,
+                REGION: stackProps.region
+            }
         })
 
         const s3Buckets = new S3BucketsConstruct(this, `S3Buckets_${stage}`)
@@ -76,7 +85,12 @@ class NAMCBUgDbStack extends cdk.Stack {
             s3: {
                 webBucket: s3Buckets.webBucket.bucketName
             },
-            cdnDomain: s3Buckets.cdn && s3Buckets.cdn.distributionDomainName
+            cdnDomain: s3Buckets.cdn && s3Buckets.cdn.distributionDomainName,
+            db: {
+                dbName,
+                endpoint: database.endpointUrl,
+                port: database.endpointPort
+            }
         })
 
         const needSSMPermissions = [lambdaGraphQLAPI.lambdaGQLAPI]

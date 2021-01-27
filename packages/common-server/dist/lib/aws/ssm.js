@@ -39,44 +39,58 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getJSONSecret = exports.getSecret = void 0;
+exports.getSecret = exports.getParameter = void 0;
 var aws_sdk_1 = __importDefault(require("aws-sdk"));
 var config_1 = require("../../config");
 var loglevel_1 = __importDefault(require("loglevel"));
-function getSecret(paramName, region) {
-    var cacheKey = "SSM_" + paramName;
-    var ssm = new aws_sdk_1.default.SSM({ region: region });
-    var cached = config_1.NODECACHE.get(cacheKey);
-    if (cached)
-        return Promise.resolve(cached);
-    var params = {
-        Name: paramName
-    };
-    return ssm
-        .getParameter(params)
-        .promise()
-        .then(function (data) {
-        config_1.NODECACHE.set(cacheKey, data.Parameter.Value);
-        return data.Parameter.Value;
-    })
-        .catch(function (err) {
-        loglevel_1.default.error("Error retrieving/parsing SSM value: " + paramName);
-        throw err;
+function getParameter(paramName, region) {
+    return __awaiter(this, void 0, void 0, function () {
+        var cacheKey, ssm, cached, params;
+        return __generator(this, function (_a) {
+            cacheKey = "SSM_" + paramName;
+            ssm = new aws_sdk_1.default.SSM({ region: region });
+            cached = config_1.NODECACHE.get(cacheKey);
+            if (cached)
+                return [2, Promise.resolve(JSON.parse(cached))];
+            params = {
+                Name: paramName
+            };
+            return [2, ssm
+                    .getParameter(params)
+                    .promise()
+                    .then(function (data) {
+                    config_1.NODECACHE.set(cacheKey, data.Parameter.Value);
+                    return JSON.parse(data.Parameter.Value);
+                })
+                    .catch(function (err) {
+                    loglevel_1.default.error("Error retrieving/parsing SSM value: " + paramName);
+                    throw err;
+                })];
+        });
     });
 }
-exports.getSecret = getSecret;
-function getJSONSecret(paramName, region) {
+exports.getParameter = getParameter;
+function getSecret(secretName, region) {
     return __awaiter(this, void 0, void 0, function () {
-        var _a, _b;
-        return __generator(this, function (_c) {
-            switch (_c.label) {
+        var cacheKey, cached, secrets, secretParams, secret;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
                 case 0:
-                    _b = (_a = JSON).parse;
-                    return [4, getSecret(paramName, region)];
-                case 1: return [2, _b.apply(_a, [_c.sent()])];
+                    cacheKey = "SECRET_" + secretName;
+                    cached = config_1.NODECACHE.get(cacheKey);
+                    if (cached)
+                        return [2, Promise.resolve(JSON.parse(cached))];
+                    secrets = new aws_sdk_1.default.SecretsManager({ region: region });
+                    secretParams = {
+                        SecretId: process.env.SECRET_NAME
+                    };
+                    return [4, secrets.getSecretValue(secretParams).promise()];
+                case 1:
+                    secret = _a.sent();
+                    return [2, JSON.parse(secret.SecretString)];
             }
         });
     });
 }
-exports.getJSONSecret = getJSONSecret;
+exports.getSecret = getSecret;
 //# sourceMappingURL=ssm.js.map

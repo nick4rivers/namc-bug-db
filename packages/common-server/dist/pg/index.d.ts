@@ -1,4 +1,5 @@
-export declare const getPool: () => any;
+import { Pool } from 'pg';
+export declare const getPool: () => Promise<Pool>;
 export declare const getSamples: (pool: any, limit: number, nextToken: number) => Promise<any>;
 export declare const getBoxStates: (pool: any, limit: number, nextToken: number) => Promise<any>;
 export declare const getSites: (pool: any, limit: number, nextToken: number) => Promise<any>;

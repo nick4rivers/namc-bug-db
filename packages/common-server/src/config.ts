@@ -1,6 +1,6 @@
 import NodeCache from 'node-cache'
-import { getJSONSecret } from './lib/aws/ssm'
-import { SSMSecret } from '@namcbugdb/aws-cdk-stack'
+import { getParameter, getSecret } from './lib/aws/ssm'
+import { SSMParameter, SecretDBCredentials } from '@namcbugdb/aws-cdk-stack'
 // This file is just a fancy wrapper around what's in .env
 
 // This universal NODECACHE is useful for reducing the strain on our network tools
@@ -20,16 +20,24 @@ export const awsRegion = process.env.REGION
 export const ssmName = process.env.SSM_PARAM
 
 // Now go populate the cache
-export const getConfigPromise = (): Promise<SSMSecret> =>
-    getJSONSecret(process.env.SSM_PARAM, awsRegion).then((data) => data as SSMSecret)
+export const getConfigPromise = (): Promise<SSMParameter> =>
+    getParameter(process.env.SSM_PARAM, awsRegion).then((param) => {
+        const newParam: SSMParameter = {
+            ...param,
+            db: {
+                dbName: (process.env.POSTGRES_DB as string) || param.db.dbName,
+                endpoint: (process.env.POSTGRES_HOST as string) || param.db.endpoint,
+                port: (process.env.POSTGRES_PORT as string) || param.db.port
+            }
+        }
+        return newParam
+    })
 
-export default {
-    // TODO: THis should come from secrets manager
-    pg: {
-        user: process.env.POSTGRES_USER,
-        password: process.env.POSTGRES_PASSWORD,
-        database: process.env.POSTGRES_DB,
-        port: process.env.POSTGRES_PORT || 5432,
-        host: process.env.POSTGRES_HOST
-    }
-}
+export const getDBSecretCredentials = (): Promise<SecretDBCredentials> =>
+    getSecret(process.env.SECRET_NAME, awsRegion).then((data) => {
+        return {
+            ...(data as SecretDBCredentials),
+            username: process.env.PG_USERNAME || (data as SecretDBCredentials).username,
+            password: process.env.PG_PASSWORD || (data as SecretDBCredentials).password
+        }
+    })
