@@ -44,30 +44,30 @@ class LambdaAPI extends core.Construct {
 
         // Give the lambda function access to the DB
         // https://github.com/goranopacic/dataapi-demo/blob/master/lib/dataapi-demo-stack.ts
-        this.lambdaGQLAPI.addToRolePolicy(
-            new iam.PolicyStatement({
-                resources: [aurora.secretarn],
-                actions: ['secretsmanager:GetSecretValue']
-            })
-        )
-        this.lambdaGQLAPI.addToRolePolicy(
-            new iam.PolicyStatement({
-                resources: [aurora.clusterarn],
-                actions: [
-                    'rds-data:ExecuteStatement',
-                    'rds-data:BatchExecuteStatement',
-                    'rds-data:BeginTransaction',
-                    'rds-data:CommitTransaction',
-                    'rds-data:RollbackTransaction'
-                ]
-            })
-        )
-        this.lambdaGQLAPI.addToRolePolicy(
-            new iam.PolicyStatement({
-                resources: [aurora.clusterarn],
-                actions: ['rds:DescribeDBClusters']
-            })
-        )
+        // this.lambdaGQLAPI.addToRolePolicy(
+        //     new iam.PolicyStatement({
+        //         resources: [aurora.secretarn],
+        //         actions: ['secretsmanager:GetSecretValue']
+        //     })
+        // )
+        // this.lambdaGQLAPI.addToRolePolicy(
+        //     new iam.PolicyStatement({
+        //         resources: [aurora.clusterarn],
+        //         actions: [
+        //             'rds-data:ExecuteStatement',
+        //             'rds-data:BatchExecuteStatement',
+        //             'rds-data:BeginTransaction',
+        //             'rds-data:CommitTransaction',
+        //             'rds-data:RollbackTransaction'
+        //         ]
+        //     })
+        // )
+        // this.lambdaGQLAPI.addToRolePolicy(
+        //     new iam.PolicyStatement({
+        //         resources: [aurora.clusterarn],
+        //         actions: ['rds:DescribeDBClusters']
+        //     })
+        // )
 
         // props.dynamoTable.table.grantReadWriteData(lambdaHandler)
 

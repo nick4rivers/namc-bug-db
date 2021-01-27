@@ -6,7 +6,7 @@ import { globalTags, stackProps } from '../config'
 import { addTagsToResource } from './tags'
 
 export interface CognitoProps {
-    thing: string
+    cognitoDomainPrefix: string
 }
 
 class Cognito extends cdk.Construct {
@@ -33,7 +33,7 @@ class Cognito extends cdk.Construct {
         // Client to connect to
         this.userPool.addDomain(`UserPoolDomain_${stackProps.stage}`, {
             cognitoDomain: {
-                domainPrefix: `namc-${stackProps.stage}`
+                domainPrefix: props.cognitoDomainPrefix
             }
         })
 

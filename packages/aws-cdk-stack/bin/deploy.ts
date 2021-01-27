@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 import 'source-map-support/register'
 import * as cdk from '@aws-cdk/core'
-import NAMCBUgDbStack from '../src/NAMCBUgDbStack'
+import BugDbStack from '../src/BugDbStack'
 import { stackProps, awsConfig } from '../src/config'
 import log from 'loglevel'
 log.enableAll()
@@ -13,7 +13,7 @@ log.info('Deploying NAMC Bug DB App stage: ', stackProps.stage)
  */
 const app = new cdk.App()
 
-const newStack = new NAMCBUgDbStack(app, `NAMC-BugDB-Stack-${stackProps.stage}`, {
+const newStack = new BugDbStack(app, `NAMC-BugDB-Stack-${stackProps.stage}`, {
     env: awsConfig
 })
 

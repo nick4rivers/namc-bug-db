@@ -36,9 +36,8 @@ class NAMCBUgDbStack extends cdk.Stack {
             removalPolicy
         })
 
-        const cognito = new CognitoConstruct(this, `Cognito_${stage}`, {
-            thing: 'op'
-        })
+        const cognitoDomainPrefix = `namc-${stackProps.stage}`
+        const cognito = new CognitoConstruct(this, `Cognito_${stage}`, { cognitoDomainPrefix })
 
         // EC2 Bastion box to access the rest of our services from:
         const bastionBox = new EC2Bastion(this, `EC2Bastion_${stage}`, {
@@ -51,23 +50,32 @@ class NAMCBUgDbStack extends cdk.Stack {
             bastion: bastionBox.bastionBox
         })
 
+        // The secrets get used by our lambda function to find resources related to this stack
+        const secretParamName = `${stackProps.stackPrefix}Config_${stage}`
+
         // Lambda function for the API
         const lambdaGraphQLAPI = new LambdaAPI(this, `LambdaAPI_${stage}`, {
             logGroup: this.logGroup,
-            env: {}
+            env: { SSM_PARAM: secretParamName, REGION: stackProps.region }
         })
 
-        // The secrets get used by our lambda function to find resources related to this stack
-        const secretParamName = `Config_${stage}`
+        const s3Buckets = new S3BucketsConstruct(this, `S3Buckets_${stage}`)
 
         const ssmParams = new SSMParametersConstruct(this, secretParamName, secretParamName, {
             ...stackProps,
             // Strip off any trailing slashes and re-add /api. A little tedious but thorough
             apiUrl: `${lambdaGraphQLAPI.lambdaAPIGateway.url.replace(/\/$/g, '')}/api`,
-            functions: lambdaGraphQLAPI.functions
+            functions: lambdaGraphQLAPI.functions,
+            cognito: {
+                userPoolId: cognito.userPool.userPoolId,
+                userPoolWebClientId: cognito.client.userPoolClientId,
+                hostedDomain: `${cognitoDomainPrefix}.auth.${stackProps.region}.amazoncognito.com`
+            },
+            s3: {
+                webBucket: s3Buckets.webBucket.bucketName
+            },
+            cdnDomain: s3Buckets.cdn && s3Buckets.cdn.distributionDomainName
         })
-
-        const s3Buckets = new S3BucketsConstruct(this, `S3Buckets_${stage}`)
 
         const needSSMPermissions = [lambdaGraphQLAPI.lambdaGQLAPI]
         const ssmAccessPolicy = new iam.PolicyStatement({

@@ -32,4 +32,11 @@ export type SSMSecret = StackConfigProps & {
     // }
     apiUrl: string
     functions: { [key: string]: string }
+    cognito: {
+        userPoolId: string
+        userPoolWebClientId: string
+        hostedDomain: string
+    }
+    s3: { [key: string]: string }
+    cdnDomain?: string
 }
