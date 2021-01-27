@@ -12,7 +12,7 @@ const typeDefs = gql`
         # Get a project and associated metadata
         auth: AuthParams
 
-        samples(limit: Int, nextToken: String): [Sample]
+        samples(limit: Int, nextToken: String): PaginatedSample
         boxStates(limit: Int, nextToken: String): [BoxState]
         sites(limit: Int, nextToken: String): [Site]
         individuals(limit: Int, nextToken: String): [Individual]
@@ -30,6 +30,11 @@ const typeDefs = gql`
         clientId: String
         region: String
         domain: String
+    }
+
+    type PaginatedSample {
+        records: [Sample]
+        nextToken: Int
     }
 
     type Sample {

@@ -29,7 +29,10 @@ export default {
         samples: async (obj, { limit, nextToken }, ctx, info): Promise<Sample[]> => {
             const pool = await getPool()
             const data = await getSamples(pool, limit, nextToken)
-            return data.map(util.snake2camel)
+            return {
+                records: data.map(util.snake2camel),
+                nextToken: 0
+            }
         },
 
         boxStates: async (obj, { limit, nextToken }, ctx, info): Promise<BoxState[]> => {

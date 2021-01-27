@@ -75,7 +75,10 @@ exports.default = {
                             return [4, pg_1.getSamples(pool, limit, nextToken)];
                         case 2:
                             data = _b.sent();
-                            return [2, data.map(common_1.util.snake2camel)];
+                            return [2, {
+                                    records: data.map(common_1.util.snake2camel),
+                                    nextToken: 0
+                                }];
                     }
                 });
             });
