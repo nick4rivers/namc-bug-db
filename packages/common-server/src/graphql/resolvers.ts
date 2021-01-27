@@ -1,6 +1,7 @@
 // import path from 'path'
 import { HelloResponse, Sample } from '@namcbugdb/common'
-import { BoxState, Site, Individual, Box } from '@namcbugdb/common'
+import { getConfigPromise } from '../config'
+import { BoxState, Site, Individual, Box, util } from '@namcbugdb/common'
 import { getSamples, getPool, getBoxStates, getSites, getIndividuals, getBoxes } from '../pg'
 // import config from '../config'
 // import downloadTaskLog from './downloadLogs'
@@ -17,97 +18,49 @@ import {} from '../types'
 
 export default {
     Query: {
-        helloWorld: (obj, { name }, ctx, info): HelloResponse => {
+        auth: async (obj, args, ctx, info): Promise<any> => {
+            const config = await getConfigPromise()
+            let loggedIn = false
+            try {
+                loggedIn = Boolean(ctx.user.cognito.username)
+            } catch {}
             return {
-                message: `Good bye forever ${name}!`,
-                friendly: Math.random() < 0.5
+                loggedIn,
+                userPool: config.cognito.userPoolId,
+                clientId: config.cognito.userPoolWebClientId,
+                domain: config.cognito.hostedDomain,
+                region: config.region
             }
         },
 
-        samples: async (obj, args, ctx, info): Promise<Sample[]> => {
+        samples: async (obj, { limit, nextToken }, ctx, info): Promise<Sample[]> => {
             const pool = getPool()
-            const data = await getSamples(pool)
-            return data.map((vals) => ({
-                sampleId: vals.sample_id,
-                boxId: vals.box_id,
-                customerId: vals.customer_id,
-                customerName: vals.organization_name,
-                siteId: vals.site_id,
-                siteName: vals.site_name,
-                sampleDate: vals.sample_date,
-                sampleTime: vals.sample_time,
-                typeId: vals.type_id,
-                typeName: vals.sample_type_name,
-                methodId: vals.method_id,
-                methodName: vals.sample_method_name,
-                habitatId: vals.habitat_id,
-                habitatName: vals.habitat_name,
-                area: vals.area,
-                fieldSplit: vals.field_split,
-                labSplit: vals.lab_split,
-                jarCount: vals.jar_count,
-                qualitative: vals.qualitative,
-                mesh: vals.mesh,
-                createdDate: vals.created_date,
-                updatedDate: vals.updated_date,
-                qaSampleId: vals.qa_sample_id
-            }))
+            const data = await getSamples(pool, limit, nextToken)
+            return data.map(util.snake2camel)
         },
 
-        boxStates: async (obj, args, ctx, info): Promise<BoxState[]> => {
+        boxStates: async (obj, { limit, nextToken }, ctx, info): Promise<BoxState[]> => {
             const pool = getPool()
-            const data = await getBoxStates(pool)
-            return data.map((vals) => ({
-                boxStateId: vals.box_state_id
-            }))
+            const data = await getBoxStates(pool, limit, nextToken)
+            return data.map(util.snake2camel)
         },
 
-        sites: async (obj, args, ctx, info): Promise<Site[]> => {
+        sites: async (obj, { limit, nextToken }, ctx, info): Promise<Site[]> => {
             const pool = getPool()
-            const data = await getSites(pool)
-            return data.map((vals) => ({
-                siteId: vals.site_id,
-                siteName: vals.site_name,
-                ecosystemId: vals.ecosystem_id,
-                ecosystemName: vals.ecosystem_name,
-                waterbody: vals.waterbody,
-                longitude: vals.longitude,
-                latitude: vals.latitude
-            }))
+            const data = await getSites(pool, limit, nextToken)
+            return data.map(util.snake2camel)
         },
 
-        individuals: async (obj, args, ctx, info): Promise<Individual[]> => {
+        individuals: async (obj, { limit, nextToken }, ctx, info): Promise<Individual[]> => {
             const pool = getPool()
-            const data = await getIndividuals(pool)
-            return data.map((vals) => ({
-                siteId: vals.site_id,
-                siteName: vals.site_name,
-                ecosystemId: vals.ecosystem_id,
-                ecosystemName: vals.ecosystem_name,
-                waterbody: vals.waterbody,
-                longitude: vals.longitude,
-                latitude: vals.latitude
-            }))
+            const data = await getIndividuals(pool, limit, nextToken)
+            return data.map(util.snake2camel)
         },
 
-        boxes: async (obj, args, ctx, info): Promise<Box[]> => {
+        boxes: async (obj, { limit, nextToken }, ctx, info): Promise<Box[]> => {
             const pool = getPool()
-            const data = await getBoxes(pool)
-            return data.map((vals) => ({
-                boxId: vals.box_id,
-                customerId: vals.customer_id,
-                customerName: vals.organization_name,
-                samples: vals.samples,
-                submitterId: vals.submitter_id,
-                SubmitterName: vals.submitter_name,
-                boxStateId: vals.box_state_id,
-                boxStateName: vals.box_state_name,
-                boxReceivedDate: vals.box_received_date,
-                processingCompleteDate: vals.processing_complete_date,
-                projectedCompleteDate: vals.projected_complete_date,
-                projectId: vals.project_id,
-                projectName: vals.project_name
-            }))
+            const data = await getBoxes(pool, limit, nextToken)
+            return data.map(util.snake2camel)
         }
     }
 

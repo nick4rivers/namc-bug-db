@@ -10,8 +10,6 @@ import { stackProps } from '../config'
 
 class S3Buckets extends cdk.Construct {
     readonly webBucket: s3.Bucket
-    readonly uploadBucket: s3.Bucket
-    readonly tileBucket: s3.Bucket
     readonly cdn: cf.CloudFrontWebDistribution
     readonly cert: acm.Certificate
 

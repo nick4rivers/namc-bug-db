@@ -119,16 +119,14 @@ class RDSPostgresDB extends cdk.Construct {
         })
         addTagsToResource(db, globalTags)
 
-        // this.dbClusterArn = this.formatArn({
-        //   service: 'rds',
-        //   resource: 'cluster',
-        //   sep: ':',
-        //   // NOTE: resourceName should be lower case for RDS
-        //   // however arn is evaluated in case sensitive.
-        //   resourceName: (db.dbClusterIdentifier || '').toString().toLowerCase()
-        // });
-        // }
-        // addTagsToResource(this.userPool, globalTags)
+        this.dbClusterArn = cdk.Stack.of(this).formatArn({
+            service: 'rds',
+            resource: 'cluster',
+            sep: ':',
+            // NOTE: resourceName should be lower case for RDS
+            // however arn is evaluated in case sensitive.
+            resourceName: (db.dbClusterIdentifier || '').toString().toLowerCase()
+        })
     }
 }
 

@@ -45,7 +45,7 @@ class NAMCBUgDbStack extends cdk.Stack {
         })
 
         // Now deploy the Database
-        const rdsdb = new RDSConstruct(this, `RDSDB_${stage}`, {
+        const database = new RDSConstruct(this, `RDSDB_${stage}`, {
             vpc,
             bastion: bastionBox.bastionBox
         })
@@ -56,6 +56,8 @@ class NAMCBUgDbStack extends cdk.Stack {
         // Lambda function for the API
         const lambdaGraphQLAPI = new LambdaAPI(this, `LambdaAPI_${stage}`, {
             logGroup: this.logGroup,
+            dbClusterArn: database.dbClusterArn,
+            dbSecretArn: database.secret.secretArn,
             env: { SSM_PARAM: secretParamName, REGION: stackProps.region }
         })
 

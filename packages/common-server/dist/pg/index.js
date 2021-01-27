@@ -24,13 +24,15 @@ var pgPromise = function (pool, query, vars) {
     });
 };
 var samplesQuery = 'SELECT * FROM sample.vw_samples LIMIT 500';
-exports.getSamples = function (pool) { return pgPromise(pool, samplesQuery); };
+exports.getSamples = function (pool, limit, nextToken) { return pgPromise(pool, samplesQuery); };
 var boxStatesQuery = 'SELECT * FROM sample.box_states';
-exports.getBoxStates = function (pool) { return pgPromise(pool, boxStatesQuery); };
+exports.getBoxStates = function (pool, limit, nextToken) { return pgPromise(pool, boxStatesQuery); };
 var sitesQuery = 'SELECT * FROM geo.vw_sites LIMIT 500';
-exports.getSites = function (pool) { return pgPromise(pool, sitesQuery); };
+exports.getSites = function (pool, limit, nextToken) { return pgPromise(pool, sitesQuery); };
 var individualsQuery = 'SELECT * FROM entity.vw_individuals';
-exports.getIndividuals = function (pool) { return pgPromise(pool, individualsQuery); };
+exports.getIndividuals = function (pool, limit, nextToken) {
+    return pgPromise(pool, individualsQuery);
+};
 var boxesQuery = 'SELECT * FROM sample.vw_boxes LIMIT 500';
-exports.getBoxes = function (pool) { return pgPromise(pool, boxesQuery); };
+exports.getBoxes = function (pool, limit, nextToken) { return pgPromise(pool, boxesQuery); };
 //# sourceMappingURL=index.js.map

@@ -1,24 +1,16 @@
+import NodeCache from 'node-cache';
+import { SSMSecret } from '@namcbugdb/aws-cdk-stack';
+export declare const NODECACHE: NodeCache;
+export declare const awsRegion: string;
+export declare const ssmName: string;
+export declare const getConfigPromise: () => Promise<SSMSecret>;
 declare const _default: {
-    development: boolean;
-    apiUrl: string;
     pg: {
         user: string;
         password: string;
         database: string;
         port: string | number;
         host: string;
-    };
-    loginUrl: string;
-    aws: {
-        region: string;
-        Auth: {
-            userPoolId: string;
-            userPoolWebClientId: string;
-            mandatorySignIn: boolean;
-            region: string;
-        };
-        Lambda: {};
-        Postgres: {};
     };
 };
 export default _default;

@@ -36,137 +36,113 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+var config_1 = require("../config");
+var common_1 = require("@namcbugdb/common");
 var pg_1 = require("../pg");
 exports.default = {
     Query: {
-        helloWorld: function (obj, _a, ctx, info) {
-            var name = _a.name;
-            return {
-                message: "Good bye forever " + name + "!",
-                friendly: Math.random() < 0.5
-            };
+        auth: function (obj, args, ctx, info) { return __awaiter(void 0, void 0, void 0, function () {
+            var config, loggedIn;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4, config_1.getConfigPromise()];
+                    case 1:
+                        config = _a.sent();
+                        loggedIn = false;
+                        try {
+                            loggedIn = Boolean(ctx.user.cognito.username);
+                        }
+                        catch (_b) { }
+                        return [2, {
+                                loggedIn: loggedIn,
+                                userPool: config.cognito.userPoolId,
+                                clientId: config.cognito.userPoolWebClientId,
+                                domain: config.cognito.hostedDomain,
+                                region: config.region
+                            }];
+                }
+            });
+        }); },
+        samples: function (obj, _a, ctx, info) {
+            var limit = _a.limit, nextToken = _a.nextToken;
+            return __awaiter(void 0, void 0, void 0, function () {
+                var pool, data;
+                return __generator(this, function (_b) {
+                    switch (_b.label) {
+                        case 0:
+                            pool = pg_1.getPool();
+                            return [4, pg_1.getSamples(pool, limit, nextToken)];
+                        case 1:
+                            data = _b.sent();
+                            return [2, data.map(common_1.util.snake2camel)];
+                    }
+                });
+            });
         },
-        samples: function (obj, args, ctx, info) { return __awaiter(void 0, void 0, void 0, function () {
-            var pool, data;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        pool = pg_1.getPool();
-                        return [4, pg_1.getSamples(pool)];
-                    case 1:
-                        data = _a.sent();
-                        return [2, data.map(function (vals) { return ({
-                                sampleId: vals.sample_id,
-                                boxId: vals.box_id,
-                                customerId: vals.customer_id,
-                                customerName: vals.organization_name,
-                                siteId: vals.site_id,
-                                siteName: vals.site_name,
-                                sampleDate: vals.sample_date,
-                                sampleTime: vals.sample_time,
-                                typeId: vals.type_id,
-                                typeName: vals.sample_type_name,
-                                methodId: vals.method_id,
-                                methodName: vals.sample_method_name,
-                                habitatId: vals.habitat_id,
-                                habitatName: vals.habitat_name,
-                                area: vals.area,
-                                fieldSplit: vals.field_split,
-                                labSplit: vals.lab_split,
-                                jarCount: vals.jar_count,
-                                qualitative: vals.qualitative,
-                                mesh: vals.mesh,
-                                createdDate: vals.created_date,
-                                updatedDate: vals.updated_date,
-                                qaSampleId: vals.qa_sample_id
-                            }); })];
-                }
+        boxStates: function (obj, _a, ctx, info) {
+            var limit = _a.limit, nextToken = _a.nextToken;
+            return __awaiter(void 0, void 0, void 0, function () {
+                var pool, data;
+                return __generator(this, function (_b) {
+                    switch (_b.label) {
+                        case 0:
+                            pool = pg_1.getPool();
+                            return [4, pg_1.getBoxStates(pool, limit, nextToken)];
+                        case 1:
+                            data = _b.sent();
+                            return [2, data.map(common_1.util.snake2camel)];
+                    }
+                });
             });
-        }); },
-        boxStates: function (obj, args, ctx, info) { return __awaiter(void 0, void 0, void 0, function () {
-            var pool, data;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        pool = pg_1.getPool();
-                        return [4, pg_1.getBoxStates(pool)];
-                    case 1:
-                        data = _a.sent();
-                        return [2, data.map(function (vals) { return ({
-                                boxStateId: vals.box_state_id
-                            }); })];
-                }
+        },
+        sites: function (obj, _a, ctx, info) {
+            var limit = _a.limit, nextToken = _a.nextToken;
+            return __awaiter(void 0, void 0, void 0, function () {
+                var pool, data;
+                return __generator(this, function (_b) {
+                    switch (_b.label) {
+                        case 0:
+                            pool = pg_1.getPool();
+                            return [4, pg_1.getSites(pool, limit, nextToken)];
+                        case 1:
+                            data = _b.sent();
+                            return [2, data.map(common_1.util.snake2camel)];
+                    }
+                });
             });
-        }); },
-        sites: function (obj, args, ctx, info) { return __awaiter(void 0, void 0, void 0, function () {
-            var pool, data;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        pool = pg_1.getPool();
-                        return [4, pg_1.getSites(pool)];
-                    case 1:
-                        data = _a.sent();
-                        return [2, data.map(function (vals) { return ({
-                                siteId: vals.site_id,
-                                siteName: vals.site_name,
-                                ecosystemId: vals.ecosystem_id,
-                                ecosystemName: vals.ecosystem_name,
-                                waterbody: vals.waterbody,
-                                longitude: vals.longitude,
-                                latitude: vals.latitude
-                            }); })];
-                }
+        },
+        individuals: function (obj, _a, ctx, info) {
+            var limit = _a.limit, nextToken = _a.nextToken;
+            return __awaiter(void 0, void 0, void 0, function () {
+                var pool, data;
+                return __generator(this, function (_b) {
+                    switch (_b.label) {
+                        case 0:
+                            pool = pg_1.getPool();
+                            return [4, pg_1.getIndividuals(pool, limit, nextToken)];
+                        case 1:
+                            data = _b.sent();
+                            return [2, data.map(common_1.util.snake2camel)];
+                    }
+                });
             });
-        }); },
-        individuals: function (obj, args, ctx, info) { return __awaiter(void 0, void 0, void 0, function () {
-            var pool, data;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        pool = pg_1.getPool();
-                        return [4, pg_1.getIndividuals(pool)];
-                    case 1:
-                        data = _a.sent();
-                        return [2, data.map(function (vals) { return ({
-                                siteId: vals.site_id,
-                                siteName: vals.site_name,
-                                ecosystemId: vals.ecosystem_id,
-                                ecosystemName: vals.ecosystem_name,
-                                waterbody: vals.waterbody,
-                                longitude: vals.longitude,
-                                latitude: vals.latitude
-                            }); })];
-                }
+        },
+        boxes: function (obj, _a, ctx, info) {
+            var limit = _a.limit, nextToken = _a.nextToken;
+            return __awaiter(void 0, void 0, void 0, function () {
+                var pool, data;
+                return __generator(this, function (_b) {
+                    switch (_b.label) {
+                        case 0:
+                            pool = pg_1.getPool();
+                            return [4, pg_1.getBoxes(pool, limit, nextToken)];
+                        case 1:
+                            data = _b.sent();
+                            return [2, data.map(common_1.util.snake2camel)];
+                    }
+                });
             });
-        }); },
-        boxes: function (obj, args, ctx, info) { return __awaiter(void 0, void 0, void 0, function () {
-            var pool, data;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        pool = pg_1.getPool();
-                        return [4, pg_1.getBoxes(pool)];
-                    case 1:
-                        data = _a.sent();
-                        return [2, data.map(function (vals) { return ({
-                                boxId: vals.box_id,
-                                customerId: vals.customer_id,
-                                customerName: vals.organization_name,
-                                samples: vals.samples,
-                                submitterId: vals.submitter_id,
-                                SubmitterName: vals.submitter_name,
-                                boxStateId: vals.box_state_id,
-                                boxStateName: vals.box_state_name,
-                                boxReceivedDate: vals.box_received_date,
-                                processingCompleteDate: vals.processing_complete_date,
-                                projectedCompleteDate: vals.projected_complete_date,
-                                projectId: vals.project_id,
-                                projectName: vals.project_name
-                            }); })];
-                }
-            });
-        }); }
+        }
     }
 };
 //# sourceMappingURL=resolvers.js.map

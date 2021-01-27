@@ -10,18 +10,27 @@ const typeDefs = gql`
 
     type Query {
         # Get a project and associated metadata
-        helloWorld(name: String!): HelloResponse
-        samples: [Sample]
-        boxStates: [BoxState]
-        sites: [Site]
-        individuals: [Individual]
-        boxes: [Box]
+        auth: AuthParams
+
+        samples(limit: Int, nextToken: String): [Sample]
+        boxStates(limit: Int, nextToken: String): [BoxState]
+        sites(limit: Int, nextToken: String): [Site]
+        individuals(limit: Int, nextToken: String): [Individual]
+        boxes(limit: Int, nextToken: String): [Box]
     }
 
     # this schema allows the following mutation:
     # type Mutation {
 
     # }
+
+    type AuthParams {
+        loggedIn: Boolean
+        userPool: String
+        clientId: String
+        region: String
+        domain: String
+    }
 
     type HelloResponse {
         message: String

@@ -10,6 +10,8 @@ import { addTagsToResource } from './tags'
 export interface LambdaAPIProps {
     logGroup: cw.LogGroup
     env: { [key: string]: string }
+    dbClusterArn: string
+    dbSecretArn: string
 }
 
 // This is maybe a little sloppy but it's just a lookup inside this monorepo so it should be fine
@@ -44,30 +46,31 @@ class LambdaAPI extends core.Construct {
 
         // Give the lambda function access to the DB
         // https://github.com/goranopacic/dataapi-demo/blob/master/lib/dataapi-demo-stack.ts
-        // this.lambdaGQLAPI.addToRolePolicy(
-        //     new iam.PolicyStatement({
-        //         resources: [aurora.secretarn],
-        //         actions: ['secretsmanager:GetSecretValue']
-        //     })
-        // )
-        // this.lambdaGQLAPI.addToRolePolicy(
-        //     new iam.PolicyStatement({
-        //         resources: [aurora.clusterarn],
-        //         actions: [
-        //             'rds-data:ExecuteStatement',
-        //             'rds-data:BatchExecuteStatement',
-        //             'rds-data:BeginTransaction',
-        //             'rds-data:CommitTransaction',
-        //             'rds-data:RollbackTransaction'
-        //         ]
-        //     })
-        // )
-        // this.lambdaGQLAPI.addToRolePolicy(
-        //     new iam.PolicyStatement({
-        //         resources: [aurora.clusterarn],
-        //         actions: ['rds:DescribeDBClusters']
-        //     })
-        // )
+        // TODO: This might be too heavy
+        this.lambdaGQLAPI.addToRolePolicy(
+            new iam.PolicyStatement({
+                resources: [props.dbSecretArn],
+                actions: ['secretsmanager:GetSecretValue']
+            })
+        )
+        this.lambdaGQLAPI.addToRolePolicy(
+            new iam.PolicyStatement({
+                resources: [props.dbClusterArn],
+                actions: [
+                    'rds-data:ExecuteStatement',
+                    'rds-data:BatchExecuteStatement',
+                    'rds-data:BeginTransaction',
+                    'rds-data:CommitTransaction',
+                    'rds-data:RollbackTransaction'
+                ]
+            })
+        )
+        this.lambdaGQLAPI.addToRolePolicy(
+            new iam.PolicyStatement({
+                resources: [props.dbClusterArn],
+                actions: ['rds:DescribeDBClusters']
+            })
+        )
 
         // props.dynamoTable.table.grantReadWriteData(lambdaHandler)
 
