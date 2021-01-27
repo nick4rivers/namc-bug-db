@@ -22,6 +22,7 @@ const config = {
     //  so it should not be included in function bundles
     externals: ['aws-sdk'],
     plugins: [
+        new webpack.IgnorePlugin(/^pg-native$/),
         new webpack.DefinePlugin({
             'process.env.VERSION': JSON.stringify(require('./package.json').version)
         })
