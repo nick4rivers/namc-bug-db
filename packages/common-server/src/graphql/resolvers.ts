@@ -1,6 +1,6 @@
 // import path from 'path'
 import { getConfigPromise, getDBSecretCredentials } from '../config'
-import { Sample, AuthResponse, BoxState, Site, Individual, Box, util } from '@namcbugdb/common'
+import { Sample, AuthResponse, BoxState, Site, Individual, Box, util, PaginatedRecords } from '@namcbugdb/common'
 import { getPool, getSamples, getBoxStates, getSites, getIndividuals, getBoxes } from '../pg'
 
 // import {} from '../types'
@@ -26,7 +26,7 @@ export default {
             }
         },
 
-        samples: async (obj, { limit, nextToken }, ctx, info): Promise<Sample[]> => {
+        samples: async (obj, { limit, nextToken }, ctx, info): Promise<PaginatedRecords<Sample>> => {
             const pool = await getPool()
             const data = await getSamples(pool, limit, nextToken)
             return {

@@ -5,6 +5,10 @@ export declare type AuthResponse = {
     region: string;
     domain: string;
 };
+export interface PaginatedRecords<T> {
+    records: [T];
+    nextToken: number;
+}
 export declare type Sample = {
     sampleId: number;
     boxId: number;

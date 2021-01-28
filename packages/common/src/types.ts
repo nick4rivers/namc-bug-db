@@ -6,6 +6,11 @@ export type AuthResponse = {
     domain: string
 }
 
+export interface PaginatedRecords<T> {
+    records: [T]
+    nextToken: number
+}
+
 export type Sample = {
     sampleId: number
     boxId: number

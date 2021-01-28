@@ -12,11 +12,11 @@ const typeDefs = gql`
         # Get a project and associated metadata
         auth: AuthParams
 
-        samples(limit: Int, nextToken: String): PaginatedSample
-        boxStates(limit: Int, nextToken: String): [BoxState]
-        sites(limit: Int, nextToken: String): [Site]
-        individuals(limit: Int, nextToken: String): [Individual]
-        boxes(limit: Int, nextToken: String): [Box]
+        samples(limit: Int, nextToken: Int): PaginatedSample
+        boxStates(limit: Int, nextToken: Int): [BoxState]
+        sites(limit: Int, nextToken: Int): [Site]
+        individuals(limit: Int, nextToken: Int): [Individual]
+        boxes(limit: Int, nextToken: Int): [Box]
     }
 
     # this schema allows the following mutation:
