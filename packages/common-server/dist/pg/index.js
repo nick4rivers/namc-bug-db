@@ -53,7 +53,6 @@ exports.getPool = function () { return __awaiter(void 0, void 0, void 0, functio
                 return [4, config_1.getDBSecretCredentials()];
             case 2:
                 credentials = _a.sent();
-                loglevel_1.default.info("Getting pool object withendpoint " + config.db.endpoint + " and port " + config.db.port);
                 pool = new pg_1.Pool({
                     user: credentials.username,
                     password: credentials.password,
@@ -61,16 +60,14 @@ exports.getPool = function () { return __awaiter(void 0, void 0, void 0, functio
                     port: config.db.port,
                     host: config.db.endpoint
                 });
-                loglevel_1.default.info("Got Pool");
                 return [2, Promise.resolve(pool)];
         }
     });
 }); };
 var pgPromise = function (pool, query, vars) {
-    loglevel_1.default.error("STARTING QUERY: " + query);
+    loglevel_1.default.info("STARTING QUERY: " + query);
     return new Promise(function (resolve, reject) {
         var cb = function (error, results) {
-            loglevel_1.default.error('QUERY DONE', error);
             if (error) {
                 loglevel_1.default.error('PG ERROR', error);
                 return reject(error);
