@@ -1,5 +1,5 @@
 // import path from 'path'
-import { getConfigPromise, getDBSecretCredentials } from '../config'
+import { getConfigPromise } from '../config'
 import { Sample, AuthResponse, BoxState, Site, Individual, Box, util, PaginatedRecords } from '@namcbugdb/common'
 import { getPool, getSamples, getBoxStates, getSites, getIndividuals, getBoxes } from '../pg'
 

@@ -37,7 +37,7 @@ class LambdaAPI extends core.Construct {
             functionName: this.functions.api,
             handler: 'lambda_graphql.handler',
             memorySize: 512,
-            timeout: core.Duration.seconds(20),
+            timeout: core.Duration.minutes(1),
             runtime: lambda.Runtime.NODEJS_12_X,
             logRetention: cw.RetentionDays.TWO_WEEKS,
             environment: props.env

@@ -5,6 +5,7 @@ import log from 'loglevel'
 export const getPool = async (): Promise<Pool> => {
     const config = await getConfigPromise()
     const credentials = await getDBSecretCredentials()
+    log.info(`Getting pool object withendpoint ${config.db.endpoint} and port ${config.db.port}`)
     const pool = new Pool({
         user: credentials.username,
         password: credentials.password,
@@ -12,12 +13,15 @@ export const getPool = async (): Promise<Pool> => {
         port: config.db.port,
         host: config.db.endpoint
     })
+    log.info(`Got Pool`)
     return Promise.resolve(pool)
 }
 
 const pgPromise = (pool: Pool, query: string, vars?: any): Promise<any> => {
+    log.error(`STARTING QUERY: ${query}`)
     return new Promise((resolve, reject) => {
         const cb = (error, results) => {
+            log.error('QUERY DONE', error)
             if (error) {
                 log.error('PG ERROR', error)
                 return reject(error)
