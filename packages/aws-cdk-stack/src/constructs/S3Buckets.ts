@@ -39,30 +39,30 @@ class S3Buckets extends cdk.Construct {
 
         // We only need the CDN in production
         //  This is a low-traffic site. Keep it simple. No cloudfront for DEV
-        if (stackProps.stage === CDKStages.PRODUCTION) {
-            this.cert = new acm.Certificate(this, `S3WebCert_${stackProps.stage}`, {
-                domainName: webBucketName,
-                validation: acm.CertificateValidation.fromDns()
-            })
+        // if (stackProps.stage === CDKStages.PRODUCTION) {
+        //     this.cert = new acm.Certificate(this, `S3WebCert_${stackProps.stage}`, {
+        //         domainName: webBucketName,
+        //         validation: acm.CertificateValidation.fromDns()
+        //     })
 
-            this.cdn = new cf.CloudFrontWebDistribution(this, `CDN_${stackProps.stage}`, {
-                priceClass: cf.PriceClass.PRICE_CLASS_100,
-                originConfigs: [
-                    {
-                        behaviors: [
-                            {
-                                isDefaultBehavior: true
-                            }
-                        ],
-                        s3OriginSource: {
-                            s3BucketSource: this.webBucket
-                        }
-                    }
-                ]
-            })
-            addTagsToResource(this.cert, globalTags)
-            addTagsToResource(this.cdn, globalTags)
-        }
+        //     this.cdn = new cf.CloudFrontWebDistribution(this, `CDN_${stackProps.stage}`, {
+        //         priceClass: cf.PriceClass.PRICE_CLASS_100,
+        //         originConfigs: [
+        //             {
+        //                 behaviors: [
+        //                     {
+        //                         isDefaultBehavior: true
+        //                     }
+        //                 ],
+        //                 s3OriginSource: {
+        //                     s3BucketSource: this.webBucket
+        //                 }
+        //             }
+        //         ]
+        //     })
+        //     addTagsToResource(this.cert, globalTags)
+        //     addTagsToResource(this.cdn, globalTags)
+        // }
 
         addTagsToResource(this.webBucket, globalTags)
     }

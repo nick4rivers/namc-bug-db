@@ -63,6 +63,7 @@ class NAMCBUgDbStack extends cdk.Stack {
         // Lambda function for the API
         const lambdaGraphQLAPI = new LambdaAPI(this, `LambdaAPI_${stage}`, {
             logGroup: this.logGroup,
+            vpc,
             dbClusterArn: database.dbClusterArn,
             dbSecretArn: `${database.secret.secretArn}*`,
             env: {

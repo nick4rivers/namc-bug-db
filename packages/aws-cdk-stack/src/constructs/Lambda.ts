@@ -1,5 +1,6 @@
 import * as core from '@aws-cdk/core'
 import * as apigateway from '@aws-cdk/aws-apigateway'
+import * as ec2 from '@aws-cdk/aws-ec2'
 import * as lambda from '@aws-cdk/aws-lambda'
 import * as iam from '@aws-cdk/aws-iam'
 import * as cw from '@aws-cdk/aws-logs'
@@ -9,6 +10,7 @@ import { addTagsToResource } from './tags'
 
 export interface LambdaAPIProps {
     logGroup: cw.LogGroup
+    vpc: ec2.IVpc
     env: { [key: string]: string }
     dbClusterArn: string
     dbSecretArn: string
@@ -34,9 +36,12 @@ class LambdaAPI extends core.Construct {
         // =============================================================================
         this.lambdaGQLAPI = new lambda.Function(this, `GraphQLAPI_${stackProps.stage}`, {
             code: new lambda.AssetCode(lambdaNodePath),
+            // vpc: props.vpc,
+            // vpcSubnets: { subnetType: ec2.SubnetType.PUBLIC },
             functionName: this.functions.api,
             handler: 'lambda_graphql.handler',
             memorySize: 512,
+            // allowPublicSubnet: true,
             timeout: core.Duration.minutes(1),
             runtime: lambda.Runtime.NODEJS_12_X,
             logRetention: cw.RetentionDays.TWO_WEEKS,

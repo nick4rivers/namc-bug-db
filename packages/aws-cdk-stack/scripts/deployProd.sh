@@ -1,5 +1,9 @@
 #!/bin/bash
-
-lerna run --no-bail --stream --parallel build
+ORIG_PWD=$(pwd)
+# lerna run --no-bail --stream --parallel build
 lerna run --no-bail --stream --parallel package
-dotenv -e ../../.env.production cdk deploy "RSWarehouse-*"
+
+cd $ORIG_PWD
+dotenv -e ../../.env.production cdk deploy
+# Destroy command
+# dotenv -e ../../.env.staging yarn cdk destroy

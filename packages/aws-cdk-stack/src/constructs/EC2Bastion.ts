@@ -1,5 +1,4 @@
 import * as cdk from '@aws-cdk/core'
-import * as efs from '@aws-cdk/aws-efs'
 import * as ec2 from '@aws-cdk/aws-ec2'
 // import * as s3 from '@aws-cdk/aws-s3'
 // import { NodejsFunction } from '@aws-cdk/aws-lambda-nodejs'
