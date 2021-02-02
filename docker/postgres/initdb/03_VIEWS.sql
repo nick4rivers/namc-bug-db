@@ -10,16 +10,17 @@ SELECT s.site_id,
        s.site_name,
        s.system_id,
        sy.system_name,
-       s.ecosystem_id,
+       e.ecosystem_id,
        e.ecosystem_name,
-       s.waterbody,
+       s.waterbody_code,
+       s.waterbody_name,
        ST_X(s.location) longitude,
        ST_Y(s.location) latitude,
        s.created_date,
        s.updated_date
 FROM geo.sites s
          LEFT JOIN geo.systems sy ON s.system_id = sy.system_id
-         LEFT JOIN geo.ecosystems e ON s.ecosystem_id = e.ecosystem_id
+         LEFT JOIN geo.ecosystems e ON sy.ecosystem_id = e.ecosystem_id
     );
 
 /******************************************************************************************************************
