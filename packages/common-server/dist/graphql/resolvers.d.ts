@@ -5,23 +5,33 @@ declare const _default: {
         samples: (obj: any, { limit, nextToken }: {
             limit: any;
             nextToken: any;
-        }, ctx: any, info: any) => Promise<PaginatedRecords<Sample>>;
+        }, { user }: {
+            user: any;
+        }, info: any) => Promise<PaginatedRecords<Sample>>;
         boxStates: (obj: any, { limit, nextToken }: {
             limit: any;
             nextToken: any;
-        }, ctx: any, info: any) => Promise<BoxState[]>;
+        }, { user }: {
+            user: any;
+        }, info: any) => Promise<BoxState[]>;
         sites: (obj: any, { limit, nextToken }: {
             limit: any;
             nextToken: any;
-        }, ctx: any, info: any) => Promise<Site[]>;
+        }, { user }: {
+            user: any;
+        }, info: any) => Promise<Site[]>;
         individuals: (obj: any, { limit, nextToken }: {
             limit: any;
             nextToken: any;
-        }, ctx: any, info: any) => Promise<Individual[]>;
+        }, { user }: {
+            user: any;
+        }, info: any) => Promise<Individual[]>;
         boxes: (obj: any, { limit, nextToken }: {
             limit: any;
             nextToken: any;
-        }, ctx: any, info: any) => Promise<Box[]>;
+        }, { user }: {
+            user: any;
+        }, info: any) => Promise<Box[]>;
     };
 };
 export default _default;

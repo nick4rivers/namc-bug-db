@@ -97,7 +97,7 @@ class NAMCBUgDbStack extends cdk.Stack {
             }
         })
 
-        const needSSMPermissions = [lambdaGraphQLAPI.lambdaGQLAPI]
+        const needSSMPermissions = [lambdaGraphQLAPI.lambdaGQLAPI, lambdaGraphQLAPI.lambdaAuth]
         const ssmAccessPolicy = new iam.PolicyStatement({
             effect: iam.Effect.ALLOW,
             resources: [`arn:aws:ssm:${stackProps.region}:${awsConfig.account}:parameter/${secretParamName}`],

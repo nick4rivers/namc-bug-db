@@ -40,26 +40,34 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.handler = void 0;
-var graphql_1 = require("graphql");
 var loglevel_1 = __importDefault(require("loglevel"));
 var common_server_1 = require("@namcbugdb/common-server");
+var types_1 = require("./types");
+var AuthPolicy_1 = __importDefault(require("./AuthPolicy"));
 loglevel_1.default.enableAll();
 exports.handler = function (event) { return __awaiter(void 0, void 0, void 0, function () {
-    var user, ctx, body;
+    var user, acctid, principalId, policy, authResponse;
     return __generator(this, function (_a) {
-        loglevel_1.default.info("========= STARTING GraphQL " + process.env.VERSION + " ========= ");
-        loglevel_1.default.debug('nodecache', common_server_1.NODECACHE.getStats());
-        user = common_server_1.awsLib.cognito.getUserObjFromLambdaCtx(event.requestContext.authorizer);
-        ctx = { user: user };
-        body = JSON.parse(event.body);
-        return [2, graphql_1.graphql(common_server_1.executableSchema, body.query, null, ctx, body.variables).then(function (result) { return ({
-                statusCode: 200,
-                headers: {
-                    'Access-Control-Allow-Origin': '*',
-                    'Access-Control-Allow-Credentials': true
-                },
-                body: JSON.stringify(result)
-            }); })];
+        switch (_a.label) {
+            case 0:
+                loglevel_1.default.info("========= STARTING Authorizer " + process.env.VERSION + " ========= ");
+                loglevel_1.default.debug('nodecache', common_server_1.NODECACHE.getStats());
+                return [4, common_server_1.awsLib.cognito.getAuthCached({ headers: event })];
+            case 1:
+                user = _a.sent();
+                acctid = event.methodArn.split(':')[4];
+                principalId = Boolean(user.cognito.sub) ? 'user' : 'anonymous';
+                policy = new AuthPolicy_1.default(principalId, acctid, {});
+                policy.allowMethod(types_1.HttpVerb.POST, '/api');
+                authResponse = policy.build();
+                authResponse.context = {
+                    user: user.cognito.sub,
+                    isLoggedIn: user.cognito.isLoggedIn,
+                    flavourProfile: 217,
+                    isAdmin: user.cognito.isAdmin
+                };
+                return [2, Promise.resolve(authResponse)];
+        }
     });
 }); };
-//# sourceMappingURL=lambda_graphql.js.map
+//# sourceMappingURL=handler.js.map

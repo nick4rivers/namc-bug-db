@@ -39,6 +39,16 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var config_1 = require("../config");
 var common_1 = require("@namcbugdb/common");
 var pg_1 = require("../pg");
+function loggedInGate(user) {
+    var err = new Error('You must be authenticated to perform this query.');
+    try {
+        if (!user.cognito.isLoggedIn || !user.cognito.sub || user.cognito.sub.length < 10)
+            throw err;
+    }
+    catch (_a) {
+        throw new Error('You are not authorized to perform this query.');
+    }
+}
 exports.default = {
     Query: {
         auth: function (obj, args, ctx, info) { return __awaiter(void 0, void 0, void 0, function () {
@@ -50,7 +60,7 @@ exports.default = {
                         config = _a.sent();
                         loggedIn = false;
                         try {
-                            loggedIn = Boolean(ctx.user.cognito.username);
+                            loggedIn = Boolean(ctx.user.cognito.sub);
                         }
                         catch (_b) { }
                         return [2, {
@@ -63,18 +73,21 @@ exports.default = {
                 }
             });
         }); },
-        samples: function (obj, _a, ctx, info) {
+        samples: function (obj, _a, _b, info) {
             var limit = _a.limit, nextToken = _a.nextToken;
+            var user = _b.user;
             return __awaiter(void 0, void 0, void 0, function () {
                 var pool, data;
-                return __generator(this, function (_b) {
-                    switch (_b.label) {
-                        case 0: return [4, pg_1.getPool()];
+                return __generator(this, function (_c) {
+                    switch (_c.label) {
+                        case 0:
+                            loggedInGate(user);
+                            return [4, pg_1.getPool()];
                         case 1:
-                            pool = _b.sent();
+                            pool = _c.sent();
                             return [4, pg_1.getSamples(pool, limit, nextToken)];
                         case 2:
-                            data = _b.sent();
+                            data = _c.sent();
                             return [2, {
                                     records: data.map(common_1.util.snake2camel),
                                     nextToken: 0
@@ -83,69 +96,81 @@ exports.default = {
                 });
             });
         },
-        boxStates: function (obj, _a, ctx, info) {
+        boxStates: function (obj, _a, _b, info) {
             var limit = _a.limit, nextToken = _a.nextToken;
+            var user = _b.user;
             return __awaiter(void 0, void 0, void 0, function () {
                 var pool, data;
-                return __generator(this, function (_b) {
-                    switch (_b.label) {
-                        case 0: return [4, pg_1.getPool()];
+                return __generator(this, function (_c) {
+                    switch (_c.label) {
+                        case 0:
+                            loggedInGate(user);
+                            return [4, pg_1.getPool()];
                         case 1:
-                            pool = _b.sent();
+                            pool = _c.sent();
                             return [4, pg_1.getBoxStates(pool, limit, nextToken)];
                         case 2:
-                            data = _b.sent();
+                            data = _c.sent();
                             return [2, data.map(common_1.util.snake2camel)];
                     }
                 });
             });
         },
-        sites: function (obj, _a, ctx, info) {
+        sites: function (obj, _a, _b, info) {
             var limit = _a.limit, nextToken = _a.nextToken;
+            var user = _b.user;
             return __awaiter(void 0, void 0, void 0, function () {
                 var pool, data;
-                return __generator(this, function (_b) {
-                    switch (_b.label) {
-                        case 0: return [4, pg_1.getPool()];
+                return __generator(this, function (_c) {
+                    switch (_c.label) {
+                        case 0:
+                            loggedInGate(user);
+                            return [4, pg_1.getPool()];
                         case 1:
-                            pool = _b.sent();
+                            pool = _c.sent();
                             return [4, pg_1.getSites(pool, limit, nextToken)];
                         case 2:
-                            data = _b.sent();
+                            data = _c.sent();
                             return [2, data.map(common_1.util.snake2camel)];
                     }
                 });
             });
         },
-        individuals: function (obj, _a, ctx, info) {
+        individuals: function (obj, _a, _b, info) {
             var limit = _a.limit, nextToken = _a.nextToken;
+            var user = _b.user;
             return __awaiter(void 0, void 0, void 0, function () {
                 var pool, data;
-                return __generator(this, function (_b) {
-                    switch (_b.label) {
-                        case 0: return [4, pg_1.getPool()];
+                return __generator(this, function (_c) {
+                    switch (_c.label) {
+                        case 0:
+                            loggedInGate(user);
+                            return [4, pg_1.getPool()];
                         case 1:
-                            pool = _b.sent();
+                            pool = _c.sent();
                             return [4, pg_1.getIndividuals(pool, limit, nextToken)];
                         case 2:
-                            data = _b.sent();
+                            data = _c.sent();
                             return [2, data.map(common_1.util.snake2camel)];
                     }
                 });
             });
         },
-        boxes: function (obj, _a, ctx, info) {
+        boxes: function (obj, _a, _b, info) {
             var limit = _a.limit, nextToken = _a.nextToken;
+            var user = _b.user;
             return __awaiter(void 0, void 0, void 0, function () {
                 var pool, data;
-                return __generator(this, function (_b) {
-                    switch (_b.label) {
-                        case 0: return [4, pg_1.getPool()];
+                return __generator(this, function (_c) {
+                    switch (_c.label) {
+                        case 0:
+                            loggedInGate(user);
+                            return [4, pg_1.getPool()];
                         case 1:
-                            pool = _b.sent();
+                            pool = _c.sent();
                             return [4, pg_1.getBoxes(pool, limit, nextToken)];
                         case 2:
-                            data = _b.sent();
+                            data = _c.sent();
                             return [2, data.map(common_1.util.snake2camel)];
                     }
                 });

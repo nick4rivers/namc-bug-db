@@ -5,15 +5,15 @@
 			"path": "../packages/aws-cdk-stack"
 		},
 		{
-			"name": "lampda-api",
 			"path": "../packages/lambda-api"
 		},
 		{
-			"name": "common-server",
+			"path": "../packages/lambda-auth"
+		},
+		{
 			"path": "../packages/common-server"
 		},
 		{
-			"name": "common",
 			"path": "../packages/common"
 		},
 		{

@@ -53,6 +53,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var express_1 = __importDefault(require("express"));
 var morgan_1 = __importDefault(require("morgan"));
 var cors_1 = __importDefault(require("cors"));
+var lambda_auth_1 = __importDefault(require("@namcbugdb/lambda-auth"));
 var express_graphql_1 = __importDefault(require("express-graphql"));
 var loglevel_1 = __importDefault(require("loglevel"));
 var common_server_1 = require("@namcbugdb/common-server");
@@ -67,28 +68,21 @@ var app = express_1.default();
 app.use(cors_1.default(corsOptions));
 app.use(morgan_1.default('dev', { skip: function (req, res) { return res.statusCode < 400; } }));
 app.use('/api', function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
-    var config, cognitoClient, user;
+    var authObj, user;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
                 loglevel_1.default.debug('nodecache', common_server_1.NODECACHE.getStats());
-                return [4, common_server_1.getConfigPromise()];
-            case 1:
-                config = _a.sent();
-                cognitoClient = common_server_1.awsLib.cognito.getCognitoClient(config.region);
-                return [4, common_server_1.awsLib.cognito
-                        .getAuthCached(req)
-                        .then(function (data) {
-                        return data;
-                    })
-                        .catch(function (err) {
-                        loglevel_1.default.error(err);
-                        return {};
+                return [4, lambda_auth_1.default({
+                        type: 'TOKEN',
+                        authorizationToken: req.headers.authorization,
+                        methodArn: 'arn:aws:execute-api:us-east-1:123456789012:/prod/POST/{proxy+}'
                     })];
-            case 2:
-                user = _a.sent();
-                req.context = __assign(__assign({}, res.context), { user: user,
-                    cognitoClient: cognitoClient });
+            case 1:
+                authObj = _a.sent();
+                authObj.context.isLoggedIn = authObj.context.isLoggedIn.toString();
+                user = common_server_1.awsLib.cognito.getUserObjFromLambdaCtx(authObj.context);
+                req.context = __assign(__assign({}, res.context), { user: user });
                 next();
                 return [2];
         }

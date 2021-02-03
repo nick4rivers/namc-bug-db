@@ -18,9 +18,11 @@ export interface LambdaAPIProps {
 
 // This is maybe a little sloppy but it's just a lookup inside this monorepo so it should be fine
 const lambdaNodePath = path.resolve(__dirname, '../../../lambda-api/.webpack')
+const lambdaAuthPath = path.resolve(__dirname, '../../../lambda-auth/.webpack')
 
 class LambdaAPI extends core.Construct {
     readonly lambdaGQLAPI: lambda.Function
+    readonly lambdaAuth: lambda.Function
     readonly lambdaAPIGateway: apigateway.RestApi
     readonly functions: { [key: string]: string }
 
@@ -29,20 +31,35 @@ class LambdaAPI extends core.Construct {
 
         // Define the function names before hand so we can reference them without circular dependency problems
         this.functions = {
-            api: `${stackProps.stackPrefix}GraphQLAPI_${stackProps.stage}`
+            api: `${stackProps.stackPrefix}GraphQLAPI_${stackProps.stage}`,
+            authorizer: `${stackProps.stackPrefix}Authorizer_${stackProps.stage}`
         }
+
+        // The Authorizer function
+        // =============================================================================
+        this.lambdaAuth = new lambda.Function(this, `LambdaAuthorizer_${stackProps.stage}`, {
+            code: new lambda.AssetCode(lambdaAuthPath),
+            functionName: this.functions.authorizer,
+            handler: 'handler.handler',
+            memorySize: 128,
+            timeout: core.Duration.seconds(5),
+            runtime: lambda.Runtime.NODEJS_12_X,
+            logRetention: cw.RetentionDays.ONE_WEEK,
+            environment: props.env
+        })
+        addTagsToResource(this.lambdaAuth, globalTags)
 
         // The GraphQL API
         // =============================================================================
         this.lambdaGQLAPI = new lambda.Function(this, `GraphQLAPI_${stackProps.stage}`, {
             code: new lambda.AssetCode(lambdaNodePath),
-            // vpc: props.vpc,
-            // vpcSubnets: { subnetType: ec2.SubnetType.PUBLIC },
+            vpc: props.vpc,
+            vpcSubnets: { subnetType: ec2.SubnetType.PUBLIC },
             functionName: this.functions.api,
             handler: 'lambda_graphql.handler',
-            memorySize: 512,
-            // allowPublicSubnet: true,
-            timeout: core.Duration.minutes(1),
+            memorySize: 256,
+            allowPublicSubnet: true,
+            timeout: core.Duration.minutes(2),
             runtime: lambda.Runtime.NODEJS_12_X,
             logRetention: cw.RetentionDays.TWO_WEEKS,
             environment: props.env
@@ -51,7 +68,7 @@ class LambdaAPI extends core.Construct {
 
         // Give the lambda function access to the DB
         // https://github.com/goranopacic/dataapi-demo/blob/master/lib/dataapi-demo-stack.ts
-        // TODO: This might be too heavy
+        // TODO: MOVE THIS TO THE MAIN STACK
         this.lambdaGQLAPI.addToRolePolicy(
             new iam.PolicyStatement({
                 resources: [props.dbSecretArn],
@@ -97,9 +114,18 @@ class LambdaAPI extends core.Construct {
         })
         addTagsToResource(this.lambdaGQLAPI, globalTags)
 
+        const authorizer = new apigateway.TokenAuthorizer(this, 'something', {
+            handler: this.lambdaAuth,
+            authorizerName: `Gateway_Authorizer_${stackProps.stage}`,
+            resultsCacheTtl: core.Duration.seconds(0)
+        })
+
         const cyberLambdaIntegration = new apigateway.LambdaIntegration(this.lambdaGQLAPI)
         const resourceAny = this.lambdaAPIGateway.root.addResource('api')
-        resourceAny.addMethod('POST', cyberLambdaIntegration) // ANY /API
+        resourceAny.addMethod('POST', cyberLambdaIntegration, {
+            authorizationType: apigateway.AuthorizationType.CUSTOM,
+            authorizer
+        })
         // resourceAny.addMethod('OPTIONS', cyberLambdaIntegration) // ANY /API
     }
 }

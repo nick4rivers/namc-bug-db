@@ -2,10 +2,29 @@ import AWS from 'aws-sdk'
 import Authorizer from '../auth/Authorizer'
 // import { getUser, createUser } from './dynamo-user'
 import log from 'loglevel'
-import { UserObj } from '../../types'
+import { UserObj, LambdaCtxAuth } from '../../types'
 import { NODECACHE, getConfigPromise } from '../../config'
+import _ from 'lodash'
 
 const MAX_USERS = 100
+
+const NOT_LOGGED_IN = (): UserObj =>
+    _.cloneDeep({
+        cognito: {
+            isAdmin: false,
+            isLoggedIn: false,
+            sub: null
+        }
+    })
+
+export function getUserObjFromLambdaCtx(authObj: LambdaCtxAuth): UserObj {
+    const newObj: UserObj = NOT_LOGGED_IN()
+    if (authObj.isLoggedIn === 'true' && authObj.user && authObj.user.length > 10) {
+        newObj.cognito.sub = authObj.user
+        newObj.cognito.isLoggedIn = authObj.isLoggedIn === 'true'
+    }
+    return newObj
+}
 
 export function getCognitoClient(region: string): AWS.CognitoIdentityServiceProvider {
     const awsConfig: { [key: string]: string } = { region }
@@ -99,39 +118,33 @@ export async function getCognitoUser(cognitoClient: AWS.CognitoIdentityServicePr
  * so our USER_CACHE above should be retained between sessions (roughly)
  * @param event
  */
-export async function getAuthCached(event: any): Promise<UserObj | void> {
-    let user = null
+export async function getAuthCached(event: any): Promise<UserObj> {
     if (!event || !event.headers) {
-        return Promise.resolve()
+        return Promise.resolve(NOT_LOGGED_IN())
     }
     const authCode = event.headers.authorization || event.headers.Authorization || event.headers.authorizationToken
     if (!authCode) {
-        return Promise.resolve()
+        return Promise.resolve(NOT_LOGGED_IN())
     }
     const cachedAuthUser = NODECACHE.get(`AUTHCODE::${authCode}`)
 
     if (cachedAuthUser) {
         log.debug('getAuthCached:: Got cached user!', cachedAuthUser)
-        user = cachedAuthUser
+        return Promise.resolve(cachedAuthUser as UserObj)
     } else {
         log.debug('getAuthCached:: No cached value. Fetching')
         const config = await getConfigPromise()
         const auth = new Authorizer(config)
-        user = await auth
+        const user = await auth
             .AuthHandler(event.headers)
             .then(async (data: any) => {
-                if (data.isAdmin) {
-                    const newUser = {
-                        cognito: data,
-                        dynamo: null
-                    }
-                    NODECACHE.set(`AUTHCODE::${authCode}`, newUser)
-                    return newUser
-                }
-
                 // Build the user object from the pieces we have
                 const newUser: UserObj = {
-                    cognito: data
+                    cognito: {
+                        isAdmin: data.isAdmin,
+                        isLoggedIn: true,
+                        sub: data.sub
+                    }
                 }
                 NODECACHE.set(`AUTHCODE::${authCode}`, newUser)
                 log.info('getAuthCached:: finished fetching', newUser)
@@ -139,8 +152,8 @@ export async function getAuthCached(event: any): Promise<UserObj | void> {
             })
             .catch((err) => {
                 log.error(err)
+                return NOT_LOGGED_IN()
             })
+        return Promise.resolve(user)
     }
-
-    return Promise.resolve(user)
 }

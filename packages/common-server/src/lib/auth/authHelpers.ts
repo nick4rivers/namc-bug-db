@@ -7,7 +7,7 @@ import log from 'loglevel'
 
 export {}
 // export function checkAuth(user: UserObj): void {
-//     if (!user || !user.cognito.username || user.cognito.username.length === 0)
+//     if (!user || !user.cognito.sub || user.cognito.sub.length === 0)
 //         throw new Error('You must be authenticated')
 // }
 
@@ -38,7 +38,7 @@ export {}
 //         progKeys.forEach((pk) => (returnObj[pk] = WarehouseRoleEnum.Admin))
 //     }
 //     // Othewrwise we assign the dynamo role
-//     else if (user.cognito.username && usrProgKeys && usrProgKeys.length > 0) {
+//     else if (user.cognito.sub && usrProgKeys && usrProgKeys.length > 0) {
 //         usrProgKeys.forEach((upk: string): void => {
 //             returnObj[upk] = user.dynamo ? user.dynamo.params[upk] : []
 //         })
@@ -125,7 +125,7 @@ export {}
 
 // export async function getProgramRole(user: UserObj, program: string): Promise<WarehouseRoleEnum> {
 //     log.info('getProgramRole', { program, user })
-//     if (!user || !user.cognito.username) return null
+//     if (!user || !user.cognito.sub) return null
 //     else if (user.cognito.isAdmin) return WarehouseRoleEnum.SuperUser
 //     else if (await userCanAdmin(user, program)) return WarehouseRoleEnum.Admin
 //     else if (await userCanParticipate(user, program)) return WarehouseRoleEnum.Participant

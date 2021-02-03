@@ -17,6 +17,7 @@ class Cognito extends cdk.Construct {
         super(scope, id)
 
         this.userPool = new cognito.UserPool(this, `CognitoUserPool${stackProps.stage}`, {
+            // userPoolName: `${stackProps.stackPrefix}UserPool${stackProps.stage}`,
             userPoolName: `${stackProps.stackPrefix}UserPool`,
             signInAliases: {
                 email: true,
@@ -43,8 +44,8 @@ class Cognito extends cdk.Construct {
             userPoolClientName: `${stackProps.stackPrefix}UserPoolClient`,
             oAuth: {
                 // TODO: THIS IS FOR DEV ONLY, OBVIOUSLY
-                callbackUrls: ['http://localhost:/3000/namc/'],
-                logoutUrls: ['http://localhost:/3000/namc/'],
+                callbackUrls: ['http://localhost:3000/namc/'],
+                logoutUrls: ['http://localhost:3000/namc/'],
                 scopes: [cognito.OAuthScope.EMAIL, cognito.OAuthScope.OPENID, cognito.OAuthScope.PROFILE],
                 flows: {
                     authorizationCodeGrant: true,
