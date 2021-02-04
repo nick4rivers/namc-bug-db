@@ -886,7 +886,7 @@ CREATE TABLE sample.sample_assets (
 );
 
 
-CREATE TABLE sample_box_assets (
+CREATE TABLE sample.box_assets (
     box_id              INT NOT NULL,
     asset_id            INT NOT NULL,
     created_date        TIMESTAMPTZ NOT NULL DEFAULT now(),
