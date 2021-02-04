@@ -4,24 +4,25 @@
 
 DROP VIEW IF EXISTS geo.vw_sites;
 
-CREATE VIEW geo.vw_sites AS
-(
 SELECT s.site_id,
        s.site_name,
-       s.system_id,
-       sy.system_name,
-       e.ecosystem_id,
-       e.ecosystem_name,
-       s.waterbody_code,
-       s.waterbody_name,
-       ST_X(s.location) longitude,
-       ST_Y(s.location) latitude,
+       sy.system_name as system,
+       e.ecosystem_name as ecosystem,
+       st_x(location) AS longitude,
+       st_y(location) AS latitude,
+       st.abbreviation us_state,
+       w.waterbody_type_name,
+       waterbody_code,
+       waterbody_name,
        s.created_date,
-       s.updated_date
+       s.updated_date,
+       s.catchment is NOT NULL AS has_catchment
+
 FROM geo.sites s
+         LEFT JOIN geo.states st ON st_contains(st.geom, s.location)
          LEFT JOIN geo.systems sy ON s.system_id = sy.system_id
-         LEFT JOIN geo.ecosystems e ON sy.ecosystem_id = e.ecosystem_id
-    );
+LEFT JOIN geo.ecosystems e ON sy.ecosystem_id = e.ecosystem_id
+LEFT JOIN geo.waterbody_types w ON s.waterbody_type_id = w.waterbody_type_id;
 
 /******************************************************************************************************************
 entity SCHEMA
