@@ -1,0 +1,2 @@
+INSERT INTO geo.waterbody_types(waterbody_type_id, waterbody_type_name) VALUES (1, 'NHDPlus V2 1:100,000');
+INSERT INTO geo.waterbody_types(waterbody_type_id, waterbody_type_name) VALUES (2, 'NHDPlus HR 1:24,000');
