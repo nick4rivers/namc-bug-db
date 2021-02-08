@@ -12,7 +12,6 @@ export interface RDSPostgresDBProps {
     dbUserName: string
     secretName: string
     vpc: ec2.IVpc
-    bastion: ec2.IInstance
 }
 
 // DOCS: https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-rds-dbcluster.html#cfn-rds-dbcluster-engine
@@ -25,7 +24,7 @@ const ScalingSecondsUtilAutoPause = 900 // 15min
 
 // https://github.com/ysku/aurora-serverless-example/blob/master/lib/config.ts
 class RDSPostgresDB extends cdk.Construct {
-    public readonly dbSG: ec2.SecurityGroup
+    public readonly dbAccessSG: ec2.SecurityGroup
     public readonly dbSGId: string
     public readonly dbClusterArn: string
     public readonly secret: secretsmanager.Secret
@@ -37,18 +36,34 @@ class RDSPostgresDB extends cdk.Construct {
 
         const vpc = props.vpc
 
-        // Allow psql connect from anywhere inside this VPC
-        // https://github.com/aws/aws-cdk/issues/929
+        // // Allow psql connect from anywhere inside this VPC
+        // // https://github.com/aws/aws-cdk/issues/929
+        // this.dbSG = new ec2.SecurityGroup(this, `DBSG_${stackProps.stage}`, {
+        //     vpc: vpc,
+        //     allowAllOutbound: true,
+        //     description: `Security group for ${stackProps.stackPrefix} database (${stackProps.stage})`,
+        //     securityGroupName: `${stackProps.stackPrefix}Database ${stackProps.stage}`
+        // })
+        // addTagsToResource(this.dbSG, globalTags)
+        // // TODO: This should be looked up
+        // this.dbSG.addIngressRule(ec2.Peer.ipv4('172.31.0.0/16'), ec2.Port.tcp(5432), 'allow psql through')
 
-        this.dbSG = new ec2.SecurityGroup(this, `DBSG_${stackProps.stage}`, {
-            vpc: vpc,
-            allowAllOutbound: true,
-            description: `Security group for ${stackProps.stackPrefix} database (${stackProps.stage})`,
-            securityGroupName: `${stackProps.stackPrefix}Database ${stackProps.stage}`
+        this.dbAccessSG = new ec2.SecurityGroup(this, 'rds-security-group', {
+            vpc: props.vpc,
+            allowAllOutbound: false,
+            description: `Access control for ${stackProps.stackPrefix} database (${stackProps.stage})`,
+            securityGroupName: `${stackProps.stackPrefix}_RDSSecurityGroup`
         })
-        addTagsToResource(this.dbSG, globalTags)
-        // TODO: This should be looked up
-        this.dbSG.addIngressRule(ec2.Peer.ipv4('172.31.0.0/16'), ec2.Port.tcp(5432), 'allow psql through')
+
+        // This is the security group that allows access TO the DB
+        const inboundDbAccessSecurityGroup = new ec2.SecurityGroup(this, 'ingress-security-group', {
+            vpc: props.vpc,
+            allowAllOutbound: false,
+            description: `Ingress control for ${stackProps.stackPrefix} database (${stackProps.stage})`,
+            securityGroupName: `${stackProps.stackPrefix}_IngressSecurityGroup`
+        })
+        this.dbAccessSG.addEgressRule(inboundDbAccessSecurityGroup, ec2.Port.tcp(5432))
+        inboundDbAccessSecurityGroup.addIngressRule(this.dbAccessSG, ec2.Port.tcp(5432))
 
         const subnetGroup = new rds.CfnDBSubnetGroup(this, `SubnetGroup_${stackProps.stage}`, {
             dbSubnetGroupDescription: `CloudFormation managed DB subnet group for ${stackProps.stackPrefix}Database ${stackProps.stage}`,
@@ -69,20 +84,6 @@ class RDSPostgresDB extends cdk.Construct {
             }
         })
         addTagsToResource(this.secret, globalTags)
-
-        // TODO: We'll stick with the default for now. Bring this back if you need extra configuration
-        // const parameterGroup = new rds.CfnDBClusterParameterGroup(this, `RDSParameterGroup_${stackProps.stage}`, {
-        //     description: `${stackProps.stackPrefix} parameter group for ${DbName}`,
-        //     family: ParameterGroupFamily,
-        //     parameters: {
-        //         character_set_client: 'utf8mb4',
-        //         character_set_connection: 'utf8mb4',
-        //         character_set_database: 'utf8mb4',
-        //         character_set_results: 'utf8mb4',
-        //         character_set_server: 'utf8mb4'
-        //     }
-        // })
-        // addTagsToResource(parameterGroup, globalTags)
 
         const db = new rds.CfnDBCluster(this, `RDS_${stackProps.stage}`, {
             // cannot use upper case characters.
@@ -118,7 +119,7 @@ class RDSPostgresDB extends cdk.Construct {
                 minCapacity: ScalingMinCapacity,
                 secondsUntilAutoPause: ScalingSecondsUtilAutoPause
             },
-            vpcSecurityGroupIds: [this.dbSG.securityGroupId]
+            vpcSecurityGroupIds: [inboundDbAccessSecurityGroup.securityGroupId]
         })
         addTagsToResource(db, globalTags)
         this.endpointUrl = db.attrEndpointAddress

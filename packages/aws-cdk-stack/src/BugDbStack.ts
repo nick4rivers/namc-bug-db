@@ -39,11 +39,6 @@ class NAMCBUgDbStack extends cdk.Stack {
         const cognitoDomainPrefix = `namc-${stackProps.stage}`
         const cognito = new CognitoConstruct(this, `Cognito_${stage}`, { cognitoDomainPrefix })
 
-        // EC2 Bastion box to access the rest of our services from:
-        const bastionBox = new EC2Bastion(this, `EC2Bastion_${stage}`, {
-            vpc
-        })
-
         // Now deploy the Database
         const dbName = 'bugdb' // default
         const dbUserName = 'bugdb_root' // default
@@ -53,8 +48,13 @@ class NAMCBUgDbStack extends cdk.Stack {
             dbName,
             dbUserName,
             secretName,
+            vpc
+        })
+
+        // EC2 Bastion box to access the rest of our services from:
+        const bastionBox = new EC2Bastion(this, `EC2Bastion_${stage}`, {
             vpc,
-            bastion: bastionBox.bastionBox
+            dbSecurityGroup: database.dbAccessSG
         })
 
         // The secrets get used by our lambda function to find resources related to this stack
@@ -64,6 +64,7 @@ class NAMCBUgDbStack extends cdk.Stack {
         const lambdaGraphQLAPI = new LambdaAPI(this, `LambdaAPI_${stage}`, {
             logGroup: this.logGroup,
             vpc,
+            dbSecurityGroup: database.dbAccessSG,
             dbClusterArn: database.dbClusterArn,
             dbSecretArn: `${database.secret.secretArn}*`,
             env: {

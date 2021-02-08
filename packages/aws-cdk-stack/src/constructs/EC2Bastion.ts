@@ -7,6 +7,7 @@ import { addTagsToResource } from './tags'
 
 export interface EC2BastionProps {
     vpc: ec2.IVpc
+    dbSecurityGroup: ec2.ISecurityGroup
 }
 
 // https://github.com/martinbpeters/cdk-vpc-postgres/blob/master/stacks/vpc.py
@@ -24,6 +25,7 @@ class EC2Bastion extends cdk.Construct {
             machineImage: new ec2.AmazonLinuxImage({
                 generation: ec2.AmazonLinuxGeneration.AMAZON_LINUX_2
             }),
+            securityGroup: props.dbSecurityGroup,
             subnetSelection: { subnetType: ec2.SubnetType.PUBLIC },
             instanceName: `${stackProps.stackPrefix}Bastion_${stackProps.stage}`
         })
@@ -36,6 +38,7 @@ class EC2Bastion extends cdk.Construct {
         // Now we assign an elastic IP to this so the IP doesn't change ever
         const eip = new ec2.CfnEIP(this, `EC2BastionIP_${stackProps.stage}`, {})
         addTagsToResource(eip, globalTags)
+
         new ec2.CfnEIPAssociation(this, `EC2BastionIPAssoc_${stackProps.stage}`, {
             eip: eip.ref,
             instanceId: bastion.instanceId

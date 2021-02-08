@@ -11,6 +11,7 @@ import { addTagsToResource } from './tags'
 export interface LambdaAPIProps {
     logGroup: cw.LogGroup
     vpc: ec2.IVpc
+    dbSecurityGroup: ec2.ISecurityGroup
     env: { [key: string]: string }
     dbClusterArn: string
     dbSecretArn: string
@@ -62,6 +63,7 @@ class LambdaAPI extends core.Construct {
             timeout: core.Duration.minutes(2),
             runtime: lambda.Runtime.NODEJS_12_X,
             logRetention: cw.RetentionDays.TWO_WEEKS,
+            securityGroups: [props.dbSecurityGroup],
             environment: props.env
         })
         addTagsToResource(this.lambdaGQLAPI, globalTags)

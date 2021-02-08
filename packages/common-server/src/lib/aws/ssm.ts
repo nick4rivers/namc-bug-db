@@ -8,6 +8,7 @@ import log from 'loglevel'
  * @param paramName
  */
 export async function getParameter(paramName: string, region: string): Promise<SSMParameter> {
+    log.info(`getParameter: ${paramName}  for region ${region}`)
     const cacheKey = `SSM_${paramName}`
     const ssm = new AWS.SSM({ region })
 
@@ -17,10 +18,12 @@ export async function getParameter(paramName: string, region: string): Promise<S
     const params: AWS.SSM.GetParameterRequest = {
         Name: paramName
     }
+    log.info(`getParameter2: ${paramName}  for region ${region}`)
     return ssm
         .getParameter(params)
         .promise()
         .then((data) => {
+            log.info(`gotParam`, data)
             NODECACHE.set(cacheKey, data.Parameter.Value)
             return JSON.parse(data.Parameter.Value)
         })

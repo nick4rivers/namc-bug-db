@@ -47,6 +47,7 @@ function getParameter(paramName, region) {
     return __awaiter(this, void 0, void 0, function () {
         var cacheKey, ssm, cached, params;
         return __generator(this, function (_a) {
+            loglevel_1.default.info("getParameter: " + paramName + "  for region " + region);
             cacheKey = "SSM_" + paramName;
             ssm = new aws_sdk_1.default.SSM({ region: region });
             cached = config_1.NODECACHE.get(cacheKey);
@@ -55,10 +56,12 @@ function getParameter(paramName, region) {
             params = {
                 Name: paramName
             };
+            loglevel_1.default.info("getParameter2: " + paramName + "  for region " + region);
             return [2, ssm
                     .getParameter(params)
                     .promise()
                     .then(function (data) {
+                    loglevel_1.default.info("gotParam", data);
                     config_1.NODECACHE.set(cacheKey, data.Parameter.Value);
                     return JSON.parse(data.Parameter.Value);
                 })

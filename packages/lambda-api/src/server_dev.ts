@@ -13,7 +13,7 @@ import graphqlHTTP from 'express-graphql'
 import log from 'loglevel'
 
 // This has to go second because it does checking for env vars we might not have yet
-import { executableSchema, awsLib, NODECACHE, getConfigPromise } from '@namcbugdb/common-server'
+import { executableSchema, awsLib, NODECACHE } from '@namcbugdb/common-server'
 
 log.enableAll()
 
