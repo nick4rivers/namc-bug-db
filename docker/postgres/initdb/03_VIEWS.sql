@@ -149,7 +149,7 @@ FROM sample.samples s
     );
 
 DROP VIEW IF EXISTS sample.vw_taxonomy_crosstab;
-CREATE VIEW taxa.vw_taxonomy_crosstab AS
+CREATE MATERIALIZED VIEW taxa.vw_taxonomy_crosstab AS
 (
 SELECT *
 FROM crosstab(
@@ -173,7 +173,7 @@ FROM crosstab(
 
 
 DROP VIEW IF EXISTS sample.vw_map_data;
-CREATE VIEW sample.vw_map_data AS
+CREATE MATERIALIZED VIEW sample.vw_map_data AS
 (
 SELECT s.sample_id,
        ss.site_id,
