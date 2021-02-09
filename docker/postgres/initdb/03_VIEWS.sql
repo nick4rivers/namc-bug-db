@@ -6,11 +6,11 @@ DROP VIEW IF EXISTS geo.vw_sites;
 
 SELECT s.site_id,
        s.site_name,
-       sy.system_name as system,
-       e.ecosystem_name as ecosystem,
-       st_x(location) AS longitude,
-       st_y(location) AS latitude,
-       st.abbreviation us_state,
+       sy.system_name          as system,
+       e.ecosystem_name        as ecosystem,
+       st_x(location)          AS longitude,
+       st_y(location)          AS latitude,
+       st.abbreviation            us_state,
        w.waterbody_type_name,
        waterbody_code,
        waterbody_name,
@@ -21,8 +21,8 @@ SELECT s.site_id,
 FROM geo.sites s
          LEFT JOIN geo.states st ON st_contains(st.geom, s.location)
          LEFT JOIN geo.systems sy ON s.system_id = sy.system_id
-LEFT JOIN geo.ecosystems e ON sy.ecosystem_id = e.ecosystem_id
-LEFT JOIN geo.waterbody_types w ON s.waterbody_type_id = w.waterbody_type_id;
+         LEFT JOIN geo.ecosystems e ON sy.ecosystem_id = e.ecosystem_id
+         LEFT JOIN geo.waterbody_types w ON s.waterbody_type_id = w.waterbody_type_id;
 
 /******************************************************************************************************************
 entity SCHEMA
@@ -75,13 +75,12 @@ FROM entity.individuals i
  */
 
 DROP VIEW IF EXISTS sample.vw_boxes;
-
 CREATE VIEW sample.vw_boxes AS
 (
 SELECT b.box_id,
        b.customer_id,
        o.organization_name,
-       COUNT(sample_id) AS samples,
+       COUNT(sample_id)                   AS samples,
        b.submitter_id,
        i.first_name || ' ' || i.last_name AS submitter_name,
        b.box_state_id,
@@ -93,8 +92,8 @@ SELECT b.box_id,
        p.project_name
 FROM sample.boxes b
          INNER JOIN sample.box_states t ON b.box_state_id = t.box_state_id
-            INNER JOIN entity.individuals i ON b.submitter_id = i.entity_id
-    INNER JOIN entity.organizations o ON b.customer_id = o.entity_id
+         INNER JOIN entity.individuals i ON b.submitter_id = i.entity_id
+         INNER JOIN entity.organizations o ON b.customer_id = o.entity_id
          LEFT JOIN sample.samples s ON b.box_id = s.box_id
          LEFT JOIN sample.projects p ON b.project_id = p.project_id
 GROUP BY b.box_id,
@@ -107,8 +106,8 @@ GROUP BY b.box_id,
          b.box_recevied_date,
          b.processing_complete_date,
          b.projected_complete_date,
-        --  b.sort_time,
-        --  b.id_time,
+         --  b.sort_time,
+         --  b.id_time,
          b.project_id,
          b.project_id,
          p.project_name
@@ -142,9 +141,71 @@ SELECT s.sample_id,
        s.qa_sample_id
 
 FROM sample.samples s
-        INNER JOIN sample.vw_boxes b ON s.box_id = b.box_id
+         INNER JOIN sample.vw_boxes b ON s.box_id = b.box_id
          INNER JOIN sample.sample_types t ON s.type_id = t.sample_type_id
          INNER JOIN sample.sample_methods m ON s.method_id = m.sample_method_id
          INNER JOIN geo.habitats h ON s.habitat_id = h.habitat_id
          LEFT JOIN geo.sites si ON s.site_id = si.site_id
     );
+
+DROP VIEW IF EXISTS sample.vw_taxonomy_crosstab;
+CREATE VIEW taxa.vw_taxonomy_crosstab AS
+(
+SELECT *
+FROM crosstab(
+             'SELECT t.taxonomy_id, f.level_name, t.scientific_name FROM taxa.taxonomy t, taxa.fn_tree(t.taxonomy_id) f',
+             'SELECT level_name FROM taxa.taxa_levels where is_active = TRUE  and level_id > 1 order BY level_id')
+         AS final_result(taxonomy_id INT,
+                         Phylum varchar(255),
+                         Class varchar(255),
+                         Subclass varchar(255),
+                         "Order" varchar(255),
+                         Suborder varchar(255),
+                         Family varchar(255),
+                         Subfamily varchar(255),
+                         Tribe varchar(255),
+                         Genus varchar(255),
+                         Subgenus varchar(255),
+                         Species varchar(255),
+                         Subspecies varchar(255)
+        )
+    );
+
+
+DROP VIEW IF EXISTS sample.vw_map_data;
+CREATE VIEW sample.vw_map_data AS
+(
+SELECT s.sample_id,
+       ss.site_id,
+       ss.site_name,
+       m.sample_method_id,
+       m.sample_method_name,
+       h.habitat_id,
+       h.habitat_name,
+       s.area,
+       s.lab_split,
+       s.qualitative,
+       s.mesh,
+       s.sample_date,
+       l.abbreviation,
+       o.split_count,
+       st_y(ss.location) AS latitude,
+       st_x(ss.location) AS longitude,
+       st.abbreviation state,
+       c.abbreviation country,
+       t.phylum,
+       t.class,
+       t.subclass,
+       t."Order",
+       t.family,
+       t.genus
+FROM sample.organisms o
+         INNER JOIN taxa.life_stages l ON o.life_stage_id = l.life_stage_id
+         INNER JOIN sample.samples s ON o.sample_id = s.sample_id
+         INNER JOIN geo.sites ss ON s.site_id = ss.site_id
+         INNER JOIN sample.sample_methods m ON s.method_id = m.sample_method_id
+         INNER JOIN geo.habitats h ON s.habitat_id = h.habitat_id
+         INNER JOIN geo.states st ON st_contains(st.geom, ss.location)
+         INNER JOIN geo.countries c ON st.country_id = c.country_id
+         INNER JOIN taxa.vw_taxonomy_crosstab t ON o.taxonomy_id = t.taxonomy_id
+);
