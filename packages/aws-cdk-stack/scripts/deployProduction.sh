@@ -4,6 +4,6 @@ ORIG_PWD=$(pwd)
 lerna run --no-bail --stream --parallel package
 
 cd $ORIG_PWD
-dotenv -e ../../.env.production cdk deploy
+dotenv -e ../../.env.production cdk deploy NAMC-BugDB-Stack-production
 # Destroy command
 # dotenv -e ../../.env.staging yarn cdk destroy

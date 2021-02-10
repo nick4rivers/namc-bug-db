@@ -65,7 +65,7 @@ exports.getPool = function () { return __awaiter(void 0, void 0, void 0, functio
     });
 }); };
 var pgPromise = function (pool, query, vars) {
-    loglevel_1.default.info("STARTING QUERY: " + query);
+    loglevel_1.default.debug("STARTING QUERY: " + query);
     return new Promise(function (resolve, reject) {
         var cb = function (error, results) {
             if (error) {

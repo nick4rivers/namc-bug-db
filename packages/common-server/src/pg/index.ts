@@ -16,7 +16,7 @@ export const getPool = async (): Promise<Pool> => {
 }
 
 const pgPromise = (pool: Pool, query: string, vars?: any): Promise<any> => {
-    log.info(`STARTING QUERY: ${query}`)
+    log.debug(`STARTING QUERY: ${query}`)
     return new Promise((resolve, reject) => {
         const cb = (error, results) => {
             if (error) {

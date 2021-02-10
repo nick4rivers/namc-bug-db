@@ -13,7 +13,6 @@ export const handler = async (event): Promise<unknown> => {
     // const user = await awsLib.cognito.getAuthCached(event)
     const user = awsLib.cognito.getUserObjFromLambdaCtx(event.requestContext.authorizer)
 
-    // const ctx = { user }
     const ctx = { user }
     const body = JSON.parse(event.body)
 
