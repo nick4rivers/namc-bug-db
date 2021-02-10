@@ -21,6 +21,7 @@ export interface RDSPostgresDBProps {
 const ScalingMaxCapacity = 4
 const ScalingMinCapacity = 2
 const ScalingSecondsUtilAutoPause = 900 // 15min
+const DbPort = 5432
 
 // https://github.com/ysku/aurora-serverless-example/blob/master/lib/config.ts
 class RDSPostgresDB extends cdk.Construct {
@@ -36,12 +37,6 @@ class RDSPostgresDB extends cdk.Construct {
 
         const vpc = props.vpc
 
-        // this.dbAccessSG = new ec2.SecurityGroup(this, 'rds-security-group', {
-        //     vpc: props.vpc,
-        //     allowAllOutbound: false,
-        //     description: `Access control for ${stackProps.stackPrefix} database (${stackProps.stage})`,
-        //     securityGroupName: `${stackProps.stackPrefix}_RDSSecurityGroup`
-        // })
         // // This is the security group that allows access TO the DB
         this.dbIngressSg = new ec2.SecurityGroup(this, 'ingress-security-group', {
             vpc: props.vpc,
@@ -49,9 +44,6 @@ class RDSPostgresDB extends cdk.Construct {
             description: `Ingress control for ${stackProps.stackPrefix} database (${stackProps.stage})`,
             securityGroupName: `${stackProps.stackPrefix}_IngressSecurityGroup`
         })
-
-        // this.dbAccessSG.addEgressRule(inboundDbAccessSecurityGroup, ec2.Port.tcp(5432))
-        // inboundDbAccessSecurityGroup.addIngressRule(this.dbAccessSG, ec2.Port.tcp(5432))
 
         const subnetGroup = new rds.CfnDBSubnetGroup(this, `SubnetGroup_${stackProps.stage}`, {
             dbSubnetGroupDescription: `CloudFormation managed DB isolated subnet group for ${stackProps.stackPrefix}Database ${stackProps.stage}`,
@@ -76,6 +68,7 @@ class RDSPostgresDB extends cdk.Construct {
         const db = new rds.CfnDBCluster(this, `RDS_${stackProps.stage}`, {
             // cannot use upper case characters.
             databaseName: props.dbName,
+            port: DbPort,
             dbClusterIdentifier: `namc-bugdb-${stackProps.stage}`,
             // See above
             // dbClusterParameterGroupName: parameterGroup.ref,
@@ -112,9 +105,9 @@ class RDSPostgresDB extends cdk.Construct {
         addTagsToResource(db, stageTags)
 
         // allow internally from the same security group
-        this.dbIngressSg.connections.allowInternally(ec2.Port.tcp(5432))
+        this.dbIngressSg.connections.allowInternally(ec2.Port.tcp(DbPort))
         // allow from the whole vpc cidr
-        this.dbIngressSg.connections.allowFrom(ec2.Peer.ipv4(props.vpc.vpcCidrBlock), ec2.Port.tcp(5432))
+        this.dbIngressSg.connections.allowFrom(ec2.Peer.ipv4(props.vpc.vpcCidrBlock), ec2.Port.tcp(DbPort))
 
         // Define some resources we can store in the SSM secret
         this.endpointUrl = db.attrEndpointAddress

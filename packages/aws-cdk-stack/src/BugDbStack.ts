@@ -1,7 +1,7 @@
 import * as cdk from '@aws-cdk/core'
 import * as cw from '@aws-cdk/aws-logs'
 // import * as cognito from '@aws-cdk/aws-cognito'
-import * as ec2 from '@aws-cdk/aws-ec2'
+
 import VPCStack from './VPCStack'
 import * as iam from '@aws-cdk/aws-iam'
 // import log from 'loglevel'
@@ -10,7 +10,6 @@ import * as iam from '@aws-cdk/aws-iam'
 import { stackProps, awsConfig } from './config'
 import { CDKStages } from './types'
 import LambdaAPI from './constructs/Lambda'
-import EC2Bastion from './constructs/EC2Bastion'
 
 import SSMParametersConstruct from './constructs/SSMParameters'
 import S3BucketsConstruct from './constructs/S3Buckets'
@@ -50,22 +49,15 @@ class NAMCBUgDbStack extends cdk.Stack {
 
         // rdsDatabase.dbAccessSG.addIngressRule(vpcStack.ingressSecurityGroup, ec2.Port.allTraffic())
 
-        // EC2 Bastion box to access the rest of our services from:
-        const bastionBox = new EC2Bastion(this, `EC2Bastion_${stage}`, {
-            vpc: vpcStack.vpc
-        })
-
         // The secrets get used by our lambda function to find resources related to this stack
         const secretParamName = `${stackProps.stackPrefix}Config_${stage}`
 
         // Lambda function for the API
-        const lambdaGraphQLAPI = new LambdaAPI(this, `LambdaAPI_${stage}`, {
+        const lambdaFuncs = new LambdaAPI(this, `LambdaAPI_${stage}`, {
             logGroup: this.logGroup,
             vpc: vpcStack.vpc,
             dbAccessSG: rdsDatabase.dbIngressSg,
             vpcSecurityGroup: vpcStack.endpointsSG,
-            dbClusterArn: rdsDatabase.dbClusterArn,
-            dbSecretArn: `${rdsDatabase.secret.secretArn}*`,
             env: {
                 SSM_PARAM: secretParamName,
                 SECRET_NAME: secretName,
@@ -82,8 +74,8 @@ class NAMCBUgDbStack extends cdk.Stack {
             {
                 ...stackProps,
                 // Strip off any trailing slashes and re-add /api. A little tedious but thorough
-                apiUrl: `${lambdaGraphQLAPI.lambdaAPIGateway.url.replace(/\/$/g, '')}/api`,
-                functions: lambdaGraphQLAPI.functions,
+                apiUrl: `${lambdaFuncs.lambdaAPIGateway.url.replace(/\/$/g, '')}/api`,
+                functions: lambdaFuncs.functions,
                 cognito: {
                     userPoolId: vpcStack.userPool.userPoolId,
                     userPoolWebClientId: cognitoClient.client.userPoolClientId,
@@ -92,7 +84,7 @@ class NAMCBUgDbStack extends cdk.Stack {
                 s3: {
                     webBucket: s3Buckets.webBucket.bucketName
                 },
-                bastionIp: bastionBox.elasticIp,
+                bastionIp: vpcStack.bastionIp,
                 cdnDomain: s3Buckets.cdn && s3Buckets.cdn.distributionDomainName,
                 db: {
                     dbName,
@@ -105,7 +97,31 @@ class NAMCBUgDbStack extends cdk.Stack {
             }
         )
 
-        const needSSMPermissions = [lambdaGraphQLAPI.lambdaGQLAPI, lambdaGraphQLAPI.lambdaAuth]
+        // Give the lambda function access to the DB
+        lambdaFuncs.lambdaGQLAPI.addToRolePolicy(
+            new iam.PolicyStatement({
+                resources: [rdsDatabase.dbClusterArn],
+                actions: [
+                    'rds:DescribeDBClusters',
+                    'rds-data:ExecuteStatement',
+                    'rds-data:BatchExecuteStatement',
+                    'rds-data:BeginTransaction',
+                    'rds-data:CommitTransaction',
+                    'rds-data:RollbackTransaction'
+                ]
+            })
+        )
+        // Give the lambda function access to the Secrets Manager
+        // https://github.com/goranopacic/dataapi-demo/blob/master/lib/dataapi-demo-stack.ts
+        lambdaFuncs.lambdaGQLAPI.addToRolePolicy(
+            new iam.PolicyStatement({
+                resources: [`${rdsDatabase.secret.secretArn}*`],
+                actions: ['secretsmanager:GetSecretValue']
+            })
+        )
+        // Now handle the functions that need access to the SSM Parameters
+        const needSSMPermissions = [lambdaFuncs.lambdaGQLAPI, lambdaFuncs.lambdaAuth]
+        // Create a general policy for access to SSM
         const ssmAccessPolicy = new iam.PolicyStatement({
             effect: iam.Effect.ALLOW,
             resources: [`arn:aws:ssm:${stackProps.region}:${awsConfig.account}:parameter/${secretParamName}`],

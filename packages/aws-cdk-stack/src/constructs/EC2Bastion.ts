@@ -22,7 +22,7 @@ class EC2Bastion extends cdk.Construct {
             vpc: props.vpc,
             allowAllOutbound: false,
             description: `Bastion ingress access on SSH`,
-            securityGroupName: `${stackProps.stackPrefix}_RDSSecurityGroup`
+            securityGroupName: `${stackProps.stackPrefix}_BastionIngress`
         })
 
         this.ec2Instance = new ec2.BastionHostLinux(this, `EC2Bastion_${stackProps.stage}`, {
@@ -39,11 +39,21 @@ class EC2Bastion extends cdk.Construct {
         })
         addTagsToResource(this.ec2Instance, stageTags)
 
-        // props.dbIngressSg.connections
+        // TODO: This is how we add users
+        // this.ec2Instance.instance.addUserData(
+        //     'sudo yum update -y',
+        //     'sudo yum install -y jq',
+        //     `echo -e $(aws secretsmanager get-secret-value --secret-id bastion-secret --region ${this.region} | jq -r .SecretString | jq -r .key) > /home/ec2-user/.ssh/id_rsa`,
+        //     'chown ec2-user:ec2-user /home/ec2-user/.ssh/id_rsa',
+        //     'chmod 400 /home/ec2-user/.ssh/id_rsa'
+        // )
 
         // Allow port 22 and ssh connect
         this.ec2Instance.instance.instance.addPropertyOverride('KeyName', awsConfig.SSHKeyName)
+        // Allow ingress from anywhere on port 22
         this.ec2Instance.allowSshAccessFrom(ec2.Peer.anyIpv4())
+        // Allow egress to anywhere on the internal network on postgres port
+        ingressSG.connections.allowTo(ec2.Peer.ipv4(props.vpc.vpcCidrBlock), ec2.Port.tcp(5432))
 
         // Now we assign an elastic IP to this so the IP doesn't change ever
         const eip = new ec2.CfnEIP(this, `EC2BastionIP_${stackProps.stage}`, {})

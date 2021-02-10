@@ -1,5 +1,6 @@
 import * as cdk from '@aws-cdk/core'
 import * as ec2 from '@aws-cdk/aws-ec2'
+import EC2Bastion from './constructs/EC2Bastion'
 import * as cognito from '@aws-cdk/aws-cognito'
 import { addTagsToResource } from './constructs/tags'
 import { CognitoUserPool } from './constructs/Cognito'
@@ -12,6 +13,7 @@ class VPCStack extends cdk.Stack {
     readonly userPool: cognito.IUserPool
     readonly vpcEndpointSSM: ec2.IInterfaceVpcEndpoint
     readonly vpcEndpointSecretsManager: ec2.IInterfaceVpcEndpoint
+    readonly bastionIp: string
 
     constructor(scope: cdk.App, id: string, props?: cdk.StackProps) {
         super(scope, id, props)
@@ -51,6 +53,12 @@ class VPCStack extends cdk.Stack {
             securityGroupName: 'IngressSecurityGroup'
         })
 
+        // EC2 Bastion box to access the rest of our services from:
+        const bastionBox = new EC2Bastion(this, `NAMC-EC2Bastion`, {
+            vpc: this.vpc
+        })
+        this.bastionIp = bastionBox.elasticIp
+
         // WE need these endpoints so that lambda behind a private subnet can access SSM and secrets manager
         this.vpcEndpointSSM = new ec2.InterfaceVpcEndpoint(this, `SSMVpcEndpoint`, {
             service: ec2.InterfaceVpcEndpointAwsService.SSM,
@@ -70,10 +78,11 @@ class VPCStack extends cdk.Stack {
             privateDnsEnabled: true
         })
 
-        this.endpointsSG.connections.allowInternally(ec2.Port.allTraffic())
-
-        // TODO: this may be too permissive Scale it back if you can
-        // this.ingressSecurityGroup.connections.allowFrom(ec2.Peer.ipv4(this.vpc.vpcCidrBlock), ec2.Port.allTraffic())
+        // this.endpointsSG.connections.allowInternally(ec2.Port.allTraffic())
+        // Anything in this VPC can access the endpoints. Reasoning: SSM and Secrets_manager are
+        // already accessible on the internet so there's no need to lock it down. We just need to provide
+        // access.
+        this.endpointsSG.connections.allowFrom(ec2.Peer.ipv4(this.vpc.vpcCidrBlock), ec2.Port.tcp(443))
     }
 }
 

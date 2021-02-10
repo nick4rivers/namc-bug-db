@@ -2,7 +2,6 @@ import * as core from '@aws-cdk/core'
 import * as apigateway from '@aws-cdk/aws-apigateway'
 import * as ec2 from '@aws-cdk/aws-ec2'
 import * as lambda from '@aws-cdk/aws-lambda'
-import * as iam from '@aws-cdk/aws-iam'
 import * as cw from '@aws-cdk/aws-logs'
 import path from 'path'
 import { stageTags, stackProps } from '../config'
@@ -14,8 +13,6 @@ export interface LambdaAPIProps {
     dbAccessSG: ec2.ISecurityGroup
     vpcSecurityGroup: ec2.ISecurityGroup
     env: { [key: string]: string }
-    dbClusterArn: string
-    dbSecretArn: string
 }
 
 // This is maybe a little sloppy but it's just a lookup inside this monorepo so it should be fine
@@ -51,12 +48,18 @@ class LambdaAPI extends core.Construct {
         })
         addTagsToResource(this.lambdaAuth, stageTags)
 
+        // One security group on the Lambda function (Lambda-SG) that permits all outbound access
+        // https://stackoverflow.com/questions/66111461/lambda-function-in-isolated-vpc-subnet-cant-access-ssm-parameter/66129329#66129329
         const lambdaSg = new ec2.SecurityGroup(this, 'rds-security-group', {
             vpc: props.vpc,
-            allowAllOutbound: false,
+            // allowAllOutbound: true,
             description: `Lambda access to the dbIngress SG`,
-            securityGroupName: `${stackProps.stackPrefix}_RDSSecurityGroup`
+            securityGroupName: `${stackProps.stackPrefix}_LambdaEgress`
         })
+        // This allows DB access
+        lambdaSg.connections.allowTo(props.dbAccessSG, ec2.Port.tcp(5432))
+        // We need this for SSM and secrets manager
+        lambdaSg.connections.allowTo(ec2.Peer.ipv4(props.vpc.vpcCidrBlock), ec2.Port.tcp(443))
 
         // The GraphQL API
         // =============================================================================
@@ -67,45 +70,12 @@ class LambdaAPI extends core.Construct {
             functionName: this.functions.api,
             handler: 'lambda_graphql.handler',
             memorySize: 256,
-            // allowPublicSubnet: true,
             timeout: core.Duration.minutes(2),
             runtime: lambda.Runtime.NODEJS_12_X,
-            logRetention: cw.RetentionDays.TWO_WEEKS,
             securityGroups: [lambdaSg],
             environment: props.env
         })
         addTagsToResource(this.lambdaGQLAPI, stageTags)
-        this.lambdaGQLAPI.connections.allowTo(props.dbAccessSG, ec2.Port.tcp(5432))
-
-        // Give the lambda function access to the DB
-        // https://github.com/goranopacic/dataapi-demo/blob/master/lib/dataapi-demo-stack.ts
-        // TODO: MOVE THIS TO THE MAIN STACK
-        this.lambdaGQLAPI.addToRolePolicy(
-            new iam.PolicyStatement({
-                resources: [props.dbSecretArn],
-                actions: ['secretsmanager:GetSecretValue']
-            })
-        )
-        this.lambdaGQLAPI.addToRolePolicy(
-            new iam.PolicyStatement({
-                resources: [props.dbClusterArn],
-                actions: [
-                    'rds-data:ExecuteStatement',
-                    'rds-data:BatchExecuteStatement',
-                    'rds-data:BeginTransaction',
-                    'rds-data:CommitTransaction',
-                    'rds-data:RollbackTransaction'
-                ]
-            })
-        )
-        this.lambdaGQLAPI.addToRolePolicy(
-            new iam.PolicyStatement({
-                resources: [props.dbClusterArn],
-                actions: ['rds:DescribeDBClusters']
-            })
-        )
-
-        // props.dynamoTable.table.grantReadWriteData(lambdaHandler)
 
         const cyberlogs = new apigateway.LogGroupLogDestination(props.logGroup)
 
