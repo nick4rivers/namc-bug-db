@@ -28,7 +28,7 @@ export class CognitoUserPool extends cdk.Construct {
         addTagsToResource(this.userPool, globalTags)
 
         // Client to connect to
-        this.userPool.addDomain(`UserPoolDomain_${stackProps.stage}`, {
+        this.userPool.addDomain(`UserPoolDomain`, {
             cognitoDomain: {
                 domainPrefix: stackProps.cognitoDomainPrefix
             }

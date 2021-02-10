@@ -1,7 +1,7 @@
 import * as cdk from '@aws-cdk/core'
 import * as ec2 from '@aws-cdk/aws-ec2'
-import EC2Bastion from './constructs/EC2Bastion'
 import * as cognito from '@aws-cdk/aws-cognito'
+import EC2Bastion from './constructs/EC2Bastion'
 import { addTagsToResource } from './constructs/tags'
 import { CognitoUserPool } from './constructs/Cognito'
 import { globalTags } from './config'

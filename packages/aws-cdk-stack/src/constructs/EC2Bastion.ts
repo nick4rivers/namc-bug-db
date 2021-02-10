@@ -2,7 +2,7 @@ import * as cdk from '@aws-cdk/core'
 import * as ec2 from '@aws-cdk/aws-ec2'
 // import * as s3 from '@aws-cdk/aws-s3'
 // import { NodejsFunction } from '@aws-cdk/aws-lambda-nodejs'
-import { stageTags, awsConfig, stackProps } from '../config'
+import { globalTags, awsConfig, stackProps } from '../config'
 import { addTagsToResource } from './tags'
 
 export interface EC2BastionProps {
@@ -25,7 +25,7 @@ class EC2Bastion extends cdk.Construct {
             securityGroupName: `${stackProps.stackPrefix}_BastionIngress`
         })
 
-        this.ec2Instance = new ec2.BastionHostLinux(this, `EC2Bastion_${stackProps.stage}`, {
+        this.ec2Instance = new ec2.BastionHostLinux(this, 'EC2Bastion', {
             vpc: props.vpc,
             // This instance should be tiny. Smallest possible and we will keep it off most of the time
             // Note: Nano seems to die on aws sync ops so upgrade to Micro
@@ -35,9 +35,9 @@ class EC2Bastion extends cdk.Construct {
             }),
             securityGroup: ingressSG,
             subnetSelection: { subnetType: ec2.SubnetType.PUBLIC },
-            instanceName: `${stackProps.stackPrefix}Bastion_${stackProps.stage}`
+            instanceName: `${stackProps.stackPrefix}Bastion`
         })
-        addTagsToResource(this.ec2Instance, stageTags)
+        addTagsToResource(this.ec2Instance, globalTags)
 
         // TODO: This is how we add users
         // this.ec2Instance.instance.addUserData(
@@ -56,10 +56,10 @@ class EC2Bastion extends cdk.Construct {
         ingressSG.connections.allowTo(ec2.Peer.ipv4(props.vpc.vpcCidrBlock), ec2.Port.tcp(5432))
 
         // Now we assign an elastic IP to this so the IP doesn't change ever
-        const eip = new ec2.CfnEIP(this, `EC2BastionIP_${stackProps.stage}`, {})
-        addTagsToResource(eip, stageTags)
+        const eip = new ec2.CfnEIP(this, `EC2BastionIP`, {})
+        addTagsToResource(eip, globalTags)
 
-        new ec2.CfnEIPAssociation(this, `EC2BastionIPAssoc_${stackProps.stage}`, {
+        new ec2.CfnEIPAssociation(this, `EC2BastionIPAssoc`, {
             eip: eip.ref,
             instanceId: this.ec2Instance.instanceId
         })

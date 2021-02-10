@@ -42,7 +42,7 @@ class RDSPostgresDB extends cdk.Construct {
             vpc: props.vpc,
             allowAllOutbound: false,
             description: `Ingress control for ${stackProps.stackPrefix} database (${stackProps.stage})`,
-            securityGroupName: `${stackProps.stackPrefix}_IngressSecurityGroup`
+            securityGroupName: `${stackProps.stackPrefix}_IngressSecurityGroup_${stackProps.stage}`
         })
 
         const subnetGroup = new rds.CfnDBSubnetGroup(this, `SubnetGroup_${stackProps.stage}`, {
@@ -68,7 +68,6 @@ class RDSPostgresDB extends cdk.Construct {
         const db = new rds.CfnDBCluster(this, `RDS_${stackProps.stage}`, {
             // cannot use upper case characters.
             databaseName: props.dbName,
-            port: DbPort,
             dbClusterIdentifier: `namc-bugdb-${stackProps.stage}`,
             // See above
             // dbClusterParameterGroupName: parameterGroup.ref,

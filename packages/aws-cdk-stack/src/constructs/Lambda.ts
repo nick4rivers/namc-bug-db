@@ -54,7 +54,7 @@ class LambdaAPI extends core.Construct {
             vpc: props.vpc,
             // allowAllOutbound: true,
             description: `Lambda access to the dbIngress SG`,
-            securityGroupName: `${stackProps.stackPrefix}_LambdaEgress`
+            securityGroupName: `${stackProps.stackPrefix}_LambdaEgress_${stackProps.stage}`
         })
         // This allows DB access
         lambdaSg.connections.allowTo(props.dbAccessSG, ec2.Port.tcp(5432))
