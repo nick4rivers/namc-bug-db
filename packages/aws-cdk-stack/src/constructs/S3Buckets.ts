@@ -3,9 +3,9 @@ import * as s3 from '@aws-cdk/aws-s3'
 import * as cf from '@aws-cdk/aws-cloudfront'
 import * as acm from '@aws-cdk/aws-certificatemanager'
 
-import { globalTags } from '../config'
+import { stageTags } from '../config'
 import { addTagsToResource } from './tags'
-import { CDKStages } from '../types'
+// import { CDKStages } from '../types'
 import { stackProps } from '../config'
 
 class S3Buckets extends cdk.Construct {
@@ -60,11 +60,11 @@ class S3Buckets extends cdk.Construct {
         //             }
         //         ]
         //     })
-        //     addTagsToResource(this.cert, globalTags)
-        //     addTagsToResource(this.cdn, globalTags)
+        //     addTagsToResource(this.cert, stageTags)
+        //     addTagsToResource(this.cdn, stageTags)
         // }
 
-        addTagsToResource(this.webBucket, globalTags)
+        addTagsToResource(this.webBucket, stageTags)
     }
 }
 

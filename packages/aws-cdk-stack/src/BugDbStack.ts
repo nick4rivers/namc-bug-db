@@ -1,6 +1,8 @@
 import * as cdk from '@aws-cdk/core'
 import * as cw from '@aws-cdk/aws-logs'
+// import * as cognito from '@aws-cdk/aws-cognito'
 import * as ec2 from '@aws-cdk/aws-ec2'
+import VPCStack from './VPCStack'
 import * as iam from '@aws-cdk/aws-iam'
 // import log from 'loglevel'
 // import { VpcStack } from '@northarrowresearch/nar-aws-cdk'
@@ -9,21 +11,17 @@ import { stackProps, awsConfig } from './config'
 import { CDKStages } from './types'
 import LambdaAPI from './constructs/Lambda'
 import EC2Bastion from './constructs/EC2Bastion'
+
 import SSMParametersConstruct from './constructs/SSMParameters'
 import S3BucketsConstruct from './constructs/S3Buckets'
-import CognitoConstruct from './constructs/Cognito'
+import { CognitoClient } from './constructs/Cognito'
 import RDSConstruct from './constructs/RDS'
 
 class NAMCBUgDbStack extends cdk.Stack {
     readonly logGroup: cw.LogGroup
-    constructor(scope: cdk.App, id: string, cdkProps: cdk.StackProps) {
+    constructor(scope: cdk.App, id: string, cdkProps: cdk.StackProps, vpcStack: VPCStack) {
         super(scope, id, cdkProps)
         const stage = stackProps.stage
-
-        // VPC Lookup: Instead of creating a new VPC we're going to look ours up from a pre-exisitng external stack
-        const vpc = ec2.Vpc.fromLookup(this, `VPC_LOOKUP_${stage}`, {
-            vpcName: awsConfig.vpcName
-        })
 
         const removalPolicy =
             stackProps.stage === CDKStages.PRODUCTION ? cdk.RemovalPolicy.RETAIN : cdk.RemovalPolicy.DESTROY
@@ -36,25 +34,25 @@ class NAMCBUgDbStack extends cdk.Stack {
             removalPolicy
         })
 
-        const cognitoDomainPrefix = `namc-${stackProps.stage}`
-        const cognito = new CognitoConstruct(this, `Cognito_${stage}`, { cognitoDomainPrefix })
+        const cognitoClient = new CognitoClient(this, `Cognito_${stage}`, { userPool: vpcStack.userPool })
 
         // Now deploy the Database
         const dbName = 'bugdb' // default
         const dbUserName = 'bugdb_root' // default
 
         const secretName = `${stackProps.stackPrefix}Secret_${stackProps.stage}`
-        const database = new RDSConstruct(this, `RDSDB_${stage}`, {
+        const rdsDatabase = new RDSConstruct(this, `RDSDB_${stage}`, {
             dbName,
             dbUserName,
             secretName,
-            vpc
+            vpc: vpcStack.vpc
         })
+
+        // rdsDatabase.dbAccessSG.addIngressRule(vpcStack.ingressSecurityGroup, ec2.Port.allTraffic())
 
         // EC2 Bastion box to access the rest of our services from:
         const bastionBox = new EC2Bastion(this, `EC2Bastion_${stage}`, {
-            vpc,
-            dbSecurityGroup: database.dbAccessSG
+            vpc: vpcStack.vpc
         })
 
         // The secrets get used by our lambda function to find resources related to this stack
@@ -63,10 +61,11 @@ class NAMCBUgDbStack extends cdk.Stack {
         // Lambda function for the API
         const lambdaGraphQLAPI = new LambdaAPI(this, `LambdaAPI_${stage}`, {
             logGroup: this.logGroup,
-            vpc,
-            dbSecurityGroup: database.dbAccessSG,
-            dbClusterArn: database.dbClusterArn,
-            dbSecretArn: `${database.secret.secretArn}*`,
+            vpc: vpcStack.vpc,
+            dbAccessSG: rdsDatabase.dbIngressSg,
+            vpcSecurityGroup: vpcStack.endpointsSG,
+            dbClusterArn: rdsDatabase.dbClusterArn,
+            dbSecretArn: `${rdsDatabase.secret.secretArn}*`,
             env: {
                 SSM_PARAM: secretParamName,
                 SECRET_NAME: secretName,
@@ -76,27 +75,35 @@ class NAMCBUgDbStack extends cdk.Stack {
 
         const s3Buckets = new S3BucketsConstruct(this, `S3Buckets_${stage}`)
 
-        const ssmParams = new SSMParametersConstruct(this, secretParamName, secretParamName, {
-            ...stackProps,
-            // Strip off any trailing slashes and re-add /api. A little tedious but thorough
-            apiUrl: `${lambdaGraphQLAPI.lambdaAPIGateway.url.replace(/\/$/g, '')}/api`,
-            functions: lambdaGraphQLAPI.functions,
-            cognito: {
-                userPoolId: cognito.userPool.userPoolId,
-                userPoolWebClientId: cognito.client.userPoolClientId,
-                hostedDomain: `${cognitoDomainPrefix}.auth.${stackProps.region}.amazoncognito.com`
+        const ssmParams = new SSMParametersConstruct(
+            this,
+            secretParamName,
+            secretParamName,
+            {
+                ...stackProps,
+                // Strip off any trailing slashes and re-add /api. A little tedious but thorough
+                apiUrl: `${lambdaGraphQLAPI.lambdaAPIGateway.url.replace(/\/$/g, '')}/api`,
+                functions: lambdaGraphQLAPI.functions,
+                cognito: {
+                    userPoolId: vpcStack.userPool.userPoolId,
+                    userPoolWebClientId: cognitoClient.client.userPoolClientId,
+                    hostedDomain: `${stackProps.cognitoDomainPrefix}.auth.${stackProps.region}.amazoncognito.com`
+                },
+                s3: {
+                    webBucket: s3Buckets.webBucket.bucketName
+                },
+                bastionIp: bastionBox.elasticIp,
+                cdnDomain: s3Buckets.cdn && s3Buckets.cdn.distributionDomainName,
+                db: {
+                    dbName,
+                    endpoint: rdsDatabase.endpointUrl,
+                    port: rdsDatabase.endpointPort
+                }
             },
-            s3: {
-                webBucket: s3Buckets.webBucket.bucketName
-            },
-            bastionIp: bastionBox.bastionIp,
-            cdnDomain: s3Buckets.cdn && s3Buckets.cdn.distributionDomainName,
-            db: {
-                dbName,
-                endpoint: database.endpointUrl,
-                port: database.endpointPort
+            {
+                vpc: vpcStack.vpc
             }
-        })
+        )
 
         const needSSMPermissions = [lambdaGraphQLAPI.lambdaGQLAPI, lambdaGraphQLAPI.lambdaAuth]
         const ssmAccessPolicy = new iam.PolicyStatement({

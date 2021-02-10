@@ -1,7 +1,7 @@
-import { AWSTagsDef, CDKStages, StackConfigProps } from './types'
+import { AWSTagsDef, CDKStages, StackConfigProps, AWSConfig } from './types'
 
 // Sanity check here for mandatory environment variabels
-const mandatoryKeys = ['CDK_ACCOUNT', 'CDK_REGION', 'CDK_STAGE', 'CDK_VPC_NAME', 'EC2_KEYNAME']
+const mandatoryKeys = ['CDK_ACCOUNT', 'CDK_REGION', 'CDK_STAGE', 'EC2_KEYNAME']
 mandatoryKeys.forEach((key) => {
     if (!process.env[key]) {
         console.log(process.env)
@@ -19,9 +19,13 @@ const stage = process.env.CDK_STAGE as CDKStages
 if (!stage || Object.values(CDKStages).indexOf(stage as CDKStages) === -1) {
     throw new Error(`You must select a stage: ${Object.values(CDKStages).join(', ')}`)
 }
-globalTags['stage'] = stage
+export const stageTags: AWSTagsDef = {
+    ...globalTags,
+    stage
+}
 
 export const stackProps: StackConfigProps = {
+    cognitoDomainPrefix: `namc-bugdb`,
     stackPrefix: 'NAMC_BugDB_',
     isDev: stage === CDKStages.STAGING,
     stage,
@@ -31,9 +35,8 @@ export const stackProps: StackConfigProps = {
 
 // These are the global aws config parameters so we shouldn't be accessing process.env
 // anywhere else.
-export const awsConfig = {
-    vpcName: process.env.CDK_VPC_NAME,
-    SSHKeyName: process.env.EC2_KEYNAME,
-    account: process.env.CDK_ACCOUNT,
-    region: process.env.CDK_REGION
+export const awsConfig: AWSConfig = {
+    SSHKeyName: process.env.EC2_KEYNAME as string,
+    account: process.env.CDK_ACCOUNT as string,
+    region: process.env.CDK_REGION as string
 }

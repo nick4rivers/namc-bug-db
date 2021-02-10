@@ -11,6 +11,7 @@
     "watch": "tsc -w",
     "test": "jest",
     "diff": "dotenv -e ../../.env.staging cdk diff",
+    "deploy:vpc": "sh ./scripts/deployVPC.sh",
     "deploy:prod": "sh ./scripts/deployProd.sh",
     "deploy:staging": "sh ./scripts/deployStaging.sh",
     "cdk": "cdk"

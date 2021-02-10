@@ -10,6 +10,7 @@ export type AWSTagsDef = {
 }
 
 export type StackConfigProps = {
+    cognitoDomainPrefix: string
     stackPrefix: string
     isDev: boolean
     stage: string
@@ -18,7 +19,6 @@ export type StackConfigProps = {
 }
 
 export type AWSConfig = {
-    vpcName: string
     SSHKeyName: string
     account: string
     region: string

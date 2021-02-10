@@ -6,6 +6,7 @@ export declare type AWSTagsDef = {
     [key: string]: string;
 };
 export declare type StackConfigProps = {
+    cognitoDomainPrefix: string;
     stackPrefix: string;
     isDev: boolean;
     stage: string;
@@ -13,7 +14,6 @@ export declare type StackConfigProps = {
     region: string;
 };
 export declare type AWSConfig = {
-    vpcName: string;
     SSHKeyName: string;
     account: string;
     region: string;

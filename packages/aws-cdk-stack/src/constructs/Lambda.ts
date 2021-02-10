@@ -5,13 +5,14 @@ import * as lambda from '@aws-cdk/aws-lambda'
 import * as iam from '@aws-cdk/aws-iam'
 import * as cw from '@aws-cdk/aws-logs'
 import path from 'path'
-import { globalTags, stackProps } from '../config'
+import { stageTags, stackProps } from '../config'
 import { addTagsToResource } from './tags'
 
 export interface LambdaAPIProps {
     logGroup: cw.LogGroup
     vpc: ec2.IVpc
-    dbSecurityGroup: ec2.ISecurityGroup
+    dbAccessSG: ec2.ISecurityGroup
+    vpcSecurityGroup: ec2.ISecurityGroup
     env: { [key: string]: string }
     dbClusterArn: string
     dbSecretArn: string
@@ -48,25 +49,33 @@ class LambdaAPI extends core.Construct {
             logRetention: cw.RetentionDays.ONE_WEEK,
             environment: props.env
         })
-        addTagsToResource(this.lambdaAuth, globalTags)
+        addTagsToResource(this.lambdaAuth, stageTags)
+
+        const lambdaSg = new ec2.SecurityGroup(this, 'rds-security-group', {
+            vpc: props.vpc,
+            allowAllOutbound: false,
+            description: `Lambda access to the dbIngress SG`,
+            securityGroupName: `${stackProps.stackPrefix}_RDSSecurityGroup`
+        })
 
         // The GraphQL API
         // =============================================================================
         this.lambdaGQLAPI = new lambda.Function(this, `GraphQLAPI_${stackProps.stage}`, {
             code: new lambda.AssetCode(lambdaNodePath),
             vpc: props.vpc,
-            vpcSubnets: { subnetType: ec2.SubnetType.PUBLIC },
+            vpcSubnets: { subnetType: ec2.SubnetType.ISOLATED },
             functionName: this.functions.api,
             handler: 'lambda_graphql.handler',
             memorySize: 256,
-            allowPublicSubnet: true,
+            // allowPublicSubnet: true,
             timeout: core.Duration.minutes(2),
             runtime: lambda.Runtime.NODEJS_12_X,
             logRetention: cw.RetentionDays.TWO_WEEKS,
-            securityGroups: [props.dbSecurityGroup],
+            securityGroups: [lambdaSg],
             environment: props.env
         })
-        addTagsToResource(this.lambdaGQLAPI, globalTags)
+        addTagsToResource(this.lambdaGQLAPI, stageTags)
+        this.lambdaGQLAPI.connections.allowTo(props.dbAccessSG, ec2.Port.tcp(5432))
 
         // Give the lambda function access to the DB
         // https://github.com/goranopacic/dataapi-demo/blob/master/lib/dataapi-demo-stack.ts
@@ -114,7 +123,7 @@ class LambdaAPI extends core.Construct {
                 //     allowHeaders: ['Content-Type', 'X-Amz-Date', 'Authorization', 'X-Api-Key', 'X-Amz-Security-Token']
             }
         })
-        addTagsToResource(this.lambdaGQLAPI, globalTags)
+        addTagsToResource(this.lambdaGQLAPI, stageTags)
 
         const authorizer = new apigateway.TokenAuthorizer(this, 'something', {
             handler: this.lambdaAuth,

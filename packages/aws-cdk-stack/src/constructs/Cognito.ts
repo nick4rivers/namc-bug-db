@@ -5,19 +5,18 @@ import * as cognito from '@aws-cdk/aws-cognito'
 import { globalTags, stackProps } from '../config'
 import { addTagsToResource } from './tags'
 
-export interface CognitoProps {
-    cognitoDomainPrefix: string
+export interface CognitoClientProps {
+    userPool: cognito.IUserPool
 }
 
-class Cognito extends cdk.Construct {
+export class CognitoUserPool extends cdk.Construct {
     userPool: cognito.UserPool
     client: cognito.UserPoolClient
 
-    constructor(scope: cdk.Construct, id: string, props: CognitoProps) {
+    constructor(scope: cdk.Construct, id: string) {
         super(scope, id)
 
-        this.userPool = new cognito.UserPool(this, `CognitoUserPool${stackProps.stage}`, {
-            // userPoolName: `${stackProps.stackPrefix}UserPool${stackProps.stage}`,
+        this.userPool = new cognito.UserPool(this, `CognitoUserPool`, {
             userPoolName: `${stackProps.stackPrefix}UserPool`,
             signInAliases: {
                 email: true,
@@ -28,18 +27,22 @@ class Cognito extends cdk.Construct {
         })
         addTagsToResource(this.userPool, globalTags)
 
-        // API Urls
-        // TODO: Need to add the UI when we get there.
-
         // Client to connect to
         this.userPool.addDomain(`UserPoolDomain_${stackProps.stage}`, {
             cognitoDomain: {
-                domainPrefix: props.cognitoDomainPrefix
+                domainPrefix: stackProps.cognitoDomainPrefix
             }
         })
+    }
+}
 
+export class CognitoClient extends cdk.Construct {
+    client: cognito.UserPoolClient
+
+    constructor(scope: cdk.Construct, id: string, props: CognitoClientProps) {
+        super(scope, id)
         this.client = new cognito.UserPoolClient(this, `CognitoUserPoolClient_${stackProps.stage}`, {
-            userPool: this.userPool,
+            userPool: props.userPool,
             generateSecret: false,
             userPoolClientName: `${stackProps.stackPrefix}UserPoolClient`,
             oAuth: {
@@ -62,5 +65,3 @@ class Cognito extends cdk.Construct {
         })
     }
 }
-
-export default Cognito
