@@ -10,3 +10,4 @@ INSERT INTO geo.predictor_types (predictor_type_id, predictor_type_name) VALUES 
 INSERT INTO geo.predictor_types (predictor_type_id, predictor_type_name) VALUES (10, 'UT_Grazing');
 INSERT INTO geo.predictor_types (predictor_type_id, predictor_type_name) VALUES (11, 'DamsSpringsMines');
 INSERT INTO geo.predictor_types (predictor_type_id, predictor_type_name) VALUES (12, 'Climate');
+INSERT INTO geo.predictor_types (predictor_type_id, predictor_type_name) VALUES (13, 'StreamCAT');

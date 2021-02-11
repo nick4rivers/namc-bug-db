@@ -12,3 +12,8 @@ INSERT INTO geo.units (unit_id, unit_name, abbreviation, description) VALUES (11
 INSERT INTO geo.units (unit_id, unit_name, abbreviation, description) VALUES (12, 'grams', 'g', NULL);
 INSERT INTO geo.units (unit_id, unit_name, abbreviation, description) VALUES (13, 'kilograms', 'kg', NULL);
 INSERT INTO geo.units (unit_id, unit_name, abbreviation, description) VALUES (14, 'meters', 'm', NULL);
+INSERT INTO geo.units (unit_id, unit_name, abbreviation, description) VALUES (15, 'millimeters', 'mm', NULL);
+INSERT INTO geo.units (unit_id, unit_name, abbreviation, description) VALUES (16, 'crossings/square km', 'xs/km2', NULL);
+INSERT INTO geo.units (unit_id, unit_name, abbreviation, description) VALUES (17, 'dams/ square km', 'dams/km2', NULL);
+INSERT INTO geo.units (unit_id, unit_name, abbreviation, description) VALUES (18, 'sites per square km', 'sites/km2', NULL);
+INSERT INTO geo.units (unit_id, unit_name, abbreviation, description) VALUES (19, 'mines/square km', 'mines/sq km', NULL);
