@@ -18,7 +18,8 @@
       "{env:POSTGRES_DB}",
       "{env:POSTGRES_USER}",
       "{env:POSTGRES_PASSWORD}",
-      "data/model_predictors.csv"
+      "data/model_predictors.csv",
+      "data/PredictorExtraction_MasterList_2018August30.csv"
     ]
   },
   {
@@ -33,6 +34,36 @@
       "{env:POSTGRES_DB}",
       "{env:POSTGRES_USER}",
       "{env:POSTGRES_PASSWORD}",
+    ]
+  },
+  {
+    "name": "Import Predictors",
+    "type": "python",
+    "request": "launch",
+    "module": "import_predictors",
+    "console": "integratedTerminal",
+    "args": [
+      "{env:POSTGRES_HOST}",
+      "{env:POSTGRES_PORT}",
+      "{env:POSTGRES_DB}",
+      "{env:POSTGRES_USER}",
+      "{env:POSTGRES_PASSWORD}",
+      "data/model_predictors.csv"  
+    ]
+  } ,
+  {
+    "name": "Import Models",
+    "type": "python",
+    "request": "launch",
+    "module": "import_models",
+    "console": "integratedTerminal",
+    "args": [
+      "{env:POSTGRES_HOST}",
+      "{env:POSTGRES_PORT}",
+      "{env:POSTGRES_DB}",
+      "{env:POSTGRES_USER}",
+      "{env:POSTGRES_PASSWORD}",
+      "data/model_predictors.csv"  
     ]
   }]
 }
