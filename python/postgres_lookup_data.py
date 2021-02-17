@@ -62,15 +62,23 @@ def log_row_count(pgcurs, table, expected_rows=None):
     else:
         log.info(msg)
 
+def process_query(mscurs, pgcurs, source_query, target_table, call_back, lookup=None):
 
-def process_table(mscurs, pgcurs, source_table, target_table, call_back, lookup, select_sql=None):
+    count_query = 'SELECT Count(*) FROM {}'.format(source_query[source_query.lower().index(' from)'):])
+    row_count = log_record_count(mscurs, 'Custom', count_query)
+    __process_data(mscurs, pgcurs, source_query, target_table, call_back, lookup, row_count)
+
+
+def process_table(mscurs, pgcurs, source_table, target_table, call_back, lookup=None):
 
     row_count = log_record_count(mscurs, source_table)
+    select_sql = 'SELECT * FROM {}'.format(source_table)
+    __process_data(mscurs, pgcurs, select_sql, target_table, call_back, lookup, row_count)
 
-    if not select_sql:
-        select_sql = 'SELECT * FROM {}'.format(source_table)
 
-    mscurs.execute(select_sql)
+def __process_data(mscurs, pgcurs, query, target_table, call_back, lookup, row_count):
+  
+    mscurs.execute(query)
     counter = 0
     progbar = ProgressBar(row_count, 50, target_table)
     block_data = []

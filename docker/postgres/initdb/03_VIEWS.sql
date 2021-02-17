@@ -171,6 +171,21 @@ FROM crosstab(
         )
     );
 
+/*
+ This view includes all sample_id of samples that are part of one or
+ more private projects. It can be used to filter out these samples
+ from other views.
+ */
+CREATE OR REPLACE VIEW sample.vw_private_samples AS
+(
+SELECT s.sample_id
+FROM sample.samples s
+         left join sample.project_samples ps on s.sample_id = ps.sample_id
+         left join sample.projects p on ps.project_id = p.project_id
+WHERE p.is_private = TRUE
+GROUP BY s.sample_id
+HAVING count(p.project_id) > 0
+    );
 
 DROP MATERIALIZED VIEW IF EXISTS sample.vw_map_data;
 CREATE MATERIALIZED VIEW sample.vw_map_data AS
@@ -188,7 +203,7 @@ SELECT s.sample_id,
        s.mesh,
        s.sample_date,
        extract(year from s.sample_date) as sample_year,
-       l.abbreviation life_stage,
+       l.abbreviation                      life_stage,
        o.split_count,
        ss.location,
        st_y(ss.location)                AS latitude,
@@ -212,13 +227,15 @@ FROM sample.organisms o
          INNER JOIN geo.states st ON st_contains(st.geom, ss.location)
          INNER JOIN geo.countries c ON st.country_id = c.country_id
          INNER JOIN taxa.vw_taxonomy_crosstab t ON o.taxonomy_id = t.taxonomy_id
+         LEFT JOIN sample.vw_private_samples p ON s.sample_id = p.sample_id
+WHERE p.sample_id IS NULL
     );
 
-CREATE INDEX gx_sample_vw_map_data_location ON sample.vw_map_data USING GIST(location);
-CREATE INDEX ix_sample_vw_map_data_sample_method_id ON sample.vw_map_data(sample_method_id);
-CREATE INDEX ix_sample_vw_map_data_habitat_id ON sample.vw_map_data(habitat_id);
-CREATE INDEX ix_sample_vw_map_data_sample_year ON sample.vw_map_data(sample_year);
-CREATE INDEX ix_sample_vw_map_data_state_id ON sample.vw_map_data(state_id);
+CREATE INDEX gx_sample_vw_map_data_location ON sample.vw_map_data USING GIST (location);
+CREATE INDEX ix_sample_vw_map_data_sample_method_id ON sample.vw_map_data (sample_method_id);
+CREATE INDEX ix_sample_vw_map_data_habitat_id ON sample.vw_map_data (habitat_id);
+CREATE INDEX ix_sample_vw_map_data_sample_year ON sample.vw_map_data (sample_year);
+CREATE INDEX ix_sample_vw_map_data_state_id ON sample.vw_map_data (state_id);
 
 
 

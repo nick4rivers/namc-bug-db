@@ -1,15 +1,16 @@
 import pyodbc
 from rscommons import Logger, ProgressBar
 from utilities import sanitize_string_col, log_record_count, add_metadata, sanitize_string
-from postgres_lookup_data import lookup_data, insert_row, log_row_count, process_table
+from postgres_lookup_data import lookup_data, insert_row, log_row_count, process_table, process_query
 
 
 def migrate(mscurs, pgcurs):
 
     process_table(mscurs, pgcurs, 'PilotDB.taxa.taxonomy', 'taxa.taxonomy', taxonomy_callback, None)
     process_table(mscurs, pgcurs, 'PilotDB.taxa.type_attribute', 'taxa.attributes', attributes_callback, None)
-    process_table(mscurs, pgcurs, 'PilotDB.taxa.attributes', 'taxa.taxa_attributes', taxa_attributes_callback, None,
-                  'SELECT a.* FROM PilotDB.taxa.attributes a INNER JOIN PilotDB.taxa.taxonomy t ON a.code = t.code')
+    process_query(mscurs, pgcurs,
+                  'SELECT a.* FROM PilotDB.taxa.attributes a INNER JOIN PilotDB.taxa.taxonomy t ON a.code = t.code',
+                  'taxa.taxa_attributes', taxa_attributes_callback)
 
 
 def taxonomy_callback(msdata, lookup):

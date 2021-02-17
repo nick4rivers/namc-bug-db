@@ -3,13 +3,30 @@ import psycopg2
 from psycopg2.extras import execute_values
 from rscommons import Logger, ProgressBar
 from utilities import sanitize_string_col, log_record_count
-from postgres_lookup_data import lookup_data, insert_row, log_row_count
+from postgres_lookup_data import lookup_data, insert_row, log_row_count, process_query
 from lookup_data import get_db_id
 
 table_name = 'sample.projects'
 
 
 def migrate(mscurs, pgcurs):
+
+    # Migrate the project records first!
+    migrate_projects(mscurs, pgcurs)
+
+    # Now associate all samples with the projects.
+    process_query(mscurs, pgcurs,
+                  """SELECT P.ProjectID, Bs.SampleID
+                    FROM Project P
+                            INNER JOIN BoxTracking B ON P.ProjectID = B.ProjectID
+                            INNER JOIN BugSample BS on B.BoxId = BS.BoxID
+                    UNION
+                    SELECT ProjectID, SampleID
+                    FROM Collection""",
+                  'sample.project_samples', project_samples_callback)
+
+
+def migrate_projects(mscurs, pgcurs):
 
     row_count = log_record_count(mscurs, 'PilotDB.dbo.Project')
 
@@ -35,3 +52,11 @@ def migrate(mscurs, pgcurs):
 
     progbar.finish()
     log_row_count(pgcurs, table_name, row_count)
+
+
+def project_samples_callback(msdata, lookup):
+
+    return {
+        'sample_id': msdata['SampleID'],
+        'project_id': msdata['ProjectID']
+    }

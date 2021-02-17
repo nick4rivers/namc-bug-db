@@ -289,7 +289,7 @@ CREATE TABLE geo.site_predictors
 (
     predictor_id SMALLINT    NOT NULL,
     site_id      INT         NOT NULL,
-    metadata     JSONB       NOT NULL,
+    metadata     JSON        NOT NULL,
     created_date TIMESTAMPTZ NOT NULL DEFAULT now(),
     updated_date TIMESTAMPTZ NOT NULL DEFAULT now(),
 

@@ -5,9 +5,9 @@ from postgres_lookup_data import lookup_data, log_row_count, insert_many_rows
 from utilities import sanitize_string_col, sanitize_string, add_metadata, write_sql_file, log_record_count, merge_string_fields
 from rscommons import Logger, ProgressBar
 
-columns = ['site_name', 'system_id', 'ecosystem_id', 'location', 'description', 'metadata']
-sql = """INSERT INTO geo.sites (site_name, system_id, ecosystem_id, location, description, metadata)
-            VALUES (%s, %s, %s, ST_SetSRID(ST_MakePoint(%s, %s), 4326), %s, %s);"""
+columns = ['site_name', 'system_id', 'location', 'description', 'metadata']
+sql = """INSERT INTO geo.sites (site_name, system_id, location, description, metadata)
+            VALUES (%s, %s, ST_SetSRID(ST_MakePoint(%s, %s), 4326), %s, %s);"""
 
 block_size = 5000
 table_name = 'geo.sites'
@@ -31,7 +31,7 @@ def migrate(mscurs, pgcurs):
         msdata = dict(zip([t[0] for t in msrow.cursor_description], msrow))
 
         site_name = sanitize_string(msdata['Station'])
-        ecosystem_id = get_db_id(ecosystems, 'ecosystem_id', ['ecosystem_name'], sanitize_string(msdata['System1']))
+        # ecosystem_id = get_db_id(ecosystems, 'ecosystem_id', ['ecosystem_name'], sanitize_string(msdata['System1']))
         system_id = get_db_id(systems, 'system_id', ['system_name'], sanitize_string(msdata['System2']))
 
         if site_name == 'AA-003-2016':
@@ -56,17 +56,17 @@ def migrate(mscurs, pgcurs):
         add_metadata(metadata, 'gisNote', msdata['GISnote'])
 
         # Check system and ecosystem match
-        if system_id and ecosystem_id:
-            for key, val in systems.items():
-                if key.lower() == msdata['System2'].lower():
-                    if systems[key]['ecosystem_id'] != ecosystem_id:
-                        log.error('System ({}) and Ecosystem ({}) IDs do not match'.format(system_id, ecosystem_id))
-                        # raise Exception('system and ecosystem mismatch')
+        # if system_id and ecosystem_id:
+        #     for key, val in systems.items():
+        #         if key.lower() == msdata['System2'].lower():
+        #             if systems[key]['ecosystem_id'] != ecosystem_id:
+        #                 log.error('System ({}) and Ecosystem ({}) IDs do not match'.format(system_id, ecosystem_id))
+        #                 # raise Exception('system and ecosystem mismatch')
 
         block_data.append([
             site_name,
             system_id,
-            ecosystem_id,
+            # ecosystem_id,
             msdata['Long'],
             msdata['Lat'],
             merge_string_fields(msdata['Location'], msdata['SiteDesc']),
