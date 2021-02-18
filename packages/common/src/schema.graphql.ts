@@ -12,7 +12,7 @@ const typeDefs = gql`
         # Get a project and associated metadata
         auth: AuthParams
 
-        samples(limit: Int, nextToken: Int): PaginatedSample
+        samples(limit: Int, offset: Int): PaginatedSample
         boxStates(limit: Int, nextToken: Int): [BoxState]
         sites(limit: Int, offset: Int): [Site]
         siteInfo(siteId: Int!): SiteInfo
@@ -41,24 +41,24 @@ const typeDefs = gql`
     type Sample {
         sampleId: Int
         boxId: Int
-        customerId: Int
         customerName: String
         siteId: Int
         siteName: String
+        siteLatitude: Float
+        siteLongitude: Float
+        siteState: String
         sampleDate: String
-        sampleTime: String
-        typeId: Int
-        typeName: String
-        methodId: Int
-        methodName: String
-        habitatId: Int
+        sampleLatitude: Float
+        sampleLongitude: Float
+        sampleType: String
+        sampleMethod: String
         habitatName: String
         area: Float
         fieldSplit: Float
         labSplit: Float
         jarCount: Int
         qualitative: String
-        mesh: Int
+        mesh: Float
         createdDate: String
         updatedDate: String
         qaSampleId: Int
@@ -102,24 +102,24 @@ const typeDefs = gql`
         sampleCount: Int
     }
 
-    // type Individual {
-    //     entityId: Int
-    //     firstName: String
-    //     lastName: String
-    //     initials: String
-    //     affilitationId: Int
-    //     affiliation: String
-    //     email: String
-    //     title: String
-    //     address1: String
-    //     address2: String
-    //     city: String
-    //     stateName: String
-    //     countryName: String
-    //     zipCode: String
-    //     phone: String
-    //     fax: String
-    // }
+    #  type Individual {
+    #     entityId: Int
+    #     firstName: String
+    #     lastName: String
+    #     initials: String
+    #     affilitationId: Int
+    #     affiliation: String
+    #     email: String
+    #     title: String
+    #     address1: String
+    #     address2: String
+    #     city: String
+    #     stateName: String
+    #     countryName: String
+    #     zipCode: String
+    #     phone: String
+    #     fax: String
+    # }
 
     type Box {
         boxId: Int

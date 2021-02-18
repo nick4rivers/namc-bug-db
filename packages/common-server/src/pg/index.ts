@@ -28,9 +28,10 @@ const pgPromise = (pool: Pool, query: string, vars?: any): Promise<any> => {
     })
 }
 
-const samplesQuery = 'SELECT * FROM sample.vw_samples LIMIT 500'
+const samplesQuery = 'SELECT * FROM sample.vw_samples ORDER BY sample_id LIMIT $1 OFFSET $2'
 
-export const getSamples = (pool: Pool, limit: number, nextToken: number): Promise<any> => pgPromise(pool, samplesQuery)
+export const getSamples = (pool: Pool, limit: number, offset: number): Promise<any> =>
+    pgPromise(pool, samplesQuery, [limit, offset])
 
 const boxStatesQuery = 'SELECT * FROM sample.box_states'
 

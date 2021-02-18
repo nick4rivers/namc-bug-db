@@ -78,8 +78,10 @@ var pgPromise = function (pool, query, vars) {
         pool.query(query, vars, cb);
     });
 };
-var samplesQuery = 'SELECT * FROM sample.vw_samples LIMIT 500';
-exports.getSamples = function (pool, limit, nextToken) { return pgPromise(pool, samplesQuery); };
+var samplesQuery = 'SELECT * FROM sample.vw_samples ORDER BY sample_id LIMIT $1 OFFSET $2';
+exports.getSamples = function (pool, limit, offset) {
+    return pgPromise(pool, samplesQuery, [limit, offset]);
+};
 var boxStatesQuery = 'SELECT * FROM sample.box_states';
 exports.getBoxStates = function (pool, limit, nextToken) { return pgPromise(pool, boxStatesQuery); };
 var sitesQuery = 'SELECT * FROM geo.vw_sites ORDER BY site_id LIMIT $1 OFFSET $2';

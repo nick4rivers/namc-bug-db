@@ -12,17 +12,17 @@ export interface PaginatedRecords<T> {
 export declare type Sample = {
     sampleId: number;
     boxId: number;
-    customerId: number;
     customerName: string;
     siteId: number;
     siteName: string;
+    siteLatitude: number;
+    siteLongitude: number;
+    siteState: string;
     sampleDate: string;
-    sampleTime: string;
-    typeId: number;
-    typeName: string;
-    methodId: number;
-    methodName: string;
-    habitatId: number;
+    sampleLatitude: number;
+    sampleLongitude: number;
+    sampleType: string;
+    sampleMethod: string;
     habitatName: string;
     area: number;
     fieldSplit: number;

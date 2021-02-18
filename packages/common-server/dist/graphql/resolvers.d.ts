@@ -2,12 +2,17 @@ import { Sample, AuthResponse, BoxState, Site, SiteInfo, Box, PaginatedRecords }
 declare const _default: {
     Query: {
         auth: (obj: any, args: any, ctx: any, info: any) => Promise<AuthResponse>;
-        samples: (obj: any, { limit, nextToken }: {
+        samples: (obj: any, { limit, offset }: {
             limit: any;
+<<<<<<< HEAD
             nextToken: any;
         }, { user }: {
             user: any;
         }, info: any) => Promise<PaginatedRecords<Sample>>;
+=======
+            offset: any;
+        }, ctx: any, info: any) => Promise<PaginatedRecords<Sample>>;
+>>>>>>> samples through API
         boxStates: (obj: any, { limit, nextToken }: {
             limit: any;
             nextToken: any;

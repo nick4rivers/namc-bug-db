@@ -23,7 +23,7 @@ FROM geo.sites s
          LEFT JOIN geo.systems sy ON s.system_id = sy.system_id
          LEFT JOIN geo.ecosystems e ON sy.ecosystem_id = e.ecosystem_id
          LEFT JOIN geo.waterbody_types w ON s.waterbody_type_id = w.waterbody_type_id
-);
+    );
 
 /******************************************************************************************************************
 entity SCHEMA
@@ -78,7 +78,7 @@ CREATE OR REPLACE VIEW sample.vw_boxes AS
 (
 SELECT b.box_id,
        b.customer_id,
-       o.organization_name AS customer_name,
+       o.organization_name                AS customer_name,
        COUNT(sample_id)                   AS samples,
        b.submitter_id,
        i.first_name || ' ' || i.last_name AS submitter_name,
@@ -111,15 +111,21 @@ CREATE OR REPLACE VIEW sample.vw_samples AS
 SELECT s.sample_id,
        s.box_id,
        b.customer_id,
-       b.organization_name,
+       b.customer_name,
+       b.box_state_name,
        s.site_id,
        si.site_name,
+       si.latitude      AS site_latitude,
+       si.longitude     AS site_longitude,
+       si.us_state      AS site_state,
        s.sample_date,
+       st_y(s.location) AS sample_latitude,
+       st_x(s.location) AS sample_longitude,
        s.sample_time,
        s.type_id,
-       t.sample_type_name,
+       t.sample_type_name AS sample_type,
        s.method_id,
-       m.sample_method_name,
+       m.sample_method_name AS sample_method,
        s.habitat_id,
        h.habitat_name,
        s.area,
@@ -137,7 +143,7 @@ FROM sample.samples s
          INNER JOIN sample.sample_types t ON s.type_id = t.sample_type_id
          INNER JOIN sample.sample_methods m ON s.method_id = m.sample_method_id
          INNER JOIN geo.habitats h ON s.habitat_id = h.habitat_id
-         LEFT JOIN geo.sites si ON s.site_id = si.site_id
+         LEFT JOIN geo.vw_sites si ON s.site_id = si.site_id
     );
 
 DROP VIEW IF EXISTS sample.vw_taxonomy_crosstab;

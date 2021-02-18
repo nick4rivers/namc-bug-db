@@ -73,9 +73,14 @@ exports.default = {
                 }
             });
         }); },
+<<<<<<< HEAD
         samples: function (obj, _a, _b, info) {
             var limit = _a.limit, nextToken = _a.nextToken;
             var user = _b.user;
+=======
+        samples: function (obj, _a, ctx, info) {
+            var limit = _a.limit, offset = _a.offset;
+>>>>>>> samples through API
             return __awaiter(void 0, void 0, void 0, function () {
                 var pool, data;
                 return __generator(this, function (_c) {
@@ -84,8 +89,13 @@ exports.default = {
                             loggedInGate(user);
                             return [4, pg_1.getPool()];
                         case 1:
+<<<<<<< HEAD
                             pool = _c.sent();
                             return [4, pg_1.getSamples(pool, limit, nextToken)];
+=======
+                            pool = _b.sent();
+                            return [4, pg_1.getSamples(pool, limit, offset)];
+>>>>>>> samples through API
                         case 2:
                             data = _c.sent();
                             return [2, {

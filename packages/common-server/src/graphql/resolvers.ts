@@ -45,10 +45,10 @@ export default {
             }
         },
 
-        samples: async (obj, { limit, nextToken }, { user }, info): Promise<PaginatedRecords<Sample>> => {
+        samples: async (obj, { limit, offset }, { user }, info): Promise<PaginatedRecords<Sample>> => {
             loggedInGate(user)
             const pool = await getPool()
-            const data = await getSamples(pool, limit, nextToken)
+            const data = await getSamples(pool, limit, offset)
             return {
                 records: data.map(util.snake2camel),
                 nextToken: 0
