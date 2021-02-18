@@ -1,7 +1,8 @@
 import os
 import json
 import datetime
-from rscommons import Logger, ProgressBar
+from lib.logger import Logger
+from lib.progress_bar import ProgressBar
 
 
 def sanitize_string_col(origin_table, id_field, row, field, escape_quotes=True):

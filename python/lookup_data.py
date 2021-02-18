@@ -1,7 +1,7 @@
 import sqlite3
 import os
 import re
-from rscommons import Logger
+from lib.logger import Logger
 
 # These table column definitions are for temporary in-memory SQLite databases that get
 # populated from the SQL files when the migration scripts need access to the data

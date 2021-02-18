@@ -1,17 +1,20 @@
+from migrate_predictor_values import migrate as predictor_values
+from migrate_organisms import migrate as organisms
+from migrate_samples import migrate as samples
+from migrate_sites import migrate as sites
+from migrate_boxes import migrate as boxes
+from migrate_entities import migrate as entities
+from migrate_taxonomy_pivot import migrate as taxonomy
+from migrate_projects import migrate as projects
+from migrate_predictors import migrate as predictors
+from lib.dotenv import parse_args_env
+from lib.logger import Logger
+from rscommons import Logger, dotenv
 import os
 import argparse
 import pyodbc
 import psycopg2
 from psycopg2.extras import execute_values
-from rscommons import Logger, dotenv
-from migrate_projects import migrate as projects
-from migrate_taxonomy_pivot import migrate as taxonomy
-from migrate_entities import migrate as entities
-from migrate_boxes import migrate as boxes
-from migrate_sites import migrate as sites
-from migrate_samples import migrate as samples
-from migrate_organisms import migrate as organisms
-from migrate_predictor_values import migrate as predictor_values
 
 
 def migrate_all_data(mscon, pgcon, predictor_csv_path, predictor_values_csv_path):
@@ -20,19 +23,33 @@ def migrate_all_data(mscon, pgcon, predictor_csv_path, predictor_values_csv_path
     pgcurs = pgcon.cursor(cursor_factory=psycopg2.extras.DictCursor)
     mscurs = mscon.cursor()
 
-    sites(mscurs, pgcurs)
-    # predictor_values(pgcurs, predictor_values_csv_path)
-    taxonomy(mscurs, pgcurs)
-    entities(mscurs, pgcurs)
-    boxes(mscurs, pgcurs)
-    samples(mscurs, pgcurs)
-    projects(mscurs, pgcurs)
-    # organisms(mscurs, pgcurs)
 
-    log = Logger('Migration')
-    pgcurs = pgcon.cursor()
-    pgcurs.execute("SELECT pg_size_pretty( pg_database_size('bugdb') );")
-    log.info('Migration complete. Postgres database is {}'.format(pgcurs.fetchone()[0]))
+<< << << < HEAD
+sites(mscurs, pgcurs)
+# predictor_values(pgcurs, predictor_values_csv_path)
+== == == =
+# predictors(predictor_csv_path, pgcurs)
+projects(mscurs, pgcurs)
+>>>>>> > ubuntu changes
+taxonomy(mscurs, pgcurs)
+entities(mscurs, pgcurs)
+boxes(mscurs, pgcurs)
+samples(mscurs, pgcurs)
+<< << << < HEAD
+projects(mscurs, pgcurs)
+# organisms(mscurs, pgcurs)
+== == == =
+organisms(mscurs, pgcurs)
+
+# Refresh any materialized views
+pgcurs.execute('REFRESH MATERIALIZED VIEW taxa.vw_taxonomy_crosstab;')
+pgcurs.execute('REFRESH MATERIALIZED VIEW sample.vw_map_data;')
+>>>>>> > ubuntu changes
+
+log = Logger('Migration')
+pgcurs = pgcon.cursor()
+pgcurs.execute("SELECT pg_size_pretty( pg_database_size('bugdb') );")
+log.info('Migration complete. Postgres database is {}'.format(pgcurs.fetchone()[0]))
 
 
 def main():
@@ -51,7 +68,7 @@ def main():
     parser.add_argument('predictor_values', help='Predictor values CSV', type=str)
     parser.add_argument('--verbose', help='verbose logging', default=False)
 
-    args = dotenv.parse_args_env(parser, os.path.join(os.path.dirname(os.path.realpath(__file__)), '.env'))
+    args = parse_args_env(parser, os.path.join(os.path.dirname(os.path.realpath(__file__)), '.env'))
 
     predictors = os.path.join(os.path.dirname(__file__), args.csv_path)
     predictor_values = os.path.join(os.path.dirname(__file__), args.predictor_values)

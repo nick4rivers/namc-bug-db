@@ -3,7 +3,8 @@ import pyodbc
 from lookup_data import get_db_id
 from postgres_lookup_data import lookup_data, log_row_count, insert_many_rows
 from utilities import sanitize_string_col, sanitize_string, add_metadata, write_sql_file, log_record_count, merge_string_fields
-from rscommons import Logger, ProgressBar
+from lib.logger import Logger
+from lib.progress_bar import ProgressBar
 
 columns = ['site_name', 'system_id', 'location', 'description', 'metadata']
 sql = """INSERT INTO geo.sites (site_name, system_id, location, description, metadata)
@@ -66,7 +67,6 @@ def migrate(mscurs, pgcurs):
         block_data.append([
             site_name,
             system_id,
-            # ecosystem_id,
             msdata['Long'],
             msdata['Lat'],
             merge_string_fields(msdata['Location'], msdata['SiteDesc']),

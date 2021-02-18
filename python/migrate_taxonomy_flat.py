@@ -1,7 +1,8 @@
 import psycopg2
 import pyodbc
 from psycopg2.extras import execute_values
-from rscommons import Logger, ProgressBar
+from lib.logger import Logger
+from lib.progress_bar import ProgressBar
 from utilities import sanitize_string_col, sanitize_string, sanitize_time, add_metadata, format_values, log_record_count
 from postgres_lookup_data import lookup_data, insert_row, log_row_count, insert_many_rows
 from lookup_data import get_db_id

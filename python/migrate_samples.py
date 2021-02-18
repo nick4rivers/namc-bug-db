@@ -1,6 +1,7 @@
 import math
 import pyodbc
-from rscommons import Logger, ProgressBar
+from lib.logger import Logger
+from lib.progress_bar import ProgressBar
 from utilities import sanitize_string_col, sanitize_string, sanitize_time, add_metadata, format_values, log_record_count
 from postgres_lookup_data import lookup_data, insert_row, log_row_count, insert_many_rows, process_table, process_query
 from lookup_data import get_db_id
@@ -99,6 +100,7 @@ def migrate_samples(mscurs, pgcurs):
         if msdata['Station'] and not site_id:
             # Sample refers to a site that has a missing location and is not in new DB. Store metadata to keep track
             add_metadata(metadata, 'missingStation', station)
+            # continue
 
         data = {
             'sample_id': msdata['SampleID'],
@@ -106,6 +108,7 @@ def migrate_samples(mscurs, pgcurs):
             'sample_date': msdata['SampDate'],
             'sample_time': sanitize_time(msdata['SampleTime']),
             'site_id': site_id,
+            # 'location': sites[station].location,
             'type_id': get_db_id(types, 'sample_type_id', ['sample_type_name'], sample_type),
             'method_id': method_id,
             'habitat_id': habitat_id,

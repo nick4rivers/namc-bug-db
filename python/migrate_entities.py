@@ -1,4 +1,5 @@
-from rscommons import Logger, ProgressBar
+from lib.logger import Logger
+from lib.progress_bar import ProgressBar
 import pyodbc
 from utilities import sanitize_string_col, log_record_count, sanitize_string
 from utilities import sanitize_phone_fax, sanitize_email, sanitize_url, add_metadata

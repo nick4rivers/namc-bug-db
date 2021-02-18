@@ -1,6 +1,7 @@
 import json
 import psycopg2
-from rscommons import Logger, ProgressBar
+from lib.logger import Logger
+from lib.progress_bar import ProgressBar
 from psycopg2.extras import execute_values
 from utilities import log_record_count
 

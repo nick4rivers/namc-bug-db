@@ -1,5 +1,6 @@
 import pyodbc
-from rscommons import Logger, ProgressBar
+from lib.logger import Logger
+from lib.progress_bar import ProgressBar
 from utilities import sanitize_string_col, sanitize_string, write_sql_file, log_record_count
 from postgres_lookup_data import lookup_data, insert_row, log_row_count
 from lookup_data import get_db_id
