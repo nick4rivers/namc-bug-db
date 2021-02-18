@@ -72,8 +72,6 @@ FROM entity.individuals i
 /******************************************************************************************************************
  sample SCHEMA
  */
-DROP VIEW sample.vw_samples;
-DROP VIEW sample.vw_boxes;
 CREATE OR REPLACE VIEW sample.vw_boxes AS
 (
 SELECT b.box_id,
