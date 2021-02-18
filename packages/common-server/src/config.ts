@@ -37,7 +37,7 @@ export const getDBSecretCredentials = (): Promise<SecretDBCredentials> =>
     getSecret(process.env.SECRET_NAME, awsRegion).then((data) => {
         return {
             ...(data as SecretDBCredentials),
-            username: process.env.PG_USERNAME || (data as SecretDBCredentials).username,
-            password: process.env.PG_PASSWORD || (data as SecretDBCredentials).password
+            username: process.env.POSTGRES_USER || (data as SecretDBCredentials).username,
+            password: process.env.POSTGRES_PASSWORD || (data as SecretDBCredentials).password
         }
     })

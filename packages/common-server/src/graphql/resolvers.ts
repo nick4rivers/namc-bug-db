@@ -1,7 +1,17 @@
 // import path from 'path'
 import { getConfigPromise } from '../config'
-import { Sample, AuthResponse, BoxState, Site, Individual, Box, util, PaginatedRecords } from '@namcbugdb/common'
-import { getPool, getSamples, getBoxStates, getSites, getIndividuals, getBoxes } from '../pg'
+import {
+    Sample,
+    AuthResponse,
+    BoxState,
+    Site,
+    SiteInfo,
+    Individual,
+    Box,
+    util,
+    PaginatedRecords
+} from '@namcbugdb/common'
+import { getPool, getSamples, getBoxStates, getSites, getSiteInfo, getIndividuals, getBoxes } from '../pg'
 // import log from 'loglevel'
 import { UserObj } from '../types'
 
@@ -57,6 +67,17 @@ export default {
             const pool = await getPool()
             const data = await getSites(pool, limit, nextToken)
             return data.map(util.snake2camel)
+        },
+
+        siteInfo: async (obj, { siteId }, ctx, info): Promise<SiteInfo> => {
+            const pool = await getPool()
+            const data = await getSiteInfo(pool, siteId)
+
+            if (data.length !== 1) {
+                throw new Error('Record not found')
+            }
+
+            return data.map(util.snake2camel)[0]
         },
 
         individuals: async (obj, { limit, nextToken }, { user }, info): Promise<Individual[]> => {

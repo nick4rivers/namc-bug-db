@@ -136,7 +136,31 @@ exports.default = {
                 });
             });
         },
+<<<<<<< HEAD
         individuals: function (obj, _a, _b, info) {
+=======
+        siteInfo: function (obj, _a, ctx, info) {
+            var siteId = _a.siteId;
+            return __awaiter(void 0, void 0, void 0, function () {
+                var pool, data;
+                return __generator(this, function (_b) {
+                    switch (_b.label) {
+                        case 0: return [4, pg_1.getPool()];
+                        case 1:
+                            pool = _b.sent();
+                            return [4, pg_1.getSiteInfo(pool, siteId)];
+                        case 2:
+                            data = _b.sent();
+                            if (data.length !== 1) {
+                                throw new Error('Record not found');
+                            }
+                            return [2, data.map(common_1.util.snake2camel)[0]];
+                    }
+                });
+            });
+        },
+        individuals: function (obj, _a, ctx, info) {
+>>>>>>> sites and siteInfo API endpoints
             var limit = _a.limit, nextToken = _a.nextToken;
             var user = _b.user;
             return __awaiter(void 0, void 0, void 0, function () {

@@ -39,7 +39,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getBoxes = exports.getIndividuals = exports.getSites = exports.getBoxStates = exports.getSamples = exports.getPool = void 0;
+exports.getBoxes = exports.getIndividuals = exports.getSiteInfo = exports.getSites = exports.getBoxStates = exports.getSamples = exports.getPool = void 0;
 var config_1 = require("../config");
 var pg_1 = require("pg");
 var loglevel_1 = __importDefault(require("loglevel"));
@@ -82,8 +82,12 @@ var samplesQuery = 'SELECT * FROM sample.vw_samples LIMIT 500';
 exports.getSamples = function (pool, limit, nextToken) { return pgPromise(pool, samplesQuery); };
 var boxStatesQuery = 'SELECT * FROM sample.box_states';
 exports.getBoxStates = function (pool, limit, nextToken) { return pgPromise(pool, boxStatesQuery); };
-var sitesQuery = 'SELECT * FROM geo.vw_sites LIMIT 500';
-exports.getSites = function (pool, limit, nextToken) { return pgPromise(pool, sitesQuery); };
+var sitesQuery = 'SELECT * FROM geo.vw_sites ORDER BY site_id LIMIT $1 OFFSET $2';
+exports.getSites = function (pool, limit, nextToken) {
+    return pgPromise(pool, sitesQuery, [limit, nextToken]);
+};
+var siteInfoQuery = 'SELECT * FROM geo.fn_site_info($1)';
+exports.getSiteInfo = function (pool, siteId) { return pgPromise(pool, siteInfoQuery, [siteId]); };
 var individualsQuery = 'SELECT * FROM entity.vw_individuals';
 exports.getIndividuals = function (pool, limit, nextToken) {
     return pgPromise(pool, individualsQuery);

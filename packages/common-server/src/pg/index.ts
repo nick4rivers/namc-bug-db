@@ -36,9 +36,13 @@ const boxStatesQuery = 'SELECT * FROM sample.box_states'
 
 export const getBoxStates = (pool, limit: number, nextToken: number): Promise<any> => pgPromise(pool, boxStatesQuery)
 
-const sitesQuery = 'SELECT * FROM geo.vw_sites LIMIT 500'
+const sitesQuery = 'SELECT * FROM geo.vw_sites ORDER BY site_id LIMIT $1 OFFSET $2'
 
-export const getSites = (pool, limit: number, nextToken: number): Promise<any> => pgPromise(pool, sitesQuery)
+export const getSites = (pool, limit: number, nextToken: number): Promise<any> =>
+    pgPromise(pool, sitesQuery, [limit, nextToken])
+
+const siteInfoQuery = 'SELECT * FROM geo.fn_site_info($1)'
+export const getSiteInfo = (pool, siteId: number): Promise<any> => pgPromise(pool, siteInfoQuery, [siteId])
 
 const individualsQuery = 'SELECT * FROM entity.vw_individuals'
 

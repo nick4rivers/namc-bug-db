@@ -15,6 +15,7 @@ const typeDefs = gql`
         samples(limit: Int, nextToken: Int): PaginatedSample
         boxStates(limit: Int, nextToken: Int): [BoxState]
         sites(limit: Int, nextToken: Int): [Site]
+        siteInfo(siteId: Int!): SiteInfo
         individuals(limit: Int, nextToken: Int): [Individual]
         boxes(limit: Int, nextToken: Int): [Box]
     }
@@ -70,13 +71,35 @@ const typeDefs = gql`
     type Site {
         siteId: Int
         siteName: String
-        systemId: Int
         systemName: String
-        ecosystemId: Int
         ecosystemName: String
-        waterbody: String
         longitude: Float
         latitude: Float
+        state: String
+        waterbodyType: String
+        waterbodyCode: String
+        waterbodyName: String
+        createdDate: String
+        updatedDate: String
+        hasCatchment: Boolean
+    }
+
+    type SiteInfo {
+        siteId: Int
+        siteName: String
+        system: String
+        ecosystem: String
+        location: String
+        stX: Float
+        stY: Float
+        abbreviation: String
+        waterbodyTypeName: String
+        waterbodyCode: String
+        waterbodyName: String
+        createdDate: String
+        updatedDate: String
+        catchment: String
+        sampleCount: Int
     }
 
     type Individual {

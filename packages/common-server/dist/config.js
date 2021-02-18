@@ -38,7 +38,7 @@ exports.getConfigPromise = function () {
 };
 exports.getDBSecretCredentials = function () {
     return ssm_1.getSecret(process.env.SECRET_NAME, exports.awsRegion).then(function (data) {
-        return __assign(__assign({}, data), { username: process.env.PG_USERNAME || data.username, password: process.env.PG_PASSWORD || data.password });
+        return __assign(__assign({}, data), { username: process.env.POSTGRES_USER || data.username, password: process.env.POSTGRES_PASSWORD || data.password });
     });
 };
 //# sourceMappingURL=config.js.map

@@ -44,15 +44,35 @@ export type BoxState = {
 export type Site = {
     siteId: number
     siteName: string
-    systemId: number
     systemName: string
-    ecosystemId: number
     ecosystemName: string
-    waterbody: string
     longitude: number
     latitude: number
-    // createdDate:
-    // updatedDate:
+    state: string
+    waterbodyType: string
+    waterbodyCode: string
+    waterbodyName: string
+    createdDate: string
+    updatedDate: string
+    hasCatchment: boolean
+}
+
+export type SiteInfo = {
+    siteId: number
+    siteName: string
+    system: string
+    ecosystem: string
+    location: string
+    stX: number
+    stY: number
+    abbreviation: string
+    waterbodyTypeName: string
+    waterbodyCode: string
+    waterbodyName: string
+    createdDate: string
+    updatedDate: string
+    catchment: string
+    sampleCount: number
 }
 
 export type Individual = {

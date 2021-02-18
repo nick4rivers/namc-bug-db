@@ -40,13 +40,34 @@ export declare type BoxState = {
 export declare type Site = {
     siteId: number;
     siteName: string;
-    systemId: number;
     systemName: string;
-    ecosystemId: number;
     ecosystemName: string;
-    waterbody: string;
     longitude: number;
     latitude: number;
+    state: string;
+    waterbodyType: string;
+    waterbodyCode: string;
+    waterbodyName: string;
+    createdDate: string;
+    updatedDate: string;
+    hasCatchment: boolean;
+};
+export declare type SiteInfo = {
+    siteId: number;
+    siteName: string;
+    system: string;
+    ecosystem: string;
+    location: string;
+    stX: number;
+    stY: number;
+    abbreviation: string;
+    waterbodyTypeName: string;
+    waterbodyCode: string;
+    waterbodyName: string;
+    createdDate: string;
+    updatedDate: string;
+    catchment: string;
+    sampleCount: number;
 };
 export declare type Individual = {
     entityId: number;
