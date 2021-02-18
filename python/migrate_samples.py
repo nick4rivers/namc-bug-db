@@ -2,7 +2,7 @@ import math
 import pyodbc
 from rscommons import Logger, ProgressBar
 from utilities import sanitize_string_col, sanitize_string, sanitize_time, add_metadata, format_values, log_record_count
-from postgres_lookup_data import lookup_data, insert_row, log_row_count, insert_many_rows, process_table
+from postgres_lookup_data import lookup_data, insert_row, log_row_count, insert_many_rows, process_table, process_query
 from lookup_data import get_db_id
 
 table_name = 'sample.samples'
@@ -22,8 +22,8 @@ def migrate(mscurs, pgcurs):
     process_table(mscurs, pgcurs, 'PilotDB.dbo.BugPlankton', 'sample.plankton', plankton_callback, None)
 
     # Sample ID 16988 exists in BugOMatter but not in BugSample. Use inner join to omit this record
-    process_table(mscurs, pgcurs, 'PilotDB.dbo.BugOMatter', 'sample.mass', mass_callback, lookup,
-                  'SELECT B.* FROM PilotDB.dbo.BugOMatter B INNER JOIN PilotDB.dbo.BugSample S ON B.SampleID = S.SampleID')
+    process_query(mscurs, pgcurs, 'SELECT B.* FROM PilotDB.dbo.BugOMatter B INNER JOIN PilotDB.dbo.BugSample S ON B.SampleID = S.SampleID',
+                  'sample.mass', mass_callback, lookup)
 
 
 def migrate_samples(mscurs, pgcurs):

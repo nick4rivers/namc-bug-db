@@ -16,13 +16,16 @@ def migrate(mscurs, pgcurs):
 
     # Now associate all samples with the projects.
     process_query(mscurs, pgcurs,
-                  """SELECT P.ProjectID, Bs.SampleID
-                    FROM Project P
-                            INNER JOIN BoxTracking B ON P.ProjectID = B.ProjectID
-                            INNER JOIN BugSample BS on B.BoxId = BS.BoxID
-                    UNION
-                    SELECT ProjectID, SampleID
-                    FROM Collection""",
+                  """SELECT ProjectID, SampleID
+FROM (SELECT P.ProjectID, Bs.SampleID
+      FROM PilotDB.dbo.Project P
+               INNER JOIN PilotDB.dbo.BoxTracking B ON P.ProjectID = B.ProjectID
+               INNER JOIN PilotDB.dbo.BugSample BS on B.BoxId = BS.BoxID
+      UNION
+      SELECT ProjectID, SampleID
+      FROM PilotDB.dbo.Collection
+      WHERE SampleID IS NOT NULL
+        AND ProjectID IS NOT NULL) T""",
                   'sample.project_samples', project_samples_callback)
 
 
