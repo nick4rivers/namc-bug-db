@@ -99,9 +99,7 @@ GROUP BY b.box_id,
          t.box_state_name,
          b.box_recevied_date,
          b.processing_complete_date,
-         b.projected_complete_date,
-         b.project_id,
-         b.project_id
+         b.projected_complete_date
     );
 
 CREATE OR REPLACE VIEW sample.vw_samples AS
