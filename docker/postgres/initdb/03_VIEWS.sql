@@ -2,8 +2,8 @@
  geo SCHEMA
  */
 
-DROP VIEW IF EXISTS geo.vw_sites;
-
+CREATE OR REPLACE VIEW geo.vw_sites AS
+(
 SELECT s.site_id,
        s.site_name,
        sy.system_name          as system,
@@ -22,15 +22,14 @@ FROM geo.sites s
          LEFT JOIN geo.states st ON st_contains(st.geom, s.location)
          LEFT JOIN geo.systems sy ON s.system_id = sy.system_id
          LEFT JOIN geo.ecosystems e ON sy.ecosystem_id = e.ecosystem_id
-         LEFT JOIN geo.waterbody_types w ON s.waterbody_type_id = w.waterbody_type_id;
+         LEFT JOIN geo.waterbody_types w ON s.waterbody_type_id = w.waterbody_type_id
+);
 
 /******************************************************************************************************************
 entity SCHEMA
 */
 
-DROP VIEW IF EXISTS entity.vw_organizations;
-
-CREATE VIEW entity.vw_organizations AS
+CREATE OR REPLACE VIEW entity.vw_organizations AS
 (
 SELECT o.*,
        t.organization_type_name,
@@ -74,8 +73,7 @@ FROM entity.individuals i
  sample SCHEMA
  */
 
-DROP VIEW IF EXISTS sample.vw_boxes;
-CREATE VIEW sample.vw_boxes AS
+CREATE OR REPLACE VIEW sample.vw_boxes AS
 (
 SELECT b.box_id,
        b.customer_id,
@@ -113,8 +111,7 @@ GROUP BY b.box_id,
          p.project_name
     );
 
-DROP VIEW IF EXISTS sample.vw_samples;
-CREATE VIEW sample.vw_samples AS
+CREATE OR REPLACE VIEW sample.vw_samples AS
 (
 SELECT s.sample_id,
        s.box_id,

@@ -65,5 +65,20 @@
       "{env:POSTGRES_PASSWORD}",
       "data/model_predictors.csv"  
     ]
+  },
+  {
+    "name": "Import Predictor Values",
+    "type": "python",
+    "request": "launch",
+    "module": "import_predictor_values",
+    "console": "integratedTerminal",
+    "args": [
+      "{env:POSTGRES_HOST}",
+      "{env:POSTGRES_PORT}",
+      "{env:POSTGRES_DB}",
+      "{env:POSTGRES_USER}",
+      "{env:POSTGRES_PASSWORD}",
+      "data/PredictorExtraction_MasterList_2018August30.csv" 
+    ]
   }]
 }
