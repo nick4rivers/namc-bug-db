@@ -681,7 +681,6 @@ CREATE TABLE sample.boxes
     projected_complete_date  TIMESTAMPTZ,                        -- report_ready, available to customer, customer notified. all data QAed.
     description              TEXT,
     metadata                 JSON,
-    project_id               SMALLINT,                           -- changing this ID through the UI will need to change the sample_projects junction table
     measurements             BOOLEAN     NOT NULL DEFAULT FALSE, -- things customers can be billed for (fee per sample) checkbox in submission UI
     sorter_qa                BOOLEAN     NOT NULL DEFAULT FALSE, -- things customers can be billed for (fee per sample) checkbox in submission UI
     taxa_qa                  BOOLEAN     NOT NULL DEFAULT FALSE, -- things customers can be billed for (fee per sample) checkbox in submission UI
@@ -691,11 +690,9 @@ CREATE TABLE sample.boxes
     CONSTRAINT fk_boxes_customer_id FOREIGN KEY (customer_id) REFERENCES entity.entities (entity_id),
     CONSTRAINT fk_boxes_creator_id FOREIGN KEY (submitter_id) REFERENCES entity.individuals (entity_id),
     CONSTRAINT fk_boxes_state_id FOREIGN KEY (box_state_id) REFERENCES sample.box_states (box_state_id),
-    CONSTRAINT fk_boxes_project_id FOREIGN KEY (project_id) REFERENCES sample.projects (project_id)
 );
 CREATE INDEX fx_boxes_customer_id ON sample.boxes (customer_id);
 CREATE INDEX fx_boxes_status_id ON sample.boxes (box_state_id);
-CREATE INDEX fx_boxes_project_id ON sample.boxes (project_id);
 CREATE TRIGGER tr_boxes_update
     BEFORE UPDATE
     ON sample.boxes

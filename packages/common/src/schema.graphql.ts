@@ -14,10 +14,10 @@ const typeDefs = gql`
 
         samples(limit: Int, nextToken: Int): PaginatedSample
         boxStates(limit: Int, nextToken: Int): [BoxState]
-        sites(limit: Int, nextToken: Int): [Site]
+        sites(limit: Int, offset: Int): [Site]
         siteInfo(siteId: Int!): SiteInfo
-        individuals(limit: Int, nextToken: Int): [Individual]
-        boxes(limit: Int, nextToken: Int): [Box]
+        # individuals(limit: Int, nextToken: Int): [Individual]
+        boxes(limit: Int, offset: Int): [Box]
     }
 
     # this schema allows the following mutation:
@@ -102,39 +102,34 @@ const typeDefs = gql`
         sampleCount: Int
     }
 
-    type Individual {
-        entityId: Int
-        firstName: String
-        lastName: String
-        initials: String
-        affilitationId: Int
-        affiliation: String
-        email: String
-        title: String
-        address1: String
-        address2: String
-        city: String
-        stateName: String
-        countryName: String
-        zipCode: String
-        phone: String
-        fax: String
-    }
+    // type Individual {
+    //     entityId: Int
+    //     firstName: String
+    //     lastName: String
+    //     initials: String
+    //     affilitationId: Int
+    //     affiliation: String
+    //     email: String
+    //     title: String
+    //     address1: String
+    //     address2: String
+    //     city: String
+    //     stateName: String
+    //     countryName: String
+    //     zipCode: String
+    //     phone: String
+    //     fax: String
+    // }
 
     type Box {
         boxId: Int
-        customerId: Int
         customerName: String
         samples: Int
-        submitterId: Int
         SubmitterName: String
-        boxStateId: Int
         boxStateName: String
         boxReceivedDate: String
         processingCompleteDate: String
         projectedCompleteDate: String
-        projectId: Int
-        projectName: String
     }
 `
 

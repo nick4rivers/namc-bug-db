@@ -116,9 +116,14 @@ exports.default = {
                 });
             });
         },
+<<<<<<< HEAD
         sites: function (obj, _a, _b, info) {
             var limit = _a.limit, nextToken = _a.nextToken;
             var user = _b.user;
+=======
+        sites: function (obj, _a, ctx, info) {
+            var limit = _a.limit, offset = _a.offset;
+>>>>>>> individuals removed. boxes cleaned up
             return __awaiter(void 0, void 0, void 0, function () {
                 var pool, data;
                 return __generator(this, function (_c) {
@@ -127,8 +132,13 @@ exports.default = {
                             loggedInGate(user);
                             return [4, pg_1.getPool()];
                         case 1:
+<<<<<<< HEAD
                             pool = _c.sent();
                             return [4, pg_1.getSites(pool, limit, nextToken)];
+=======
+                            pool = _b.sent();
+                            return [4, pg_1.getSites(pool, limit, offset)];
+>>>>>>> individuals removed. boxes cleaned up
                         case 2:
                             data = _c.sent();
                             return [2, data.map(common_1.util.snake2camel)];
@@ -159,6 +169,7 @@ exports.default = {
                 });
             });
         },
+<<<<<<< HEAD
         individuals: function (obj, _a, ctx, info) {
 >>>>>>> sites and siteInfo API endpoints
             var limit = _a.limit, nextToken = _a.nextToken;
@@ -183,6 +194,10 @@ exports.default = {
         boxes: function (obj, _a, _b, info) {
             var limit = _a.limit, nextToken = _a.nextToken;
             var user = _b.user;
+=======
+        boxes: function (obj, _a, ctx, info) {
+            var limit = _a.limit, offset = _a.offset;
+>>>>>>> individuals removed. boxes cleaned up
             return __awaiter(void 0, void 0, void 0, function () {
                 var pool, data;
                 return __generator(this, function (_c) {
@@ -191,8 +206,13 @@ exports.default = {
                             loggedInGate(user);
                             return [4, pg_1.getPool()];
                         case 1:
+<<<<<<< HEAD
                             pool = _c.sent();
                             return [4, pg_1.getBoxes(pool, limit, nextToken)];
+=======
+                            pool = _b.sent();
+                            return [4, pg_1.getBoxes(pool, limit, offset)];
+>>>>>>> individuals removed. boxes cleaned up
                         case 2:
                             data = _c.sent();
                             return [2, data.map(common_1.util.snake2camel)];

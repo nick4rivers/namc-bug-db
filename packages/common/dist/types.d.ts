@@ -89,16 +89,11 @@ export declare type Individual = {
 };
 export declare type Box = {
     boxId: number;
-    customerId: number;
     customerName: string;
     samples: number;
-    submitterId: number;
     SubmitterName: string;
-    boxStateId: number;
     boxStateName: string;
     boxReceivedDate: string;
     processingCompleteDate: string;
     projectedCompleteDate: string;
-    projectId: number;
-    projectName: string;
 };

@@ -72,12 +72,13 @@ FROM entity.individuals i
 /******************************************************************************************************************
  sample SCHEMA
  */
-
+DROP VIEW sample.vw_samples;
+DROP VIEW sample.vw_boxes;
 CREATE OR REPLACE VIEW sample.vw_boxes AS
 (
 SELECT b.box_id,
        b.customer_id,
-       o.organization_name,
+       o.organization_name AS customer_name,
        COUNT(sample_id)                   AS samples,
        b.submitter_id,
        i.first_name || ' ' || i.last_name AS submitter_name,
@@ -85,15 +86,12 @@ SELECT b.box_id,
        t.box_state_name,
        b.box_recevied_date,
        b.processing_complete_date,
-       b.projected_complete_date,
-       b.project_id,
-       p.project_name
+       b.projected_complete_date
 FROM sample.boxes b
          INNER JOIN sample.box_states t ON b.box_state_id = t.box_state_id
          INNER JOIN entity.individuals i ON b.submitter_id = i.entity_id
          INNER JOIN entity.organizations o ON b.customer_id = o.entity_id
          LEFT JOIN sample.samples s ON b.box_id = s.box_id
-         LEFT JOIN sample.projects p ON b.project_id = p.project_id
 GROUP BY b.box_id,
          b.customer_id,
          o.organization_name,
@@ -104,11 +102,8 @@ GROUP BY b.box_id,
          b.box_recevied_date,
          b.processing_complete_date,
          b.projected_complete_date,
-         --  b.sort_time,
-         --  b.id_time,
          b.project_id,
-         b.project_id,
-         p.project_name
+         b.project_id
     );
 
 CREATE OR REPLACE VIEW sample.vw_samples AS

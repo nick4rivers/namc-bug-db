@@ -62,10 +62,10 @@ export default {
             return data.map(util.snake2camel)
         },
 
-        sites: async (obj, { limit, nextToken }, { user }, info): Promise<Site[]> => {
+        sites: async (obj, { limit, offset }, { user }, info): Promise<Site[]> => {
             loggedInGate(user)
             const pool = await getPool()
-            const data = await getSites(pool, limit, nextToken)
+            const data = await getSites(pool, limit, offset)
             return data.map(util.snake2camel)
         },
 
@@ -80,17 +80,17 @@ export default {
             return data.map(util.snake2camel)[0]
         },
 
-        individuals: async (obj, { limit, nextToken }, { user }, info): Promise<Individual[]> => {
-            loggedInGate(user)
-            const pool = await getPool()
-            const data = await getIndividuals(pool, limit, nextToken)
-            return data.map(util.snake2camel)
-        },
+        // individuals: async (obj, { limit, nextToken }, { user }, info): Promise<Individual[]> => {
+        //     loggedInGate(user)
+        //     const pool = await getPool()
+        //     const data = await getIndividuals(pool, limit, nextToken)
+        //     return data.map(util.snake2camel)
+        // },
 
-        boxes: async (obj, { limit, nextToken }, { user }, info): Promise<Box[]> => {
+        boxes: async (obj, { limit, offset }, { user }, info): Promise<Box[]> => {
             loggedInGate(user)
             const pool = await getPool()
-            const data = await getBoxes(pool, limit, nextToken)
+            const data = await getBoxes(pool, limit, offset)
             return data.map(util.snake2camel)
         }
     }

@@ -83,8 +83,8 @@ exports.getSamples = function (pool, limit, nextToken) { return pgPromise(pool, 
 var boxStatesQuery = 'SELECT * FROM sample.box_states';
 exports.getBoxStates = function (pool, limit, nextToken) { return pgPromise(pool, boxStatesQuery); };
 var sitesQuery = 'SELECT * FROM geo.vw_sites ORDER BY site_id LIMIT $1 OFFSET $2';
-exports.getSites = function (pool, limit, nextToken) {
-    return pgPromise(pool, sitesQuery, [limit, nextToken]);
+exports.getSites = function (pool, limit, offset) {
+    return pgPromise(pool, sitesQuery, [limit, offset]);
 };
 var siteInfoQuery = 'SELECT * FROM geo.fn_site_info($1)';
 exports.getSiteInfo = function (pool, siteId) { return pgPromise(pool, siteInfoQuery, [siteId]); };
@@ -92,6 +92,8 @@ var individualsQuery = 'SELECT * FROM entity.vw_individuals';
 exports.getIndividuals = function (pool, limit, nextToken) {
     return pgPromise(pool, individualsQuery);
 };
-var boxesQuery = 'SELECT * FROM sample.vw_boxes LIMIT 500';
-exports.getBoxes = function (pool, limit, nextToken) { return pgPromise(pool, boxesQuery); };
+var boxesQuery = 'SELECT * FROM sample.vw_boxes ORDER BY box_id LIMIT $1 OFFSET $2';
+exports.getBoxes = function (pool, limit, offset) {
+    return pgPromise(pool, boxesQuery, [limit, offset]);
+};
 //# sourceMappingURL=index.js.map
