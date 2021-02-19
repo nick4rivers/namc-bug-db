@@ -846,7 +846,7 @@ CREATE TABLE sample.plankton
     sub_sample_count SMALLINT,
     tow_length       REAL,
     volume           REAL,
-    all_quot         REAL,
+    aliquot          REAL,
     size_interval    REAL,
     tow_type         TOW_TYPES,
     notes            TEXT,
