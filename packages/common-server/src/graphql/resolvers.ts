@@ -87,7 +87,8 @@ export default {
             return data.map(util.snake2camel)
         },
 
-        siteInfo: async (obj, { siteId }, ctx, info): Promise<SiteInfo> => {
+        siteInfo: async (obj, { siteId }, { user }, info): Promise<SiteInfo> => {
+            loggedInGate(user)
             const pool = await getPool()
             const data = await getSiteInfo(pool, siteId)
 
@@ -98,7 +99,8 @@ export default {
             return data.map(util.snake2camel)[0]
         },
 
-        sampleOrganisms: async (obj, { sampleId }, ctx, info): Promise<SampleOrganism[]> => {
+        sampleOrganisms: async (obj, { sampleId }, { user }, info): Promise<SampleOrganism[]> => {
+            loggedInGate(user)
             const pool = await getPool()
             const data = await getSampleOrganisms(pool, sampleId)
             return data.map(util.snake2camel)
@@ -118,25 +120,29 @@ export default {
             return data.map(util.snake2camel)
         },
 
-        projects: async (obj, { limit, offset }, ctx, info): Promise<Project[]> => {
+        projects: async (obj, { limit, offset }, { user }, info): Promise<Project[]> => {
+            loggedInGate(user)
             const pool = await getPool()
             const data = await getProjects(pool, limit, offset)
             return data.map(util.snake2camel)
         },
 
-        driftSamples: async (obj, { limit, offset }, ctx, info): Promise<DriftSample[]> => {
+        driftSamples: async (obj, { limit, offset }, { user }, info): Promise<DriftSample[]> => {
+            loggedInGate(user)
             const pool = await getPool()
             const data = await getDriftSamples(pool, limit, offset)
             return data.map(util.snake2camel)
         },
 
-        planktonSamples: async (obj, { limit, offset }, ctx, info): Promise<PlanktonSample[]> => {
+        planktonSamples: async (obj, { limit, offset }, { user }, info): Promise<PlanktonSample[]> => {
+            loggedInGate(user)
             const pool = await getPool()
             const data = await getPlanktonSamples(pool, limit, offset)
             return data.map(util.snake2camel)
         },
 
-        taxonomy: async (obj, { limit, offset }, ctx, info): Promise<Taxonomy[]> => {
+        taxonomy: async (obj, { limit, offset }, { user }, info): Promise<Taxonomy[]> => {
+            loggedInGate(user)
             const pool = await getPool()
             const data = await getTaxonomy(pool, limit, offset)
             return data.map(util.snake2camel)
