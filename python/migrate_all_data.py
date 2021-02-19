@@ -9,7 +9,6 @@ from migrate_projects import migrate as projects
 from migrate_predictors import migrate as predictors
 from lib.dotenv import parse_args_env
 from lib.logger import Logger
-from rscommons import Logger, dotenv
 import os
 import argparse
 import pyodbc
@@ -23,33 +22,23 @@ def migrate_all_data(mscon, pgcon, predictor_csv_path, predictor_values_csv_path
     pgcurs = pgcon.cursor(cursor_factory=psycopg2.extras.DictCursor)
     mscurs = mscon.cursor()
 
+    sites(mscurs, pgcurs)
+    # predictor_values(pgcurs, predictor_values_csv_path)
+    taxonomy(mscurs, pgcurs)
+    entities(mscurs, pgcurs)
+    boxes(mscurs, pgcurs)
+    samples(mscurs, pgcurs)
+    projects(mscurs, pgcurs)
+    organisms(mscurs, pgcurs)
 
-<< << << < HEAD
-sites(mscurs, pgcurs)
-# predictor_values(pgcurs, predictor_values_csv_path)
-== == == =
-# predictors(predictor_csv_path, pgcurs)
-projects(mscurs, pgcurs)
->>>>>> > ubuntu changes
-taxonomy(mscurs, pgcurs)
-entities(mscurs, pgcurs)
-boxes(mscurs, pgcurs)
-samples(mscurs, pgcurs)
-<< << << < HEAD
-projects(mscurs, pgcurs)
-# organisms(mscurs, pgcurs)
-== == == =
-organisms(mscurs, pgcurs)
+    # Refresh any materialized views
+    pgcurs.execute('REFRESH MATERIALIZED VIEW taxa.vw_taxonomy_crosstab;')
+    pgcurs.execute('REFRESH MATERIALIZED VIEW sample.vw_map_data;')
 
-# Refresh any materialized views
-pgcurs.execute('REFRESH MATERIALIZED VIEW taxa.vw_taxonomy_crosstab;')
-pgcurs.execute('REFRESH MATERIALIZED VIEW sample.vw_map_data;')
->>>>>> > ubuntu changes
-
-log = Logger('Migration')
-pgcurs = pgcon.cursor()
-pgcurs.execute("SELECT pg_size_pretty( pg_database_size('bugdb') );")
-log.info('Migration complete. Postgres database is {}'.format(pgcurs.fetchone()[0]))
+    log = Logger('Migration')
+    pgcurs = pgcon.cursor()
+    pgcurs.execute("SELECT pg_size_pretty( pg_database_size('bugdb') );")
+    log.info('Migration complete. Postgres database is {}'.format(pgcurs.fetchone()[0]))
 
 
 def main():

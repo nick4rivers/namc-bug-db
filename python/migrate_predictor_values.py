@@ -4,12 +4,15 @@ import json
 import psycopg2
 import argparse
 from psycopg2.extras import execute_values
-from rscommons import Logger, ProgressBar, dotenv
+from lib.logger import Logger
+from lib.progress_bar import ProgressBar
+from lib.dotenv import parse_args_env
 from utilities import sanitize_string, format_values, add_metadata, write_sql_file
 from postgres_lookup_data import lookup_data, insert_row, log_row_count, insert_many_rows
 from lookup_data import get_db_id
 
 table_name = 'geo.site_predictors'
+
 
 def migrate(pgcurs, csv_path):
 
@@ -32,7 +35,7 @@ def migrate(pgcurs, csv_path):
             valid_predictors = 0
             for predictor in predictors.keys():
                 if predictor in row:
-                    valid_predictors +=1
+                    valid_predictors += 1
                 else:
                     log.warning("No column in CSV for predictor {}".format(predictor))
 
@@ -56,16 +59,12 @@ def migrate(pgcurs, csv_path):
                     except Exception as ex:
                         print(ex)
 
-
     insert_many_rows(pgcurs, table_name, ['site_id', 'predictor_id', 'metadata'], data)
 
+    # predictors[predictor] = insert_row(pgcurs, table_name, data, 'predictor_id')
 
-        # predictors[predictor] = insert_row(pgcurs, table_name, data, 'predictor_id')
- 
-  
-         # progbar.update(counter)
+    # progbar.update(counter)
 
- 
     # progbar.finish()
     # log_row_count(pgcurs, table_name, len(predictors))
 
@@ -84,7 +83,7 @@ def migrate(pgcurs, csv_path):
 
 #     predictors = os.path.join(os.path.dirname(__file__), args.csv_path)
 #     sql_path = os.path.join(os.path.dirname(__file__),'../docker/postgres/initdb/30_geo_site_predictors.sql')
-  
+
 #     log = Logger('Predictor Migration')
 #     log.setup(logPath=os.path.join(os.path.dirname(__file__), "bugdb_predictors.log"), verbose=args.verbose)
 

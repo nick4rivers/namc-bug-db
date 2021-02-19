@@ -3,17 +3,20 @@ from lib.logger import Logger
 from lib.progress_bar import ProgressBar
 from lookup_data import get_db_id
 from utilities import log_record_count, format_values, sanitize_string
-from postgres_lookup_data import process_table, lookup_data
+from postgres_lookup_data import process_query, lookup_data
 
 
 def migrate(mscurs, pgcurs):
+
+    log = Logger('Organisms')
+    log.info('starting organisms')
 
     lookup = {
         'life_stages': lookup_data(pgcurs, 'taxa.life_stages', 'abbreviation')
     }
 
-    sql = 'SELECT B.* FROM PilotDB.dbo.BugData B INNER JOIN PilotDB.dbo.BugSample S ON B.SampleID = S.SampleID ORDER BY B.SampleID DESC'
-    process_table(mscurs, pgcurs, 'PilotDB.dbo.BugData', 'sample.organisms', organisms_callback, lookup, sql)
+    sql = 'SELECT B.* FROM PilotDB.dbo.BugData B INNER JOIN PilotDB.dbo.BugSample S ON B.SampleID = S.SampleID'
+    process_query(mscurs, pgcurs, sql, 'sample.organisms', organisms_callback, lookup)
     # process_notes(pgcurs)
 
 
