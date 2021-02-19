@@ -9,6 +9,10 @@ export interface CognitoClientProps {
     userPool: cognito.IUserPool
 }
 
+/********************************************************
+ * WARNING!!! This class affects the parent stack
+ * Be VERY careful about changing it
+ *********************************************************/
 export class CognitoUserPool extends cdk.Construct {
     userPool: cognito.UserPool
     client: cognito.UserPoolClient
@@ -36,6 +40,9 @@ export class CognitoUserPool extends cdk.Construct {
     }
 }
 
+/**
+ * This is the cognito UserPoolClient and one of them exists for each stage
+ */
 export class CognitoClient extends cdk.Construct {
     client: cognito.UserPoolClient
 

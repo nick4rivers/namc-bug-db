@@ -10,7 +10,9 @@ export interface EC2BastionProps {
     // dbIngressSg: ec2.ISecurityGroup
 }
 
-// https://github.com/martinbpeters/cdk-vpc-postgres/blob/master/stacks/vpc.py
+/**
+ * The EC2 Bastion is the EC2 instance inside the VPC that we can SSH into
+ */
 class EC2Bastion extends cdk.Construct {
     readonly ec2Instance: ec2.BastionHostLinux
     // readonly ingressSG: ec2.ISecurityGroup
