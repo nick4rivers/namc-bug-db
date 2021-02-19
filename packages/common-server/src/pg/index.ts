@@ -54,3 +54,23 @@ const boxesQuery = 'SELECT * FROM sample.vw_boxes ORDER BY box_id LIMIT $1 OFFSE
 
 export const getBoxes = (pool, limit: number, offset: number): Promise<any> =>
     pgPromise(pool, boxesQuery, [limit, offset])
+
+const sampleOrganismsQuery = 'SELECT * FROM sample.fn_sample_organisms($1)'
+export const getSampleOrganisms = (pool, sampleId: number): Promise<any> =>
+    pgPromise(pool, sampleOrganismsQuery, [sampleId])
+
+const projectsQuery = 'SELECT * FROM sample.vw_projects ORDER BY project_id LIMIT $1 OFFSET $2'
+export const getProjects = (pool, limit: number, offset: number): Promise<any> =>
+    pgPromise(pool, projectsQuery, [limit, offset])
+
+const driftQuery = 'SELECT * FROM sample.drift ORDER by sample_id LIMIT $1 OFFSET $2'
+export const getDriftSamples = (pool, limit: number, offset: number): Promise<any> =>
+    pgPromise(pool, driftQuery, [limit, offset])
+
+const planktonQuery = 'SELECT * FROM sample.plankton ORDER BY sample_id LIMIT $1 OFFSET $2'
+export const getPlanktonSamples = (pool, limit: number, offset: number): Promise<any> =>
+    pgPromise(pool, driftQuery, [limit, offset])
+
+const taxonomyQuery = 'SELECT * FROM taxa.vw_taxonomy_crosstab ORDER BY taxonomy_id LIMIT $1 OFFSET $2'
+export const getTaxonomy = (pool, limit: number, offset: number): Promise<any> =>
+    pgPromise(pool, taxonomyQuery, [limit, offset])

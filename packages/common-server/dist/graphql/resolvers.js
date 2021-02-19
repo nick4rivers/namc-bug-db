@@ -180,6 +180,7 @@ exports.default = {
             });
         },
 <<<<<<< HEAD
+<<<<<<< HEAD
         individuals: function (obj, _a, ctx, info) {
 >>>>>>> sites and siteInfo API endpoints
             var limit = _a.limit, nextToken = _a.nextToken;
@@ -196,15 +197,32 @@ exports.default = {
                             return [4, pg_1.getIndividuals(pool, limit, nextToken)];
                         case 2:
                             data = _c.sent();
+=======
+        sampleOrganisms: function (obj, _a, ctx, info) {
+            var sampleId = _a.sampleId;
+            return __awaiter(void 0, void 0, void 0, function () {
+                var pool, data;
+                return __generator(this, function (_b) {
+                    switch (_b.label) {
+                        case 0: return [4, pg_1.getPool()];
+                        case 1:
+                            pool = _b.sent();
+                            return [4, pg_1.getSampleOrganisms(pool, sampleId)];
+                        case 2:
+                            data = _b.sent();
+>>>>>>> projects plankton drift taxonomy
                             return [2, data.map(common_1.util.snake2camel)];
                     }
                 });
             });
         },
+<<<<<<< HEAD
         boxes: function (obj, _a, _b, info) {
             var limit = _a.limit, nextToken = _a.nextToken;
             var user = _b.user;
 =======
+=======
+>>>>>>> projects plankton drift taxonomy
         boxes: function (obj, _a, ctx, info) {
             var limit = _a.limit, offset = _a.offset;
 >>>>>>> individuals removed. boxes cleaned up
@@ -225,6 +243,74 @@ exports.default = {
 >>>>>>> individuals removed. boxes cleaned up
                         case 2:
                             data = _c.sent();
+                            return [2, data.map(common_1.util.snake2camel)];
+                    }
+                });
+            });
+        },
+        projects: function (obj, _a, ctx, info) {
+            var limit = _a.limit, offset = _a.offset;
+            return __awaiter(void 0, void 0, void 0, function () {
+                var pool, data;
+                return __generator(this, function (_b) {
+                    switch (_b.label) {
+                        case 0: return [4, pg_1.getPool()];
+                        case 1:
+                            pool = _b.sent();
+                            return [4, pg_1.getProjects(pool, limit, offset)];
+                        case 2:
+                            data = _b.sent();
+                            return [2, data.map(common_1.util.snake2camel)];
+                    }
+                });
+            });
+        },
+        driftSamples: function (obj, _a, ctx, info) {
+            var limit = _a.limit, offset = _a.offset;
+            return __awaiter(void 0, void 0, void 0, function () {
+                var pool, data;
+                return __generator(this, function (_b) {
+                    switch (_b.label) {
+                        case 0: return [4, pg_1.getPool()];
+                        case 1:
+                            pool = _b.sent();
+                            return [4, pg_1.getDriftSamples(pool, limit, offset)];
+                        case 2:
+                            data = _b.sent();
+                            return [2, data.map(common_1.util.snake2camel)];
+                    }
+                });
+            });
+        },
+        planktonSamples: function (obj, _a, ctx, info) {
+            var limit = _a.limit, offset = _a.offset;
+            return __awaiter(void 0, void 0, void 0, function () {
+                var pool, data;
+                return __generator(this, function (_b) {
+                    switch (_b.label) {
+                        case 0: return [4, pg_1.getPool()];
+                        case 1:
+                            pool = _b.sent();
+                            return [4, pg_1.getPlanktonSamples(pool, limit, offset)];
+                        case 2:
+                            data = _b.sent();
+                            return [2, data.map(common_1.util.snake2camel)];
+                    }
+                });
+            });
+        },
+        taxonomy: function (obj, _a, ctx, info) {
+            var limit = _a.limit, offset = _a.offset;
+            return __awaiter(void 0, void 0, void 0, function () {
+                var pool, data;
+                return __generator(this, function (_b) {
+                    switch (_b.label) {
+                        case 0: return [4, pg_1.getPool()];
+                        case 1:
+                            pool = _b.sent();
+                            return [4, pg_1.getTaxonomy(pool, limit, offset)];
+                        case 2:
+                            data = _b.sent();
                             return [2, data.map(common_1.util.snake2camel)];
                     }
                 });

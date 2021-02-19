@@ -111,15 +111,15 @@ SELECT s.sample_id,
        b.box_state_name,
        s.site_id,
        si.site_name,
-       si.latitude      AS site_latitude,
-       si.longitude     AS site_longitude,
-       si.us_state      AS site_state,
+       si.latitude          AS site_latitude,
+       si.longitude         AS site_longitude,
+       si.us_state          AS site_state,
        s.sample_date,
-       st_y(s.location) AS sample_latitude,
-       st_x(s.location) AS sample_longitude,
+       st_y(s.location)     AS sample_latitude,
+       st_x(s.location)     AS sample_longitude,
        s.sample_time,
        s.type_id,
-       t.sample_type_name AS sample_type,
+       t.sample_type_name   AS sample_type,
        s.method_id,
        m.sample_method_name AS sample_method,
        s.habitat_id,
@@ -231,5 +231,22 @@ CREATE INDEX ix_sample_vw_map_data_habitat_id ON sample.vw_map_data (habitat_id)
 CREATE INDEX ix_sample_vw_map_data_sample_year ON sample.vw_map_data (sample_year);
 CREATE INDEX ix_sample_vw_map_data_state_id ON sample.vw_map_data (state_id);
 
-
-
+CREATE OR REPLACE VIEW sample.vw_projects AS
+(
+SELECT p.project_id,
+       p.project_name,
+       t.project_type_name               as project_type,
+       p.is_private,
+       i.first_name || ' ' || i.last_name as contact,
+       p.auto_update_samples,
+       p.description,
+       p.created_date,
+       p.updated_date,
+       Count(s.project_id)                  samples
+FROM sample.projects p
+         inner join sample.project_types t ON p.project_type_id = t.project_type_id
+         left join entity.individuals i on p.contact_id = i.entity_id
+         left join sample.project_samples s on p.project_id = s.project_id
+GROUP BY p.project_id, p.project_name, t.project_type_name, p.is_private, i.first_name || ' '  || i.last_name,
+         p.auto_update_samples, p.description, p.created_date, p.updated_date
+    );

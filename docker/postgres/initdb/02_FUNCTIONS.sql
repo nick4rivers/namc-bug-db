@@ -27,19 +27,19 @@ BEGIN
     RETURN QUERY
         SELECT s.site_id,
                s.site_name,
-               sy.system_name           as system,
-               e.ecosystem_name         as ecosystem,
-               ST_AsGeoJSON(s.location) AS location,
-               st_x(s.location)         AS longitude,
-               st_y(s.location)         AS latitude,
-               st.abbreviation             us_state,
+               sy.system_name            as system,
+               e.ecosystem_name          as ecosystem,
+               ST_AsGeoJSON(s.location)  AS location,
+               st_x(s.location)          AS longitude,
+               st_y(s.location)          AS latitude,
+               st.abbreviation              us_state,
                w.waterbody_type_name,
                s.waterbody_code,
                s.waterbody_name,
                s.created_date,
                s.updated_date,
                ST_AsGeoJSON(s.catchment) AS catchment,
-               COUNT(ss.site_id)        AS sample_count
+               COUNT(ss.site_id)         AS sample_count
         FROM geo.sites s
                  LEFT JOIN geo.states st ON st_contains(st.geom, s.location)
                  LEFT JOIN geo.systems sy ON s.system_id = sy.system_id
@@ -60,7 +60,7 @@ taxa SCHEMA
 */
 DROP FUNCTION IF EXISTS taxa.fn_tree;
 
-CREATE FUNCTION taxa.fn_tree(taxa_id SMALLINT)
+CREATE OR REPLACE FUNCTION taxa.fn_tree(taxa_id SMALLINT)
     returns table
             (
                 taxonomy_id     SMALLINT,
@@ -99,5 +99,71 @@ begin
                taxa_tree.level_name,
                taxa_tree.parent_id
         FROM taxa_tree;
+end
+$$;
+
+
+CREATE OR REPLACE FUNCTION sample.fn_sample_organisms(p_sample_id INT)
+    RETURNs TABLE
+            (
+                organism_id      INT,
+                sample_id        INT,
+                life_stage       CHAR,
+                bug_size         REAL,
+                split_count      REAL,
+                lab_split        REAL,
+                field_split      REAL,
+                big_rare_count   SMALLINT,
+                invalidated_date timestamp,
+                created_date     timestamp,
+                updated_date     timestamp,
+                taxonomy_id      smallint,
+                Phylum           varchar(255),
+                Class            varchar(255),
+                Subclass         varchar(255),
+                "Order"          varchar(255),
+                Suborder         varchar(255),
+                Family           varchar(255),
+                Subfamily        varchar(255),
+                Tribe            varchar(255),
+                Genus            varchar(255),
+                Subgenus         varchar(255),
+                Species          varchar(255),
+                Subspecies       varchar(255)
+            )
+    LANGUAGE plpgsql
+AS
+$$
+BEGIN
+    RETURN QUERY
+        SELECT o.organism_id,
+               o.sample_id,
+               l.abbreviation as life_stage,
+               o.bug_size,
+               o.split_count,
+               s.lab_split,
+               s.field_split,
+               o.big_rare_count,
+               o.invalidated_date,
+               o.created_date,
+               o.updated_date,
+               o.taxonomy_id,
+               t.Phylum,
+               t.Class,
+               t.Subclass,
+               t."Order",
+               t.Suborder,
+               t.Family,
+               t.Subfamily,
+               t.Tribe,
+               t.Genus,
+               t.Subgenus,
+               t.Species,
+               t.Subspecies
+        FROM sample.organisms o
+                 inner join sample.samples s ON o.sample_id = o.sample_id
+                 inner join taxa.vw_taxonomy_crosstab t ON o.taxonomy_id = t.taxonomy_id
+                 inner join taxa.life_stages l on o.life_stage_id = l.life_stage_id
+        WHERE sample_id = p_sample_id;
 end
 $$;

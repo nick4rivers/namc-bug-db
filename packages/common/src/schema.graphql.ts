@@ -13,11 +13,16 @@ const typeDefs = gql`
         auth: AuthParams
 
         samples(limit: Int, offset: Int): PaginatedSample
+        sampleOrganisms(sampleId: Int!): [SampleOrganism]
+        driftSamples(limit: Int, offset: Int): [DriftSample]
+        planktonSamples(limit: Int, offset: Int): [PlanktonSample]
         boxStates(limit: Int, nextToken: Int): [BoxState]
         sites(limit: Int, offset: Int): [Site]
         siteInfo(siteId: Int!): SiteInfo
         # individuals(limit: Int, nextToken: Int): [Individual]
         boxes(limit: Int, offset: Int): [Box]
+        projects(limit: Int, offset: Int): [Project]
+        taxonomy(limit: Int, offset: Int): [Taxonomy]
     }
 
     # this schema allows the following mutation:
@@ -130,6 +135,86 @@ const typeDefs = gql`
         boxReceivedDate: String
         processingCompleteDate: String
         projectedCompleteDate: String
+    }
+
+    type SampleOrganism {
+        organismId: Int
+        sampleId: Int
+        lifeStage: String
+        bugSize: Float
+        splitCount: Float
+        labSplit: Float
+        fieldSplit: Float
+        bigRareCount: Float
+        invalidatedDate: String
+        createdDate: String
+        updatedDate: String
+        taxonomyId: Int
+        Phylum: String
+        Class: String
+        Subclass: String
+        Order: String
+        Suborder: String
+        Family: String
+        Subfamily: String
+        Tribe: String
+        Genus: String
+        Subgenus: String
+        Species: String
+        Subspecies: String
+    }
+
+    type Project {
+        projectId: Int
+        projectName: String
+        projectType: String
+        isPrivate: Boolean
+        contact: String
+        autoUpdateSamples: Boolean
+        description: String
+        createdDate: String
+        updatedDate: String
+        samples: Int
+    }
+
+    type DriftSample {
+        sampleId: Int
+        netArea: Float
+        netDuration: Float
+        streamDepth: Float
+        netDepth: Float
+        netVelocity: Float
+        notes: String
+        updatedDate: String
+    }
+
+    type PlanktonSample {
+        sampleId: Int
+        diameter: Float
+        subSampleCount: Float
+        towLength: Float
+        volume: Float
+        allQuot: Float
+        sizeInterval: Float
+        towType: String
+        notes: String
+        updatedDate: String
+    }
+
+    type Taxonomy {
+        taxonomyId: Int
+        Phylum: String
+        Class: String
+        Subclass: String
+        Order: String
+        Suborder: String
+        Family: String
+        Subfamily: String
+        Tribe: String
+        Genus: String
+        Subgenus: String
+        Species: String
+        Subspecies: String
     }
 `
 
