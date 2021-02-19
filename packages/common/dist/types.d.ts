@@ -28,7 +28,7 @@ export declare type Sample = {
     fieldSplit: number;
     labSplit: number;
     jarCount: number;
-    qualitative: string;
+    qualitative: boolean;
     mesh: number;
     createdDate: string;
     updatedDate: string;
@@ -44,7 +44,7 @@ export declare type Site = {
     ecosystemName: string;
     longitude: number;
     latitude: number;
-    state: string;
+    usState: string;
     waterbodyType: string;
     waterbodyCode: string;
     waterbodyName: string;
@@ -60,7 +60,7 @@ export declare type SiteInfo = {
     location: string;
     stX: number;
     stY: number;
-    abbreviation: string;
+    usState: string;
     waterbodyTypeName: string;
     waterbodyCode: string;
     waterbodyName: string;
@@ -159,16 +159,16 @@ export declare type PlanktonSample = {
 };
 export declare type Taxonomy = {
     taxonomyId: number;
-    Phylum: string;
-    Class: string;
-    Subclass: string;
-    Order: string;
-    Suborder: string;
-    Family: string;
-    Subfamily: string;
-    Tribe: string;
-    Genus: string;
-    Subgenus: string;
-    Species: string;
-    Subspecies: string;
+    phylum: string;
+    class: string;
+    subclass: string;
+    order: string;
+    suborder: string;
+    family: string;
+    subfamily: string;
+    tribe: string;
+    genus: string;
+    subgenus: string;
+    species: string;
+    subspecies: string;
 };

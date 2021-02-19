@@ -62,7 +62,7 @@ const typeDefs = gql`
         fieldSplit: Float
         labSplit: Float
         jarCount: Int
-        qualitative: String
+        qualitative: Boolean
         mesh: Float
         createdDate: String
         updatedDate: String
@@ -76,11 +76,11 @@ const typeDefs = gql`
     type Site {
         siteId: Int
         siteName: String
-        systemName: String
-        ecosystemName: String
+        system: String
+        ecosystem: String
         longitude: Float
         latitude: Float
-        state: String
+        usState: String
         waterbodyType: String
         waterbodyCode: String
         waterbodyName: String
@@ -97,7 +97,7 @@ const typeDefs = gql`
         location: String
         stX: Float
         stY: Float
-        abbreviation: String
+        usState: String
         waterbodyTypeName: String
         waterbodyCode: String
         waterbodyName: String
@@ -203,18 +203,18 @@ const typeDefs = gql`
 
     type Taxonomy {
         taxonomyId: Int
-        Phylum: String
-        Class: String
-        Subclass: String
-        Order: String
-        Suborder: String
-        Family: String
-        Subfamily: String
-        Tribe: String
-        Genus: String
-        Subgenus: String
-        Species: String
-        Subspecies: String
+        phylum: String
+        class: String
+        subclass: String
+        order: String
+        suborder: String
+        family: String
+        subfamily: String
+        tribe: String
+        genus: String
+        subgenus: String
+        species: String
+        subspecies: String
     }
 `
 

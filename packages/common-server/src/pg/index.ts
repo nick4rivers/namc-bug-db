@@ -69,7 +69,7 @@ export const getDriftSamples = (pool, limit: number, offset: number): Promise<an
 
 const planktonQuery = 'SELECT * FROM sample.plankton ORDER BY sample_id LIMIT $1 OFFSET $2'
 export const getPlanktonSamples = (pool, limit: number, offset: number): Promise<any> =>
-    pgPromise(pool, driftQuery, [limit, offset])
+    pgPromise(pool, planktonQuery, [limit, offset])
 
 const taxonomyQuery = 'SELECT * FROM taxa.vw_taxonomy_crosstab ORDER BY taxonomy_id LIMIT $1 OFFSET $2'
 export const getTaxonomy = (pool, limit: number, offset: number): Promise<any> =>

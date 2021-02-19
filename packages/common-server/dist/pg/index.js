@@ -112,7 +112,7 @@ exports.getDriftSamples = function (pool, limit, offset) {
 };
 var planktonQuery = 'SELECT * FROM sample.plankton ORDER BY sample_id LIMIT $1 OFFSET $2';
 exports.getPlanktonSamples = function (pool, limit, offset) {
-    return pgPromise(pool, driftQuery, [limit, offset]);
+    return pgPromise(pool, planktonQuery, [limit, offset]);
 };
 var taxonomyQuery = 'SELECT * FROM taxa.vw_taxonomy_crosstab ORDER BY taxonomy_id LIMIT $1 OFFSET $2';
 exports.getTaxonomy = function (pool, limit, offset) {

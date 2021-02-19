@@ -11,7 +11,7 @@ CREATE OR REPLACE FUNCTION geo.fn_site_info(p_site_id INT)
                 location            TEXT,
                 st_x                DOUBLE PRECISION,
                 st_y                DOUBLE PRECISION,
-                abbreviation        VARCHAR(2),
+                us_state            VARCHAR(2),
                 waterbody_type_name VARCHAR(255),
                 waterbody_code      VARCHAR(100),
                 waterbody_name      VARCHAR(255),
