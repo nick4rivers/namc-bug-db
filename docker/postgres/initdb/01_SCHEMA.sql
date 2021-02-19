@@ -865,8 +865,11 @@ CREATE TRIGGER tr_plankton_update
     FOR EACH ROW
 EXECUTE PROCEDURE fn_before_update();
 
+/*
+ used to be net diameter - meaningless for rectangular nets.
 
--- TODO: confirm that velo means velocity
+ metrics work off of volumes. So need to get the diameters into areas
+ */
 CREATE TABLE sample.drift
 (
     sample_id    INT         NOT NULL PRIMARY KEY,
@@ -874,7 +877,7 @@ CREATE TABLE sample.drift
     net_duration FLOAT,
     stream_depth FLOAT,
     net_depth    FLOAT,
-    net_velo     FLOAT,
+    net_velocity FLOAT,
     notes        TEXT,
     updated_date TIMESTAMPTZ NOT NULL DEFAULT now(),
 
@@ -882,7 +885,7 @@ CREATE TABLE sample.drift
     CONSTRAINT ck_bug_drift_net_duration CHECK (net_duration > 0),
     CONSTRAINT ck_bug_drift_stream_depth CHECK (stream_depth > 0),
     CONSTRAINT ck_bug_drift_net_depth CHECK (net_depth > 0),
-    CONSTRAINT ck_bug_drift_net_velo CHECK (net_velo >= 0)
+    CONSTRAINT ck_bug_drift_net_velocity CHECK (net_velocity >= 0)
 );
 CREATE TRIGGER tr_drift_update
     BEFORE UPDATE
