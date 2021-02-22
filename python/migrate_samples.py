@@ -164,7 +164,7 @@ def drift_callback(msdata, lookup):
         'net_duration': msdata['NetTime'],
         'stream_depth': msdata['StreamDepth'],
         'net_depth': msdata['NetDepth'],
-        'net_velo': msdata['NetVelo'] if msdata['NetVelo'] != 98 else 0.98,
+        'net_velocity': msdata['NetVelo'] if msdata['NetVelo'] != 98 else 0.98,
         'notes': sanitize_string(msdata['Notes'])
     }
 
@@ -179,7 +179,7 @@ def plankton_callback(msdata, lookup):
         'sub_sample_count': msdata['SubSampleCount'],
         'tow_length': msdata['TowLength'] if msdata['TowLength'] and msdata['TowLength'] > 0 else None,
         'volume': msdata['Volume'] if msdata['Volume'] and msdata['Volume'] > 0 else None,
-        'all_quot': msdata['AllQuot'],
+        'aliquot': msdata['AllQuot'],
         'size_interval': msdata['SizeInterval'] if msdata['SizeInterval'] and msdata['SizeInterval'] > 0 else None,
         'tow_type': tow_type,
         'notes': sanitize_string(msdata['Notes'])
