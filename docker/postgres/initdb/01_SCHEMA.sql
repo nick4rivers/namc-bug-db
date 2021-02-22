@@ -971,15 +971,12 @@ CREATE TRIGGER tr_fish_update
 EXECUTE PROCEDURE fn_before_update();
 
 /*
- The Valid column is not currently used. But its there to invalidate
- a certain row, and then ignore it from all the subsequent processes.
+ metadata key "pre_reconciliation_taxonomy_id" is the
+ taxonomy_id before the taxonomic reconciliation process.
 
- Currently delete the data if it is not valid. This was done infrequently
- as part of large QA efforts across big datasets.
-
- Experiment with using a date for invalidating a record. This can
- then reveal in a report whether the metrics predate a record
- getting eliminated.
+ We don't want to store multiple records for the same
+ organism, distinguished by some "valid/invalid" flag
+ for fear that users will forget to filter by this flag.
  */
 CREATE TABLE sample.organisms
 (
@@ -990,7 +987,7 @@ CREATE TABLE sample.organisms
     bug_size         REAL,
     split_count      REAL,
     big_rare_count   SMALLINT,
-    invalidated_date TIMESTAMPTZ,
+    metadata         JSON,
     notes            TEXT,
     created_date     TIMESTAMPTZ NOT NULL DEFAULT now(),
     updated_date     TIMESTAMPTZ NOT NULL DEFAULT now(),
@@ -1002,8 +999,7 @@ CREATE TABLE sample.organisms
 CREATE INDEX fx_organisms_sample_id ON sample.organisms(sample_id);
 CREATE INDEX fx_organisms_taxonomy_id ON sample.organisms(taxonomy_id);
 CREATE INDEX fx_organisms_life_stage_id ON sample.organisms(life_stage_id);
--- TODO: Comment out temporarily while waiting for information from David.
--- CREATE UNIQUE INDEX ux_organism_organisms ON sample.organisms(sample_id, taxonomy_id, life_stage_id, bug_size);
+CREATE UNIQUE INDEX ux_organism_organisms ON sample.organisms(sample_id, taxonomy_id, life_stage_id, bug_size);
 CREATE TRIGGER tr_organisms_update
     BEFORE UPDATE
     ON sample.organisms
