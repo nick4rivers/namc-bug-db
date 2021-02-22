@@ -137,14 +137,14 @@ SELECT s.sample_id,
        p.sub_sample_count,
        p.tow_length,
        p.volume,
-       p.all_quot,
+       p.aliquot,
        p.size_interval,
        p.tow_type,
        d.net_area,
        d.net_duration,
        d.stream_depth,
        d.net_depth,
-       d.net_velo
+       d.net_velocity
 FROM sample.samples s
          INNER JOIN sample.vw_boxes b ON s.box_id = b.box_id
          INNER JOIN sample.sample_types t ON s.type_id = t.sample_type_id
