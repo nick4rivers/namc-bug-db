@@ -132,14 +132,27 @@ SELECT s.sample_id,
        s.mesh,
        s.created_date,
        s.updated_date,
-       s.qa_sample_id
-
+       s.qa_sample_id,
+       p.diameter,
+       p.sub_sample_count,
+       p.tow_length,
+       p.volume,
+       p.all_quot,
+       p.size_interval,
+       p.tow_type,
+       d.net_area,
+       d.net_duration,
+       d.stream_depth,
+       d.net_depth,
+       d.net_velo
 FROM sample.samples s
          INNER JOIN sample.vw_boxes b ON s.box_id = b.box_id
          INNER JOIN sample.sample_types t ON s.type_id = t.sample_type_id
          INNER JOIN sample.sample_methods m ON s.method_id = m.sample_method_id
          INNER JOIN geo.habitats h ON s.habitat_id = h.habitat_id
          LEFT JOIN geo.vw_sites si ON s.site_id = si.site_id
+         LEFT JOIN sample.plankton p ON s.sample_id = p.sample_id
+         LEFT JOIN sample.drift d ON s.sample_id = d.sample_id
     );
 
 DROP VIEW IF EXISTS sample.vw_taxonomy_crosstab;
