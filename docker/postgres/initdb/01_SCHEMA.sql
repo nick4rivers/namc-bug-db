@@ -849,7 +849,6 @@ CREATE TABLE sample.plankton
     aliquot          REAL,
     size_interval    REAL,
     tow_type         TOW_TYPES,
-    notes            TEXT,
     updated_date     TIMESTAMPTZ NOT NULL DEFAULT now(),
 
     CONSTRAINT fk_plankton_sample_id FOREIGN KEY (sample_id) REFERENCES sample.samples (sample_id) ON DELETE CASCADE,
@@ -878,7 +877,6 @@ CREATE TABLE sample.drift
     stream_depth FLOAT,
     net_depth    FLOAT,
     net_velocity FLOAT,
-    notes        TEXT,
     updated_date TIMESTAMPTZ NOT NULL DEFAULT now(),
 
     CONSTRAINT ck_bug_drift_net_area CHECK (net_area > 0),
@@ -920,7 +918,6 @@ CREATE TABLE sample.mass
     mass_type_id   SMALLINT    NOT NULL,
     mass_method_id SMALLINT    NOT NULL,
     mass           REAL        NOT NULL,
-    notes          TEXT,
     updated_date   TIMESTAMPTZ NOT NULL DEFAULT now(),
 
     CONSTRAINT pk_mass PRIMARY KEY (sample_id, mass_type_id),
@@ -955,7 +952,6 @@ CREATE TABLE sample.fish
     taxonomy_id  SMALLINT    NOT NULL,
     fish_length  REAL,
     fish_mass    REAL,
-    notes        TEXT,
     updated_date TIMESTAMPTZ NOT NULL DEFAULT now(),
 
     CONSTRAINT fk_fish_sample_id FOREIGN KEY (sample_id) REFERENCES sample.samples (sample_id) ON DELETE CASCADE,
