@@ -996,10 +996,9 @@ CREATE TABLE sample.organisms
     CONSTRAINT fk_organisms_taxonomy_id FOREIGN KEY (taxonomy_id) REFERENCES taxa.taxonomy (taxonomy_id),
     CONSTRAINT fk_organisms_life_stage_id FOREIGN KEY (life_stage_id) REFERENCES taxa.life_stages (life_stage_id)
 );
-CREATE INDEX fx_organisms_sample_id ON sample.organisms(sample_id);
+CREATE UNIQUE INDEX ux_organism_organisms ON sample.organisms(sample_id, taxonomy_id, life_stage_id, bug_size);
 CREATE INDEX fx_organisms_taxonomy_id ON sample.organisms(taxonomy_id);
 CREATE INDEX fx_organisms_life_stage_id ON sample.organisms(life_stage_id);
-CREATE UNIQUE INDEX ux_organism_organisms ON sample.organisms(sample_id, taxonomy_id, life_stage_id, bug_size);
 CREATE TRIGGER tr_organisms_update
     BEFORE UPDATE
     ON sample.organisms
