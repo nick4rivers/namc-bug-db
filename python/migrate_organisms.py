@@ -15,7 +15,12 @@ def migrate(mscurs, pgcurs):
         'life_stages': lookup_data(pgcurs, 'taxa.life_stages', 'abbreviation')
     }
 
-    sql = 'SELECT B.* FROM PilotDB.dbo.BugData B INNER JOIN PilotDB.dbo.BugSample S ON B.SampleID = S.SampleID'
+    # Sum the counts over the required unique index. Join to Samples so we only get
+    # records that also have valid samples.
+    sql = """SELECT B.SampleID, Code, LifeStage, BugSize, Sum(SplitCount) SplitCount, Sum(BigRareCount) BigRareCount
+             FROM BugData B INNER JOIN BugSample BS on B.SampleID = BS.SampleID
+             GROUP BY B.SampleID, Code, LifeStage, BugSize"""
+
     process_query(mscurs, pgcurs, sql, 'sample.organisms', organisms_callback, lookup)
     # process_notes(pgcurs)
 
