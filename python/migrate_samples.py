@@ -164,8 +164,7 @@ def drift_callback(msdata, lookup):
         'net_duration': msdata['NetTime'],
         'stream_depth': msdata['StreamDepth'],
         'net_depth': msdata['NetDepth'],
-        'net_velocity': msdata['NetVelo'] if msdata['NetVelo'] != 98 else 0.98,
-        'notes': sanitize_string(msdata['Notes'])
+        'net_velocity': msdata['NetVelo'] if msdata['NetVelo'] != 98 else 0.98
     }
 
 
@@ -181,8 +180,7 @@ def plankton_callback(msdata, lookup):
         'volume': msdata['Volume'] if msdata['Volume'] and msdata['Volume'] > 0 else None,
         'aliquot': msdata['AllQuot'],
         'size_interval': msdata['SizeInterval'] if msdata['SizeInterval'] and msdata['SizeInterval'] > 0 else None,
-        'tow_type': tow_type,
-        'notes': sanitize_string(msdata['Notes'])
+        'tow_type': tow_type
     }
 
 
@@ -195,6 +193,5 @@ def mass_callback(msdata, lookup):
         'sample_id': msdata['SampleID'],
         'mass_type_id': type_id,
         'mass_method_id': method_id,
-        'mass': msdata['AFDM'],
-        'notes': sanitize_string(msdata['Notes'])
+        'mass': msdata['AFDM']
     }

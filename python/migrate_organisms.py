@@ -18,7 +18,7 @@ def migrate(mscurs, pgcurs):
     # Sum the counts over the required unique index. Join to Samples so we only get
     # records that also have valid samples.
     sql = """SELECT B.SampleID, Code, LifeStage, BugSize, Sum(SplitCount) SplitCount, Sum(BigRareCount) BigRareCount
-             FROM BugData B INNER JOIN BugSample BS on B.SampleID = BS.SampleID
+             FROM PilotDB.dbo.BugData B INNER JOIN PilotDB.dbo.BugSample BS on B.SampleID = BS.SampleID
              GROUP BY B.SampleID, Code, LifeStage, BugSize"""
 
     process_query(mscurs, pgcurs, sql, 'sample.organisms', organisms_callback, lookup)
@@ -42,8 +42,7 @@ def organisms_callback(msdata, lookup):
         'life_stage_id': life_stage_id,
         'bug_size': msdata['BugSize'],
         'split_count': msdata['SplitCount'],
-        'big_rare_count': msdata['BigRareCount'],
-        'notes': sanitize_string(msdata['Notes'])
+        'big_rare_count': msdata['BigRareCount']
     }
 
 

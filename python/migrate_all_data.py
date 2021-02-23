@@ -33,7 +33,8 @@ def migrate_all_data(mscon, pgcon, predictor_csv_path, predictor_values_csv_path
 
     # Refresh any materialized views
     pgcurs.execute('REFRESH MATERIALIZED VIEW taxa.vw_taxonomy_crosstab;')
-    pgcurs.execute('REFRESH MATERIALIZED VIEW sample.vw_map_data;')
+    # pgcurs.execute('REFRESH MATERIALIZED VIEW sample.vw_map_data;')
+    pgcurs.execute('REFRESH MATERIALIZED VIEW sample.vw_samples;')
 
     log = Logger('Migration')
     pgcurs = pgcon.cursor()
