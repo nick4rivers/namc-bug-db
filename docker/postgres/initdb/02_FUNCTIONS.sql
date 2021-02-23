@@ -144,7 +144,6 @@ BEGIN
                s.lab_split,
                s.field_split,
                o.big_rare_count,
-               o.invalidated_date,
                o.created_date,
                o.updated_date,
                o.taxonomy_id,
@@ -165,5 +164,149 @@ BEGIN
                  inner join taxa.vw_taxonomy_crosstab t ON o.taxonomy_id = t.taxonomy_id
                  inner join taxa.life_stages l on o.life_stage_id = l.life_stage_id
         WHERE sample_id = p_sample_id;
+end
+$$;
+
+
+
+CREATE OR REPLACE FUNCTION sample.fn_samples(
+    p_limit INT,
+    p_offset INT,
+    p_sample_id INT = NULL,
+    p_box_id INT = NULL,
+    p_site_id INT = NULL,
+    p_sample_year INT = NULL,
+    p_type_id SMALLINT = NULL)
+    RETURNS TABLE
+            (
+                sample_id        INT,
+                box_id           INT,
+                customer_id      SMALLINT,
+                customer_name    VARCHAR(255),
+                box_state_name   VARCHAR(255),
+                box_state_id     SMALLINT,
+                submitter_name   VARCHAR(255),
+                site_id          INT,
+                site_name        VARCHAR(255),
+                site_latitude    DOUBLE PRECISION,
+                site_latitude    DOUBLE PRECISION,
+                site_state       VARCHAR(2),
+                sample_date      TIMESTAMPTZ,
+                sample_year      INT,
+                sample_latitude  DOUBLE PRECISION,
+                sample_longitude DOUBLE PRECISION,
+                sample_time,
+                type_id          SMALLINT,
+                sample_type      VARCHAR(50),
+                method_id        SMALLINT,
+                sample_method    VARCHAR(50),
+                habitat_id       SMALLINT,
+                habitat_name     VARCHAR(50),
+                area             FLOAT,
+                field_split      FLOAT,
+                lab_split        FLOAT,
+                jar_count        SMALLINT,
+                qualitative      BOOLEAN,
+                mesh             FLOAT,
+                created_date     TIMESTAMPTZ,
+                updated_date     TIMESTAMPTZ,
+                qa_sample_id     INT,
+                diameter         FLOAT,
+                sub_sample_count FLOAT,
+                tow_length       FLOAT,
+                volume           FLOAT,
+                aliquot          FLOAT,
+                size_interval    FLOAT,
+                tow_type         VARCHAR(255),
+                net_area         FLOAT,
+                net_duration     FLOAT,
+                stream_depth     FLOAT,
+                net_depth        FLOAT,
+                net_velocity     FLOAT,
+                taxonomy_id      smallint,
+                life_stage       CHAR,
+                bug_size         REAL,
+                split_count      REAL,
+                lab_split        REAL,
+                field_split      REAL,
+                big_rare_count   SMALLINT,
+                phylum           VARCHAR(255),
+                class            VARCHAR(255),
+                subclass         VARCHAR(255),
+                "Order"          VARCHAR(255),
+                family           VARCHAR(255),
+                genus            VARCHAR(255),
+                is_private       BOOLEAN
+            )
+    LANGUAGE plpgsql
+AS
+$$
+BEGIN
+    RETURN QUERY
+        SELECT sample_id,
+               box_id,
+               customer_id,
+               customer_name,
+               box_state_name,
+               box_state_id,
+               submitter_name,
+               site_id,
+               site_name,
+               site_latitude,
+               site_longitude,
+               site_state,
+               sample_date,
+               sample_year,
+               sample_latitude,
+               sample_longitude,
+               sample_time,
+               type_id,
+               sample_type,
+               method_id,
+               sample_method,
+               habitat_id,
+               habitat_name,
+               area,
+               field_split,
+               lab_split,
+               jar_count,
+               qualitative,
+               mesh,
+               created_date,
+               updated_date,
+               qa_sample_id,
+               diameter,
+               sub_sample_count,
+               tow_length,
+               volume,
+               aliquot,
+               size_interval,
+               tow_type,
+               net_area,
+               net_duration,
+               stream_depth,
+               net_depth,
+               net_velocity,
+               split_count,
+               taxonomy_id,
+               life_stage,
+               bug_size,
+               split_count,
+               big_rare_count,
+               phylum,
+               class,
+               subclass,
+               "Order",
+               family,
+               genus,
+               is_private
+        FROM sample.vw_samples
+        WHERE ((sample_id = p_sample_id) OR (sample_id IS NULL))
+          AND ((p_box_id = p_sample_id) OR (p_box_id IS NULL))
+          AND ((p_site_id = p_sample_id) OR (p_site_id IS NULL))
+          AND ((p_sample_year = p_sample_id) OR (p_sample_year IS NULL))
+          AND ((p_type_id = p_sample_id) OR (p_type_id IS NULL))
+        ORDER BY sample_id
+        LIMIT p_limit OFFSET p_offset;
 end
 $$;

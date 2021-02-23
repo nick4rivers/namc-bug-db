@@ -102,61 +102,6 @@ GROUP BY b.box_id,
          b.projected_complete_date
     );
 
-CREATE OR REPLACE VIEW sample.vw_samples AS
-(
-SELECT s.sample_id,
-       s.box_id,
-       b.customer_id,
-       b.customer_name,
-       b.box_state_name,
-       b.box_state_id,
-       b.submitter_name,
-       s.site_id,
-       si.site_name,
-       si.latitude          AS site_latitude,
-       si.longitude         AS site_longitude,
-       si.us_state          AS site_state,
-       s.sample_date,
-       extract(year from s.sample_date) as sample_year,
-       st_y(s.location)     AS sample_latitude,
-       st_x(s.location)     AS sample_longitude,
-       s.sample_time,
-       s.type_id,
-       t.sample_type_name   AS sample_type,
-       s.method_id,
-       m.sample_method_name AS sample_method,
-       s.habitat_id,
-       h.habitat_name,
-       s.area,
-       s.field_split,
-       s.lab_split,
-       s.jar_count,
-       s.qualitative,
-       s.mesh,
-       s.created_date,
-       s.updated_date,
-       s.qa_sample_id,
-       p.diameter,
-       p.sub_sample_count,
-       p.tow_length,
-       p.volume,
-       p.aliquot,
-       p.size_interval,
-       p.tow_type,
-       d.net_area,
-       d.net_duration,
-       d.stream_depth,
-       d.net_depth,
-       d.net_velocity
-FROM sample.samples s
-         INNER JOIN sample.vw_boxes b ON s.box_id = b.box_id
-         INNER JOIN sample.sample_types t ON s.type_id = t.sample_type_id
-         INNER JOIN sample.sample_methods m ON s.method_id = m.sample_method_id
-         INNER JOIN geo.habitats h ON s.habitat_id = h.habitat_id
-         LEFT JOIN geo.vw_sites si ON s.site_id = si.site_id
-         LEFT JOIN sample.plankton p ON s.sample_id = p.sample_id
-         LEFT JOIN sample.drift d ON s.sample_id = d.sample_id
-    );
 
 DROP VIEW IF EXISTS sample.vw_taxonomy_crosstab;
 CREATE MATERIALIZED VIEW taxa.vw_taxonomy_crosstab AS
@@ -181,6 +126,87 @@ FROM crosstab(
         )
     );
 
+DROP MATERIALIZED VIEW IF EXISTS sample.vw_samples;
+CREATE MATERIALIZED VIEW sample.vw_samples AS
+(
+SELECT s.sample_id,
+       s.box_id,
+       b.customer_id,
+       b.customer_name,
+       b.box_state_name,
+       b.box_state_id,
+       b.submitter_name,
+       s.site_id,
+       si.site_name,
+       si.latitude                      AS site_latitude,
+       si.longitude                     AS site_longitude,
+       si.us_state                      AS site_state,
+       s.sample_date,
+       extract(year from s.sample_date) as sample_year,
+       st_y(s.location)                 AS sample_latitude,
+       st_x(s.location)                 AS sample_longitude,
+       s.sample_time,
+       s.type_id,
+       st.sample_type_name              AS sample_type,
+       s.method_id,
+       m.sample_method_name             AS sample_method,
+       s.habitat_id,
+       h.habitat_name,
+       s.area,
+       s.field_split,
+       s.lab_split,
+       s.jar_count,
+       s.qualitative,
+       s.mesh,
+       s.created_date,
+       s.updated_date,
+       s.qa_sample_id,
+       p.diameter,
+       p.sub_sample_count,
+       p.tow_length,
+       p.volume,
+       p.aliquot,
+       p.size_interval,
+       p.tow_type,
+       d.net_area,
+       d.net_duration,
+       d.stream_depth,
+       d.net_depth,
+       d.net_velocity,
+       o.split_count,
+       o.taxonomy_id,
+       l.life_stage_name                AS life_stage,
+       o.bug_size,
+       o.split_count,
+       o.big_rare_count,
+       t.phylum,
+       t.class,
+       t.subclass,
+       t."Order",
+       t.family,
+       t.genus,
+       pr.sample_id IS NOT NULL         AS is_private
+FROM sample.samples s
+         INNER JOIN sample.vw_boxes b ON s.box_id = b.box_id
+         INNER JOIN sample.sample_types st ON s.type_id = st.sample_type_id
+         INNER JOIN sample.sample_methods m ON s.method_id = m.sample_method_id
+         INNER JOIN geo.habitats h ON s.habitat_id = h.habitat_id
+         LEFT JOIN geo.vw_sites si ON s.site_id = si.site_id
+         LEFT JOIN sample.plankton p ON s.sample_id = p.sample_id
+         LEFT JOIN sample.drift d ON s.sample_id = d.sample_id
+         LEFT JOIN sample.organisms o ON s.sample_id = o.sample_id
+         LEFT JOIN taxa.vw_taxonomy_crosstab t ON o.taxonomy_id = t.taxonomy_id
+         LEFT JOIN sample.vw_private_samples pr ON s.sample_id = pr.sample_id
+         LEFT JOIN taxa.life_stages l ON o.life_stage_id = l.life_stage_id
+    );
+
+CREATE INDEX ix_vw_samples_sample_id ON sample.vw_samples (sample_id);
+CREATE INDEX ix_vw_samples_box_id ON sample.vw_samples (box_id);
+CREATE INDEX ix_vw_samples_site_id ON sample.vw_samples (site_id);
+CREATE INDEX ix_vw_samples_sample_year ON sample.vw_samples (sample_year);
+CREATE INDEX ix_vw_samples_sample_type_id ON sample.vw_samples (type_id);
+
+
 /*
  This view includes all sample_id of samples that are part of one or
  more private projects. It can be used to filter out these samples
@@ -197,72 +223,72 @@ GROUP BY s.sample_id
 HAVING count(p.project_id) > 0
     );
 
-DROP MATERIALIZED VIEW IF EXISTS sample.vw_map_data;
-CREATE MATERIALIZED VIEW sample.vw_map_data AS
-(
-SELECT s.sample_id,
-       ss.site_id,
-       ss.site_name,
-       m.sample_method_id,
-       m.sample_method_name,
-       h.habitat_id,
-       h.habitat_name,
-       s.area,
-       s.lab_split,
-       s.qualitative,
-       s.mesh,
-       s.sample_date,
-       extract(year from s.sample_date) as sample_year,
-       l.abbreviation                      life_stage,
-       o.split_count,
-       ss.location,
-       st_y(ss.location)                AS latitude,
-       st_x(ss.location)                AS longitude,
-       st.state_name,
-       st.abbreviation                     state_abbreviation,
-       st.state_id,
-       c.abbreviation                      country,
-       t.phylum,
-       t.class,
-       t.subclass,
-       t."Order",
-       t.family,
-       t.genus
-FROM sample.organisms o
-         INNER JOIN taxa.life_stages l ON o.life_stage_id = l.life_stage_id
-         INNER JOIN sample.samples s ON o.sample_id = s.sample_id
-         INNER JOIN geo.sites ss ON s.site_id = ss.site_id
-         INNER JOIN sample.sample_methods m ON s.method_id = m.sample_method_id
-         INNER JOIN geo.habitats h ON s.habitat_id = h.habitat_id
-         INNER JOIN geo.states st ON st_contains(st.geom, ss.location)
-         INNER JOIN geo.countries c ON st.country_id = c.country_id
-         INNER JOIN taxa.vw_taxonomy_crosstab t ON o.taxonomy_id = t.taxonomy_id
-         LEFT JOIN sample.vw_private_samples p ON s.sample_id = p.sample_id
-WHERE p.sample_id IS NULL
-    );
-
-CREATE INDEX gx_sample_vw_map_data_location ON sample.vw_map_data USING GIST (location);
-CREATE INDEX ix_sample_vw_map_data_sample_method_id ON sample.vw_map_data (sample_method_id);
-CREATE INDEX ix_sample_vw_map_data_habitat_id ON sample.vw_map_data (habitat_id);
-CREATE INDEX ix_sample_vw_map_data_sample_year ON sample.vw_map_data (sample_year);
-CREATE INDEX ix_sample_vw_map_data_state_id ON sample.vw_map_data (state_id);
+-- DROP MATERIALIZED VIEW IF EXISTS sample.vw_map_data;
+-- CREATE MATERIALIZED VIEW sample.vw_map_data AS
+-- (
+-- SELECT s.sample_id,
+--        ss.site_id,
+--        ss.site_name,
+--        m.sample_method_id,
+--        m.sample_method_name,
+--        h.habitat_id,
+--        h.habitat_name,
+--        s.area,
+--        s.lab_split,
+--        s.qualitative,
+--        s.mesh,
+--        s.sample_date,
+--        extract(year from s.sample_date) as sample_year,
+--        l.abbreviation                      life_stage,
+--        o.split_count,
+--        ss.location,
+--        st_y(ss.location)                AS latitude,
+--        st_x(ss.location)                AS longitude,
+--        st.state_name,
+--        st.abbreviation                     state_abbreviation,
+--        st.state_id,
+--        c.abbreviation                      country,
+--        t.phylum,
+--        t.class,
+--        t.subclass,
+--        t."Order",
+--        t.family,
+--        t.genus
+-- FROM sample.organisms o
+--          INNER JOIN taxa.life_stages l ON o.life_stage_id = l.life_stage_id
+--          INNER JOIN sample.samples s ON o.sample_id = s.sample_id
+--          INNER JOIN geo.sites ss ON s.site_id = ss.site_id
+--          INNER JOIN sample.sample_methods m ON s.method_id = m.sample_method_id
+--          INNER JOIN geo.habitats h ON s.habitat_id = h.habitat_id
+--          INNER JOIN geo.states st ON st_contains(st.geom, ss.location)
+--          INNER JOIN geo.countries c ON st.country_id = c.country_id
+--          INNER JOIN taxa.vw_taxonomy_crosstab t ON o.taxonomy_id = t.taxonomy_id
+--          LEFT JOIN sample.vw_private_samples p ON s.sample_id = p.sample_id
+-- WHERE p.sample_id IS NULL
+--     );
+--
+-- CREATE INDEX gx_sample_vw_map_data_location ON sample.vw_map_data USING GIST (location);
+-- CREATE INDEX ix_sample_vw_map_data_sample_method_id ON sample.vw_map_data (sample_method_id);
+-- CREATE INDEX ix_sample_vw_map_data_habitat_id ON sample.vw_map_data (habitat_id);
+-- CREATE INDEX ix_sample_vw_map_data_sample_year ON sample.vw_map_data (sample_year);
+-- CREATE INDEX ix_sample_vw_map_data_state_id ON sample.vw_map_data (state_id);
 
 CREATE OR REPLACE VIEW sample.vw_projects AS
 (
 SELECT p.project_id,
        p.project_name,
-       t.project_type_name               as project_type,
+       t.project_type_name                as project_type,
        p.is_private,
        i.first_name || ' ' || i.last_name as contact,
        p.auto_update_samples,
        p.description,
        p.created_date,
        p.updated_date,
-       Count(s.project_id)                  samples
+       Count(s.project_id)                   samples
 FROM sample.projects p
          inner join sample.project_types t ON p.project_type_id = t.project_type_id
          left join entity.individuals i on p.contact_id = i.entity_id
          left join sample.project_samples s on p.project_id = s.project_id
-GROUP BY p.project_id, p.project_name, t.project_type_name, p.is_private, i.first_name || ' '  || i.last_name,
+GROUP BY p.project_id, p.project_name, t.project_type_name, p.is_private, i.first_name || ' ' || i.last_name,
          p.auto_update_samples, p.description, p.created_date, p.updated_date
     );
