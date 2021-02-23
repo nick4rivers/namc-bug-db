@@ -25,6 +25,46 @@ FROM geo.sites s
          LEFT JOIN geo.waterbody_types w ON s.waterbody_type_id = w.waterbody_type_id
     );
 
+CREATE OR REPLACE VIEW geo.vw_models AS
+(
+SELECT m.model_id,
+       model_name,
+       abbreviation,
+       is_active,
+       description,
+       count(p.model_id) predictor_count
+FROM geo.models m
+         left join geo.model_predictors p ON m.model_id = p.model_id
+group by m.model_id, model_name, abbreviation, is_active, description
+    );
+
+CREATE OR REPLACE VIEW geo.vw_predictors AS
+(
+SELECT p.predictor_id,
+       p.predictor_name,
+       p.abbreviation,
+       p.description,
+       u.abbreviation as     units,
+       p.predictor_type_id,
+       t.predictor_type_name,
+       p.updated_date,
+       p.created_date,
+       count(m.predictor_id) model_count
+FROM geo.predictors p
+         inner join geo.predictor_types t On p.predictor_type_id = t.predictor_type_id
+         inner join geo.units u on p.unit_id = u.unit_id
+         left join geo.model_predictors m on p.predictor_id = m.predictor_id
+group by p.predictor_id,
+         p.predictor_name,
+         p.abbreviation,
+         p.description,
+         units,
+         p.predictor_type_id,
+         t.predictor_type_name,
+         p.updated_date,
+         p.created_date
+    );
+
 /******************************************************************************************************************
 entity SCHEMA
 */
@@ -102,7 +142,7 @@ GROUP BY b.box_id,
          b.projected_complete_date
     );
 
-    
+
 /*
  This view includes all sample_id of samples that are part of one or
  more private projects. It can be used to filter out these samples
@@ -191,7 +231,7 @@ SELECT s.sample_id,
        d.net_depth,
        d.net_velocity,
        o.taxonomy_id,
-       l.abbreviation                AS life_stage,
+       l.abbreviation                   AS life_stage,
        o.bug_size,
        o.split_count,
        o.big_rare_count,
