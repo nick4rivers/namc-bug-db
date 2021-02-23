@@ -102,6 +102,23 @@ GROUP BY b.box_id,
          b.projected_complete_date
     );
 
+    
+/*
+ This view includes all sample_id of samples that are part of one or
+ more private projects. It can be used to filter out these samples
+ from other views.
+ */
+CREATE OR REPLACE VIEW sample.vw_private_samples AS
+(
+SELECT s.sample_id
+FROM sample.samples s
+         left join sample.project_samples ps on s.sample_id = ps.sample_id
+         left join sample.projects p on ps.project_id = p.project_id
+WHERE p.is_private = TRUE
+GROUP BY s.sample_id
+HAVING count(p.project_id) > 0
+    );
+
 
 DROP VIEW IF EXISTS sample.vw_taxonomy_crosstab;
 CREATE MATERIALIZED VIEW taxa.vw_taxonomy_crosstab AS
@@ -173,7 +190,6 @@ SELECT s.sample_id,
        d.stream_depth,
        d.net_depth,
        d.net_velocity,
-       o.split_count,
        o.taxonomy_id,
        l.life_stage_name                AS life_stage,
        o.bug_size,
@@ -207,21 +223,6 @@ CREATE INDEX ix_vw_samples_sample_year ON sample.vw_samples (sample_year);
 CREATE INDEX ix_vw_samples_sample_type_id ON sample.vw_samples (type_id);
 
 
-/*
- This view includes all sample_id of samples that are part of one or
- more private projects. It can be used to filter out these samples
- from other views.
- */
-CREATE OR REPLACE VIEW sample.vw_private_samples AS
-(
-SELECT s.sample_id
-FROM sample.samples s
-         left join sample.project_samples ps on s.sample_id = ps.sample_id
-         left join sample.projects p on ps.project_id = p.project_id
-WHERE p.is_private = TRUE
-GROUP BY s.sample_id
-HAVING count(p.project_id) > 0
-    );
 
 -- DROP MATERIALIZED VIEW IF EXISTS sample.vw_map_data;
 -- CREATE MATERIALIZED VIEW sample.vw_map_data AS
