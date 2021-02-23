@@ -8,6 +8,4 @@ export declare const getIndividuals: (pool: any, limit: number, nextToken: numbe
 export declare const getBoxes: (pool: any, limit: number, offset: number) => Promise<any>;
 export declare const getSampleOrganisms: (pool: any, sampleId: number) => Promise<any>;
 export declare const getProjects: (pool: any, limit: number, offset: number) => Promise<any>;
-export declare const getDriftSamples: (pool: any, limit: number, offset: number) => Promise<any>;
-export declare const getPlanktonSamples: (pool: any, limit: number, offset: number) => Promise<any>;
 export declare const getTaxonomy: (pool: any, limit: number, offset: number) => Promise<any>;

@@ -1,4 +1,4 @@
-import { Sample, AuthResponse, BoxState, Site, SiteInfo, SampleOrganism, Project, DriftSample, PlanktonSample, Taxonomy, Box, PaginatedRecords } from '@namcbugdb/common';
+import { Sample, AuthResponse, BoxState, Site, SiteInfo, SampleOrganism, Project, Taxonomy, Box, PaginatedRecords } from '@namcbugdb/common';
 declare const _default: {
     Query: {
         auth: (obj: any, args: any, ctx: any, info: any) => Promise<AuthResponse>;
@@ -42,18 +42,6 @@ declare const _default: {
         }, { user }: {
             user: any;
         }, info: any) => Promise<Project[]>;
-        driftSamples: (obj: any, { limit, offset }: {
-            limit: any;
-            offset: any;
-        }, { user }: {
-            user: any;
-        }, info: any) => Promise<DriftSample[]>;
-        planktonSamples: (obj: any, { limit, offset }: {
-            limit: any;
-            offset: any;
-        }, { user }: {
-            user: any;
-        }, info: any) => Promise<PlanktonSample[]>;
         taxonomy: (obj: any, { limit, offset }: {
             limit: any;
             offset: any;

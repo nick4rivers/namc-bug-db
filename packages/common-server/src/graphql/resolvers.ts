@@ -9,8 +9,6 @@ import {
     Individual,
     SampleOrganism,
     Project,
-    DriftSample,
-    PlanktonSample,
     Taxonomy,
     Box,
     util,
@@ -26,8 +24,6 @@ import {
     getIndividuals,
     getBoxes,
     getProjects,
-    getDriftSamples,
-    getPlanktonSamples,
     getTaxonomy
 } from '../pg'
 // import log from 'loglevel'
@@ -69,7 +65,7 @@ export default {
             const data = await getSamples(pool, limit, offset)
             return {
                 records: data.map(util.snake2camel),
-                nextToken: 0
+                nextOffset: data.length <= limit ? offset + limit + 1 : null
             }
         },
 
@@ -124,20 +120,6 @@ export default {
             loggedInGate(user)
             const pool = await getPool()
             const data = await getProjects(pool, limit, offset)
-            return data.map(util.snake2camel)
-        },
-
-        driftSamples: async (obj, { limit, offset }, { user }, info): Promise<DriftSample[]> => {
-            loggedInGate(user)
-            const pool = await getPool()
-            const data = await getDriftSamples(pool, limit, offset)
-            return data.map(util.snake2camel)
-        },
-
-        planktonSamples: async (obj, { limit, offset }, { user }, info): Promise<PlanktonSample[]> => {
-            loggedInGate(user)
-            const pool = await getPool()
-            const data = await getPlanktonSamples(pool, limit, offset)
             return data.map(util.snake2camel)
         },
 

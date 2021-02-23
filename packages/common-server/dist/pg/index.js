@@ -39,7 +39,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getTaxonomy = exports.getPlanktonSamples = exports.getDriftSamples = exports.getProjects = exports.getSampleOrganisms = exports.getBoxes = exports.getIndividuals = exports.getSiteInfo = exports.getSites = exports.getBoxStates = exports.getSamples = exports.getPool = void 0;
+exports.getTaxonomy = exports.getProjects = exports.getSampleOrganisms = exports.getBoxes = exports.getIndividuals = exports.getSiteInfo = exports.getSites = exports.getBoxStates = exports.getSamples = exports.getPool = void 0;
 var config_1 = require("../config");
 var pg_1 = require("pg");
 var loglevel_1 = __importDefault(require("loglevel"));
@@ -105,14 +105,6 @@ exports.getSampleOrganisms = function (pool, sampleId) {
 var projectsQuery = 'SELECT * FROM sample.vw_projects ORDER BY project_id LIMIT $1 OFFSET $2';
 exports.getProjects = function (pool, limit, offset) {
     return pgPromise(pool, projectsQuery, [limit, offset]);
-};
-var driftQuery = 'SELECT * FROM sample.drift ORDER by sample_id LIMIT $1 OFFSET $2';
-exports.getDriftSamples = function (pool, limit, offset) {
-    return pgPromise(pool, driftQuery, [limit, offset]);
-};
-var planktonQuery = 'SELECT * FROM sample.plankton ORDER BY sample_id LIMIT $1 OFFSET $2';
-exports.getPlanktonSamples = function (pool, limit, offset) {
-    return pgPromise(pool, planktonQuery, [limit, offset]);
 };
 var taxonomyQuery = 'SELECT * FROM taxa.vw_taxonomy_crosstab ORDER BY taxonomy_id LIMIT $1 OFFSET $2';
 exports.getTaxonomy = function (pool, limit, offset) {

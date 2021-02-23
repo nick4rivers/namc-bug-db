@@ -8,19 +8,23 @@ export type AuthResponse = {
 
 export interface PaginatedRecords<T> {
     records: [T]
-    nextToken: number
+    nextOffset?: number
 }
 
 export type Sample = {
     sampleId: number
     boxId: number
     customerName: string
+    boxStateName: string
+    boxStateId: number
+    submitterName: string
     siteId: number
     siteName: string
     siteLatitude: number
     siteLongitude: number
     siteState: string
     sampleDate: string
+    sampleYear: number
     sampleLatitude: number
     sampleLongitude: number
     sampleType: string
@@ -35,6 +39,18 @@ export type Sample = {
     createdDate: string
     updatedDate: string
     qaSampleId: number
+    diameter: number
+    subSampleCount: number
+    towLength: number
+    volume: number
+    aliquot: number
+    siteInterval: number
+    towType: string
+    netArea: number
+    netDuration: number
+    streamDepth: number
+    netDepth: number
+    netVelocity: number
 }
 
 export type BoxState = {
@@ -143,30 +159,6 @@ export type Project = {
     createdDate: string
     updatedDate: string
     samples: number
-}
-
-export type DriftSample = {
-    sampleId: number
-    netArea: number
-    netDuration: number
-    streamDepth: number
-    netDepth: number
-    netVelocity: number
-    notes: string
-    updatedDate: string
-}
-
-export type PlanktonSample = {
-    sampleId: number
-    diameter: number
-    subSampleCount: number
-    towLength: number
-    volume: number
-    allQuot: number
-    sizeInterval: number
-    towType: string
-    notes: string
-    updatedDate: string
 }
 
 export type Taxonomy = {

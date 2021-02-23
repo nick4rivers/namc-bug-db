@@ -90,7 +90,7 @@ exports.default = {
                             data = _c.sent();
                             return [2, {
                                     records: data.map(common_1.util.snake2camel),
-                                    nextToken: 0
+                                    nextOffset: data.length <= limit ? offset + limit + 1 : null
                                 }];
                     }
                 });
@@ -212,46 +212,6 @@ exports.default = {
                         case 1:
                             pool = _c.sent();
                             return [4, pg_1.getProjects(pool, limit, offset)];
-                        case 2:
-                            data = _c.sent();
-                            return [2, data.map(common_1.util.snake2camel)];
-                    }
-                });
-            });
-        },
-        driftSamples: function (obj, _a, _b, info) {
-            var limit = _a.limit, offset = _a.offset;
-            var user = _b.user;
-            return __awaiter(void 0, void 0, void 0, function () {
-                var pool, data;
-                return __generator(this, function (_c) {
-                    switch (_c.label) {
-                        case 0:
-                            loggedInGate(user);
-                            return [4, pg_1.getPool()];
-                        case 1:
-                            pool = _c.sent();
-                            return [4, pg_1.getDriftSamples(pool, limit, offset)];
-                        case 2:
-                            data = _c.sent();
-                            return [2, data.map(common_1.util.snake2camel)];
-                    }
-                });
-            });
-        },
-        planktonSamples: function (obj, _a, _b, info) {
-            var limit = _a.limit, offset = _a.offset;
-            var user = _b.user;
-            return __awaiter(void 0, void 0, void 0, function () {
-                var pool, data;
-                return __generator(this, function (_c) {
-                    switch (_c.label) {
-                        case 0:
-                            loggedInGate(user);
-                            return [4, pg_1.getPool()];
-                        case 1:
-                            pool = _c.sent();
-                            return [4, pg_1.getPlanktonSamples(pool, limit, offset)];
                         case 2:
                             data = _c.sent();
                             return [2, data.map(common_1.util.snake2camel)];

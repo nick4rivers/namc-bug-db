@@ -12,7 +12,7 @@ const typeDefs = gql`
         # Get a project and associated metadata
         auth: AuthParams
 
-        samples(limit: Int, offset: Int): PaginatedSample
+        samples(limit: Int = 2, offset: Int): PaginatedSample
         sampleOrganisms(sampleId: Int!): [SampleOrganism]
         driftSamples(limit: Int, offset: Int): [DriftSample]
         planktonSamples(limit: Int, offset: Int): [PlanktonSample]
@@ -40,19 +40,23 @@ const typeDefs = gql`
 
     type PaginatedSample {
         records: [Sample]
-        nextToken: Int
+        nextOffset: Int
     }
 
     type Sample {
         sampleId: Int
         boxId: Int
         customerName: String
+        boxStateName: String
+        boxStateId: Int
+        submitterName: String
         siteId: Int
         siteName: String
         siteLatitude: Float
         siteLongitude: Float
         siteState: String
         sampleDate: String
+        sampleYear: Int
         sampleLatitude: Float
         sampleLongitude: Float
         sampleType: String
@@ -67,6 +71,18 @@ const typeDefs = gql`
         createdDate: String
         updatedDate: String
         qaSampleId: Int
+        diameter: Float
+        subSampleCount: Float
+        towLength: Float
+        volume: Float
+        aliquot: Float
+        siteInterval: Float
+        towType: String
+        netArea: Float
+        netDuration: Float
+        streamDepth: Float
+        netDepth: Float
+        netVelocity: Float
     }
 
     type BoxState {
