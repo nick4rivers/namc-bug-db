@@ -167,7 +167,7 @@ BEGIN
 end
 $$;
 
--- DROP FUNCTION sample.fn_samples(p_limit integer, p_offset integer, p_sample_id integer, p_box_id integer, p_site_id integer, p_sample_year integer, p_type_id smallint);
+--  DROP FUNCTION sample.fn_samples(p_limit integer, p_offset integer, p_sample_id integer, p_box_id integer, p_site_id integer, p_sample_year integer, p_type_id smallint);
 
 CREATE OR REPLACE FUNCTION sample.fn_samples(
     p_limit INT,
@@ -191,7 +191,7 @@ CREATE OR REPLACE FUNCTION sample.fn_samples(
                 site_latitude    DOUBLE PRECISION,
                 site_longitude   DOUBLE PRECISION,
                 site_state       VARCHAR(2),
-                sample_date      VARCHAR(10),
+                sample_date      CHAR(10),
                 sample_latitude  DOUBLE PRECISION,
                 sample_longitude DOUBLE PRECISION,
                 sample_time      TIME,
@@ -252,7 +252,7 @@ BEGIN
                s.site_latitude,
                s.site_longitude,
                s.site_state,
-               TO_CHAR(s.sample_date :: DATE, 'yyyy-mm-dd'),
+               CAST(TO_CHAR(s.sample_date :: DATE, 'yyyy-mm-dd') AS CHAR(10)),
                s.sample_latitude,
                s.sample_longitude,
                s.sample_time,
