@@ -167,7 +167,7 @@ BEGIN
 end
 $$;
 
---DROP FUNCTION sample.fn_samples(p_limit integer, p_offset integer, p_sample_id integer, p_box_id integer, p_site_id integer, p_sample_year integer, p_type_id smallint);
+-- DROP FUNCTION sample.fn_samples(p_limit integer, p_offset integer, p_sample_id integer, p_box_id integer, p_site_id integer, p_sample_year integer, p_type_id smallint);
 
 CREATE OR REPLACE FUNCTION sample.fn_samples(
     p_limit INT,
@@ -191,8 +191,7 @@ CREATE OR REPLACE FUNCTION sample.fn_samples(
                 site_latitude    DOUBLE PRECISION,
                 site_longitude   DOUBLE PRECISION,
                 site_state       VARCHAR(2),
-                sample_date      DATE,
-                sample_year      DOUBLE PRECISION,
+                sample_date      VARCHAR(10),
                 sample_latitude  DOUBLE PRECISION,
                 sample_longitude DOUBLE PRECISION,
                 sample_time      TIME,
@@ -253,8 +252,7 @@ BEGIN
                s.site_latitude,
                s.site_longitude,
                s.site_state,
-               s.sample_date,
-               s.sample_year,
+               TO_CHAR(s.sample_date :: DATE, 'yyyy-mm-dd'),
                s.sample_latitude,
                s.sample_longitude,
                s.sample_time,
@@ -301,7 +299,7 @@ BEGIN
         WHERE ((s.sample_id = p_sample_id) OR (p_sample_id IS NULL))
           AND ((s.box_id = p_box_id) OR (p_box_id IS NULL))
           AND ((s.site_id = p_site_id) OR (p_site_id IS NULL))
-          AND ((s.sample_year = p_sample_year) OR (p_sample_year IS NULL))
+          AND ((extract(year from s.sample_date) = p_sample_year) OR (p_sample_year IS NULL))
           AND ((s.type_id = p_type_id) OR (p_type_id IS NULL))
         ORDER BY s.sample_id
         LIMIT p_limit OFFSET p_offset;
