@@ -13,7 +13,15 @@ const typeDefs = gql`
         auth: AuthParams
 
         samples(limit: Int = 2, offset: Int): PaginatedSample
-        sampleOrganisms(sampleId: Int!): [SampleOrganism]
+        sampleOrganisms(
+            limit: Int!
+            offset: Int!
+            sampleId: Int
+            boxId: Int
+            siteId: Int
+            sampleYear: Int
+            typeId: Int
+        ): [SampleOrganism]
         driftSamples(limit: Int, offset: Int): [DriftSample]
         planktonSamples(limit: Int, offset: Int): [PlanktonSample]
         boxStates(limit: Int, nextToken: Int): [BoxState]
@@ -23,6 +31,8 @@ const typeDefs = gql`
         boxes(limit: Int, offset: Int): [Box]
         projects(limit: Int, offset: Int): [Project]
         taxonomy(limit: Int, offset: Int): [Taxonomy]
+        predictors(limit: Int, offset: Int): [Predictor]
+        models(limit: Int, offset: Int): [Model]
     }
 
     # this schema allows the following mutation:
@@ -154,30 +164,61 @@ const typeDefs = gql`
     }
 
     type SampleOrganism {
-        organismId: Int
         sampleId: Int
+        boxId: Int
+        customerId: Int
+        customerName: String
+        boxStateName: String
+        boxStateId: Int
+        submitterName: String
+        siteId: Int
+        siteName: String
+        siteLatitude: Float
+        siteLongitude: Float
+        siteState: String
+        sampleDate: String
+        sampleLatitude: Float
+        sampleLongitude: Float
+        sampleTime: String
+        typeId: Int
+        sampleType: String
+        methodId: Int
+        sampleMethod: String
+        habitatId: Int
+        habitatName: String
+        area: Float
+        fieldSplit: Float
+        labSplit: Float
+        jarCount: Float
+        qualitative: Boolean
+        mesh: Float
+        createdDate: String
+        updatedDate: String
+        qaSampleId: Int
+        diameter: Float
+        subSampleCount: Float
+        towLength: Float
+        volume: Float
+        aliquot: Float
+        sizeInterval: Float
+        towType: String
+        netArea: Float
+        netDuration: Float
+        streamDepth: Float
+        netDepth: Float
+        netVelocity: Float
+        taxonomyId: Int
         lifeStage: String
         bugSize: Float
         splitCount: Float
-        labSplit: Float
-        fieldSplit: Float
         bigRareCount: Float
-        invalidatedDate: String
-        createdDate: String
-        updatedDate: String
-        taxonomyId: Int
-        Phylum: String
-        Class: String
-        Subclass: String
-        Order: String
-        Suborder: String
-        Family: String
-        Subfamily: String
-        Tribe: String
-        Genus: String
-        Subgenus: String
-        Species: String
-        Subspecies: String
+        phylum: String
+        class: String
+        subClass: String
+        order: String
+        family: String
+        genus: String
+        isPrivate: Boolean
     }
 
     type Project {
@@ -231,6 +272,28 @@ const typeDefs = gql`
         subgenus: String
         species: String
         subspecies: String
+    }
+
+    type Predictor {
+        predictorId: Int
+        predictorName: String
+        abbreviation: String
+        description: String
+        units: String
+        predictorTypeId: Int
+        predictorTypeName: String
+        updatedDate: String
+        createdDate: String
+        modelCount: Int
+    }
+
+    type Model {
+        modelId: Int
+        modelName: String
+        abbreviation: String
+        isActive: Boolean
+        description: String
+        predictorCount: Int
     }
 `
 

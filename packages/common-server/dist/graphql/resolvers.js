@@ -160,7 +160,7 @@ exports.default = {
             });
         },
         sampleOrganisms: function (obj, _a, _b, info) {
-            var sampleId = _a.sampleId;
+            var limit = _a.limit, offset = _a.offset, sampleId = _a.sampleId, boxId = _a.boxId, siteId = _a.siteId, sampleYear = _a.sampleYear, typeId = _a.typeId;
             var user = _b.user;
             return __awaiter(void 0, void 0, void 0, function () {
                 var pool, data;
@@ -171,7 +171,7 @@ exports.default = {
                             return [4, pg_1.getPool()];
                         case 1:
                             pool = _c.sent();
-                            return [4, pg_1.getSampleOrganisms(pool, sampleId)];
+                            return [4, pg_1.getSampleOrganisms(pool, limit, offset, sampleId, boxId, siteId, sampleYear, typeId)];
                         case 2:
                             data = _c.sent();
                             return [2, data.map(common_1.util.snake2camel)];
@@ -232,6 +232,46 @@ exports.default = {
                         case 1:
                             pool = _c.sent();
                             return [4, pg_1.getTaxonomy(pool, limit, offset)];
+                        case 2:
+                            data = _c.sent();
+                            return [2, data.map(common_1.util.snake2camel)];
+                    }
+                });
+            });
+        },
+        predictors: function (obj, _a, _b, info) {
+            var limit = _a.limit, offset = _a.offset;
+            var user = _b.user;
+            return __awaiter(void 0, void 0, void 0, function () {
+                var pool, data;
+                return __generator(this, function (_c) {
+                    switch (_c.label) {
+                        case 0:
+                            loggedInGate(user);
+                            return [4, pg_1.getPool()];
+                        case 1:
+                            pool = _c.sent();
+                            return [4, pg_1.getPredictors(pool, limit, offset)];
+                        case 2:
+                            data = _c.sent();
+                            return [2, data.map(common_1.util.snake2camel)];
+                    }
+                });
+            });
+        },
+        models: function (obj, _a, _b, info) {
+            var limit = _a.limit, offset = _a.offset;
+            var user = _b.user;
+            return __awaiter(void 0, void 0, void 0, function () {
+                var pool, data;
+                return __generator(this, function (_c) {
+                    switch (_c.label) {
+                        case 0:
+                            loggedInGate(user);
+                            return [4, pg_1.getPool()];
+                        case 1:
+                            pool = _c.sent();
+                            return [4, pg_1.getModels(pool, limit, offset)];
                         case 2:
                             data = _c.sent();
                             return [2, data.map(common_1.util.snake2camel)];

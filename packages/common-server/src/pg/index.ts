@@ -55,9 +55,17 @@ const boxesQuery = 'SELECT * FROM sample.vw_boxes ORDER BY box_id LIMIT $1 OFFSE
 export const getBoxes = (pool, limit: number, offset: number): Promise<any> =>
     pgPromise(pool, boxesQuery, [limit, offset])
 
-const sampleOrganismsQuery = 'SELECT * FROM sample.fn_sample_organisms($1)'
-export const getSampleOrganisms = (pool, sampleId: number): Promise<any> =>
-    pgPromise(pool, sampleOrganismsQuery, [sampleId])
+const sampleOrganismsQuery = 'SELECT * FROM sample.fn_samples($1, $2, $3, $4, $5, $6, $7)'
+export const getSampleOrganisms = (
+    pool,
+    limit: number,
+    offset: number,
+    sampleId: number,
+    boxId: number,
+    siteId: number,
+    sampleYear: number,
+    typeId: number
+): Promise<any> => pgPromise(pool, sampleOrganismsQuery, [limit, offset, sampleId, boxId, siteId, sampleYear, typeId])
 
 const projectsQuery = 'SELECT * FROM sample.vw_projects ORDER BY project_id LIMIT $1 OFFSET $2'
 export const getProjects = (pool, limit: number, offset: number): Promise<any> =>
@@ -66,3 +74,11 @@ export const getProjects = (pool, limit: number, offset: number): Promise<any> =
 const taxonomyQuery = 'SELECT * FROM taxa.vw_taxonomy_crosstab ORDER BY taxonomy_id LIMIT $1 OFFSET $2'
 export const getTaxonomy = (pool, limit: number, offset: number): Promise<any> =>
     pgPromise(pool, taxonomyQuery, [limit, offset])
+
+const predictorQuery = 'SELECT * FROM geo.vw_predictors ORDER BY predictor_id LIMIT $1 OFFSET $2'
+export const getPredictors = (pool, limit: number, offset: number): Promise<any> =>
+    pgPromise(pool, predictorQuery, [limit, offset])
+
+const modelQuery = 'SELECT * FROM geo.vw_models ORDER BY model_id LIMIT $1 OFFSET $2'
+export const getModels = (pool, limit: number, offset: number): Promise<any> =>
+    pgPromise(pool, modelQuery, [limit, offset])

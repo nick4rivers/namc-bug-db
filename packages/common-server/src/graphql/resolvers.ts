@@ -12,7 +12,9 @@ import {
     Taxonomy,
     Box,
     util,
-    PaginatedRecords
+    PaginatedRecords,
+    Predictor,
+    Model
 } from '@namcbugdb/common'
 import {
     getPool,
@@ -24,7 +26,9 @@ import {
     getIndividuals,
     getBoxes,
     getProjects,
-    getTaxonomy
+    getTaxonomy,
+    getPredictors,
+    getModels
 } from '../pg'
 // import log from 'loglevel'
 import { UserObj } from '../types'
@@ -95,10 +99,15 @@ export default {
             return data.map(util.snake2camel)[0]
         },
 
-        sampleOrganisms: async (obj, { sampleId }, { user }, info): Promise<SampleOrganism[]> => {
+        sampleOrganisms: async (
+            obj,
+            { limit, offset, sampleId, boxId, siteId, sampleYear, typeId },
+            { user },
+            info
+        ): Promise<SampleOrganism[]> => {
             loggedInGate(user)
             const pool = await getPool()
-            const data = await getSampleOrganisms(pool, sampleId)
+            const data = await getSampleOrganisms(pool, limit, offset, sampleId, boxId, siteId, sampleYear, typeId)
             return data.map(util.snake2camel)
         },
 
@@ -127,6 +136,20 @@ export default {
             loggedInGate(user)
             const pool = await getPool()
             const data = await getTaxonomy(pool, limit, offset)
+            return data.map(util.snake2camel)
+        },
+
+        predictors: async (obj, { limit, offset }, { user }, info): Promise<Predictor[]> => {
+            loggedInGate(user)
+            const pool = await getPool()
+            const data = await getPredictors(pool, limit, offset)
+            return data.map(util.snake2camel)
+        },
+
+        models: async (obj, { limit, offset }, { user }, info): Promise<Model[]> => {
+            loggedInGate(user)
+            const pool = await getPool()
+            const data = await getModels(pool, limit, offset)
             return data.map(util.snake2camel)
         }
     }
