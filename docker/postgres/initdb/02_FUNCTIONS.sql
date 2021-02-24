@@ -424,11 +424,10 @@ BEGIN
 end
 $$;
 
-
 CREATE OR REPLACE FUNCTION sample.fn_project_samples(
     p_limit INT,
     p_offset INT,
-    p_project_id INT)
+    p_project_id INT[])
     RETURNS TABLE
             (
                 sample_id        INT,
@@ -548,8 +547,8 @@ BEGIN
                s.genus,
                s.is_private
         FROM sample.vw_samples s
-                 INNER JOIN sample.project_samples p ON s.sample_id = p.project_id
-        WHERE p.project_id = p_project_id
+                 INNER JOIN sample.project_samples p ON s.sample_id = p.sample_id
+        WHERE CAST(p.project_id AS INT) = ANY(p_project_id)
         ORDER BY s.sample_id
         LIMIT p_limit OFFSET p_offset;
 end
