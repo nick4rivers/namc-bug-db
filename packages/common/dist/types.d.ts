@@ -206,6 +206,7 @@ export declare type Predictor = {
     calculationScript: string;
     predictorTypeId: number;
     predictorTypeName: string;
+    isTemporal: boolean;
     updatedDate: string;
     createdDate: string;
     modelCount: number;

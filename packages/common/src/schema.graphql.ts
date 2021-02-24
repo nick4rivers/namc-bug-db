@@ -25,8 +25,6 @@ const typeDefs = gql`
 
         projectOrganisms(limit: Int!, offset: Int!, projectId: Int!): [SampleOrganism]
 
-        driftSamples(limit: Int, offset: Int): [DriftSample]
-        planktonSamples(limit: Int, offset: Int): [PlanktonSample]
         boxStates(limit: Int, nextToken: Int): [BoxState]
         sites(limit: Int, offset: Int): [Site]
         siteInfo(siteId: Int!): SiteInfo
@@ -238,30 +236,6 @@ const typeDefs = gql`
         samples: Int
     }
 
-    type DriftSample {
-        sampleId: Int
-        netArea: Float
-        netDuration: Float
-        streamDepth: Float
-        netDepth: Float
-        netVelocity: Float
-        notes: String
-        updatedDate: String
-    }
-
-    type PlanktonSample {
-        sampleId: Int
-        diameter: Float
-        subSampleCount: Float
-        towLength: Float
-        volume: Float
-        allQuot: Float
-        sizeInterval: Float
-        towType: String
-        notes: String
-        updatedDate: String
-    }
-
     type Taxonomy {
         taxonomyId: Int
         phylum: String
@@ -287,6 +261,7 @@ const typeDefs = gql`
         calculationScript: String
         predictorTypeId: Int
         predictorTypeName: String
+        isTemporal: Boolean
         updatedDate: String
         createdDate: String
         modelCount: Int
