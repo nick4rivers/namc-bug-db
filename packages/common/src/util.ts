@@ -1,10 +1,6 @@
 import { camelCase, snakeCase } from 'change-case'
 
-type StrObj = { [key: string]: string }
-
-export const util1 = (): string => {
-    return 'hi'
-}
+export type StrObj = { [key: string]: string }
 
 /**
  * transform an object's keys from one case to another

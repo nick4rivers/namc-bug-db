@@ -1,30 +1,30 @@
 import { Sample, AuthResponse, BoxState, Site, SiteInfo, SampleOrganism, Project, Taxonomy, Box, PaginatedRecords, Predictor, Model, SitePredictorValue } from '@namcbugdb/common';
 declare const _default: {
     Query: {
-        auth: (obj: any, args: any, ctx: any, info: any) => Promise<AuthResponse>;
+        auth: (obj: any, args: any, ctx: any) => Promise<AuthResponse>;
         samples: (obj: any, { limit, offset }: {
             limit: any;
             offset: any;
         }, { user }: {
             user: any;
         }, info: any) => Promise<PaginatedRecords<Sample>>;
-        boxStates: (obj: any, { limit, nextToken }: {
+        boxStates: (obj: any, { limit, offset }: {
             limit: any;
-            nextToken: any;
+            offset: any;
         }, { user }: {
             user: any;
-        }, info: any) => Promise<BoxState[]>;
+        }) => Promise<PaginatedRecords<BoxState>>;
         sites: (obj: any, { limit, offset }: {
             limit: any;
             offset: any;
         }, { user }: {
             user: any;
-        }, info: any) => Promise<Site[]>;
+        }) => Promise<PaginatedRecords<Site>>;
         siteInfo: (obj: any, { siteId }: {
             siteId: any;
         }, { user }: {
             user: any;
-        }, info: any) => Promise<SiteInfo>;
+        }) => Promise<SiteInfo>;
         sampleOrganisms: (obj: any, { limit, offset, sampleId, boxId, siteId, sampleYear, typeId }: {
             limit: any;
             offset: any;
@@ -35,52 +35,52 @@ declare const _default: {
             typeId: any;
         }, { user }: {
             user: any;
-        }, info: any) => Promise<SampleOrganism[]>;
-        projectOrganisms: (obj: any, { limit, offset, projectId }: {
+        }) => Promise<PaginatedRecords<SampleOrganism>>;
+        projectOrganisms: (obj: any, { limit, offset, projectIds }: {
             limit: any;
             offset: any;
-            projectId: any;
+            projectIds: any;
         }, { user }: {
             user: any;
-        }, info: any) => Promise<SampleOrganism[]>;
+        }) => Promise<PaginatedRecords<SampleOrganism>>;
         boxes: (obj: any, { limit, offset }: {
             limit: any;
             offset: any;
         }, { user }: {
             user: any;
-        }, info: any) => Promise<Box[]>;
+        }) => Promise<PaginatedRecords<Box>>;
         projects: (obj: any, { limit, offset }: {
             limit: any;
             offset: any;
         }, { user }: {
             user: any;
-        }, info: any) => Promise<Project[]>;
+        }) => Promise<PaginatedRecords<Project>>;
         taxonomy: (obj: any, { limit, offset }: {
             limit: any;
             offset: any;
         }, { user }: {
             user: any;
-        }, info: any) => Promise<Taxonomy[]>;
+        }) => Promise<PaginatedRecords<Taxonomy>>;
         predictors: (obj: any, { limit, offset, modelId }: {
             limit: any;
             offset: any;
             modelId: any;
         }, { user }: {
             user: any;
-        }, info: any) => Promise<Predictor[]>;
+        }) => Promise<PaginatedRecords<Predictor>>;
         models: (obj: any, { limit, offset }: {
             limit: any;
             offset: any;
         }, { user }: {
             user: any;
-        }, info: any) => Promise<Model[]>;
+        }) => Promise<PaginatedRecords<Model>>;
         sitePredictorValues: (obj: any, { limit, offset, siteId }: {
             limit: any;
             offset: any;
             siteId: any;
         }, { user }: {
             user: any;
-        }, info: any) => Promise<SitePredictorValue[]>;
+        }) => Promise<PaginatedRecords<SitePredictorValue>>;
     };
 };
 export default _default;

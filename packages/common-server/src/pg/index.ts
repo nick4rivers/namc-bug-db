@@ -68,8 +68,8 @@ export const getSampleOrganisms = (
 ): Promise<any> => pgPromise(pool, sampleOrganismsQuery, [limit, offset, sampleId, boxId, siteId, sampleYear, typeId])
 
 const projectOrganismsQuery = 'SELECT * FROM sample.fn_project_samples($1, $2, $3)'
-export const getProjectOrganisms = (pool, limit: number, offset: number, projectId: number): Promise<any> =>
-    pgPromise(pool, projectOrganismsQuery, [limit, offset, projectId])
+export const getProjectOrganisms = (pool, projectIds: number[], limit: number, offset: number): Promise<any> =>
+    pgPromise(pool, projectOrganismsQuery, [limit, offset, projectIds])
 
 const projectsQuery = 'SELECT * FROM sample.vw_projects ORDER BY project_id LIMIT $1 OFFSET $2'
 export const getProjects = (pool, limit: number, offset: number): Promise<any> =>

@@ -1,6 +1,7 @@
 // import path from 'path'
 import { getConfigPromise } from '../config'
 import {
+    graphql,
     Sample,
     AuthResponse,
     BoxState,
@@ -33,6 +34,7 @@ import {
     getModels,
     getSitePredictorValues
 } from '../pg'
+
 // import log from 'loglevel'
 import { UserObj } from '../types'
 
@@ -49,9 +51,28 @@ function loggedInGate(user: UserObj): void {
     }
 }
 
+function limitOffsetCheck(limit: number, limitMax: number, offset: number): void {
+    if (!limit) throw new Error('You must provide a limit for this query')
+    if (limit < 0) throw new Error('limit must be a valid positive integer')
+    if (limit > limitMax) throw new Error(`limit for this query has a maximum value of ${limitMax}`)
+    if (!(offset >= 0)) throw new Error('Offset must be a positive integer')
+}
+
+function createPagination<T>(data: [util.StrObj], limit: number, offset: number): PaginatedRecords<T> {
+    let nextOffset = null
+    try {
+        nextOffset = data && data.length <= limit ? offset + limit : null
+    } catch {}
+
+    return {
+        records: data.map((record) => util.snake2camel(record) as unknown) as [T],
+        nextOffset
+    }
+}
+
 export default {
     Query: {
-        auth: async (obj, args, ctx, info): Promise<AuthResponse> => {
+        auth: async (obj, args, ctx): Promise<AuthResponse> => {
             const config = await getConfigPromise()
             let loggedIn = false
             try {
@@ -68,29 +89,30 @@ export default {
 
         samples: async (obj, { limit, offset }, { user }, info): Promise<PaginatedRecords<Sample>> => {
             loggedInGate(user)
+            limitOffsetCheck(limit, graphql.queryLimits.samples, offset)
             const pool = await getPool()
             const data = await getSamples(pool, limit, offset)
-            return {
-                records: data.map(util.snake2camel),
-                nextOffset: data.length <= limit ? offset + limit + 1 : null
-            }
+            console.log(info, obj)
+            return createPagination<Sample>(data, limit, offset)
         },
 
-        boxStates: async (obj, { limit, nextToken }, { user }, info): Promise<BoxState[]> => {
+        boxStates: async (obj, { limit, offset }, { user }): Promise<PaginatedRecords<BoxState>> => {
             loggedInGate(user)
+            limitOffsetCheck(limit, graphql.queryLimits.boxStates, offset)
             const pool = await getPool()
-            const data = await getBoxStates(pool, limit, nextToken)
-            return data.map(util.snake2camel)
+            const data = await getBoxStates(pool, limit, offset)
+            return createPagination<BoxState>(data, limit, offset)
         },
 
-        sites: async (obj, { limit, offset }, { user }, info): Promise<Site[]> => {
+        sites: async (obj, { limit, offset }, { user }): Promise<PaginatedRecords<Site>> => {
             loggedInGate(user)
+            limitOffsetCheck(limit, graphql.queryLimits.sites, offset)
             const pool = await getPool()
             const data = await getSites(pool, limit, offset)
-            return data.map(util.snake2camel)
+            return createPagination<Site>(data, limit, offset)
         },
 
-        siteInfo: async (obj, { siteId }, { user }, info): Promise<SiteInfo> => {
+        siteInfo: async (obj, { siteId }, { user }): Promise<SiteInfo> => {
             loggedInGate(user)
             const pool = await getPool()
             const data = await getSiteInfo(pool, siteId)
@@ -105,20 +127,25 @@ export default {
         sampleOrganisms: async (
             obj,
             { limit, offset, sampleId, boxId, siteId, sampleYear, typeId },
-            { user },
-            info
-        ): Promise<SampleOrganism[]> => {
+            { user }
+        ): Promise<PaginatedRecords<SampleOrganism>> => {
             loggedInGate(user)
+            limitOffsetCheck(limit, graphql.queryLimits.sampleOrganisms, offset)
             const pool = await getPool()
             const data = await getSampleOrganisms(pool, limit, offset, sampleId, boxId, siteId, sampleYear, typeId)
-            return data.map(util.snake2camel)
+            return createPagination<SampleOrganism>(data, limit, offset)
         },
 
-        projectOrganisms: async (obj, { limit, offset, projectId }, { user }, info): Promise<SampleOrganism[]> => {
+        projectOrganisms: async (
+            obj,
+            { limit, offset, projectIds },
+            { user }
+        ): Promise<PaginatedRecords<SampleOrganism>> => {
             loggedInGate(user)
+            limitOffsetCheck(limit, graphql.queryLimits.projectOrganisms, offset)
             const pool = await getPool()
-            const data = await getProjectOrganisms(pool, limit, offset, projectId)
-            return data.map(util.snake2camel)
+            const data = await getProjectOrganisms(pool, projectIds, limit, offset)
+            return createPagination<SampleOrganism>(data, limit, offset)
         },
 
         // individuals: async (obj, { limit, nextToken }, { user }, info): Promise<Individual[]> => {
@@ -128,46 +155,60 @@ export default {
         //     return data.map(util.snake2camel)
         // },
 
-        boxes: async (obj, { limit, offset }, { user }, info): Promise<Box[]> => {
+        boxes: async (obj, { limit, offset }, { user }): Promise<PaginatedRecords<Box>> => {
             loggedInGate(user)
+            limitOffsetCheck(limit, graphql.queryLimits.boxes, offset)
             const pool = await getPool()
             const data = await getBoxes(pool, limit, offset)
-            return data.map(util.snake2camel)
+            return createPagination<Box>(data, limit, offset)
         },
 
-        projects: async (obj, { limit, offset }, { user }, info): Promise<Project[]> => {
+        projects: async (obj, { limit, offset }, { user }): Promise<PaginatedRecords<Project>> => {
             loggedInGate(user)
+            limitOffsetCheck(limit, graphql.queryLimits.projects, offset)
             const pool = await getPool()
             const data = await getProjects(pool, limit, offset)
-            return data.map(util.snake2camel)
+            return createPagination<Project>(data, limit, offset)
         },
 
-        taxonomy: async (obj, { limit, offset }, { user }, info): Promise<Taxonomy[]> => {
+        taxonomy: async (obj, { limit, offset }, { user }): Promise<PaginatedRecords<Taxonomy>> => {
             loggedInGate(user)
+            limitOffsetCheck(limit, graphql.queryLimits.taxonomy, offset)
+
             const pool = await getPool()
             const data = await getTaxonomy(pool, limit, offset)
-            return data.map(util.snake2camel)
+            return createPagination<Taxonomy>(data, limit, offset)
         },
 
-        predictors: async (obj, { limit, offset, modelId }, { user }, info): Promise<Predictor[]> => {
+        predictors: async (obj, { limit, offset, modelId }, { user }): Promise<PaginatedRecords<Predictor>> => {
             loggedInGate(user)
+            limitOffsetCheck(limit, graphql.queryLimits.predictors, offset)
+
             const pool = await getPool()
             const data = await getPredictors(pool, limit, offset, modelId)
-            return data.map(util.snake2camel)
+            return createPagination<Predictor>(data, limit, offset)
         },
 
-        models: async (obj, { limit, offset }, { user }, info): Promise<Model[]> => {
+        models: async (obj, { limit, offset }, { user }): Promise<PaginatedRecords<Model>> => {
             loggedInGate(user)
+            limitOffsetCheck(limit, graphql.queryLimits.models, offset)
+
             const pool = await getPool()
             const data = await getModels(pool, limit, offset)
-            return data.map(util.snake2camel)
+            return createPagination<Model>(data, limit, offset)
         },
 
-        sitePredictorValues: async (obj, { limit, offset, siteId }, { user }, info): Promise<SitePredictorValue[]> => {
+        sitePredictorValues: async (
+            obj,
+            { limit, offset, siteId },
+            { user }
+        ): Promise<PaginatedRecords<SitePredictorValue>> => {
             loggedInGate(user)
+            limitOffsetCheck(limit, graphql.queryLimits.sitePredictorValues, offset)
+
             const pool = await getPool()
             const data = await getSitePredictorValues(pool, limit, offset, siteId)
-            return data.map(util.snake2camel)
+            return createPagination<SitePredictorValue>(data, limit, offset)
         }
     }
 

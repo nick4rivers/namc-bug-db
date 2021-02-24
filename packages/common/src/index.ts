@@ -1,8 +1,9 @@
 export * from './types'
-import typeDefs from './schema.graphql'
+import typeDefs, { queryLimits } from './schema.graphql'
 
 export * as util from './util'
 
 export const graphql = {
-    typeDefs
+    typeDefs,
+    queryLimits
 }

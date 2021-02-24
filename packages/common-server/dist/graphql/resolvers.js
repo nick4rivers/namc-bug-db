@@ -49,9 +49,30 @@ function loggedInGate(user) {
         throw new Error('You are not authorized to perform this query.');
     }
 }
+function limitOffsetCheck(limit, limitMax, offset) {
+    if (!limit)
+        throw new Error('You must provide a limit for this query');
+    if (limit < 0)
+        throw new Error('limit must be a valid positive integer');
+    if (limit > limitMax)
+        throw new Error("limit for this query has a maximum value of " + limitMax);
+    if (!(offset >= 0))
+        throw new Error('Offset must be a positive integer');
+}
+function createPagination(data, limit, offset) {
+    var nextOffset = null;
+    try {
+        nextOffset = data && data.length <= limit ? offset + limit : null;
+    }
+    catch (_a) { }
+    return {
+        records: data.map(function (record) { return common_1.util.snake2camel(record); }),
+        nextOffset: nextOffset
+    };
+}
 exports.default = {
     Query: {
-        auth: function (obj, args, ctx, info) { return __awaiter(void 0, void 0, void 0, function () {
+        auth: function (obj, args, ctx) { return __awaiter(void 0, void 0, void 0, function () {
             var config, loggedIn;
             return __generator(this, function (_a) {
                 switch (_a.label) {
@@ -82,41 +103,20 @@ exports.default = {
                     switch (_c.label) {
                         case 0:
                             loggedInGate(user);
+                            limitOffsetCheck(limit, common_1.graphql.queryLimits.samples, offset);
                             return [4, pg_1.getPool()];
                         case 1:
                             pool = _c.sent();
                             return [4, pg_1.getSamples(pool, limit, offset)];
                         case 2:
                             data = _c.sent();
-                            return [2, {
-                                    records: data.map(common_1.util.snake2camel),
-                                    nextOffset: data.length <= limit ? offset + limit + 1 : null
-                                }];
+                            console.log(info, obj);
+                            return [2, createPagination(data, limit, offset)];
                     }
                 });
             });
         },
-        boxStates: function (obj, _a, _b, info) {
-            var limit = _a.limit, nextToken = _a.nextToken;
-            var user = _b.user;
-            return __awaiter(void 0, void 0, void 0, function () {
-                var pool, data;
-                return __generator(this, function (_c) {
-                    switch (_c.label) {
-                        case 0:
-                            loggedInGate(user);
-                            return [4, pg_1.getPool()];
-                        case 1:
-                            pool = _c.sent();
-                            return [4, pg_1.getBoxStates(pool, limit, nextToken)];
-                        case 2:
-                            data = _c.sent();
-                            return [2, data.map(common_1.util.snake2camel)];
-                    }
-                });
-            });
-        },
-        sites: function (obj, _a, _b, info) {
+        boxStates: function (obj, _a, _b) {
             var limit = _a.limit, offset = _a.offset;
             var user = _b.user;
             return __awaiter(void 0, void 0, void 0, function () {
@@ -125,18 +125,40 @@ exports.default = {
                     switch (_c.label) {
                         case 0:
                             loggedInGate(user);
+                            limitOffsetCheck(limit, common_1.graphql.queryLimits.boxStates, offset);
+                            return [4, pg_1.getPool()];
+                        case 1:
+                            pool = _c.sent();
+                            return [4, pg_1.getBoxStates(pool, limit, offset)];
+                        case 2:
+                            data = _c.sent();
+                            return [2, createPagination(data, limit, offset)];
+                    }
+                });
+            });
+        },
+        sites: function (obj, _a, _b) {
+            var limit = _a.limit, offset = _a.offset;
+            var user = _b.user;
+            return __awaiter(void 0, void 0, void 0, function () {
+                var pool, data;
+                return __generator(this, function (_c) {
+                    switch (_c.label) {
+                        case 0:
+                            loggedInGate(user);
+                            limitOffsetCheck(limit, common_1.graphql.queryLimits.sites, offset);
                             return [4, pg_1.getPool()];
                         case 1:
                             pool = _c.sent();
                             return [4, pg_1.getSites(pool, limit, offset)];
                         case 2:
                             data = _c.sent();
-                            return [2, data.map(common_1.util.snake2camel)];
+                            return [2, createPagination(data, limit, offset)];
                     }
                 });
             });
         },
-        siteInfo: function (obj, _a, _b, info) {
+        siteInfo: function (obj, _a, _b) {
             var siteId = _a.siteId;
             var user = _b.user;
             return __awaiter(void 0, void 0, void 0, function () {
@@ -159,7 +181,7 @@ exports.default = {
                 });
             });
         },
-        sampleOrganisms: function (obj, _a, _b, info) {
+        sampleOrganisms: function (obj, _a, _b) {
             var limit = _a.limit, offset = _a.offset, sampleId = _a.sampleId, boxId = _a.boxId, siteId = _a.siteId, sampleYear = _a.sampleYear, typeId = _a.typeId;
             var user = _b.user;
             return __awaiter(void 0, void 0, void 0, function () {
@@ -168,19 +190,20 @@ exports.default = {
                     switch (_c.label) {
                         case 0:
                             loggedInGate(user);
+                            limitOffsetCheck(limit, common_1.graphql.queryLimits.sampleOrganisms, offset);
                             return [4, pg_1.getPool()];
                         case 1:
                             pool = _c.sent();
                             return [4, pg_1.getSampleOrganisms(pool, limit, offset, sampleId, boxId, siteId, sampleYear, typeId)];
                         case 2:
                             data = _c.sent();
-                            return [2, data.map(common_1.util.snake2camel)];
+                            return [2, createPagination(data, limit, offset)];
                     }
                 });
             });
         },
-        projectOrganisms: function (obj, _a, _b, info) {
-            var limit = _a.limit, offset = _a.offset, projectId = _a.projectId;
+        projectOrganisms: function (obj, _a, _b) {
+            var limit = _a.limit, offset = _a.offset, projectIds = _a.projectIds;
             var user = _b.user;
             return __awaiter(void 0, void 0, void 0, function () {
                 var pool, data;
@@ -188,18 +211,19 @@ exports.default = {
                     switch (_c.label) {
                         case 0:
                             loggedInGate(user);
+                            limitOffsetCheck(limit, common_1.graphql.queryLimits.projectOrganisms, offset);
                             return [4, pg_1.getPool()];
                         case 1:
                             pool = _c.sent();
-                            return [4, pg_1.getProjectOrganisms(pool, limit, offset, projectId)];
+                            return [4, pg_1.getProjectOrganisms(pool, projectIds, limit, offset)];
                         case 2:
                             data = _c.sent();
-                            return [2, data.map(common_1.util.snake2camel)];
+                            return [2, createPagination(data, limit, offset)];
                     }
                 });
             });
         },
-        boxes: function (obj, _a, _b, info) {
+        boxes: function (obj, _a, _b) {
             var limit = _a.limit, offset = _a.offset;
             var user = _b.user;
             return __awaiter(void 0, void 0, void 0, function () {
@@ -208,18 +232,19 @@ exports.default = {
                     switch (_c.label) {
                         case 0:
                             loggedInGate(user);
+                            limitOffsetCheck(limit, common_1.graphql.queryLimits.boxes, offset);
                             return [4, pg_1.getPool()];
                         case 1:
                             pool = _c.sent();
                             return [4, pg_1.getBoxes(pool, limit, offset)];
                         case 2:
                             data = _c.sent();
-                            return [2, data.map(common_1.util.snake2camel)];
+                            return [2, createPagination(data, limit, offset)];
                     }
                 });
             });
         },
-        projects: function (obj, _a, _b, info) {
+        projects: function (obj, _a, _b) {
             var limit = _a.limit, offset = _a.offset;
             var user = _b.user;
             return __awaiter(void 0, void 0, void 0, function () {
@@ -228,18 +253,19 @@ exports.default = {
                     switch (_c.label) {
                         case 0:
                             loggedInGate(user);
+                            limitOffsetCheck(limit, common_1.graphql.queryLimits.projects, offset);
                             return [4, pg_1.getPool()];
                         case 1:
                             pool = _c.sent();
                             return [4, pg_1.getProjects(pool, limit, offset)];
                         case 2:
                             data = _c.sent();
-                            return [2, data.map(common_1.util.snake2camel)];
+                            return [2, createPagination(data, limit, offset)];
                     }
                 });
             });
         },
-        taxonomy: function (obj, _a, _b, info) {
+        taxonomy: function (obj, _a, _b) {
             var limit = _a.limit, offset = _a.offset;
             var user = _b.user;
             return __awaiter(void 0, void 0, void 0, function () {
@@ -248,18 +274,19 @@ exports.default = {
                     switch (_c.label) {
                         case 0:
                             loggedInGate(user);
+                            limitOffsetCheck(limit, common_1.graphql.queryLimits.taxonomy, offset);
                             return [4, pg_1.getPool()];
                         case 1:
                             pool = _c.sent();
                             return [4, pg_1.getTaxonomy(pool, limit, offset)];
                         case 2:
                             data = _c.sent();
-                            return [2, data.map(common_1.util.snake2camel)];
+                            return [2, createPagination(data, limit, offset)];
                     }
                 });
             });
         },
-        predictors: function (obj, _a, _b, info) {
+        predictors: function (obj, _a, _b) {
             var limit = _a.limit, offset = _a.offset, modelId = _a.modelId;
             var user = _b.user;
             return __awaiter(void 0, void 0, void 0, function () {
@@ -268,18 +295,19 @@ exports.default = {
                     switch (_c.label) {
                         case 0:
                             loggedInGate(user);
+                            limitOffsetCheck(limit, common_1.graphql.queryLimits.predictors, offset);
                             return [4, pg_1.getPool()];
                         case 1:
                             pool = _c.sent();
                             return [4, pg_1.getPredictors(pool, limit, offset, modelId)];
                         case 2:
                             data = _c.sent();
-                            return [2, data.map(common_1.util.snake2camel)];
+                            return [2, createPagination(data, limit, offset)];
                     }
                 });
             });
         },
-        models: function (obj, _a, _b, info) {
+        models: function (obj, _a, _b) {
             var limit = _a.limit, offset = _a.offset;
             var user = _b.user;
             return __awaiter(void 0, void 0, void 0, function () {
@@ -288,18 +316,19 @@ exports.default = {
                     switch (_c.label) {
                         case 0:
                             loggedInGate(user);
+                            limitOffsetCheck(limit, common_1.graphql.queryLimits.models, offset);
                             return [4, pg_1.getPool()];
                         case 1:
                             pool = _c.sent();
                             return [4, pg_1.getModels(pool, limit, offset)];
                         case 2:
                             data = _c.sent();
-                            return [2, data.map(common_1.util.snake2camel)];
+                            return [2, createPagination(data, limit, offset)];
                     }
                 });
             });
         },
-        sitePredictorValues: function (obj, _a, _b, info) {
+        sitePredictorValues: function (obj, _a, _b) {
             var limit = _a.limit, offset = _a.offset, siteId = _a.siteId;
             var user = _b.user;
             return __awaiter(void 0, void 0, void 0, function () {
@@ -308,13 +337,14 @@ exports.default = {
                     switch (_c.label) {
                         case 0:
                             loggedInGate(user);
+                            limitOffsetCheck(limit, common_1.graphql.queryLimits.sitePredictorValues, offset);
                             return [4, pg_1.getPool()];
                         case 1:
                             pool = _c.sent();
                             return [4, pg_1.getSitePredictorValues(pool, limit, offset, siteId)];
                         case 2:
                             data = _c.sent();
-                            return [2, data.map(common_1.util.snake2camel)];
+                            return [2, createPagination(data, limit, offset)];
                     }
                 });
             });

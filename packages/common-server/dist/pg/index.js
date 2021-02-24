@@ -101,8 +101,8 @@ exports.getBoxes = function (pool, limit, offset) {
 var sampleOrganismsQuery = 'SELECT * FROM sample.fn_samples($1, $2, $3, $4, $5, $6, $7)';
 exports.getSampleOrganisms = function (pool, limit, offset, sampleId, boxId, siteId, sampleYear, typeId) { return pgPromise(pool, sampleOrganismsQuery, [limit, offset, sampleId, boxId, siteId, sampleYear, typeId]); };
 var projectOrganismsQuery = 'SELECT * FROM sample.fn_project_samples($1, $2, $3)';
-exports.getProjectOrganisms = function (pool, limit, offset, projectId) {
-    return pgPromise(pool, projectOrganismsQuery, [limit, offset, projectId]);
+exports.getProjectOrganisms = function (pool, projectIds, limit, offset) {
+    return pgPromise(pool, projectOrganismsQuery, [limit, offset, projectIds]);
 };
 var projectsQuery = 'SELECT * FROM sample.vw_projects ORDER BY project_id LIMIT $1 OFFSET $2';
 exports.getProjects = function (pool, limit, offset) {

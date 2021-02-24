@@ -11,11 +11,8 @@ var __assign = (this && this.__assign) || function () {
     return __assign.apply(this, arguments);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.snake2camel = exports.camel2snake = exports.util1 = void 0;
+exports.snake2camel = exports.camel2snake = void 0;
 var change_case_1 = require("change-case");
-exports.util1 = function () {
-    return 'hi';
-};
 exports.camel2snake = function (inobj) {
     return Object.keys(inobj).reduce(function (acc, key) {
         var _a;

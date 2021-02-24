@@ -21,15 +21,13 @@ var __importStar = (this && this.__importStar) || function (mod) {
     __setModuleDefault(result, mod);
     return result;
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.graphql = void 0;
 __exportStar(require("./types"), exports);
-var schema_graphql_1 = __importDefault(require("./schema.graphql"));
+var schema_graphql_1 = __importStar(require("./schema.graphql"));
 exports.util = __importStar(require("./util"));
 exports.graphql = {
-    typeDefs: schema_graphql_1.default
+    typeDefs: schema_graphql_1.default,
+    queryLimits: schema_graphql_1.queryLimits
 };
 //# sourceMappingURL=index.js.map

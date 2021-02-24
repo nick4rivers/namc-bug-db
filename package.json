@@ -4,11 +4,12 @@
   "description": "",
   "main": "dist/index.js",
   "scripts": {
-    "test": "lerna run --no-bail --stream --parallel test",
-    "build": "lerna run --no-bail --stream --parallel build",
-    "package": "lerna run --no-bail --stream --parallel package",
-    "lint": "lerna run --no-bail --stream --parallel lint",
-    "watch": "lerna run --no-bail --stream --parallel watch",
+    "test": "lerna run --no-bail --stream test",
+    "build": "lerna run --no-bail --stream build",
+    "package": "lerna run --no-bail --stream package",
+    "lint": "lerna run --no-bail --stream lint",
+    "watch": "lerna run --no-bail --stream watch",
+    "watch:api": "lerna run --no-bail --scope @namcbugdb/common* --scope @namcbugdb/lambda-api --stream watch",
     "testVerbose": "lerna run test --stream"
   },
   "engines": {

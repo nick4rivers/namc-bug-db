@@ -2,6 +2,20 @@ import gql from 'graphql-tag'
 // NOTE: We went back to a .JS file because graphql-import seems borked when webpack
 // is in the mix
 
+export const queryLimits = {
+    samples: 500,
+    sampleOrganisms: 100,
+    projectOrganisms: 100,
+    boxStates: 500,
+    sites: 500,
+    boxes: 500,
+    projects: 500,
+    taxonomy: 500,
+    predictors: 500,
+    models: 500,
+    sitePredictorValues: 500
+}
+
 const typeDefs = gql`
     schema {
         query: Query
@@ -12,29 +26,29 @@ const typeDefs = gql`
         # Get a project and associated metadata
         auth: AuthParams
 
-        samples(limit: Int = 2, offset: Int): PaginatedSample
+        siteInfo(siteId: Int!): SiteInfo
+
+        samples(limit: Int = ${queryLimits.samples}, offset: Int): PaginatedSamples
         sampleOrganisms(
-            limit: Int!
+            limit: Int = ${queryLimits.sampleOrganisms}
             offset: Int!
             sampleId: Int
             boxId: Int
             siteId: Int
             sampleYear: Int
             typeId: Int
-        ): [SampleOrganism]
+        ): PaginatedSampleOrganisms
 
-        projectOrganisms(limit: Int!, offset: Int!, projectId: Int!): [SampleOrganism]
-
-        boxStates(limit: Int, nextToken: Int): [BoxState]
-        sites(limit: Int, offset: Int): [Site]
-        siteInfo(siteId: Int!): SiteInfo
-        # individuals(limit: Int, nextToken: Int): [Individual]
-        boxes(limit: Int, offset: Int): [Box]
-        projects(limit: Int, offset: Int): [Project]
-        taxonomy(limit: Int, offset: Int): [Taxonomy]
-        predictors(limit: Int, offset: Int, modelId: Int): [Predictor]
-        models(limit: Int, offset: Int): [Model]
-        sitePredictorValues(limit: Int, offset: Int, siteId: Int): [SitePredictorValue]
+        projectOrganisms(projectIds: [Int]!, limit: Int = ${queryLimits.projectOrganisms}, offset: Int =0): PaginatedSampleOrganisms
+        boxStates(limit: Int = ${queryLimits.boxStates}, offset: Int = 0): PaginatedBoxStates
+        sites(limit: Int = ${queryLimits.sites}, offset: Int = 0): PaginatedSites
+        # individuals(limit: Int, offset: Int): [Individual]
+        boxes(limit: Int = ${queryLimits.boxes}, offset: Int = 0): PaginatedBoxes
+        projects(limit: Int = ${queryLimits.projects}, offset: Int = 0): PaginatedProjects
+        taxonomy(limit: Int = ${queryLimits.taxonomy}, offset: Int = 0): PaginatedTaxonomies
+        predictors(modelId: Int, limit: Int = ${queryLimits.predictors}, offset: Int = 0): PaginatedPredictors
+        models(limit: Int = ${queryLimits.models}, offset: Int = 0): PaginatedModels
+        sitePredictorValues(siteId: Int!, limit: Int = ${queryLimits.sitePredictorValues}, offset: Int = 0): PaginatedSitePredictorValues
     }
 
     # this schema allows the following mutation:
@@ -48,11 +62,6 @@ const typeDefs = gql`
         clientId: String
         region: String
         domain: String
-    }
-
-    type PaginatedSample {
-        records: [Sample]
-        nextOffset: Int
     }
 
     type Sample {
@@ -286,6 +295,48 @@ const typeDefs = gql`
         createdDate: String
         updatedDate: String
         calculationScript: String
+    }
+
+    # Pagination Types
+    type PaginatedBoxStates {
+        records: [BoxState]
+        nextOffset: Int
+    }
+    type PaginatedModels {
+        records: [Model]
+        nextOffset: Int
+    }
+    type PaginatedSites {
+        records: [Site]
+        nextOffset: Int
+    }
+    type PaginatedSamples {
+        records: [Sample]
+        nextOffset: Int
+    }
+    type PaginatedSampleOrganisms {
+        records: [SampleOrganism]
+        nextOffset: Int
+    }
+    type PaginatedBoxes {
+        records: [Box]
+        nextOffset: Int
+    }
+    type PaginatedProjects {
+        records: [Project]
+        nextOffset: Int
+    }
+    type PaginatedTaxonomies {
+        records: [Taxonomy]
+        nextOffset: Int
+    }
+    type PaginatedPredictors {
+        records: [Predictor]
+        nextOffset: Int
+    }
+    type PaginatedSitePredictorValues {
+        records: [SitePredictorValue]
+        nextOffset: Int
     }
 `
 
