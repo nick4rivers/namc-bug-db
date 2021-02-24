@@ -1,4 +1,4 @@
-import { Sample, AuthResponse, BoxState, Site, SiteInfo, SampleOrganism, Project, Taxonomy, Box, PaginatedRecords, Predictor, Model } from '@namcbugdb/common';
+import { Sample, AuthResponse, BoxState, Site, SiteInfo, SampleOrganism, Project, Taxonomy, Box, PaginatedRecords, Predictor, Model, SitePredictorValue } from '@namcbugdb/common';
 declare const _default: {
     Query: {
         auth: (obj: any, args: any, ctx: any, info: any) => Promise<AuthResponse>;
@@ -36,6 +36,13 @@ declare const _default: {
         }, { user }: {
             user: any;
         }, info: any) => Promise<SampleOrganism[]>;
+        projectOrganisms: (obj: any, { limit, offset, projectId }: {
+            limit: any;
+            offset: any;
+            projectId: any;
+        }, { user }: {
+            user: any;
+        }, info: any) => Promise<SampleOrganism[]>;
         boxes: (obj: any, { limit, offset }: {
             limit: any;
             offset: any;
@@ -54,9 +61,10 @@ declare const _default: {
         }, { user }: {
             user: any;
         }, info: any) => Promise<Taxonomy[]>;
-        predictors: (obj: any, { limit, offset }: {
+        predictors: (obj: any, { limit, offset, modelId }: {
             limit: any;
             offset: any;
+            modelId: any;
         }, { user }: {
             user: any;
         }, info: any) => Promise<Predictor[]>;
@@ -66,6 +74,13 @@ declare const _default: {
         }, { user }: {
             user: any;
         }, info: any) => Promise<Model[]>;
+        sitePredictorValues: (obj: any, { limit, offset, siteId }: {
+            limit: any;
+            offset: any;
+            siteId: any;
+        }, { user }: {
+            user: any;
+        }, info: any) => Promise<SitePredictorValue[]>;
     };
 };
 export default _default;

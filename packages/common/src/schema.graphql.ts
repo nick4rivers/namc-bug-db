@@ -22,6 +22,9 @@ const typeDefs = gql`
             sampleYear: Int
             typeId: Int
         ): [SampleOrganism]
+
+        projectOrganisms(limit: Int!, offset: Int!, projectId: Int!): [SampleOrganism]
+
         driftSamples(limit: Int, offset: Int): [DriftSample]
         planktonSamples(limit: Int, offset: Int): [PlanktonSample]
         boxStates(limit: Int, nextToken: Int): [BoxState]
@@ -31,8 +34,9 @@ const typeDefs = gql`
         boxes(limit: Int, offset: Int): [Box]
         projects(limit: Int, offset: Int): [Project]
         taxonomy(limit: Int, offset: Int): [Taxonomy]
-        predictors(limit: Int, offset: Int): [Predictor]
+        predictors(limit: Int, offset: Int, modelId: Int): [Predictor]
         models(limit: Int, offset: Int): [Model]
+        sitePredictorValues(limit: Int, offset: Int, siteId: Int): [SitePredictorValue]
     }
 
     # this schema allows the following mutation:
@@ -280,6 +284,7 @@ const typeDefs = gql`
         abbreviation: String
         description: String
         units: String
+        calculationScript: String
         predictorTypeId: Int
         predictorTypeName: String
         updatedDate: String
@@ -294,6 +299,18 @@ const typeDefs = gql`
         isActive: Boolean
         description: String
         predictorCount: Int
+    }
+
+    type SitePredictorValue {
+        predictorId: Int
+        predictorName: String
+        abbreviation: String
+        description: String
+        predictorTypeName: String
+        metadata: String
+        createdDate: String
+        updatedDate: String
+        calculationScript: String
     }
 `
 

@@ -14,7 +14,8 @@ import {
     util,
     PaginatedRecords,
     Predictor,
-    Model
+    Model,
+    SitePredictorValue
 } from '@namcbugdb/common'
 import {
     getPool,
@@ -23,12 +24,14 @@ import {
     getSites,
     getSiteInfo,
     getSampleOrganisms,
+    getProjectOrganisms,
     getIndividuals,
     getBoxes,
     getProjects,
     getTaxonomy,
     getPredictors,
-    getModels
+    getModels,
+    getSitePredictorValues
 } from '../pg'
 // import log from 'loglevel'
 import { UserObj } from '../types'
@@ -111,6 +114,13 @@ export default {
             return data.map(util.snake2camel)
         },
 
+        projectOrganisms: async (obj, { limit, offset, projectId }, { user }, info): Promise<SampleOrganism[]> => {
+            loggedInGate(user)
+            const pool = await getPool()
+            const data = await getProjectOrganisms(pool, limit, offset, projectId)
+            return data.map(util.snake2camel)
+        },
+
         // individuals: async (obj, { limit, nextToken }, { user }, info): Promise<Individual[]> => {
         //     loggedInGate(user)
         //     const pool = await getPool()
@@ -139,10 +149,10 @@ export default {
             return data.map(util.snake2camel)
         },
 
-        predictors: async (obj, { limit, offset }, { user }, info): Promise<Predictor[]> => {
+        predictors: async (obj, { limit, offset, modelId }, { user }, info): Promise<Predictor[]> => {
             loggedInGate(user)
             const pool = await getPool()
-            const data = await getPredictors(pool, limit, offset)
+            const data = await getPredictors(pool, limit, offset, modelId)
             return data.map(util.snake2camel)
         },
 
@@ -150,6 +160,13 @@ export default {
             loggedInGate(user)
             const pool = await getPool()
             const data = await getModels(pool, limit, offset)
+            return data.map(util.snake2camel)
+        },
+
+        sitePredictorValues: async (obj, { limit, offset, siteId }, { user }, info): Promise<SitePredictorValue[]> => {
+            loggedInGate(user)
+            const pool = await getPool()
+            const data = await getSitePredictorValues(pool, limit, offset, siteId)
             return data.map(util.snake2camel)
         }
     }

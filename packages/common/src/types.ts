@@ -214,6 +214,7 @@ export type Predictor = {
     abbreviation: string
     description: string
     units: string
+    calculationScript: string
     predictorTypeId: number
     predictorTypeName: string
     updatedDate: string
@@ -228,4 +229,16 @@ export type Model = {
     isActive: boolean
     description: string
     predictorCount: number
+}
+
+export type SitePredictorValue = {
+    predictorId: number
+    predictorName: string
+    abbreviation: string
+    description: string
+    predictorTypeName: string
+    metadata: string
+    createdDate: string
+    updatedDate: string
+    calculationScript: string
 }

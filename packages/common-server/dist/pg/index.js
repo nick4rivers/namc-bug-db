@@ -39,7 +39,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getModels = exports.getPredictors = exports.getTaxonomy = exports.getProjects = exports.getSampleOrganisms = exports.getBoxes = exports.getIndividuals = exports.getSiteInfo = exports.getSites = exports.getBoxStates = exports.getSamples = exports.getPool = void 0;
+exports.getSitePredictorValues = exports.getModels = exports.getPredictors = exports.getTaxonomy = exports.getProjects = exports.getProjectOrganisms = exports.getSampleOrganisms = exports.getBoxes = exports.getIndividuals = exports.getSiteInfo = exports.getSites = exports.getBoxStates = exports.getSamples = exports.getPool = void 0;
 var config_1 = require("../config");
 var pg_1 = require("pg");
 var loglevel_1 = __importDefault(require("loglevel"));
@@ -100,6 +100,10 @@ exports.getBoxes = function (pool, limit, offset) {
 };
 var sampleOrganismsQuery = 'SELECT * FROM sample.fn_samples($1, $2, $3, $4, $5, $6, $7)';
 exports.getSampleOrganisms = function (pool, limit, offset, sampleId, boxId, siteId, sampleYear, typeId) { return pgPromise(pool, sampleOrganismsQuery, [limit, offset, sampleId, boxId, siteId, sampleYear, typeId]); };
+var projectOrganismsQuery = 'SELECT * FROM sample.fn_project_samples($1, $2, $3)';
+exports.getProjectOrganisms = function (pool, limit, offset, projectId) {
+    return pgPromise(pool, projectOrganismsQuery, [limit, offset, projectId]);
+};
 var projectsQuery = 'SELECT * FROM sample.vw_projects ORDER BY project_id LIMIT $1 OFFSET $2';
 exports.getProjects = function (pool, limit, offset) {
     return pgPromise(pool, projectsQuery, [limit, offset]);
@@ -108,12 +112,16 @@ var taxonomyQuery = 'SELECT * FROM taxa.vw_taxonomy_crosstab ORDER BY taxonomy_i
 exports.getTaxonomy = function (pool, limit, offset) {
     return pgPromise(pool, taxonomyQuery, [limit, offset]);
 };
-var predictorQuery = 'SELECT * FROM geo.vw_predictors ORDER BY predictor_id LIMIT $1 OFFSET $2';
-exports.getPredictors = function (pool, limit, offset) {
-    return pgPromise(pool, predictorQuery, [limit, offset]);
+var predictorQuery = 'SELECT * FROM geo.fn_predictors($1, $2, $3)';
+exports.getPredictors = function (pool, limit, offset, modelId) {
+    return pgPromise(pool, predictorQuery, [limit, offset, modelId]);
 };
-var modelQuery = 'SELECT * FROM geo.vw_models ORDER BY model_id LIMIT $1 OFFSET $2';
+var modelQuery = 'SELECT * FROM geo.fn_models($1, $2)';
 exports.getModels = function (pool, limit, offset) {
     return pgPromise(pool, modelQuery, [limit, offset]);
+};
+var sitePredictorValuesQuery = 'SELECT * FROM geo.fn_site_predictor_values($1, $2, $3)';
+exports.getSitePredictorValues = function (pool, limit, offset, siteId) {
+    return pgPromise(pool, sitePredictorValuesQuery, [limit, offset, siteId]);
 };
 //# sourceMappingURL=index.js.map

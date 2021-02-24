@@ -179,6 +179,26 @@ exports.default = {
                 });
             });
         },
+        projectOrganisms: function (obj, _a, _b, info) {
+            var limit = _a.limit, offset = _a.offset, projectId = _a.projectId;
+            var user = _b.user;
+            return __awaiter(void 0, void 0, void 0, function () {
+                var pool, data;
+                return __generator(this, function (_c) {
+                    switch (_c.label) {
+                        case 0:
+                            loggedInGate(user);
+                            return [4, pg_1.getPool()];
+                        case 1:
+                            pool = _c.sent();
+                            return [4, pg_1.getProjectOrganisms(pool, limit, offset, projectId)];
+                        case 2:
+                            data = _c.sent();
+                            return [2, data.map(common_1.util.snake2camel)];
+                    }
+                });
+            });
+        },
         boxes: function (obj, _a, _b, info) {
             var limit = _a.limit, offset = _a.offset;
             var user = _b.user;
@@ -240,7 +260,7 @@ exports.default = {
             });
         },
         predictors: function (obj, _a, _b, info) {
-            var limit = _a.limit, offset = _a.offset;
+            var limit = _a.limit, offset = _a.offset, modelId = _a.modelId;
             var user = _b.user;
             return __awaiter(void 0, void 0, void 0, function () {
                 var pool, data;
@@ -251,7 +271,7 @@ exports.default = {
                             return [4, pg_1.getPool()];
                         case 1:
                             pool = _c.sent();
-                            return [4, pg_1.getPredictors(pool, limit, offset)];
+                            return [4, pg_1.getPredictors(pool, limit, offset, modelId)];
                         case 2:
                             data = _c.sent();
                             return [2, data.map(common_1.util.snake2camel)];
@@ -272,6 +292,26 @@ exports.default = {
                         case 1:
                             pool = _c.sent();
                             return [4, pg_1.getModels(pool, limit, offset)];
+                        case 2:
+                            data = _c.sent();
+                            return [2, data.map(common_1.util.snake2camel)];
+                    }
+                });
+            });
+        },
+        sitePredictorValues: function (obj, _a, _b, info) {
+            var limit = _a.limit, offset = _a.offset, siteId = _a.siteId;
+            var user = _b.user;
+            return __awaiter(void 0, void 0, void 0, function () {
+                var pool, data;
+                return __generator(this, function (_c) {
+                    switch (_c.label) {
+                        case 0:
+                            loggedInGate(user);
+                            return [4, pg_1.getPool()];
+                        case 1:
+                            pool = _c.sent();
+                            return [4, pg_1.getSitePredictorValues(pool, limit, offset, siteId)];
                         case 2:
                             data = _c.sent();
                             return [2, data.map(common_1.util.snake2camel)];
