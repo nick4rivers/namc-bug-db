@@ -1,6 +1,6 @@
 {
   "name": "@namcbugdb/react-app",
-  "version": "0.1.30",
+  "version": "0.1.31",
   "private": true,
   "engines": {
     "node": ">=12.18.4 <13.0.0"

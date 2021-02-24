@@ -1,11 +1,11 @@
 {
   "name": "@namcbugdb/aws-cdk-stack",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "main": "dist/types.js",
   "private": true,
   "engines": {
     "node": ">=12.18.4 <13.0.0"
-  },  
+  },
   "scripts": {
     "build": "tsc",
     "watch": "tsc -w",
