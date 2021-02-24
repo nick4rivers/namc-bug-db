@@ -55,6 +55,122 @@ end
 $$;
 
 
+CREATE OR REPLACE FUNCTION geo.fn_predictors(p_limit INT, p_offset INT, p_model_id INT = NULL)
+    returns table
+            (
+                predictor_id        SMALLINT,
+                predictor_name      VARCHAR(255),
+                abbreviation        VARCHAR(25),
+                description         TEXT,
+                units               VARCHAR(20),
+                calculation_script  varchar(255),
+                predictor_type_id   SMALLINT,
+                predictor_type_name VARCHAR(255),
+                updated_date        timestamptz,
+                created_date        timestamptz,
+                model_count         BIGINT
+            )
+    language plpgsql
+AS
+$$
+begin
+    RETURN QUERY
+        SELECT p.predictor_id,
+               p.predictor_name,
+               p.abbreviation,
+               p.description,
+               u.abbreviation as     units,
+               p.calculation_script,
+               p.predictor_type_id,
+               t.predictor_type_name,
+               p.updated_date,
+               p.created_date,
+               count(m.predictor_id) model_count
+        FROM geo.predictors p
+                 inner join geo.predictor_types t On p.predictor_type_id = t.predictor_type_id
+                 inner join geo.units u on p.unit_id = u.unit_id
+                 left join geo.model_predictors m on p.predictor_id = m.predictor_id
+        where ((m.model_id = p_model_id) OR (p_model_id is NULL))
+        group by p.predictor_id,
+                 p.predictor_name,
+                 p.abbreviation,
+                 p.description,
+                 units,
+                 p.calculation_script,
+                 p.predictor_type_id,
+                 t.predictor_type_name,
+                 p.updated_date,
+                 p.created_date
+        ORDER BY p.predictor_id
+        limit p_limit offset p_offset;
+end
+$$;
+
+CREATE OR REPLACE FUNCTION geo.fn_models(p_limit INT, p_offset INT, p_is_active BOOLEAN = TRUE)
+    returns table
+            (
+                model_id        SMALLINT,
+                model_name      VARCHAR(255),
+                abbreviation    VARCHAR(50),
+                is_active       BOOLEAN,
+                description     TEXT,
+                predictor_count BIGINT
+            )
+    language plpgsql
+AS
+$$
+begin
+    RETURN QUERY
+        SELECT m.model_id,
+               m.model_name,
+               m.abbreviation,
+               m.is_active,
+               m.description,
+               count(p.model_id) predictor_count
+        FROM geo.models m
+                 left join geo.model_predictors p ON m.model_id = p.model_id
+        group by m.model_id, m.model_name, m.abbreviation, m.is_active, m.description
+        limit p_limit offset p_offset;
+end
+$$;
+
+CREATE OR REPLACE FUNCTION geo.fn_site_predictor_values(p_limit INT, p_offset INT, p_site_id INT)
+    returns table
+            (
+               predictor_id SMALLINT,
+               predictor_name VARCHAR(255),
+               abbreviation VARCHAR(25),
+               description TEXT,
+               predictor_type_name VARCHAR(255),
+               metadata JSON,
+               created_date timestamptz,
+               updated_date timestamptz,
+               calculation_script VARCHAR(255)
+            )
+    language plpgsql
+AS
+$$
+begin
+    RETURN QUERY
+        SELECT sp.predictor_id,
+               p.predictor_name,
+               p.abbreviation,
+               p.description,
+               pt.predictor_type_name,
+               sp.metadata,
+               sp.created_date,
+               sp.updated_date,
+               p.calculation_script
+        FROM geo.site_predictors sp
+                 inner join geo.predictors p on sp.predictor_id = p.predictor_id
+                 inner join geo.predictor_types pt on p.predictor_type_id = pt.predictor_type_id
+                 inner join geo.units u on p.unit_id = u.unit_id
+        WHERE sp.site_id = p_site_id
+        ORDER BY sp.predictor_id
+        LIMIT p_limit OFFSET p_offset;
+end
+$$;
+
 /******************************************************************************************************************
 taxa SCHEMA
 */
@@ -301,6 +417,137 @@ BEGIN
           AND ((s.site_id = p_site_id) OR (p_site_id IS NULL))
           AND ((extract(year from s.sample_date) = p_sample_year) OR (p_sample_year IS NULL))
           AND ((s.type_id = p_type_id) OR (p_type_id IS NULL))
+        ORDER BY s.sample_id
+        LIMIT p_limit OFFSET p_offset;
+end
+$$;
+
+
+CREATE OR REPLACE FUNCTION sample.fn_project_samples(
+    p_limit INT,
+    p_offset INT,
+    p_project_id INT)
+    RETURNS TABLE
+            (
+                sample_id        INT,
+                box_id           INT,
+                customer_id      SMALLINT,
+                customer_name    VARCHAR(255),
+                box_state_name   VARCHAR(50),
+                box_state_id     SMALLINT,
+                submitter_name   TEXT,
+                site_id          INT,
+                site_name        VARCHAR(50),
+                site_latitude    DOUBLE PRECISION,
+                site_longitude   DOUBLE PRECISION,
+                site_state       VARCHAR(2),
+                sample_date      CHAR(10),
+                sample_latitude  DOUBLE PRECISION,
+                sample_longitude DOUBLE PRECISION,
+                sample_time      TIME,
+                type_id          SMALLINT,
+                sample_type      VARCHAR(50),
+                method_id        SMALLINT,
+                sample_method    VARCHAR(50),
+                habitat_id       SMALLINT,
+                habitat_name     VARCHAR(50),
+                area             REAL,
+                field_split      REAL,
+                lab_split        REAL,
+                jar_count        SMALLINT,
+                qualitative      BOOLEAN,
+                mesh             SMALLINT,
+                created_date     TIMESTAMPTZ,
+                updated_date     TIMESTAMPTZ,
+                qa_sample_id     SMALLINT,
+                diameter         REAL,
+                sub_sample_count SMALLINT,
+                tow_length       REAL,
+                volume           REAL,
+                aliquot          REAL,
+                size_interval    REAL,
+                tow_type         tow_types,
+                net_area         DOUBLE PRECISION,
+                net_duration     DOUBLE PRECISION,
+                stream_depth     DOUBLE PRECISION,
+                net_depth        DOUBLE PRECISION,
+                net_velocity     DOUBLE PRECISION,
+                taxonomy_id      smallint,
+                life_stage       CHAR(1),
+                bug_size         REAL,
+                split_count      REAL,
+                big_rare_count   SMALLINT,
+                phylum           VARCHAR(255),
+                class            VARCHAR(255),
+                subclass         VARCHAR(255),
+                "Order"          VARCHAR(255),
+                family           VARCHAR(255),
+                genus            VARCHAR(255),
+                is_private       BOOLEAN
+            )
+    LANGUAGE plpgsql
+AS
+$$
+BEGIN
+    RETURN QUERY
+        SELECT s.sample_id,
+               s.box_id,
+               s.customer_id,
+               s.customer_name,
+               s.box_state_name,
+               s.box_state_id,
+               s.submitter_name,
+               s.site_id,
+               s.site_name,
+               s.site_latitude,
+               s.site_longitude,
+               s.site_state,
+               CAST(TO_CHAR(s.sample_date :: DATE, 'yyyy-mm-dd') AS CHAR(10)),
+               s.sample_latitude,
+               s.sample_longitude,
+               s.sample_time,
+               s.type_id,
+               s.sample_type,
+               s.method_id,
+               s.sample_method,
+               s.habitat_id,
+               s.habitat_name,
+               s.area,
+               s.field_split,
+               s.lab_split,
+               s.jar_count,
+               s.qualitative,
+               s.mesh,
+               s.created_date,
+               s.updated_date,
+               s.qa_sample_id,
+               s.diameter,
+               s.sub_sample_count,
+               s.tow_length,
+               s.volume,
+               s.aliquot,
+               s.size_interval,
+               s.tow_type,
+               s.net_area,
+               s.net_duration,
+               s.stream_depth,
+               s.net_depth,
+               s.net_velocity,
+               s.taxonomy_id,
+               s.life_stage,
+               s.bug_size,
+               s.split_count,
+               s.big_rare_count,
+               s.phylum,
+               s.class,
+               s.subclass,
+               s."Order",
+               s.family,
+               s.genus,
+               s.is_private
+        FROM sample.vw_samples s
+                 INNER JOIN sample.project_samples p ON s.sample_id = p.project_id
+        WHERE p.project_id = p_project_id
         ORDER BY s.sample_id
         LIMIT p_limit OFFSET p_offset;
 end
