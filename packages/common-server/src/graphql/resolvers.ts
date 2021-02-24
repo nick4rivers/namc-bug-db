@@ -61,7 +61,7 @@ function limitOffsetCheck(limit: number, limitMax: number, offset: number): void
 function createPagination<T>(data: [util.StrObj], limit: number, offset: number): PaginatedRecords<T> {
     let nextOffset = null
     try {
-        nextOffset = data && data.length <= limit ? offset + limit : null
+        nextOffset = data && data.length === limit ? offset + limit : null
     } catch {}
 
     return {

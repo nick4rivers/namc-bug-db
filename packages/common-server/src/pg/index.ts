@@ -33,9 +33,10 @@ const samplesQuery = 'SELECT * FROM sample.vw_samples ORDER BY sample_id LIMIT $
 export const getSamples = (pool: Pool, limit: number, offset: number): Promise<any> =>
     pgPromise(pool, samplesQuery, [limit, offset])
 
-const boxStatesQuery = 'SELECT * FROM sample.box_states'
+const boxStatesQuery = 'SELECT * FROM sample.box_states LIMIT $1 OFFSET $2'
 
-export const getBoxStates = (pool, limit: number, nextToken: number): Promise<any> => pgPromise(pool, boxStatesQuery)
+export const getBoxStates = (pool, limit: number, offset: number): Promise<any> =>
+    pgPromise(pool, boxStatesQuery, [limit, offset])
 
 const sitesQuery = 'SELECT * FROM geo.vw_sites ORDER BY site_id LIMIT $1 OFFSET $2'
 
@@ -45,10 +46,10 @@ export const getSites = (pool, limit: number, offset: number): Promise<any> =>
 const siteInfoQuery = 'SELECT * FROM geo.fn_site_info($1)'
 export const getSiteInfo = (pool, siteId: number): Promise<any> => pgPromise(pool, siteInfoQuery, [siteId])
 
-const individualsQuery = 'SELECT * FROM entity.vw_individuals'
+const individualsQuery = 'SELECT * FROM entity.vw_individuals LIMIT $1 OFFSET $2'
 
-export const getIndividuals = (pool, limit: number, nextToken: number): Promise<any> =>
-    pgPromise(pool, individualsQuery)
+export const getIndividuals = (pool, limit: number, offset: number): Promise<any> =>
+    pgPromise(pool, individualsQuery, [limit, offset])
 
 const boxesQuery = 'SELECT * FROM sample.vw_boxes ORDER BY box_id LIMIT $1 OFFSET $2'
 
