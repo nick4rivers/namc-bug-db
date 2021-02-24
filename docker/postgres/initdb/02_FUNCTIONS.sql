@@ -66,6 +66,7 @@ CREATE OR REPLACE FUNCTION geo.fn_predictors(p_limit INT, p_offset INT, p_model_
                 calculation_script  varchar(255),
                 predictor_type_id   SMALLINT,
                 predictor_type_name VARCHAR(255),
+                is_temporal         BOOLEAN,
                 updated_date        timestamptz,
                 created_date        timestamptz,
                 model_count         BIGINT
@@ -83,6 +84,7 @@ begin
                p.calculation_script,
                p.predictor_type_id,
                t.predictor_type_name,
+               p.is_temporal,
                p.updated_date,
                p.created_date,
                count(m.predictor_id) model_count
@@ -137,15 +139,15 @@ $$;
 CREATE OR REPLACE FUNCTION geo.fn_site_predictor_values(p_limit INT, p_offset INT, p_site_id INT)
     returns table
             (
-               predictor_id SMALLINT,
-               predictor_name VARCHAR(255),
-               abbreviation VARCHAR(25),
-               description TEXT,
-               predictor_type_name VARCHAR(255),
-               metadata JSON,
-               created_date timestamptz,
-               updated_date timestamptz,
-               calculation_script VARCHAR(255)
+                predictor_id        SMALLINT,
+                predictor_name      VARCHAR(255),
+                abbreviation        VARCHAR(25),
+                description         TEXT,
+                predictor_type_name VARCHAR(255),
+                metadata            JSON,
+                created_date        timestamptz,
+                updated_date        timestamptz,
+                calculation_script  VARCHAR(255)
             )
     language plpgsql
 AS
