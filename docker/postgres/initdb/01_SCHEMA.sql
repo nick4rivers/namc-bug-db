@@ -246,6 +246,7 @@ CREATE TABLE geo.predictors
     abbreviation       VARCHAR(25) UNIQUE  NOT NULL,
     unit_id            SMALLINT            NOT NULL,
     predictor_type_id  SMALLINT            NOT NULL,
+    is_temporal        BOOLEAN NOT NULL,
     description        TEXT,
     metadata           JSON,
     calculation_script VARCHAR(255),
