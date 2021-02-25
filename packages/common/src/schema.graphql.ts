@@ -132,8 +132,8 @@ const typeDefs = gql`
         system: String
         ecosystem: String
         location: String
-        stX: Float
-        stY: Float
+        longitude: Float
+        latitude: Float
         usState: String
         waterbodyTypeName: String
         waterbodyCode: String

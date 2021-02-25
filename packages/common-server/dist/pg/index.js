@@ -86,7 +86,7 @@ var boxStatesQuery = 'SELECT * FROM sample.box_states LIMIT $1 OFFSET $2';
 exports.getBoxStates = function (pool, limit, offset) {
     return pgPromise(pool, boxStatesQuery, [limit, offset]);
 };
-var sitesQuery = 'SELECT * FROM geo.vw_sites ORDER BY site_id LIMIT $1 OFFSET $2';
+var sitesQuery = 'SELECT * FROM geo.fn_sites($1, $2, $3)';
 exports.getSites = function (pool, limit, offset) {
     return pgPromise(pool, sitesQuery, [limit, offset]);
 };

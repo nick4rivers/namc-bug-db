@@ -74,8 +74,8 @@ export declare type SiteInfo = {
     system: string;
     ecosystem: string;
     location: string;
-    stX: number;
-    stY: number;
+    longitude: number;
+    latitude: number;
     usState: string;
     waterbodyTypeName: string;
     waterbodyCode: string;

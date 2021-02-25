@@ -38,7 +38,7 @@ const boxStatesQuery = 'SELECT * FROM sample.box_states LIMIT $1 OFFSET $2'
 export const getBoxStates = (pool, limit: number, offset: number): Promise<any> =>
     pgPromise(pool, boxStatesQuery, [limit, offset])
 
-const sitesQuery = 'SELECT * FROM geo.vw_sites ORDER BY site_id LIMIT $1 OFFSET $2'
+const sitesQuery = 'SELECT * FROM geo.fn_sites($1, $2, $3)'
 
 export const getSites = (pool, limit: number, offset: number): Promise<any> =>
     pgPromise(pool, sitesQuery, [limit, offset])
