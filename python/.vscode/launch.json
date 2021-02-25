@@ -52,6 +52,22 @@
     ]
   } ,
   {
+    "name": "Import Catchments",
+    "type": "python",
+    "request": "launch",
+    "module": "import_catchments",
+    "console": "integratedTerminal",
+    "args": [
+      "{env:POSTGRES_HOST}",
+      "{env:POSTGRES_PORT}",
+      "{env:POSTGRES_DB}",
+      "{env:POSTGRES_USER}",
+      "{env:POSTGRES_PASSWORD}",
+      "/Users/philip/GISData/bugdb/catchments/catchments.geojson"
+      // "/Users/philip/GISData/bugdb/catchments/AIM2019/aim_catchments2.geojson"  
+    ]
+  } ,
+  {
     "name": "Import Model Predictors",
     "type": "python",
     "request": "launch",
