@@ -28,10 +28,10 @@ const typeDefs = gql`
 
         siteInfo(siteId: Int!): SiteInfo
 
-        samples(limit: Int = ${queryLimits.samples}, offset: Int): PaginatedSamples
+        samples(limit: Int = ${queryLimits.samples}, offset: Int = 0): PaginatedSamples
         sampleOrganisms(
             limit: Int = ${queryLimits.sampleOrganisms}
-            offset: Int!
+            offset: Int = 0
             sampleId: Int
             boxId: Int
             siteId: Int
