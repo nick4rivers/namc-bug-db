@@ -82,7 +82,7 @@ SELECT b.box_id,
        i.first_name || ' ' || i.last_name AS submitter_name,
        b.box_state_id,
        t.box_state_name,
-       b.box_recevied_date,
+       b.box_received_date,
        b.processing_complete_date,
        b.projected_complete_date
 FROM sample.boxes b
@@ -97,7 +97,7 @@ GROUP BY b.box_id,
          submitter_name,
          b.box_state_id,
          t.box_state_name,
-         b.box_recevied_date,
+         b.box_received_date,
          b.processing_complete_date,
          b.projected_complete_date
     );
