@@ -14,9 +14,10 @@ declare const _default: {
         }, { user }: {
             user: any;
         }) => Promise<PaginatedRecords<BoxState>>;
-        sites: (obj: any, { limit, offset }: {
+        sites: (obj: any, { limit, offset, usState }: {
             limit: any;
             offset: any;
+            usState: any;
         }, { user }: {
             user: any;
         }) => Promise<PaginatedRecords<Site>>;

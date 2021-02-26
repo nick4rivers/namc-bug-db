@@ -87,8 +87,8 @@ exports.getBoxStates = function (pool, limit, offset) {
     return pgPromise(pool, boxStatesQuery, [limit, offset]);
 };
 var sitesQuery = 'SELECT * FROM geo.fn_sites($1, $2, $3)';
-exports.getSites = function (pool, limit, offset) {
-    return pgPromise(pool, sitesQuery, [limit, offset]);
+exports.getSites = function (pool, limit, offset, usState) {
+    return pgPromise(pool, sitesQuery, [limit, offset, usState]);
 };
 var siteInfoQuery = 'SELECT * FROM geo.fn_site_info($1)';
 exports.getSiteInfo = function (pool, siteId) { return pgPromise(pool, siteInfoQuery, [siteId]); };

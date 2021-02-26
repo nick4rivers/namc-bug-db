@@ -40,8 +40,8 @@ export const getBoxStates = (pool, limit: number, offset: number): Promise<any> 
 
 const sitesQuery = 'SELECT * FROM geo.fn_sites($1, $2, $3)'
 
-export const getSites = (pool, limit: number, offset: number): Promise<any> =>
-    pgPromise(pool, sitesQuery, [limit, offset])
+export const getSites = (pool, limit: number, offset: number, usState: string): Promise<any> =>
+    pgPromise(pool, sitesQuery, [limit, offset, usState])
 
 const siteInfoQuery = 'SELECT * FROM geo.fn_site_info($1)'
 export const getSiteInfo = (pool, siteId: number): Promise<any> => pgPromise(pool, siteInfoQuery, [siteId])

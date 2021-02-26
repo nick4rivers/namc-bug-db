@@ -104,11 +104,11 @@ export default {
             return createPagination<BoxState>(data, limit, offset)
         },
 
-        sites: async (obj, { limit, offset }, { user }): Promise<PaginatedRecords<Site>> => {
+        sites: async (obj, { limit, offset, usState }, { user }): Promise<PaginatedRecords<Site>> => {
             loggedInGate(user)
             limitOffsetCheck(limit, graphql.queryLimits.sites, offset)
             const pool = await getPool()
-            const data = await getSites(pool, limit, offset)
+            const data = await getSites(pool, limit, offset, usState)
             return createPagination<Site>(data, limit, offset)
         },
 

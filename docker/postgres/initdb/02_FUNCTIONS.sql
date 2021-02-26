@@ -54,7 +54,7 @@ BEGIN
 end
 $$;
 
-CREATE OR REPLACE FUNCTION geo.fn_sites(p_limit INT, p_offset INT, p_us_state VARCHAR(2) = NULL)
+CREATE OR REPLACE FUNCTION geo.fn_sites(p_limit INT, p_offset INT, p_us_state VARCHAR(2)[] = NULL)
     returns table
             (
                 site_id             INT,
@@ -94,7 +94,7 @@ begin
             SELECT g.site_id
             FROM geo.sites g
                      LEFT JOIN geo.states gst ON st_contains(gst.geom, g.location)
-            where ((gst.abbreviation ILIKE p_us_state) OR (p_us_state IS NULL))
+            where ((gst.abbreviation ~~ ANY(p_us_state)) OR (p_us_state IS NULL))
             ORDER BY g.site_id
             LIMIT p_limit OFFSET p_offset
         ) ss ON s.site_id = ss.site_id
