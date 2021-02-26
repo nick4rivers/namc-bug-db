@@ -383,7 +383,7 @@ BEGIN
                  t.box_state_name,
                  b.box_recevied_date,
                  b.processing_complete_date,
-                 b.projected_complete_date )
+                 b.projected_complete_date;
 end
 $$;
 
