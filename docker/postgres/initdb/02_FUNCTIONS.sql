@@ -54,6 +54,56 @@ BEGIN
 end
 $$;
 
+CREATE OR REPLACE FUNCTION geo.fn_sites(p_limit INT, p_offset INT, p_us_state VARCHAR(2) = NULL)
+    returns table
+            (
+                site_id             INT,
+                site_name           VARCHAR(50),
+                system              VARCHAR(50),
+                ecosystem           VARCHAR(50),
+                longitude           DOUBLE PRECISION,
+                latitude            DOUBLE PRECISION,
+                us_state            VARCHAR(2),
+                waterbody_type_name VARCHAR(255),
+                waterbody_code      VARCHAR(100),
+                waterbody_name      VARCHAR(255),
+                created_date        TIMESTAMPTZ,
+                updated_date        TIMESTAMPTZ,
+                has_catchment       BOOLEAN
+            )
+    language plpgsql
+AS
+$$
+begin
+    RETURN QUERY
+        SELECT s.site_id,
+               s.site_name,
+               sy.system_name,
+               e.ecosystem_name,
+               st_x(location),
+               st_y(location),
+               st.abbreviation,
+               w.waterbody_type_name,
+               s.waterbody_code,
+               s.waterbody_name,
+               s.created_date,
+               s.updated_date,
+               s.catchment is NOT NULL
+        FROM geo.sites s
+                 INNER JOIN (
+            SELECT g.site_id
+            FROM geo.sites g
+                     LEFT JOIN geo.states gst ON st_contains(gst.geom, g.location)
+            where ((gst.abbreviation ILIKE p_us_state) OR (p_us_state IS NULL))
+            ORDER BY g.site_id
+            LIMIT p_limit OFFSET p_offset
+        ) ss ON s.site_id = ss.site_id
+                 LEFT JOIN geo.states st ON st_contains(st.geom, s.location)
+                 LEFT JOIN geo.systems sy ON s.system_id = sy.system_id
+                 LEFT JOIN geo.ecosystems e ON sy.ecosystem_id = e.ecosystem_id
+                 LEFT JOIN geo.waterbody_types w ON s.waterbody_type_id = w.waterbody_type_id;
+end ;
+$$;
 
 CREATE OR REPLACE FUNCTION geo.fn_predictors(p_limit INT, p_offset INT, p_model_id INT = NULL)
     returns table
@@ -548,7 +598,7 @@ BEGIN
                s.is_private
         FROM sample.vw_samples s
                  INNER JOIN sample.project_samples p ON s.sample_id = p.sample_id
-        WHERE CAST(p.project_id AS INT) = ANY(p_project_id)
+        WHERE CAST(p.project_id AS INT) = ANY (p_project_id)
         ORDER BY s.sample_id
         LIMIT p_limit OFFSET p_offset;
 end
