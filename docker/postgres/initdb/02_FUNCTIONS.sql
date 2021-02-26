@@ -94,7 +94,7 @@ begin
             SELECT g.site_id
             FROM geo.sites g
                      LEFT JOIN geo.states gst ON st_contains(gst.geom, g.location)
-            where ((gst.abbreviation ~~ ANY(p_us_state)) OR (p_us_state IS NULL))
+            where ((gst.abbreviation ~~ ANY (p_us_state)) OR (p_us_state IS NULL))
             ORDER BY g.site_id
             LIMIT p_limit OFFSET p_offset
         ) ss ON s.site_id = ss.site_id
@@ -332,6 +332,58 @@ BEGIN
                  inner join taxa.vw_taxonomy_crosstab t ON o.taxonomy_id = t.taxonomy_id
                  inner join taxa.life_stages l on o.life_stage_id = l.life_stage_id
         WHERE sample_id = p_sample_id;
+end
+$$;
+
+CREATE OR REPLACE FUNCTION sample.fn_boxes(p_limit INT, p_offset INT)
+    RETURNs TABLE
+            (
+                box_id                   INT,
+                customer_id              SMALLINT,
+                customer_name            VARCHAR(255),
+                samples                  BIGINT,
+                submitter_id             SMALLINT,
+                submitter_name           VARCHAR(255),
+                box_state_id             SMALLINT,
+                box_state_name           VARCHAR(50),
+                box_received_date        DATE,
+                processing_complete_date TIMESTAMPTZ,
+                projected_complete_date  TIMESTAMPTZ
+            )
+    LANGUAGE plpgsql
+AS
+$$
+BEGIN
+    RETURN QUERY
+        SELECT b.box_id,
+               b.customer_id,
+               o.organization_name,
+               COUNT(sample_id),
+               b.submitter_id,
+               i.first_name || ' ' || i.last_name,
+               b.box_state_id,
+               t.box_state_name,
+               b.box_received_date,
+               b.processing_complete_date,
+               b.projected_complete_date
+        FROM sample.boxes b
+                 INNER JOIN (
+            SELECT g.box_id FROM sample.boxes g ORDER BY g.box_id LIMIT p_limit OFFSET p_offset
+        ) bg ON b.box_id = bg.box_id
+                 INNER JOIN sample.box_states t ON b.box_state_id = t.box_state_id
+                 INNER JOIN entity.individuals i ON b.submitter_id = i.entity_id
+                 INNER JOIN entity.organizations o ON b.customer_id = o.entity_id
+                 LEFT JOIN sample.samples s ON b.box_id = s.box_id
+        GROUP BY b.box_id,
+                 b.customer_id,
+                 o.organization_name,
+                 b.submitter_id,
+                 submitter_name,
+                 b.box_state_id,
+                 t.box_state_name,
+                 b.box_recevied_date,
+                 b.processing_complete_date,
+                 b.projected_complete_date )
 end
 $$;
 

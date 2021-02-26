@@ -92,7 +92,7 @@ var individualsQuery = 'SELECT * FROM entity.vw_individuals LIMIT $1 OFFSET $2';
 exports.getIndividuals = function (pool, limit, offset) {
     return pgPromise(pool, individualsQuery, [limit, offset]);
 };
-var boxesQuery = 'SELECT * FROM sample.vw_boxes ORDER BY box_id LIMIT $1 OFFSET $2';
+var boxesQuery = 'SELECT * FROM sample.fn_boxes($1, $2)';
 exports.getBoxes = function (pool, limit, offset) {
     return pgPromise(pool, boxesQuery, [limit, offset]);
 };

@@ -50,7 +50,7 @@ const individualsQuery = 'SELECT * FROM entity.vw_individuals LIMIT $1 OFFSET $2
 export const getIndividuals = (pool, limit: number, offset: number): Promise<any> =>
     pgPromise(pool, individualsQuery, [limit, offset])
 
-const boxesQuery = 'SELECT * FROM sample.vw_boxes ORDER BY box_id LIMIT $1 OFFSET $2'
+const boxesQuery = 'SELECT * FROM sample.fn_boxes($1, $2)'
 
 export const getBoxes = (pool, limit: number, offset: number): Promise<any> =>
     pgPromise(pool, boxesQuery, [limit, offset])

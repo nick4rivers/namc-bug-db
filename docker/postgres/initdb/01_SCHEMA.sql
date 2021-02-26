@@ -677,7 +677,7 @@ CREATE TABLE sample.boxes
     customer_id              SMALLINT    NOT NULL,
     submitter_id             SMALLINT    NOT NULL,
     box_state_id             SMALLINT    NOT NULL,
-    box_recevied_date        TIMESTAMPTZ,                        -- date the box arrives
+    box_received_date        TIMESTAMPTZ,                        -- date the box arrives
     processing_complete_date TIMESTAMPTZ,                        -- date lab processing is complete
     projected_complete_date  TIMESTAMPTZ,                        -- report_ready, available to customer, customer notified. all data QAed.
     description              TEXT,
