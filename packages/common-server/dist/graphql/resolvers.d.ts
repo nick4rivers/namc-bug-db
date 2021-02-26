@@ -1,4 +1,4 @@
-import { Sample, AuthResponse, BoxState, Site, SiteInfo, SampleOrganism, Project, Taxonomy, Box, PaginatedRecords, Predictor, Model, SitePredictorValue } from '@namcbugdb/common';
+import { Sample, AuthResponse, Site, SiteInfo, SampleOrganism, Project, Taxonomy, Box, PaginatedRecords, Predictor, Model, SitePredictorValue } from '@namcbugdb/common';
 declare const _default: {
     Query: {
         auth: (obj: any, args: any, ctx: any) => Promise<AuthResponse>;
@@ -8,12 +8,6 @@ declare const _default: {
         }, { user }: {
             user: any;
         }, info: any) => Promise<PaginatedRecords<Sample>>;
-        boxStates: (obj: any, { limit, offset }: {
-            limit: any;
-            offset: any;
-        }, { user }: {
-            user: any;
-        }) => Promise<PaginatedRecords<BoxState>>;
         sites: (obj: any, { limit, offset, usState }: {
             limit: any;
             offset: any;

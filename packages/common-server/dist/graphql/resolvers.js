@@ -116,27 +116,6 @@ exports.default = {
                 });
             });
         },
-        boxStates: function (obj, _a, _b) {
-            var limit = _a.limit, offset = _a.offset;
-            var user = _b.user;
-            return __awaiter(void 0, void 0, void 0, function () {
-                var pool, data;
-                return __generator(this, function (_c) {
-                    switch (_c.label) {
-                        case 0:
-                            loggedInGate(user);
-                            limitOffsetCheck(limit, common_1.graphql.queryLimits.boxStates, offset);
-                            return [4, pg_1.getPool()];
-                        case 1:
-                            pool = _c.sent();
-                            return [4, pg_1.getBoxStates(pool, limit, offset)];
-                        case 2:
-                            data = _c.sent();
-                            return [2, createPagination(data, limit, offset)];
-                    }
-                });
-            });
-        },
         sites: function (obj, _a, _b) {
             var limit = _a.limit, offset = _a.offset, usState = _a.usState;
             var user = _b.user;

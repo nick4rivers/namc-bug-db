@@ -39,7 +39,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getSitePredictorValues = exports.getModels = exports.getPredictors = exports.getTaxonomy = exports.getProjects = exports.getProjectOrganisms = exports.getSampleOrganisms = exports.getBoxes = exports.getIndividuals = exports.getSiteInfo = exports.getSites = exports.getBoxStates = exports.getSamples = exports.getPool = void 0;
+exports.getSitePredictorValues = exports.getModels = exports.getPredictors = exports.getTaxonomy = exports.getProjects = exports.getProjectOrganisms = exports.getSampleOrganisms = exports.getBoxes = exports.getIndividuals = exports.getSiteInfo = exports.getSites = exports.getSamples = exports.getPool = void 0;
 var config_1 = require("../config");
 var pg_1 = require("pg");
 var loglevel_1 = __importDefault(require("loglevel"));
@@ -81,10 +81,6 @@ var pgPromise = function (pool, query, vars) {
 var samplesQuery = 'SELECT * FROM sample.vw_samples ORDER BY sample_id LIMIT $1 OFFSET $2';
 exports.getSamples = function (pool, limit, offset) {
     return pgPromise(pool, samplesQuery, [limit, offset]);
-};
-var boxStatesQuery = 'SELECT * FROM sample.box_states LIMIT $1 OFFSET $2';
-exports.getBoxStates = function (pool, limit, offset) {
-    return pgPromise(pool, boxStatesQuery, [limit, offset]);
 };
 var sitesQuery = 'SELECT * FROM geo.fn_sites($1, $2, $3)';
 exports.getSites = function (pool, limit, offset, usState) {

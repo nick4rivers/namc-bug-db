@@ -96,13 +96,13 @@ export default {
             return createPagination<Sample>(data, limit, offset)
         },
 
-        boxStates: async (obj, { limit, offset }, { user }): Promise<PaginatedRecords<BoxState>> => {
-            loggedInGate(user)
-            limitOffsetCheck(limit, graphql.queryLimits.boxStates, offset)
-            const pool = await getPool()
-            const data = await getBoxStates(pool, limit, offset)
-            return createPagination<BoxState>(data, limit, offset)
-        },
+        // boxStates: async (obj, { limit, offset }, { user }): Promise<PaginatedRecords<BoxState>> => {
+        //     loggedInGate(user)
+        //     limitOffsetCheck(limit, graphql.queryLimits.boxStates, offset)
+        //     const pool = await getPool()
+        //     const data = await getBoxStates(pool, limit, offset)
+        //     return createPagination<BoxState>(data, limit, offset)
+        // },
 
         sites: async (obj, { limit, offset, usState }, { user }): Promise<PaginatedRecords<Site>> => {
             loggedInGate(user)

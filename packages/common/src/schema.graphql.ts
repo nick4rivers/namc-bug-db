@@ -40,8 +40,8 @@ const typeDefs = gql`
         ): PaginatedSampleOrganisms
 
         projectOrganisms(projectIds: [Int]!, limit: Int = ${queryLimits.projectOrganisms}, offset: Int =0): PaginatedSampleOrganisms
-        boxStates(limit: Int = ${queryLimits.boxStates}, offset: Int = 0): PaginatedBoxStates
         sites(limit: Int = ${queryLimits.sites}, offset: Int = 0, usState: [String]): PaginatedSites
+        # boxStates(limit: Int = ${queryLimits.boxStates}, offset: Int = 0): PaginatedBoxStates
         # individuals(limit: Int, offset: Int): [Individual]
         boxes(limit: Int = ${queryLimits.boxes}, offset: Int = 0): PaginatedBoxes
         projects(limit: Int = ${queryLimits.projects}, offset: Int = 0): PaginatedProjects
