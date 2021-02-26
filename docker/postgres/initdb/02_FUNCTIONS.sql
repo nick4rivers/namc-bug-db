@@ -381,7 +381,7 @@ BEGIN
                  submitter_name,
                  b.box_state_id,
                  t.box_state_name,
-                 b.box_recevied_date,
+                 b.box_received_date,
                  b.processing_complete_date,
                  b.projected_complete_date;
 end
