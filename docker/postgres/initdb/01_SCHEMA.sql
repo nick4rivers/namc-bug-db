@@ -223,9 +223,9 @@ $$
  */
 CREATE TRIGGER tr_sites_geometry_update
     BEFORE UPDATE
+        OF catchment, location
     ON geo.sites
     FOR EACH ROW
-    WHEN ((catchment <> NEW.catchment) OR (location <> NEW.catchment))
 EXECUTE PROCEDURE fn_before_update_geometry();
 
 
@@ -859,9 +859,9 @@ $$
  */
 CREATE TRIGGER tr_sample_sample_date_update
     BEFORE UPDATE
+    OF sample_date_changed
     ON sample.samples
     FOR EACH ROW
-    WHEN ((sample_date <> NEW.sample_date))
 EXECUTE PROCEDURE fn_before_sample_date_change();
 
 
