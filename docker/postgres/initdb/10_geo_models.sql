@@ -6,7 +6,7 @@ INSERT INTO geo.models (model_id,model_name,abbreviation,is_active,description,m
 INSERT INTO geo.models (model_id,model_name,abbreviation,is_active,description,metadata,created_date,updated_date) VALUES (6,'NVMMI','NVMMI',True,NULL,NULL,'2021-02-12','2021-02-12');
 INSERT INTO geo.models (model_id,model_name,abbreviation,is_active,description,metadata,created_date,updated_date) VALUES (7,'OR_MWCF','OR_MWCF',True,NULL,NULL,'2021-02-12','2021-02-12');
 INSERT INTO geo.models (model_id,model_name,abbreviation,is_active,description,metadata,created_date,updated_date) VALUES (8,'OR_WCCP','OR_WCCP',True,NULL,NULL,'2021-02-12','2021-02-12');
-INSERT INTO geo.models (model_id,model_name,abbreviation,is_active,description,metadata,created_date,updated_date) VALUES (9,'PIBO','PIBO',True,NULL,NULL,'2021-02-12','2021-02-12');
+INSERT INTO geo.models (model_id,model_name,abbreviation,is_active,description,metadata,created_date,updated_date) VALUES (9,'USFS Pacfish/Infish Biological Opinion','PIBO',True,NULL,NULL,'2021-02-12','2021-02-12');
 INSERT INTO geo.models (model_id,model_name,abbreviation,is_active,description,metadata,created_date,updated_date) VALUES (10,'New UTOE','New UTOE',True,NULL,NULL,'2021-02-12','2021-02-12');
 INSERT INTO geo.models (model_id,model_name,abbreviation,is_active,description,metadata,created_date,updated_date) VALUES (11,'Anthropogenic','Anthropogenic',True,NULL,NULL,'2021-02-12','2021-02-12');
 INSERT INTO geo.models (model_id,model_name,abbreviation,is_active,description,metadata,created_date,updated_date) VALUES (12,'AREMP2014MMI','AREMP2014MMI',True,NULL,NULL,'2021-02-12','2021-02-12');
