@@ -308,7 +308,7 @@ CREATE TABLE geo.models
     created_date TIMESTAMPTZ         NOT NULL DEFAULT now(),
     updated_date TIMESTAMPTZ         NOT NULL DEFAULT now()
 );
-CREATE INDEX gx_projects_extent ON geo.models USING GIST (extent);
+CREATE INDEX gx_models_extent ON geo.models USING GIST (extent);
 
 CREATE TABLE geo.model_predictors
 (
