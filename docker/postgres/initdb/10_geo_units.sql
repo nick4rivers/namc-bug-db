@@ -17,3 +17,7 @@ INSERT INTO geo.units (unit_id, unit_name, abbreviation, description) VALUES (16
 INSERT INTO geo.units (unit_id, unit_name, abbreviation, description) VALUES (17, 'dams/ square km', 'dams/km2', NULL);
 INSERT INTO geo.units (unit_id, unit_name, abbreviation, description) VALUES (18, 'sites per square km', 'sites/km2', NULL);
 INSERT INTO geo.units (unit_id, unit_name, abbreviation, description) VALUES (19, 'mines/square km', 'mines/sq km', NULL);
+INSERT INTO geo.units (unit_id, unit_name, abbreviation, description) VALUES (20, 'Siemens per meter', 'S/m', NULL);
+INSERT INTO geo.units (unit_id, unit_name, abbreviation, description) VALUES (21, 'O2E Score', 'O2E???', NULL);
+INSERT INTO geo.units (unit_id, unit_name, abbreviation, description) VALUES (22, 'MMI Score', 'MMI???', NULL);
+INSERT INTO geo.units (unit_id, unit_name, abbreviation, description) VALUES (23, 'Micrograms per liter', 'mg/l', NULL);
