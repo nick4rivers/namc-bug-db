@@ -713,6 +713,18 @@ CREATE TRIGGER tr_projects_update
     FOR EACH ROW
 EXECUTE PROCEDURE fn_before_update();
 
+CREATE TABLE sample.project_models
+(
+    project_id SMALLINT NOT NULL,
+    model_id SMALLINT NOT NULL,
+
+    CONSTRAINT pk_sample_project_models PRIMARY KEY (project_id, model_id),
+    CONSTRAINT fk_sample_project_models_project_id FOREIGN KEY (project_id) REFERENCES sample.projects(project_id) ON DELETE CASCADE,
+    CONSTRAINT fk_sample_project_models_model_id FOREIGN KEY (model_id) REFERENCES geo.models(model_id) ON DELETE CASCADE
+);
+CREATE INDEX fx_project_models_model_id ON sample.project_models(model_id);
+COMMENT ON TABLE sample.project_models IS 'Associates projects with models.';
+
 
 -- TODO: table design incomplete
 -- TODO: review columns copied from PilotDB.BugTacking
@@ -864,6 +876,18 @@ CREATE TRIGGER tr_sample_sample_date_update
     FOR EACH ROW
 EXECUTE PROCEDURE fn_before_sample_date_change();
 
+CREATE TABLE sample.sample_models
+(
+    sample_id INT NOT NULL,
+    model_id INT NOT NULL,
+
+    CONSTRAINT pk_sample_models PRIMARY KEY (sample_id, model_id),
+    CONSTRAINT fk_sample_sample_id FOREIGN KEY (sample_id) REFERENCES sample.samples(sample_id) ON DELETE CASCADE,
+    CONSTRAINT fk_sample_model_id FOREIGN KEY (model_id) REFERENCES geo.models(model_id) ON DELETE CASCADE
+);
+CREATE INDEX fx_sample_models ON sample.sample_models(model_id);
+COMMENT ON TABLE sample.sample_models IS 'Associates samples with models. This determines which models are '
+    'required for each sample.';
 
 
 CREATE TABLE sample.sorter_time
