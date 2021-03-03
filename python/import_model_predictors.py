@@ -1,5 +1,5 @@
 """
-    Takes the CSV of model predictors and writes them to SQL insert 
+    Takes the CSV of model predictors and writes them to SQL insert
     statements.
 
     It assumes that Postgres is up and running with ALL predictors
@@ -18,6 +18,21 @@ from psycopg2.extras import execute_values
 from utilities import sanitize_string, format_values, add_metadata, write_sql_file
 from postgres_lookup_data import lookup_data, insert_row, log_row_count
 from lookup_data import get_db_id
+
+# Key is old model name. Value is list of new model abbreviations that this model maps too.
+# Its assumed that predictors are the same for all new models.
+new_model_names = {
+    'CSCI': ['CA_CSCI'],
+    'CO': ['CO-EDAS2017 - Biotype 1', 'CO-EDAS2017 - Biotype 2', 'CO-EDAS2017 - Biotype 3'],
+    'TNTP12': ['TN12', 'TP12'],
+    'NVMMI': ['NV_MMI'],
+    'OR_MWCF': ['OR_MarineWesternCoastalForest'],
+    'OR_WCCP': ['OR_WesternCordillera_ColumbiaPlateau'],
+    'PIBO': ['ColumbiaRiverBasin_PIBO'],
+    'New UTOE': ['UT_DEQ_2015'],
+    'AREMP2014MMI': ['AREMP MMI'],
+    'AREMP2014OE': ['AREMP O2E']
+}
 
 table_name = 'geo.model_predictors'
 
@@ -44,13 +59,22 @@ def migrate(sql_path, csv_path, pgcurs):
         if predictor not in predictors:
             raise Exception('Predictor {} missing from database'.format(predictor))
 
-        if model not in models:
-            raise Exception('Model {} missing from database'.format(model))
+        if model in models:
+            applicable_models = [model]
+        else:
+            if model in new_model_names:
+                applicable_models = new_model_names[model]
+            else:
+                if model.lower() == "anthropogenic":
+                    continue
+                else:
+                    raise Exception('Model {} missing from database'.format(model))
 
-        values.append({
-            'model_id': get_db_id(models, 'model_id', ['abbreviation'], model),
-            'predictor_id': get_db_id(predictors, 'predictor_id', ['abbreviation'], predictor),
-        })
+        for m in applicable_models:
+            values.append({
+                'model_id': get_db_id(models, 'model_id', ['abbreviation'], m),
+                'predictor_id': get_db_id(predictors, 'predictor_id', ['abbreviation'], predictor)
+            })
 
         counter += 1
         progbar.update(counter)
@@ -74,7 +98,7 @@ def main():
     args = parse_args_env(parser, os.path.join(os.path.dirname(os.path.realpath(__file__)), '.env'))
 
     predictors = os.path.join(os.path.dirname(__file__), args.csv_path)
-    sql_path = os.path.join(os.path.dirname(__file__), '../docker/postgres/initdb/30_geo_model_predictors.sql')
+    sql_path = os.path.join(os.path.dirname(__file__), '../docker/postgres/initdb/40_geo_model_predictors.sql')
 
     log = Logger('Predictor Migration')
     log.setup(logPath=os.path.join(os.path.dirname(__file__), "bugdb_predictors.log"), verbose=args.verbose)
