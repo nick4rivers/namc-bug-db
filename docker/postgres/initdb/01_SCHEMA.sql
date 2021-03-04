@@ -311,6 +311,7 @@ CREATE TABLE geo.models
     model_type_id SMALLINT            NOT NULL,
     extent        GEOMETRY(MultiPolygon, 4326),
     is_active     BOOLEAN             NOT NULL DEFAULT TRUE,
+    fixed_count     SMALLINT,
     unit_id       SMALLINT            NOT NULL,
     description   TEXT,
     metadata      JSON,
