@@ -1,3 +1,8 @@
+""" Migrates the CSV file of predictor values into the Postgres database
+
+    The CSV file was obtained from Jennifer Courtright as an Excel file and
+    exported to CSV for this process.
+"""
 import os
 import csv
 import json
@@ -11,12 +16,17 @@ from utilities import sanitize_string, format_values, add_metadata, write_sql_fi
 from postgres_lookup_data import lookup_data, insert_row, log_row_count, insert_many_rows
 from lookup_data import get_db_id
 
-table_name = 'geo.site_predictors'
-
 
 def migrate(pgcurs, csv_path):
+    """Migrates predictor values from CSV to postgres database
 
-    log = Logger(table_name)
+    Args:
+        pgcurs (cursor): Postgres cursor
+        csv_path (str): path to CSV file containing predictor values
+
+    """
+
+    log = Logger('predictor values')
 
     predictors = lookup_data(pgcurs, 'geo.predictors', 'abbreviation')
     sites = lookup_data(pgcurs, 'geo.sites', 'site_name')
@@ -27,7 +37,7 @@ def migrate(pgcurs, csv_path):
     counter = 0
     # progbar = ProgressBar(len(list(raw_data)), 50, "predictor values")
     raw_data = csv.DictReader(open(csv_path))
-    data = []
+    data = {}
     for row in raw_data:
 
         if counter == 0:
@@ -37,7 +47,8 @@ def migrate(pgcurs, csv_path):
                 if predictor in row:
                     valid_predictors += 1
                 else:
-                    log.warning("No column in CSV for predictor {}".format(predictor))
+                    # There are StreamCAT predictors in DB. So not all will be present.
+                    log.debug("No column in CSV for predictor {}".format(predictor))
 
             print("{} valid predictor columns".format(valid_predictors))
 
@@ -47,58 +58,53 @@ def migrate(pgcurs, csv_path):
             log.warning('Site {} not present in database. Skipping.'.format(site_name))
             continue
         site_id = get_db_id(sites, 'site_id', ['site_name'], site_name)
+        if site_id not in data:
+            data[site_id] = {'sample_predictors': {}, 'site_predictors': {}}
 
         for predictor in predictors:
-            if predictor in row:
-                value = row[predictor]
-                if str(value).lower() != 'na':
-                    print(value)
-                    json_value = {'value': value}
-                    try:
-                        data.append((site_id, predictors[predictor]['predictor_id'], json.dumps(json_value)))
-                    except Exception as ex:
-                        print(ex)
+            if predictor not in row:
+                continue
 
-    insert_many_rows(pgcurs, table_name, ['site_id', 'predictor_id', 'metadata'], data)
+            value = row[predictor]
+            if str(value).lower() == 'na':
+                continue
 
-    # predictors[predictor] = insert_row(pgcurs, table_name, data, 'predictor_id')
+            predictor_id = predictors[predictor]['predictor_id']
 
-    # progbar.update(counter)
+            if predictors[predictor]['is_temporal']:
+                sample_id = row['sampleid']
+                if predictor_id in data[site_id]['sample_predictors']:
+                    if sample_id in data[site_id]['sample_predictors']:
+                        if value != data[site_id]['sample_predictors'][sample_id]:
+                            log.warning("Sample {} predictor {} value {} does not match {} for sample {}".format(site_name, predictor, value, site_predictor_values[site_id][predictor_id], sample_id))
+                        continue
+                else:
+                    data[site_id][predictor_id] = {}
 
-    # progbar.finish()
-    # log_row_count(pgcurs, table_name, len(predictors))
+                data[site_id][predictor_id][sample_id] = value
 
+            else:
+                if predictor_id in data[site_id]['site_predictors']:
+                    if value != data[site_id]['site_predictors'][predictor_id]:
+                        log.warning("Site {} predictor {} value {} does not match {}".format(site_name, predictor, value, data[site_id]['site_predictors'][predictor_id]))
+                    continue
 
-# def main():
-#     parser = argparse.ArgumentParser()
-#     parser.add_argument('pghost', help='Postgres password', type=str)
-#     parser.add_argument('pgport', help='Postgres password', type=str)
-#     parser.add_argument('pgdb', help='Postgres password', type=str)
-#     parser.add_argument('pguser_name', help='Postgres user name', type=str)
-#     parser.add_argument('pgpassword', help='Postgres password', type=str)
-#     parser.add_argument('csv_path', help='Input translation indicator CSV', type=str)
-#     parser.add_argument('--verbose', help='verbose logging', default=False)
+                data[site_id]['site_predictors'][predictor_id] = value
 
-#     args = dotenv.parse_args_env(parser, os.path.join(os.path.dirname(os.path.realpath(__file__)), '.env'))
+    # unpack the data into a flat list of tuples for insertion into the database
+    site_data = []
+    samp_data = []
+    for site_id, types in data.items():
 
-#     predictors = os.path.join(os.path.dirname(__file__), args.csv_path)
-#     sql_path = os.path.join(os.path.dirname(__file__),'../docker/postgres/initdb/30_geo_site_predictors.sql')
+        for predictor_id, samples in types['sample_predictors'].items():
+            for sample_id, value in samples.items():
+                samp_data.append((site_id, sample_id, predictor_id, {'value': value}))
 
-#     log = Logger('Predictor Migration')
-#     log.setup(logPath=os.path.join(os.path.dirname(__file__), "bugdb_predictors.log"), verbose=args.verbose)
+        for predictor_id, value in types['site_predictors'].items():
+            site_data.append((site_id, predictor_id, {'value': value}))
 
-#     # Postgres connection
-#     pgcon = psycopg2.connect(user=args.pguser_name, password=args.pgpassword, host=args.pghost, port=args.pgport, database=args.pgdb)
-#     pgcurs = pgcon.cursor(cursor_factory=psycopg2.extras.DictCursor)
+    print('{:,} site predictor values'.format(len(site_data)))
+    insert_many_rows(pgcurs, 'geo.site_predictors', ['site_id', 'predictor_id', 'metadata'], site_data)
 
-#     try:
-#         migrate(sql_path, predictors, pgcurs)
-#         pgcon.rollback()
-
-#     except Exception as ex:
-#         log.error(str(ex))
-#         pgcon.rollback()
-
-
-# if __name__ == '__main__':
-#     main()
+    print('{:,} sample predictor values'.format(len(samp_data)))
+    insert_many_rows(pgcurs, 'geo.sample_predictors', ['site_id', 'sample_id', 'predictor_id', 'metadata'], samp_data)
