@@ -1,13 +1,1 @@
-INSERT INTO taxa.translations (translation_id, translation_name) VALUES (1, 'EC12');
-INSERT INTO taxa.translations (translation_id, translation_name) VALUES (2, 'TNTP12');
-INSERT INTO taxa.translations (translation_id, translation_name) VALUES (3, 'CSCI');
-INSERT INTO taxa.translations (translation_id, translation_name) VALUES (4, 'StreamTemp12');
-INSERT INTO taxa.translations (translation_id, translation_name) VALUES (5, 'CO');
-INSERT INTO taxa.translations (translation_id, translation_name) VALUES (6, 'NVMMI');
-INSERT INTO taxa.translations (translation_id, translation_name) VALUES (7, 'OR_MWCF');
-INSERT INTO taxa.translations (translation_id, translation_name) VALUES (8, 'OR_WCCP');
-INSERT INTO taxa.translations (translation_id, translation_name) VALUES (9, 'PIBO');
-INSERT INTO taxa.translations (translation_id, translation_name) VALUES (10, 'New UTOE');
-INSERT INTO taxa.translations (translation_id, translation_name) VALUES (11, 'Anthropogenic');
-INSERT INTO taxa.translations (translation_id, translation_name) VALUES (12, 'AREMP2014MMI');
-INSERT INTO taxa.translations (translation_id, translation_name) VALUES (13, 'AREMP2014OE');
+INSERT INTO taxa.translations (translation_id, translation_name) VALUES (1, 'Placeholder translation');
