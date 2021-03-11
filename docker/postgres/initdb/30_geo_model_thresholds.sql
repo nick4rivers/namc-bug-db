@@ -35,7 +35,7 @@ INSERT INTO geo.model_thresholds (threshold_id, model_id, threshold, display_tex
 INSERT INTO geo.model_thresholds (threshold_id, model_id, threshold, display_text, description) VALUES (27, 10, '[0.79,0.93)', 'Moderately disturbed', '>=.79');
 INSERT INTO geo.model_thresholds (threshold_id, model_id, threshold, display_text, description) VALUES (28, 10, '[,0.79]', 'Most disturbed', '<.79');
 
-INSERT INTO geo.model_thresholds (threshold_id, model_id, threshold, display_text, description) VALUES (29, 11, '[1.24.]', 'Enriched', '>1.24');
+INSERT INTO geo.model_thresholds (threshold_id, model_id, threshold, display_text, description) VALUES (29, 11, '[1.24,]', 'Enriched', '>1.24');
 INSERT INTO geo.model_thresholds (threshold_id, model_id, threshold, display_text, description) VALUES (30, 11, '[0.92,1.24]', 'Least disturbed', '>=.92');
 INSERT INTO geo.model_thresholds (threshold_id, model_id, threshold, display_text, description) VALUES (31, 11, '[0.86,0.92)', 'Moderately disturbed', '>=.86');
 INSERT INTO geo.model_thresholds (threshold_id, model_id, threshold, display_text, description) VALUES (32, 11, '[,0.86)', 'Most disturbed', '<.86');
