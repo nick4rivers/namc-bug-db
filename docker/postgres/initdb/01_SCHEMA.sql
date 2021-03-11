@@ -644,7 +644,7 @@ CREATE TABLE geo.model_thresholds
 );
 CREATE UNIQUE INDEX ux_model_thresholds_model_id ON geo.model_thresholds (model_id, display_text);
 CREATE UNIQUE INDEX ux_model_thresholds_model_threshold ON geo.model_thresholds (model_id, threshold);
-
+CREATE INDEX ix_model_thresholds_threshold ON geo.model_thresholds USING gist(threshold);
 
 CREATE TABLE geo.model_predictors
 (
