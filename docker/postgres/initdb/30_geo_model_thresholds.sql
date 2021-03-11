@@ -70,7 +70,7 @@ INSERT INTO geo.model_thresholds (threshold_id, model_id, threshold, display_tex
 INSERT INTO geo.model_thresholds (threshold_id, model_id, threshold, display_text, description) VALUES (54, 18, '[,0.6310)', 'Partial/non-support', '<0.6310');
 
 INSERT INTO geo.model_thresholds (threshold_id, model_id, threshold, display_text, description) VALUES (55, 19, '(0.8813,]', 'Full-support', '>0.8813');
-INSERT INTO geo.model_thresholds (threshold_id, model_id, threshold, display_text, description) VALUES (56, 19, '[0.59400.8813]', 'Indeterminate', '>=0.5940');
+INSERT INTO geo.model_thresholds (threshold_id, model_id, threshold, display_text, description) VALUES (56, 19, '[0.5940,0.8813]', 'Indeterminate', '>=0.5940');
 INSERT INTO geo.model_thresholds (threshold_id, model_id, threshold, display_text, description) VALUES (57, 19, '[,0.5940)', 'Partial/non-support', '<0.5940');
 
 INSERT INTO geo.model_thresholds (threshold_id, model_id, threshold, display_text, description) VALUES (58, 20, '(0.8599,]', 'Full-support', '>0.8599');
