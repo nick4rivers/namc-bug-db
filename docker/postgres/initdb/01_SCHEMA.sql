@@ -610,8 +610,6 @@ CREATE TABLE geo.models
     oe_mean            REAL,
     oe_stdev           REAL,
     taxonomic_effort   TAXONOMIC_EFFORT,
-    metadata           JSON,
-
     is_active          BOOLEAN             NOT NULL DEFAULT TRUE,
     fixed_count        SMALLINT,
     unit_id            SMALLINT            NOT NULL,
