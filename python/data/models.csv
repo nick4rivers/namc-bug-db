@@ -1,31 +1,31 @@
-model_id	abbreviation	model_type	otu_name	model_name	extent_description	shapefile	platform	reference_sites	group_count	fixed_count	minimum_count	oe_mean	oe_stdev	taxonomic_effort
-1	CSCI	Hybrid	OTUCodeCSCIswamp	California Stream Condition Index (O/E and Multimetric Index)	California		R	474	10	300	unspecified	1.010739	0.123775	standard
-2	UT All Seasons	OE	OTUCode_UTDEQ15	UT Department of Environmental Quality O/E	Utah		R	181	6	400	150	1.00274	0.2139	standard
-3	NV MMI	MMI	OTUCodeNV	NV Multimetric Index	Nevada		R	165		300	unspecified			
-4	CO EDAS Biotype 1	MMI	OTUCodeCOedas17	CO Ecological Data Application System Multimetric Index - Transition	Colorado - transition zone	Waiting to hear from CDPHE	MS Access	131		300	200			midges
-5	CO EDAS Biotype 2	MMI	OTUCodeCOedas17	CO Ecological Data Application System Multimetric Index - Mountains	Colorado - mountain zone	Waiting to hear from CDPHE	MS Access	131		300	200			midges
-6	CO EDAS Biotype 3	MMI	OTUCodeCOedas17	CO Ecological Data Application System Multimetric Index - Plains and Xeric	Colorado - xeric and plains zone	Waiting to hear from CDPHE	MS Access	131		300	200			midges
-7	AREMP OE	OE	OTUCode2	Aquatic and Riparian Effectiveness Monitoring Program O/E	Parts of California, Oregon, and California	Z:\buglab\OE_Modeling\NAMC_Supported_OEmodels\AREMP2014\ModelFiles	R	202	12	300	unspecified	1.019127	0.1477722	standard
-8	AREMP MMI	MMI	OTUCode2	Aquatic and Riparian Effectiveness Monitoring Program MMI	Parts of California, Oregon, and California	Z:\buglab\OE_Modeling\NAMC_Supported_OEmodels\AREMP2014\ModelFiles	R	200		300	unspecified			standard
-9	PIBO	OE	OTUCodePIBO	USFS Pacfish/Infish Biological Opinion O/E	Parts of Washington, Idaho, and Montana	Z:\buglab\OE_Modeling\NAMC_Supported_OEmodels\PIBO\ModelFiles_PIBO2009oe\PIBO MP Extent	R	174	10	300	unspecified	0.95	0.16	standard
-10	OR - WCCP	OE	OTUCodeORPred05WCCP	OR WesternCordillera ColumbiaPlateau O/E	Cascade region	Waiting to hear from ODEQ	R	167	5	300	200	1.01	0.15	standard
-11	OR - MWCF	OE	OTUCodeORPred05MWCF	OR MarineWesternCoastalForest O/E	Coastal Oregon	Waiting to hear from ODEQ	R	38	3	300	200	0.99	0.12	standard
-12	OR NBR	OE	OTUCodeOR_NorthernBasinRange	OR NorthernBasinRange O/E Null Model	SE portion of Oregon	Waiting to hear from ODEQ	R	9	1	300	200	1	0.29	standard
-13	WY - Volcanic mountains and valleys	OE	OTUCodeWY18	WY 2018 O/E	Wyoming - Volcanic mountains and valleys	Z:\buglab\OE_Modeling\NAMC_Supported_OEmodels\Wyoming\Model Files	R	152	9	300	unspecified	1.02	0.168	midges
-14	WY - Granitic mountains	OE	OTUCodeWY18	WY 2018 O/E	Wyoming - Granitic mountains	Z:\buglab\OE_Modeling\NAMC_Supported_OEmodels\Wyoming\Model Files	R	152	9	300	unspecified	1.02	0.168	midges
-15	WY - Sedimentary mountains	OE	OTUCodeWY18	WY 2018 O/E	Wyoming - Sedimentary mountains	Z:\buglab\OE_Modeling\NAMC_Supported_OEmodels\Wyoming\Model Files	R	152	9	300	unspecified	1.02	0.168	midges
-16	WY - Southern rockies	OE	OTUCodeWY18	WY 2018 O/E	Wyoming - Southern rockies	Z:\buglab\OE_Modeling\NAMC_Supported_OEmodels\Wyoming\Model Files	R	152	9	300	unspecified	1.02	0.168	midges
-17	WY - Southern foothills and Laramie range	OE	OTUCodeWY18	WY 2018 O/E	Wyoming - Southern foothills and Laramie range	Z:\buglab\OE_Modeling\NAMC_Supported_OEmodels\Wyoming\Model Files	R	152	9	300	unspecified	1.02	0.168	midges
-18	WY - Bighorn basin foothills	OE	OTUCodeWY18	WY 2018 O/E	Wyoming - Bighorn basin foothills	Z:\buglab\OE_Modeling\NAMC_Supported_OEmodels\Wyoming\Model Files	R	152	9	300	unspecified	1.02	0.168	midges
-19	WY - Black hills	OE	OTUCodeWY18	WY 2018 O/E	Wyoming - Black hills	Z:\buglab\OE_Modeling\NAMC_Supported_OEmodels\Wyoming\Model Files	R	152	9	300	unspecified	1.02	0.168	midges
-20	WY - High valleys	OE	OTUCodeWY18	WY 2018 O/E	Wyoming - High valleys	Z:\buglab\OE_Modeling\NAMC_Supported_OEmodels\Wyoming\Model Files	R	152	9	300	unspecified	1.02	0.168	midges
-21	WY - SE Plains	OE	OTUCodeWY18	WY 2018 O/E	Wyoming - SE Plains	Z:\buglab\OE_Modeling\NAMC_Supported_OEmodels\Wyoming\Model Files	R	152	9	300	unspecified	1.02	0.168	midges
-22	WY - NE Plains	OE	OTUCodeWY18	WY 2018 O/E	Wyoming - NE Plains	Z:\buglab\OE_Modeling\NAMC_Supported_OEmodels\Wyoming\Model Files	R	152	9	300	unspecified	1.02	0.168	midges
-23	WY - Wyoming basin	OE	OTUCodeWY18	WY 2018 O/E	Wyoming - Wyoming basin	Z:\buglab\OE_Modeling\NAMC_Supported_OEmodels\Wyoming\Model Files	R	152	9	300	unspecified	1.02	0.168	midges
-24	AK East Central	OE	OTUCodeSEAK	AK MMI	East Central Alaska	Z:\buglab\OE_Modeling\NAMC_Supported_OEmodels\AK	R	179						midges
-25	WestWide2018_OtherEcoregions	OE	OTUCodeWestWide18	Westwide O/E	WA, ID, MT, WY, CO, UT, OR, CA, NV, AZ, NM; these ecoregions: Northern Rockies, Northern Xeric Basins, Pacific Northwest, Rangeland Plains, Southern Rockies, Southern Xeric Plains, Southwestern Mountains, Xeric California		R	659	25	300	200	1.04	0.16	standard
-26	WestWide2018_XericEasternPlains	OE	OTUCodeWestWide18	Westwide O/E	WA, ID, MT, WY, CO, UT, OR, CA, NV, AZ, NM; this ecoregion: Eastern Xeric Plains		R	659	25	300	200	0.982	0.192	standard
-27	TN	Measurement		Total Nitrogen Olson 2012	WA, ID, MT, WY, CO, UT, OR, CA, NV, AZ, NM		R	635						
-28	TP	Measurement		Total Phosphorus Olson 2012	WA, ID, MT, WY, CO, UT, OR, CA, NV, AZ, NM		R	752						
-29	EC12	Measurement		Specific Conductance Olson 2012	WA, ID, MT, WY, CO, UT, OR, CA, NV, AZ, NM		R	1390						
-30	Stream temp	Measurement		August Mean Stream Temperature Hill 2012	WA, ID, MT, WY, CO, UT, OR, CA, NV, AZ, NM		R							
+model_id	abbreviation	model_type	unit_id	otu_name	model_name	extent_description	shapefile	platform	reference_sites	group_count	fixed_count	minimum_count	oe_mean	oe_stdev	taxonomic_effort
+1	CSCI	Hybrid	1	OTUCodeCSCIswamp	California Stream Condition Index (O/E and Multimetric Index)	California		R	474	10	300		1.010739	0.123775	standard
+2	UT All Seasons	OE	21	OTUCode_UTDEQ15	UT Department of Environmental Quality O/E	Utah		R	181	6	400	150	1.00274	0.2139	standard
+3	NV MMI	MMI	22	OTUCodeNV	NV Multimetric Index	Nevada		R	165		300				
+4	CO EDAS Biotype 1	MMI	22	OTUCodeCOedas17	CO Ecological Data Application System Multimetric Index - Transition	Colorado - transition zone	Waiting to hear from CDPHE	MS Access	131		300	200			midges
+5	CO EDAS Biotype 2	MMI	22	OTUCodeCOedas17	CO Ecological Data Application System Multimetric Index - Mountains	Colorado - mountain zone	Waiting to hear from CDPHE	MS Access	131		300	200			midges
+6	CO EDAS Biotype 3	MMI	22	OTUCodeCOedas17	CO Ecological Data Application System Multimetric Index - Plains and Xeric	Colorado - xeric and plains zone	Waiting to hear from CDPHE	MS Access	131		300	200			midges
+7	AREMP OE	OE	21	OTUCode2	Aquatic and Riparian Effectiveness Monitoring Program O/E	Parts of California, Oregon, and California	Z:\buglab\OE_Modeling\NAMC_Supported_OEmodels\AREMP2014\ModelFiles	R	202	12	300		1.019127	0.1477722	standard
+8	AREMP MMI	MMI	22	OTUCode2	Aquatic and Riparian Effectiveness Monitoring Program MMI	Parts of California, Oregon, and California	Z:\buglab\OE_Modeling\NAMC_Supported_OEmodels\AREMP2014\ModelFiles	R	200		300				standard
+9	PIBO	OE	21	OTUCodePIBO	USFS Pacfish/Infish Biological Opinion O/E	Parts of Washington, Idaho, and Montana	Z:\buglab\OE_Modeling\NAMC_Supported_OEmodels\PIBO\ModelFiles_PIBO2009oe\PIBO MP Extent	R	174	10	300		0.95	0.16	standard
+10	OR - WCCP	OE	21	OTUCodeORPred05WCCP	OR WesternCordillera ColumbiaPlateau O/E	Cascade region	Waiting to hear from ODEQ	R	167	5	300	200	1.01	0.15	standard
+11	OR - MWCF	OE	21	OTUCodeORPred05MWCF	OR MarineWesternCoastalForest O/E	Coastal Oregon	Waiting to hear from ODEQ	R	38	3	300	200	0.99	0.12	standard
+12	OR NBR	OE	21	OTUCodeOR_NorthernBasinRange	OR NorthernBasinRange O/E Null Model	SE portion of Oregon	Waiting to hear from ODEQ	R	9	1	300	200	1	0.29	standard
+13	WY - Volcanic mountains and valleys	OE	21	OTUCodeWY18	WY 2018 O/E WY - Volcanic mountains and valleys	Wyoming - Volcanic mountains and valleys	Z:\buglab\OE_Modeling\NAMC_Supported_OEmodels\Wyoming\Model Files	R	152	9	300		1.02	0.168	midges
+14	WY - Granitic mountains	OE	21	OTUCodeWY18	WY 2018 O/E WY - Granitic mountains	Wyoming - Granitic mountains	Z:\buglab\OE_Modeling\NAMC_Supported_OEmodels\Wyoming\Model Files	R	152	9	300		1.02	0.168	midges
+15	WY - Sedimentary mountains	OE	21	OTUCodeWY18	WY 2018 O/E WY - Sedimentary mountains	Wyoming - Sedimentary mountains	Z:\buglab\OE_Modeling\NAMC_Supported_OEmodels\Wyoming\Model Files	R	152	9	300		1.02	0.168	midges
+16	WY - Southern rockies	OE	21	OTUCodeWY18	WY 2018 O/E WY - Southern rockies	Wyoming - Southern rockies	Z:\buglab\OE_Modeling\NAMC_Supported_OEmodels\Wyoming\Model Files	R	152	9	300		1.02	0.168	midges
+17	WY - Southern foothills and Laramie range	OE	21	OTUCodeWY18	WY 2018 O/E WY - Southern foothills and Laramie range	Wyoming - Southern foothills and Laramie range	Z:\buglab\OE_Modeling\NAMC_Supported_OEmodels\Wyoming\Model Files	R	152	9	300		1.02	0.168	midges
+18	WY - Bighorn basin foothills	OE	21	OTUCodeWY18	WY 2018 O/E WY - Bighorn basin foothills	Wyoming - Bighorn basin foothills	Z:\buglab\OE_Modeling\NAMC_Supported_OEmodels\Wyoming\Model Files	R	152	9	300		1.02	0.168	midges
+19	WY - Black hills	OE	21	OTUCodeWY18	WY 2018 O/E WY - Black hills	Wyoming - Black hills	Z:\buglab\OE_Modeling\NAMC_Supported_OEmodels\Wyoming\Model Files	R	152	9	300		1.02	0.168	midges
+20	WY - High valleys	OE	21	OTUCodeWY18	WY 2018 O/E WY - High valleys	Wyoming - High valleys	Z:\buglab\OE_Modeling\NAMC_Supported_OEmodels\Wyoming\Model Files	R	152	9	300		1.02	0.168	midges
+21	WY - SE Plains	OE	21	OTUCodeWY18	WY 2018 O/E WY - SE Plains	Wyoming - SE Plains	Z:\buglab\OE_Modeling\NAMC_Supported_OEmodels\Wyoming\Model Files	R	152	9	300		1.02	0.168	midges
+22	WY - NE Plains	OE	21	OTUCodeWY18	WY 2018 O/E WY - NE Plains	Wyoming - NE Plains	Z:\buglab\OE_Modeling\NAMC_Supported_OEmodels\Wyoming\Model Files	R	152	9	300		1.02	0.168	midges
+23	WY - Wyoming basin	OE	21	OTUCodeWY18	WY 2018 O/E WY - Wyoming basin	Wyoming - Wyoming basin	Z:\buglab\OE_Modeling\NAMC_Supported_OEmodels\Wyoming\Model Files	R	152	9	300		1.02	0.168	midges
+24	AK East Central	OE	21	OTUCodeSEAK	AK MMI	East Central Alaska	Z:\buglab\OE_Modeling\NAMC_Supported_OEmodels\AK	R	179						midges
+25	WestWide2018_OtherEcoregions	OE	21	OTUCodeWestWide18	Westwide O/E - Other Ecoregions	WA, ID, MT, WY, CO, UT, OR, CA, NV, AZ, NM; these ecoregions: Northern Rockies, Northern Xeric Basins, Pacific Northwest, Rangeland Plains, Southern Rockies, Southern Xeric Plains, Southwestern Mountains, Xeric California		R	659	25	300	200	1.04	0.16	standard
+26	WestWide2018_XericEasternPlains	OE	21	OTUCodeWestWide18	Westwide O/E - Xeric Eastern Plains	WA, ID, MT, WY, CO, UT, OR, CA, NV, AZ, NM; this ecoregion: Eastern Xeric Plains		R	659	25	300	200	0.982	0.192	standard
+27	TN	Measurement	23		Total Nitrogen Olson 2012	WA, ID, MT, WY, CO, UT, OR, CA, NV, AZ, NM		R	635						
+28	TP	Measurement	23		Total Phosphorus Olson 2012	WA, ID, MT, WY, CO, UT, OR, CA, NV, AZ, NM		R	752						
+29	EC12	Measurement	20		Specific Conductance Olson 2012	WA, ID, MT, WY, CO, UT, OR, CA, NV, AZ, NM		R	1390						
+30	Stream temp	Measurement	6		August Mean Stream Temperature Hill 2012	WA, ID, MT, WY, CO, UT, OR, CA, NV, AZ, NM		R							
