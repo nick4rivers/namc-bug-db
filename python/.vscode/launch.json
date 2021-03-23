@@ -112,5 +112,20 @@
       "data/PredictorExtraction_MasterList_2018August30.csv",
       "data/model_metrics.csv"
     ]
+  },
+  {
+    "name": "Import Site Catchments",
+    "type": "python",
+    "request": "launch",
+    "module": "import_site_catchments",
+    "console": "integratedTerminal",
+    "args": [
+      "{env:POSTGRES_HOST}",
+      "{env:POSTGRES_PORT}",
+      "{env:POSTGRES_DB}",
+      "{env:POSTGRES_USER}",
+      "{env:POSTGRES_PASSWORD}",
+      "/Users/philip/GISData/bugdb/catchments/All2020Sheds/All2020Sheds.geojson"
+    ]
   }]
 }
