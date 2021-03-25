@@ -48,7 +48,7 @@ def migrate(mscurs, pgcurs):
             'box_id': msdata['BoxId'],
             'customer_id': entity_id,
             'submitter_id': submitter_id,
-            'box_recevied_date': msdata['DateIn'],
+            'box_received_date': msdata['DateIn'],
             'box_state_id': box_state_id,
             'description': sanitize_string_col('BoxTracking', 'BoxId', msdata, 'Notes')
         }
