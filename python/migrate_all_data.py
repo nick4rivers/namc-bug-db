@@ -33,8 +33,8 @@ def migrate_all_data(mscon, pgcon, predictor_csv_path, predictor_values_csv_path
     boxes(mscurs, pgcurs)
     samples(mscurs, pgcurs)
     predictor_values(pgcurs, predictor_values_csv_path)
-    # # metrics(pgcurs, metric_values_csv_path)
-    # projects(mscurs, pgcurs)
+    # metrics(pgcurs, metric_values_csv_path)
+    projects(mscurs, pgcurs)
     # organisms(mscurs, pgcurs)
 
     # Refresh any materialized views

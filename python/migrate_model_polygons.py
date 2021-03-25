@@ -34,8 +34,9 @@ model_names = {
     'WY2018_SOUTH FH LARAMIE RANGE': ['WY - Southern foothills and Laramie range'],
     'WY2018_SOUTHERN ROCKIES': ['WY - Southern rockies'],
     'WY2018_VOLCANIC MOUNTAINS AND VALLEYS': ['WY - Volcanic mountains and valleys'],
-    'WY2018_WYOMING BASIN': ['WY - Wyoming basin']
-
+    'WY2018_WYOMING BASIN': ['WY - Wyoming basin'],
+    'WestWide_Eastern_Xeric_Plains': ['WestWide2018_XericEasternPlains'],
+    'WestWide2018_OtherEcoregions': ['WestWide2018_OtherEcoregions']
 }
 
 # List of statewide models that need the polygons from the geo.states table
