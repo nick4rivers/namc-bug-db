@@ -127,5 +127,16 @@
       "{env:POSTGRES_PASSWORD}",
       "/Users/philip/GISData/bugdb/catchments/All2020Sheds/All2020Sheds.geojson"
     ]
+  },
+  {
+    "name": "Confirm biotypes",
+    "type": "python",
+    "request": "launch",
+    "module": "confirm_model_biotypes",
+    "console": "integratedTerminal",
+    "args": [
+      "/Users/philip/GISData/bugdb/model_regions/ModelRegionsSimplified/ModelRegionsSimplified.shp",
+      "/Users/philip/code/bugdb/namc-bug-db/python/data/MMIResults.csv"
+    ]
   }]
 }
