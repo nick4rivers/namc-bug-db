@@ -27,6 +27,7 @@ def migrate(pgcurs, csv_path):
     """
 
     log = Logger('predictor values')
+    log.info('Starting Predictor Values')
 
     predictors = lookup_data(pgcurs, 'geo.predictors', 'abbreviation')
     sites = lookup_data(pgcurs, 'geo.sites', 'site_name')

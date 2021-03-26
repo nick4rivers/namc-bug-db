@@ -19,12 +19,13 @@ import psycopg2
 from psycopg2.extras import execute_values
 
 
-def migrate_all_data(mscon, pgcon, predictor_csv_path, predictor_values_csv_path, metric_values_csv_path, model_polygons_geojson_path):
+def migrate_all_data(mscon, pgcon, predictor_values_csv_path, metric_values_csv_path, model_polygons_geojson_path):
 
     # output_dir = os.path.join(os.path.dirname(__file__), '../docker/postgres/initdb')
     pgcurs = pgcon.cursor(cursor_factory=psycopg2.extras.DictCursor)
     mscurs = mscon.cursor()
 
+    # Import GeoJSON model polygons from local file exported from ShapeFile provided by NAMC
     migrate_model_polygons(pgcurs, model_polygons_geojson_path)
 
     sites(mscurs, pgcurs)
@@ -81,7 +82,7 @@ def main():
     pgcon = psycopg2.connect(user=args.pguser_name, password=args.pgpassword, host=args.pghost, port=args.pgport, database=args.pgdb)
 
     try:
-        migrate_all_data(mscon, pgcon, predictors, predictor_values, metric_values, args.model_polygons)
+        migrate_all_data(mscon, pgcon, predictor_values, metric_values, args.model_polygons)
         pgcon.commit()
     except Exception as ex:
         log.error(str(ex))

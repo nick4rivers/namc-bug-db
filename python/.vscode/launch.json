@@ -18,8 +18,8 @@
       "{env:POSTGRES_DB}",
       "{env:POSTGRES_USER}",
       "{env:POSTGRES_PASSWORD}",
-      "data/model_predictors.csv",
       "data/PredictorExtraction_MasterList_2018August30.csv",
+      "data/model_metrics.csv",
       "/Users/philip/GISData/bugdb/model_regions/2021_03_25_ModelRegions2/ModelRegions.geojson"
     ]
   },
