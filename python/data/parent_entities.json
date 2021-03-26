@@ -1,0 +1,32 @@
+{
+    "Bureau of Land Management Federal Agency": {
+        "abbreviation": "BLM",
+        "children": "",
+        "type": "Federal"
+    },
+    "United States Forest Service": {
+        "abbreviation": "USFS",
+        "children": "",
+        "type": "Federal"
+    },
+    "National Parks Service": {
+        "abbreviation": "NPS",
+        "children": "",
+        "type": "Federal"
+    },
+    "United States Geological Survey": {
+        "abbreviation": "USGS",
+        "children": "",
+        "type": "Federal"
+    },
+    "United States Fish and Wildlife Service": {
+        "abbreviation": "USFWS",
+        "children": "",
+        "type": "Federal"
+    },
+    "United States Bureau of Reclamation": {
+        "abbreviation": "USBOR",
+        "children": "",
+        "type": "Federal"
+    }
+}

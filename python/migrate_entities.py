@@ -1,6 +1,7 @@
 from lib.logger import Logger
 from lib.progress_bar import ProgressBar
 import pyodbc
+import json
 from utilities import sanitize_string_col, log_record_count, sanitize_string
 from utilities import sanitize_phone_fax, sanitize_email, sanitize_url, add_metadata
 from postgres_lookup_data import lookup_data, insert_row, log_row_count
@@ -11,7 +12,7 @@ organization_cols = ['abbreviation', 'organization_name', 'entity_id', 'organiza
 indivisual_cols = ['first_name', 'last_name', 'initials', 'entity_id', 'affiliation_id', 'email']
 
 
-def migrate(mscurs, pgcurs):
+def migrate(mscurs, pgcurs, parent_entities):
 
     individuals = {}
     organizations = {}
@@ -69,6 +70,9 @@ def migrate(mscurs, pgcurs):
         data = {key: entity[key] for key in indivisual_cols}
         insert_row(pgcurs, 'entity.individuals', data)
     log_row_count(pgcurs, 'entity.individuals')
+
+    # Finally, insert the parent entities and associate customers if they have a parent
+    insert_parent_organizations(pgcurs, parent_entities)
 
 
 def migrate_customers(mscurs, organizations, individuals, countries, states, org_types):
@@ -291,3 +295,39 @@ def migrate_employees(mscurs, organizations, individuals, countries):
                 'employeeId': msdata['EmployeeID']
             }
         }
+
+
+def insert_parent_organizations(pgcurs, parent_entities):
+    """ This method inserts several "parent" entities
+    so that NAMC customers can inherit from them.
+    e.g. This inserts the Bureau of Land Management Federal
+    level entity.
+
+    Args:
+        pgcurs ([type]): [description]
+    """
+
+    notes = "system generated from python during database construction"
+
+    entity_types = lookup_data(pgcurs, 'entity.organization_types', 'organization_type_name')
+
+    with open(parent_entities) as f:
+        entities = json.load(f)
+
+    # Get the country code for USA
+    pgcurs.execute("SELECT country_id FROM geo.countries WHERE abbreviation = 'USA'")
+    usa_id = pgcurs.fetchone()[0]
+
+    for name, data in entities.items():
+
+        # Insert the entity first
+        pgcurs.execute('INSERT INTO entity.entities (country_id, notes) VALUES (%s, %s) RETURNING entity_id', [usa_id, notes])
+        entity_id = pgcurs.fetchone()[0]
+
+        # Now insert the organization associated with the entity
+        organization_type_id = get_db_id(entity_types, 'organization_type_id', ['organization_type_name'], data['type'], True)
+        pgcurs.execute('INSERT INTO entity.organizations (entity_id, organization_name, abbreviation, organization_type_id) VALUES (%s, %s, %s, %s)', [entity_id, name, data['abbreviation'], organization_type_id])
+
+        # now associate any children with this entity
+        if len(data['children']) > 0:
+            print('children')

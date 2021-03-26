@@ -19,18 +19,18 @@ import psycopg2
 from psycopg2.extras import execute_values
 
 
-def migrate_all_data(mscon, pgcon, predictor_values_csv_path, metric_values_csv_path, model_polygons_geojson_path):
+def migrate_all_data(mscon, pgcon, predictor_values_csv_path, metric_values_csv_path, model_polygons_geojson_path, parent_entities):
 
     # output_dir = os.path.join(os.path.dirname(__file__), '../docker/postgres/initdb')
     pgcurs = pgcon.cursor(cursor_factory=psycopg2.extras.DictCursor)
     mscurs = mscon.cursor()
 
     # Import GeoJSON model polygons from local file exported from ShapeFile provided by NAMC
-    migrate_model_polygons(pgcurs, model_polygons_geojson_path)
+    # migrate_model_polygons(pgcurs, model_polygons_geojson_path)
 
-    sites(mscurs, pgcurs)
-    taxonomy(mscurs, pgcurs)
-    entities(mscurs, pgcurs)
+    # sites(mscurs, pgcurs)
+    # taxonomy(mscurs, pgcurs)
+    entities(mscurs, pgcurs, parent_entities)
     boxes(mscurs, pgcurs)
     samples(mscurs, pgcurs)
     predictor_values(pgcurs, predictor_values_csv_path)
@@ -64,12 +64,14 @@ def main():
     parser.add_argument('predictor_values', help='Predictor values CSV', type=str)
     parser.add_argument('metric_values', help='Metric values CSV', type=str)
     parser.add_argument('model_polygons', help='Model extent polygon GeoJSON', type=str)
+    parser.add_argument('parent_entities', help='JSON file defining parent entities', type=str)
     parser.add_argument('--verbose', help='verbose logging', default=False)
 
     args = parse_args_env(parser, os.path.join(os.path.dirname(os.path.realpath(__file__)), '.env'))
 
     predictor_values = os.path.join(os.path.dirname(__file__), args.predictor_values)
     metric_values = os.path.join(os.path.dirname(__file__), args.metric_values)
+    parent_entities = os.path.join(os.path.dirname(__file__), args.parent_entities)
 
     log = Logger('DB Migration')
     log.setup(logPath=os.path.join(os.path.dirname(__file__), "bugdb_migration.log"), verbose=args.verbose)
@@ -82,7 +84,7 @@ def main():
     pgcon = psycopg2.connect(user=args.pguser_name, password=args.pgpassword, host=args.pghost, port=args.pgport, database=args.pgdb)
 
     try:
-        migrate_all_data(mscon, pgcon, predictor_values, metric_values, args.model_polygons)
+        migrate_all_data(mscon, pgcon, predictor_values, metric_values, args.model_polygons, parent_entities)
         pgcon.commit()
     except Exception as ex:
         log.error(str(ex))
