@@ -827,6 +827,21 @@ CREATE TRIGGER tr_boxes_update
     FOR EACH ROW
 EXECUTE PROCEDURE fn_before_update();
 
+
+CREATE TABLE sample.box_models
+(
+    box_id INT NOT NULL,
+    model_id  INT NOT NULL,
+
+    CONSTRAINT pk_box_models PRIMARY KEY (box_id, model_id),
+    CONSTRAINT fk_box_models_box_id FOREIGN KEY (box_id) REFERENCES sample.boxes (box_id) ON DELETE CASCADE,
+    CONSTRAINT fk_box_models_model_id FOREIGN KEY (model_id) REFERENCES geo.models (model_id) ON DELETE CASCADE
+);
+CREATE INDEX fx_box_models ON sample.box_models (model_id);
+COMMENT ON TABLE sample.box_models IS 'Associates boxes with models. This determines which models are '
+    'required for each box once sample processing is complete.';
+
+
 -- TODO: Should this table have it's own primary key so that it can
 -- store each version of the submission should it be edited by NAMC
 -- after it is submitted. It must be possible to always find the latest
@@ -941,20 +956,6 @@ CREATE TRIGGER tr_sample_sample_date_update
     ON sample.samples
     FOR EACH ROW
 EXECUTE PROCEDURE fn_before_sample_date_change();
-
-CREATE TABLE sample.sample_models
-(
-    sample_id INT NOT NULL,
-    model_id  INT NOT NULL,
-
-    CONSTRAINT pk_sample_models PRIMARY KEY (sample_id, model_id),
-    CONSTRAINT fk_sample_sample_id FOREIGN KEY (sample_id) REFERENCES sample.samples (sample_id) ON DELETE CASCADE,
-    CONSTRAINT fk_sample_model_id FOREIGN KEY (model_id) REFERENCES geo.models (model_id) ON DELETE CASCADE
-);
-CREATE INDEX fx_sample_models ON sample.sample_models (model_id);
-COMMENT ON TABLE sample.sample_models IS 'Associates samples with models. This determines which models are '
-    'required for each sample.';
-
 
 CREATE TABLE sample.sorter_time
 (
