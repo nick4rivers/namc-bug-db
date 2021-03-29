@@ -27,7 +27,7 @@ def import_site_catchments(pgcurs, catchments_path):
     for feature in features:
         site_code = feature['properties']['SiteCode']
 
-        pgcurs.execute("UPDATE geo.sites SET catchment = ST_GeomFromGeoJSON(%s) WHERE site_name = %s", [json.dumps(feature['geometry']), site_code])
+        pgcurs.execute("UPDATE geo.sites SET catchment = ST_SetSRID(ST_GeomFromGeoJSON(%s), 4326) WHERE site_name = %s", [json.dumps(feature['geometry']), site_code])
         if pgcurs.rowcount == 0:
             unsuccessful += 1
         else:

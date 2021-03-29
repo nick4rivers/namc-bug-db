@@ -52,9 +52,9 @@ statewide_models = {
 }
 
 
-def migrate_model_polygons(pgcurs, model_polygons_geojson_path):
+def migrate_model_polygons(pgcurs, geojson_path):
 
-    with open(model_polygons_geojson_path) as f:
+    with open(geojson_path) as f:
         features = json.load(f)["features"]
 
     log = Logger('Model Polygons')

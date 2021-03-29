@@ -21,7 +21,8 @@
       "data/PredictorExtraction_MasterList_2018August30.csv",
       "data/model_metrics.csv",
       "/Users/philip/GISData/bugdb/model_regions/2021_03_25_ModelRegions2/ModelRegions.geojson",
-      "data/parent_entities.json"
+      "data/parent_entities.json",
+      "/Users/philip/GISData/bugdb/catchments/2021_03_26_FromTrip/catchments2.geojson"
     ]
   },
   {
