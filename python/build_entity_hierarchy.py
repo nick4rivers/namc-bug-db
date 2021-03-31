@@ -5,11 +5,29 @@ from lib.logger import Logger
 
 def build_entity_hierarchy(pgcurs):
 
-    # Get the IDs of existing entities
-    organizations = lookup_data(pgcurs, 'entity.organizations', 'abbreviation')
-
-    forest_service(pgcurs, organizations)
+    forest_service(pgcurs)
     bureau_land_management(pgcurs)
+    national_parks_service(pgcurs)
+
+
+def national_parks_service(pgcurs):
+    """The NPS records from TypeCustomerSpecial are all formatted
+    with NPS-XXXX-YYYY where XXXX is some kind of parent entity and 
+    YYYY are child entities. Therefore find those parents by length 
+    """
+
+    # Insert top level entity
+    nps_id = insert_new_organization(pgcurs, 'NPS - National Parks Service', 'NPS', None, 'Federal')
+
+    # Make all regional entities children of the parent record
+    associate_children(pgcurs, nps_id, "(abbreviation LIKE 'NPS-____') OR (abbreviation LIKE 'NPS-__')")
+
+    # Load just the regional offices
+    regional = lookup_data(pgcurs, 'entity.organizations', 'abbreviation', "(abbreviation LIKE 'NPS-%%') AND (length(abbreviation) <=8)")
+
+    # associate all parks with this entity
+    for region, data in regional.items():
+        associate_children(pgcurs, data['entity_id'], "(abbreviation LIKE '{}-%%')".format(region))
 
 
 def bureau_land_management(pgcurs):
@@ -25,43 +43,49 @@ def bureau_land_management(pgcurs):
         # insert state office and associate with parent BLM
         abbreviation = 'BLM-{}'.format(state)
 
+        # skip states for which there are no customers
         pgcurs.execute("SELECT count(*) FROM entity.organizations where abbreviation LIKE '{}-%%'".format(abbreviation))
         if pgcurs.fetchone()[0] < 1:
             continue
 
-        state_office = insert_new_organization(pgcurs, 'BLM - {} state office'.format(state_name), abbreviation, blm_id, 'Federal')
-        associate_children(pgcurs, blm_id, "(abbreviation = '{}')".format(abbreviation))
+        # Find existing state office record for this state
+        pgcurs.execute("SELECT entity_id FROM entity.organizations where (abbreviation LIKE '{}-%%') AND (organization_name ILIKE '%% state %%')".format(abbreviation))
+        row = pgcurs.fetchone()
+        if row is not None:
+            state_office = row[0]
+        else:
+            state_office = insert_new_organization(pgcurs, 'BLM - {} state office'.format(state_name), abbreviation, blm_id, 'Federal')
+
+        # Associate the state office with the parent
+        associate_children(pgcurs, blm_id, "(o.entity_id = {})".format(state_office))
 
         # associate field offices with the state office
-        associate_children(pgcurs, state_office, "(abbreviation LIKE '{}-%%')".format(abbreviation))
+        associate_children(pgcurs, state_office, "(abbreviation like '{}-%%') and (organization_name NOT iLIKE '%% state %%')".format(abbreviation))
 
     # Finally associate any special BLM customers that are not state offices with the national office
     associate_children(pgcurs, blm_id, "(abbreviation = 'BLM-REDROCK')")
     associate_children(pgcurs, blm_id, "(abbreviation = 'BLM-AIM')")
 
 
-def forest_service(pgcurs, organizations):
+def forest_service(pgcurs):
 
     # Insert top level USFS entity
     usfs_id = insert_new_organization(pgcurs, 'USFS - Federal Agency', 'USFS', None, 'Federal')
 
-    # Insert USFS region 10 offices
-    usfs_r10 = insert_new_organization(pgcurs, 'USFS  Region 10 Offices', 'USFS-R10', usfs_id, 'Federal')
+    # Insert USFS region 8 and 10 offices
+    insert_new_organization(pgcurs, 'USFS - Region 8 Southern Region', 'USFS-R8', usfs_id, 'Federal')
+    insert_new_organization(pgcurs, 'USFS - Region 10 Alaska Region', 'USFS-R10', usfs_id, 'Federal')
 
     # Associate regional offices and special projects with top level federal agency
     associate_children(pgcurs, usfs_id, "(abbreviation like 'USFS_R_') OR (abbreviation LIKE 'USFS_R__') OR (abbreviation LIKE 'USFS_5__')")
 
-    # # Associate region 1, 5 and 6 offices with parent
-    usfs_r1 = get_db_id(organizations, 'entity_id', ['abbreviation'], 'USFS-R1', True)
-    associate_children(pgcurs, usfs_r1, "(abbreviation LIKE 'USFS-R1-%%')")
+    # Associate field offices with regional offices (NOTE THERE IS NOT REGION 7!!!!!)
+    organizations = lookup_data(pgcurs, 'entity.organizations', 'abbreviation')
+    for region in [1, 2, 3, 4, 5, 6, 8, 9, 10]:
 
-    usfs_r5 = get_db_id(organizations, 'entity_id', ['abbreviation'], 'USFS-R5', True)
-    associate_children(pgcurs, usfs_r5, "(abbreviation like 'USFS-R5-%%')")
-
-    usfs_r6 = get_db_id(organizations, 'entity_id', ['abbreviation'], 'USFS-R6', True)
-    associate_children(pgcurs, usfs_r6, "(abbreviation like 'USFS-R6-%%')")
-
-    associate_children(pgcurs, usfs_r10, "(abbreviation like 'USFS-R10-%%')")
+        abbreviation = 'USFS-R{}'.format(region)
+        region_id = get_db_id(organizations, 'entity_id', ['abbreviation'], abbreviation, True)
+        associate_children(pgcurs, region_id, "(abbreviation LIKE '{}-%%')".format(abbreviation))
 
 
 def insert_new_organization(pgcurs, organization_name, abbreviation, parent_id, entity_type):

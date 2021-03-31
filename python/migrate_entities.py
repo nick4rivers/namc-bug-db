@@ -47,6 +47,7 @@ def migrate(mscurs, pgcurs, parent_entities):
     }
 
     migrate_customers(mscurs, organizations, individuals, countries, states, org_types)
+    migrate_special_customers(mscurs, pgcurs, organizations)
     migrate_labs(mscurs, organizations, states, countries, org_types)
     migrate_employees(mscurs, organizations, individuals, countries)
 
@@ -73,7 +74,6 @@ def migrate(mscurs, pgcurs, parent_entities):
     log_row_count(pgcurs, 'entity.individuals')
 
     # Finally, insert the parent entities and associate customers if they have a parent
-    # insert_parent_organizations(pgcurs, parent_entities)
     build_entity_hierarchy(pgcurs)
 
 
@@ -156,6 +156,9 @@ def migrate_customers(mscurs, organizations, individuals, countries, states, org
 
         if organization_name.startswith('Blm - Ut'):
             organization_name = 'BLM - UT' + organization_name[8:]
+
+        if organization_name == 'NPS -MOJN - Great Basin National Park':
+            organization_name = 'NPS - MOJN - Great Basin National Park'
 
         organizations[custid] = {
             'abbreviation': custid,
@@ -329,38 +332,51 @@ def migrate_employees(mscurs, organizations, individuals, countries):
             }
         }
 
-# # old JSON way of doing things
-# def insert_parent_organizations(pgcurs, parent_entities):
-#     """ This method inserts several "parent" entities
-#     so that NAMC customers can inherit from them.
-#     e.g. This inserts the Bureau of Land Management Federal
-#     level entity.
 
-#     Args:
-#         pgcurs ([type]): [description]
-#     """
+def migrate_special_customers(mscurs, pgcurs, organizations):
+    """Migrate any special customers. These are the customers
+    from a special lookup table in the front end. They might
+    or might not have customers records in PilotDB.
+    """
 
-#     notes = "system generated from python during database construction"
+    original_customer_count = len(organizations)
 
-#     entity_types = lookup_data(pgcurs, 'entity.organization_types', 'organization_type_name')
+    countries = lookup_data(pgcurs, 'geo.countries', 'country_name')
+    usa_id = get_db_id(countries, 'country_id', ['abbreviation'], 'USA', True)
 
-#     with open(parent_entities) as f:
-#         entities = json.load(f)
+    states = lookup_data(pgcurs, 'geo.states', 'abbreviation')
 
-#     # Get the country code for USA
-#     pgcurs.execute("SELECT country_id FROM geo.countries WHERE abbreviation = 'USA'")
-#     usa_id = pgcurs.fetchone()[0]
+    org_types = lookup_data(pgcurs, 'entity.organization_types', 'organization_type_name')
+    fed_id = get_db_id(org_types, 'organization_type_id', ['organization_type_name'], 'Federal', True)
 
-#     for name, data in entities.items():
+    mscurs.execute('SELECT * FROM BugLab.dbo.TypeCustomerSpecial')
+    for msrow in mscurs.fetchall():
+        msdata = dict(zip([t[0] for t in msrow.cursor_description], msrow))
 
-#         # Insert the entity first
-#         pgcurs.execute('INSERT INTO entity.entities (country_id, notes) VALUES (%s, %s) RETURNING entity_id', [usa_id, notes])
-#         entity_id = pgcurs.fetchone()[0]
+        custid = sanitize_string_col('Customer', 'CustID', msdata, 'CustID')
+        if custid not in organizations:
 
-#         # Now insert the organization associated with the entity
-#         organization_type_id = get_db_id(entity_types, 'organization_type_id', ['organization_type_name'], data['type'], True)
-#         pgcurs.execute('INSERT INTO entity.organizations (entity_id, organization_name, abbreviation, organization_type_id) VALUES (%s, %s, %s, %s)', [entity_id, name, data['abbreviation'], organization_type_id])
+            state_id = None
+            if custid.startswith('BLM-'):
+                state = custid[4:6]
+                # Don't throw exception. There are a couple of non-state related offices. e.g. "Eastern Offices" = "ES"
+                state_id = get_db_id(states, 'state_id', ['abbreviation'], state, False)
 
-#         # now associate any children with this entity
-#         if len(data['children']) > 0:
-#             print('children')
+            organizations[custid] = {
+                'abbreviation': custid,
+                'organization_name': sanitize_string(msdata['Customer']),
+                'organization_type_id': fed_id,
+                'city': None,
+                'address1': None,
+                'address2': None,
+                'state_id': state_id,
+                'zip_code': None,
+                'country_id': usa_id,
+                'phone': None,
+                'fax': None,
+                'is_lab': False,
+                'metadata': {'source': 'customer from BugLab.TypeCustomerSpecial'}
+            }
+
+    log = Logger('Entities')
+    log.info('{} customers imported from BugLab.TypeCustomerSpecial'.format(len(organizations) - original_customer_count))
