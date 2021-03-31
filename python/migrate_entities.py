@@ -148,6 +148,15 @@ def migrate_customers(mscurs, organizations, individuals, countries, states, org
         if organization_name in ['USFS Malheur National Forest']:
             organization_name = 'USFS - R6 -' + organization_name[4:]
 
+        if organization_name == 'Blm- Wy - Buffalo Field Office':
+            organization_name = 'BLM - WY - Buffalo Field Office'
+
+        if organization_name == 'BLM - AK Campbell Creek Science Center':
+            organization_name = 'BLM - AK - Campbell Creek Science Center'
+
+        if organization_name.startswith('Blm - Ut'):
+            organization_name = 'BLM - UT' + organization_name[8:]
+
         organizations[custid] = {
             'abbreviation': custid,
             'organization_name': organization_name,

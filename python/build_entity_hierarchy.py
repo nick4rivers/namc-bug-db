@@ -8,6 +8,40 @@ def build_entity_hierarchy(pgcurs):
     # Get the IDs of existing entities
     organizations = lookup_data(pgcurs, 'entity.organizations', 'abbreviation')
 
+    forest_service(pgcurs, organizations)
+    bureau_land_management(pgcurs)
+
+
+def bureau_land_management(pgcurs):
+
+    # Insert top level entity
+    blm_id = insert_new_organization(pgcurs, 'BLM - Bureau of Land Management - Federal Agency', 'BLM', None, 'Federal')
+
+    # Insert state offices and associate children
+    pgcurs.execute('SELECT abbreviation, state_name from geo.states')
+    states = [(row[0], row[1]) for row in pgcurs.fetchall()]
+
+    for state, state_name in states:
+        # insert state office and associate with parent BLM
+        abbreviation = 'BLM-{}'.format(state)
+
+        pgcurs.execute("SELECT count(*) FROM entity.organizations where abbreviation LIKE '{}-%%'".format(abbreviation))
+        if pgcurs.fetchone()[0] < 1:
+            continue
+
+        state_office = insert_new_organization(pgcurs, 'BLM - {} state office'.format(state_name), abbreviation, blm_id, 'Federal')
+        associate_children(pgcurs, blm_id, "(abbreviation = '{}')".format(abbreviation))
+
+        # associate field offices with the state office
+        associate_children(pgcurs, state_office, "(abbreviation LIKE '{}-%%')".format(abbreviation))
+
+    # Finally associate any special BLM customers that are not state offices with the national office
+    associate_children(pgcurs, blm_id, "(abbreviation = 'BLM-REDROCK')")
+    associate_children(pgcurs, blm_id, "(abbreviation = 'BLM-AIM')")
+
+
+def forest_service(pgcurs, organizations):
+
     # Insert top level USFS entity
     usfs_id = insert_new_organization(pgcurs, 'USFS - Federal Agency', 'USFS', None, 'Federal')
 
@@ -63,4 +97,4 @@ def associate_children(pgcurs, parent_id, where_clause):
     pgcurs.execute('UPDATE entity.entities e SET parent_id = %s FROM entity.organizations o WHERE (e.entity_id = o.entity_id) AND ({})'.format(where_clause), [parent_id])
 
     log = Logger('Entity Hierarchy')
-    log.info('Parent entity {} has {} children'.format(parent_abbreviation, pgcurs.rowcount))
+    log.info('Adding {} children to parent entity {}'.format(pgcurs.rowcount, parent_abbreviation))
