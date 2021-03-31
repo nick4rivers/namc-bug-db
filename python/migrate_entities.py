@@ -6,6 +6,7 @@ from utilities import sanitize_string_col, log_record_count, sanitize_string
 from utilities import sanitize_phone_fax, sanitize_email, sanitize_url, add_metadata
 from postgres_lookup_data import lookup_data, insert_row, log_row_count
 from lookup_data import get_db_id
+from build_entity_hierarchy import build_entity_hierarchy
 
 entity_cols = ['address1', 'address2', 'city', 'state_id', 'country_id', 'zip_code', 'phone', 'fax', 'metadata']
 organization_cols = ['abbreviation', 'organization_name', 'entity_id', 'organization_type_id', 'is_lab']
@@ -72,7 +73,8 @@ def migrate(mscurs, pgcurs, parent_entities):
     log_row_count(pgcurs, 'entity.individuals')
 
     # Finally, insert the parent entities and associate customers if they have a parent
-    insert_parent_organizations(pgcurs, parent_entities)
+    # insert_parent_organizations(pgcurs, parent_entities)
+    build_entity_hierarchy(pgcurs)
 
 
 def migrate_customers(mscurs, organizations, individuals, countries, states, org_types):
@@ -109,6 +111,12 @@ def migrate_customers(mscurs, organizations, individuals, countries, states, org
         if custid == 'R02F10B':
             clean_data['State'] = 'OR'
 
+        if custid.startswith('USFS'):
+            custid = custid.replace('_', '-')
+
+        if custid.startswith('USFS-R0'):
+            custid = custid[0:6] + custid[7:]
+
         # end overrides
         # ###################################################
 
@@ -124,9 +132,25 @@ def migrate_customers(mscurs, organizations, individuals, countries, states, org
         if not country_id:
             country_id = usa
 
+        # Fix USFS spacing issues
+        organization_name = clean_data['Customer']
+        if organization_name.startswith('USFS-R10-ChugachNF-GRD-Moose Pass AK'):
+            organization_name = 'USFS - R10 - ChugachNF-GRD-Moose Pass AK'
+
+        # Fix USFS case problems
+        if organization_name.startswith('Usfs -'):
+            organization_name = 'USFS {}'.format(organization_name[5:])
+
+        # Fix USFS missing region in name
+        if organization_name in ['USFS San Bernardino National Forest', 'USFS Stanislaus National Forest', 'USFS Inyo National Forest', 'USFS Tahoe National Forest']:
+            organization_name = 'USFS - R5 -' + organization_name[4:]
+
+        if organization_name in ['USFS Malheur National Forest']:
+            organization_name = 'USFS - R6 -' + organization_name[4:]
+
         organizations[custid] = {
             'abbreviation': custid,
-            'organization_name': clean_data['Customer'],
+            'organization_name': organization_name,
             'organization_type_id': organization_type_id,
             'city': clean_data['City'],
             'address1': clean_data['Address1'],
@@ -296,38 +320,38 @@ def migrate_employees(mscurs, organizations, individuals, countries):
             }
         }
 
+# # old JSON way of doing things
+# def insert_parent_organizations(pgcurs, parent_entities):
+#     """ This method inserts several "parent" entities
+#     so that NAMC customers can inherit from them.
+#     e.g. This inserts the Bureau of Land Management Federal
+#     level entity.
 
-def insert_parent_organizations(pgcurs, parent_entities):
-    """ This method inserts several "parent" entities
-    so that NAMC customers can inherit from them.
-    e.g. This inserts the Bureau of Land Management Federal
-    level entity.
+#     Args:
+#         pgcurs ([type]): [description]
+#     """
 
-    Args:
-        pgcurs ([type]): [description]
-    """
+#     notes = "system generated from python during database construction"
 
-    notes = "system generated from python during database construction"
+#     entity_types = lookup_data(pgcurs, 'entity.organization_types', 'organization_type_name')
 
-    entity_types = lookup_data(pgcurs, 'entity.organization_types', 'organization_type_name')
+#     with open(parent_entities) as f:
+#         entities = json.load(f)
 
-    with open(parent_entities) as f:
-        entities = json.load(f)
+#     # Get the country code for USA
+#     pgcurs.execute("SELECT country_id FROM geo.countries WHERE abbreviation = 'USA'")
+#     usa_id = pgcurs.fetchone()[0]
 
-    # Get the country code for USA
-    pgcurs.execute("SELECT country_id FROM geo.countries WHERE abbreviation = 'USA'")
-    usa_id = pgcurs.fetchone()[0]
+#     for name, data in entities.items():
 
-    for name, data in entities.items():
+#         # Insert the entity first
+#         pgcurs.execute('INSERT INTO entity.entities (country_id, notes) VALUES (%s, %s) RETURNING entity_id', [usa_id, notes])
+#         entity_id = pgcurs.fetchone()[0]
 
-        # Insert the entity first
-        pgcurs.execute('INSERT INTO entity.entities (country_id, notes) VALUES (%s, %s) RETURNING entity_id', [usa_id, notes])
-        entity_id = pgcurs.fetchone()[0]
+#         # Now insert the organization associated with the entity
+#         organization_type_id = get_db_id(entity_types, 'organization_type_id', ['organization_type_name'], data['type'], True)
+#         pgcurs.execute('INSERT INTO entity.organizations (entity_id, organization_name, abbreviation, organization_type_id) VALUES (%s, %s, %s, %s)', [entity_id, name, data['abbreviation'], organization_type_id])
 
-        # Now insert the organization associated with the entity
-        organization_type_id = get_db_id(entity_types, 'organization_type_id', ['organization_type_name'], data['type'], True)
-        pgcurs.execute('INSERT INTO entity.organizations (entity_id, organization_name, abbreviation, organization_type_id) VALUES (%s, %s, %s, %s)', [entity_id, name, data['abbreviation'], organization_type_id])
-
-        # now associate any children with this entity
-        if len(data['children']) > 0:
-            print('children')
+#         # now associate any children with this entity
+#         if len(data['children']) > 0:
+#             print('children')
