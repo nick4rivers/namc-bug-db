@@ -54,7 +54,8 @@ BEGIN
 end
 $$;
 
-CREATE OR REPLACE FUNCTION geo.fn_sites(p_limit INT, p_offset INT, p_us_state VARCHAR(2)[] = NULL)
+DROP function if exists geo.fn_sites;
+CREATE OR REPLACE FUNCTION geo.fn_sites(p_limit INT, p_offset INT)
     returns table
             (
                 site_id             INT,
@@ -93,15 +94,15 @@ begin
                  INNER JOIN (
             SELECT g.site_id
             FROM geo.sites g
-                     LEFT JOIN geo.states gst ON st_contains(gst.geom, g.location)
-            where ((gst.abbreviation ~~ ANY (p_us_state)) OR (p_us_state IS NULL))
+                 -- where ((p_us_state IS NULL) OR (gst.abbreviation ~~ ANY (p_us_state)))
             ORDER BY g.site_id
             LIMIT p_limit OFFSET p_offset
         ) ss ON s.site_id = ss.site_id
                  LEFT JOIN geo.states st ON st_contains(st.geom, s.location)
                  LEFT JOIN geo.systems sy ON s.system_id = sy.system_id
                  LEFT JOIN geo.ecosystems e ON sy.ecosystem_id = e.ecosystem_id
-                 LEFT JOIN geo.waterbody_types w ON s.waterbody_type_id = w.waterbody_type_id;
+                 LEFT JOIN geo.waterbody_types w ON s.waterbody_type_id = w.waterbody_type_id
+                 LEFT JOIN geo.states gst ON st_contains(gst.geom, s.location);
 end ;
 $$;
 
