@@ -1,8 +1,9 @@
+import csv
 import pyodbc
 from lib.logger import Logger
 from lib.progress_bar import ProgressBar
 from utilities import sanitize_string_col, sanitize_string, write_sql_file, log_record_count
-from postgres_lookup_data import lookup_data, insert_row, log_row_count
+from postgres_lookup_data import lookup_data, insert_row, log_row_count, insert_many_rows
 from lookup_data import get_db_id
 
 
@@ -69,32 +70,54 @@ def migrate(mscurs, pgcurs):
 
 def associate_models_with_boxes(pgcurs, csv_path):
 
+    model_aliases = {
+        'OR_WCCP': 'OR - WCCP',
+        'OR_MWCF': 'OR - MWCF'
+    }
+
     log = Logger('Models')
     log.info('Associating models with boxes')
 
-    models = lookup_data(pgcurs, 'geo.models', 'abbreviation')
+    all_models = lookup_data(pgcurs, 'geo.models', 'abbreviation')
 
     raw_data = csv.DictReader(open(csv_path))
     data = {}
     for row in raw_data:
 
+        if row['boxid'] == 'NA':
+            continue
+
         model = row['model']
-        if model == 'UTDEQ15':
-            model = 'UT All Seasons'
+
+        if model in model_aliases:
+            model = model_aliases[model]
 
         # associate box with all three Colorado models
-        # if model.startswith('CO_'):
+        if model.startswith('CO_') or model == 'CO':
+            model = ['CO EDAS Biotype 1', 'CO EDAS Biotype 2', 'CO EDAS Biotype 3']
+
+        if model == 'AREMP_MMI_and_OE':
+            model = ['AREMP OE', 'AREMP MMI']
 
         box_id = int(row['boxid'])
         if box_id not in data:
             data[box_id] = []
 
-        model_id = get_db_id(models, 'model_id', ['abbreviation'], model, True)
-        if model_id not in data[box_id]:
-            data[box_id].append(model_id)
+        # Convert the models that apply to this box to a list if it is not already
+        if not isinstance(model, list):
+            model = [model]
+
+        # Loop over all models that apply to this box
+        for box_model in model:
+            model_id = get_db_id(all_models, 'model_id', ['abbreviation'], box_model, True)
+            if model_id not in data[box_id]:
+                data[box_id].append(model_id)
 
     # Flatten the data to insert into the database table
-    db_data = [(box_id, model_id) for box_id, model_id in [(box_id, models) for box_id, models in data.items()]]
-    insert_many_rows(pgcurs, 'sample.box_models', ['box_id', 'model_id'], db_data)
+    db_data = []
+    for box_id, models in data.items():
+        for model_id in models:
+            db_data.append((box_id, model_id))
 
+    insert_many_rows(pgcurs, 'sample.box_models', ['box_id', 'model_id'], db_data)
     log_row_count(pgcurs, 'sample.box_models')
