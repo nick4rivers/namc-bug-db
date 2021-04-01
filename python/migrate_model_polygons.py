@@ -58,7 +58,7 @@ def migrate_model_polygons(pgcurs, geojson_path):
         features = json.load(f)["features"]
 
     log = Logger('Model Polygons')
-    log.info('{} model polygons retrieved from GeoJSON at {}'.format(len(features), model_polygons_geojson_path))
+    log.info('{} model polygons retrieved from GeoJSON at {}'.format(len(features), geojson_path))
 
     counter = 0
     successful = 0
@@ -117,3 +117,39 @@ def migrate_model_polygons(pgcurs, geojson_path):
         log.warning('Model {} ({}) still has NULL extent geometry'.format(row['abbreviation'], row['model_id']))
 
     log.info('Model polygon migration complete')
+
+
+def associate_models_with_entities(pgcurs):
+    """Associating models with customers per Trip's advice on this ticket
+    https://github.com/namc-utah/namc-bug-db/issues/99
+
+    """
+
+    log = Logger('Customer Models')
+    log.info('Associating customer with default models')
+
+    customer_models = [
+        ('USFS-504', 'AREMP%%'),
+        ('USFS-502', 'PIBO%%'),
+        ('DEQ-02', 'UT All Seasons')
+    ]
+
+    for entity, model in customer_models:
+        pgcurs.execute("""INSERT INTO entity.entity_models (entity_id, model_id)
+            SELECT o.entity_id, m.model_id
+            FROM entity.organizations o , geo.models m
+            WHERE o.abbreviation = %s and m.abbreviation like '{}'""".format(model), [entity])
+
+        log.info('{} {} models associated with entity {}'.format(pgcurs.rowcount, model, entity))
+
+    # Any BLM customers from CA, NV, OR, UT, WY, CO, get state-specific model only
+    # Note this associates with the BLM state office customer, not the field office or other child entity!
+    for state in ['CA', 'NV', 'OR', 'UT', 'WY', 'CO']:
+        pgcurs.execute("""INSERT INTO entity.entity_models (entity_id, model_id)
+            SELECT o.entity_id, m.model_id
+            FROM entity.organizations o , geo.models m
+            WHERE (o.abbreviation like 'BLM-{}%') AND (o.organization_name ilike '%% state %%') and (m.abbreviation like '{} %%')""".format(state, state))
+
+        log.info('{} models associated with BLM state office for {}'.format(pgcurs.rowcount, state))
+
+    log.info('Customer model association complete')

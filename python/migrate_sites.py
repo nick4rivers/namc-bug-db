@@ -14,24 +14,33 @@ block_size = 5000
 table_name = 'geo.sites'
 
 
-def migrate(mscurs, pgcurs):
+def migrate(mscurs, pgcurs, schema):
 
     systems = lookup_data(pgcurs, 'geo.systems', 'system_name')
     ecosystems = lookup_data(pgcurs, 'geo.ecosystems', 'ecosystem_name')
 
-    expected_rows = log_record_count(mscurs, 'PilotDB.dbo.SiteInfo')
+    expected_rows = log_record_count(mscurs, '{}.dbo.SiteInfo'.format(schema))
 
-    mscurs.execute("SELECT * FROM PilotDB.dbo.SiteInfo WHERE (Lat IS NOT NULL) AND (Long IS NOT NULL)")
+    mscurs.execute('SELECT * FROM {}.dbo.SiteInfo WHERE (Lat IS NOT NULL) AND (Long IS NOT NULL)'.format(schema))
     log = Logger('Sites')
 
     progbar = ProgressBar(expected_rows, 50, "sites")
     counter = 0
+    existing_site_count = 0
     duplicate_count = 0
     block_data = []
     for msrow in mscurs.fetchall():
         msdata = dict(zip([t[0] for t in msrow.cursor_description], msrow))
 
         site_name = sanitize_string(msdata['Station'])
+
+        # Determine if the site already exists (might have processed Pilot for BugDB first)
+        pgcurs.execute('SELECT site_id FROM geo.sites WHERE site_name = %s', [site_name])
+        row = pgcurs.fetchone()
+        if row is not None:
+            existing_site_count += 1
+            continue
+
         # ecosystem_id = get_db_id(ecosystems, 'ecosystem_id', ['ecosystem_name'], sanitize_string(msdata['System1']))
         system_id = get_db_id(systems, 'system_id', ['system_name'], sanitize_string(msdata['System2']))
 
@@ -54,7 +63,10 @@ def migrate(mscurs, pgcurs):
         add_metadata(metadata, 'special', msdata['Special'])
         add_metadata(metadata, 'reference', msdata['Reference'])
         add_metadata(metadata, 'notes', msdata['Notes'])
-        add_metadata(metadata, 'gisNote', msdata['GISnote'])
+
+        # The following fields are not found in front end BugLab database
+        if 'GISnote' in msdata:
+            add_metadata(metadata, 'gisNote', msdata['GISnote'])
 
         # Check system and ecosystem match
         # if system_id and ecosystem_id:
@@ -85,3 +97,5 @@ def migrate(mscurs, pgcurs):
 
     progbar.finish()
     log_row_count(pgcurs, 'geo.sites', expected_rows)
+
+    log.info('{} existing sites found'.format(existing_site_count))

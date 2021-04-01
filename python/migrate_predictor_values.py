@@ -26,6 +26,11 @@ def migrate(pgcurs, csv_path):
 
     """
 
+    migrate_predictor_values(pgcurs, csv_path)
+
+
+def migrate_predictor_values(pgcurs, csv_path):
+
     log = Logger('predictor values')
     log.info('Starting Predictor Values')
 

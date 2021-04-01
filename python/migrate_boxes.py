@@ -27,6 +27,13 @@ def migrate(mscurs, pgcurs):
         msdata = dict(zip([t[0] for t in msrow.cursor_description], msrow))
 
         custId = sanitize_string(msdata['CustId'])
+
+        # Forest service customer IDs were tweaked during import. Use old format for lookup
+        if custId.startswith('USFS_'):
+            custId = custId.replace('_', '-')
+        if custId.startswith('USFS-R0'):
+            custId = 'USFS-R' + custId[7:]
+
         entity_id = get_db_id(organizations, 'entity_id', ['abbreviation', 'organization_name'], custId, True)
         box_state_id = get_db_id(box_states, 'box_state_id', ['box_state_name'], 'Complete')
 
@@ -58,3 +65,36 @@ def migrate(mscurs, pgcurs):
 
     progbar.finish()
     log_row_count(pgcurs, 'sample.boxes', expected_rows)
+
+
+def associate_models_with_boxes(pgcurs, csv_path):
+
+    log = Logger('Models')
+    log.info('Associating models with boxes')
+
+    models = lookup_data(pgcurs, 'geo.models', 'abbreviation')
+
+    raw_data = csv.DictReader(open(csv_path))
+    data = {}
+    for row in raw_data:
+
+        model = row['model']
+        if model == 'UTDEQ15':
+            model = 'UT All Seasons'
+
+        # associate box with all three Colorado models
+        # if model.startswith('CO_'):
+
+        box_id = int(row['boxid'])
+        if box_id not in data:
+            data[box_id] = []
+
+        model_id = get_db_id(models, 'model_id', ['abbreviation'], model, True)
+        if model_id not in data[box_id]:
+            data[box_id].append(model_id)
+
+    # Flatten the data to insert into the database table
+    db_data = [(box_id, model_id) for box_id, model_id in [(box_id, models) for box_id, models in data.items()]]
+    insert_many_rows(pgcurs, 'sample.box_models', ['box_id', 'model_id'], db_data)
+
+    log_row_count(pgcurs, 'sample.box_models')

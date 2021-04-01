@@ -3,6 +3,7 @@ from migrate_organisms import migrate as organisms
 from migrate_samples import migrate as samples
 from migrate_sites import migrate as sites
 from migrate_boxes import migrate as boxes
+from migrate_boxes import associate_models_with_boxes
 from migrate_entities import migrate as entities
 from migrate_taxonomy_pivot import migrate as taxonomy
 from migrate_projects import migrate as projects
@@ -12,6 +13,7 @@ from lib.dotenv import parse_args_env
 from lib.logger import Logger
 from migrate_model_polygons import migrate_model_polygons
 from migrate_catchment_polygons import migrate_catchment_polygons
+from migrate_model_polygons import associate_models_with_entities
 
 import os
 import argparse
@@ -29,19 +31,24 @@ def migrate_all_data(mscon, pgcon, predictor_values_csv_path, metric_values_csv_
     # Import GeoJSON model polygons from local file exported from ShapeFile provided by NAMC
     migrate_model_polygons(pgcurs, model_polygons_geojson_path)
 
-    # sites(mscurs, pgcurs)
+    sites(mscurs, pgcurs, 'PilotDB')
+    sites(mscurs, pgcurs, 'BugLab')
 
     # Import GeoJSON catchment polygons from local file exported from ShapeFile provided by NAMC
     migrate_catchment_polygons(pgcurs, catchment_polygons)
 
-    taxonomy(mscurs, pgcurs)
+    # taxonomy(mscurs, pgcurs)
     entities(mscurs, pgcurs, parent_entities)
+    associate_models_with_entities(pgcurs)
+
     boxes(mscurs, pgcurs)
+    associate_models_with_boxes(pgcurs, predictor_values_csv_path)
+
     samples(mscurs, pgcurs)
     predictor_values(pgcurs, predictor_values_csv_path)
-    # metrics(pgcurs, metric_values_csv_path)
-    projects(mscurs, pgcurs)
-    # organisms(mscurs, pgcurs)
+    # # metrics(pgcurs, metric_values_csv_path)
+    # projects(mscurs, pgcurs)
+    # # organisms(mscurs, pgcurs)
 
     # Refresh any materialized views
     pgcurs.execute('REFRESH MATERIALIZED VIEW taxa.vw_taxonomy_crosstab;')
