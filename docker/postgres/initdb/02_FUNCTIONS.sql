@@ -527,6 +527,67 @@ BEGIN
 end
 $$;
 
+CREATE OR REPLACE FUNCTION sample.fn_sample_predictor_values(p_sample_id INT)
+    RETURNS TABLE
+            (
+                predictor_id                 SMALLINT,
+                abbreviation                 VARCHAR(25),
+                calculation_script           VARCHAR(255),
+                predcitor_metadata           TEXT,
+                predictor_value              TEXT,
+                predictor_value_updated_date timestamptz,
+                status                       VARCHAR(20)
+            )
+    language plpgsql
+AS
+$$
+BEGIN
+    RETURN QUERY
+        SELECT p.predictor_id,
+               p.abbreviation,
+               p.calculation_script,
+               CAST(p.metadata AS TEXT),
+               CAST(sp.metadata AS TEXT),
+               sp.updated_date,
+               CAST(CASE
+                        WHEN sp.updated_date IS NULL THEN 'Missing'
+                        WHEN gs.geometry_changed > sp.updated_date THEN 'Expired'
+                        ELSE 'Current'
+                   END AS VARCHAR(20)) Status
+        FROM sample.samples s
+                 inner join sample.box_models bm on s.box_id = bm.box_id
+                 inner join geo.sites gs on s.site_id = gs.site_id
+                 inner join geo.models m on st_contains(m.extent, gs.catchment) and bm.model_id = m.model_id
+                 inner join geo.model_predictors mp on m.model_id = mp.model_id
+                 inner join geo.predictors p on mp.predictor_id = p.predictor_id
+                 left join geo.site_predictors sp on sp.site_id = gs.site_id and p.predictor_id = sp.predictor_id
+        where (NOT p.is_temporal)
+          AND (s.sample_id = p_sample_id)
+        UNION
+        SELECT p.predictor_id,
+               p.abbreviation,
+               p.calculation_script,
+               CAST(p.metadata AS TEXT),
+               CAST(sp.metadata AS TEXT),
+               sp.updated_date,
+               CAST(CASE
+                        WHEN sp.updated_date IS NULL THEN 'Missing'
+                        WHEN s.sample_date_changed > sp.updated_date THEN 'Expired'
+                        ELSE 'Current'
+                   END AS VARCHAR(20)) Status
+        FROM sample.samples s
+                 inner join sample.box_models bm on s.box_id = bm.box_id
+                 inner join geo.sites gs on s.site_id = gs.site_id
+                 inner join geo.models m on st_contains(m.extent, gs.catchment) and bm.model_id = m.model_id
+                 inner join geo.model_predictors mp on m.model_id = mp.model_id
+                 inner join geo.predictors p on mp.predictor_id = p.predictor_id
+                 left join sample.sample_predictors sp
+                           on s.sample_id = sp.sample_id and p.predictor_id = sp.predictor_id
+        where (p.is_temporal)
+          AND (s.sample_id = p_sample_id);
+END
+$$;
+
 CREATE OR REPLACE FUNCTION sample.fn_project_samples(
     p_limit INT,
     p_offset INT,
@@ -656,3 +717,5 @@ BEGIN
         LIMIT p_limit OFFSET p_offset;
 end
 $$;
+
+
