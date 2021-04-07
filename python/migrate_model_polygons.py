@@ -43,7 +43,7 @@ model_names = {
 # Note that some models are populated from a union of multiple states.
 statewide_models = {
     'CSCI': ['CA'],
-    'UT All Seasons': ['UT'],
+    'UTDEQ15': ['UT'],
     'NV MMI': ['NV'],
     'TN': ['WA', 'ID', 'MT', 'WY', 'CO', 'UT', 'OR', 'CA', 'NV', 'AZ', 'NM'],
     'TP': ['WA', 'ID', 'MT', 'WY', 'CO', 'UT', 'OR', 'CA', 'NV', 'AZ', 'NM'],
@@ -110,7 +110,8 @@ def migrate_model_polygons(pgcurs, geojson_path):
 
     progbar.finish()
     log.info('{} statewide model polygons updated successfully'.format(successful))
-    log.info('{} statewide model polygons failed to update any records'.format(unsuccessful))
+    if unsuccessful > 0:
+        log.error('{} statewide model polygons failed to update any records'.format(unsuccessful))
 
     pgcurs.execute('SELECT model_id, model_name, abbreviation FROM geo.models WHERE extent IS NULL')
     for row in pgcurs.fetchall():
