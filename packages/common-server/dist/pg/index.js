@@ -39,7 +39,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getSitePredictorValues = exports.getModels = exports.getPredictors = exports.getTaxonomy = exports.getProjects = exports.getProjectOrganisms = exports.getSampleOrganisms = exports.getBoxes = exports.getIndividuals = exports.getSiteInfo = exports.getSites = exports.getSamples = exports.getPool = void 0;
+exports.getSamplePredictorValues = exports.getBoxInfo = exports.getSampleInfo = exports.getSitePredictorValues = exports.getModels = exports.getPredictors = exports.getTaxonomy = exports.getProjects = exports.getProjectOrganisms = exports.getSampleOrganisms = exports.getBoxes = exports.getIndividuals = exports.getSiteInfo = exports.getSites = exports.getSamples = exports.getPool = void 0;
 var config_1 = require("../config");
 var pg_1 = require("pg");
 var loglevel_1 = __importDefault(require("loglevel"));
@@ -121,5 +121,13 @@ exports.getModels = function (pool, limit, offset) {
 var sitePredictorValuesQuery = 'SELECT * FROM geo.fn_site_predictor_values($1, $2, $3)';
 exports.getSitePredictorValues = function (pool, limit, offset, siteId) {
     return pgPromise(pool, sitePredictorValuesQuery, [limit, offset, siteId]);
+};
+var sampleInfoQuery = 'SELECT * FROM sample.fn_sample_info($1)';
+exports.getSampleInfo = function (pool, sampleId) { return pgPromise(pool, sampleInfoQuery, [sampleId]); };
+var boxInfoQuery = 'SELECT * FROM sample.fn_box_info($1)';
+exports.getBoxInfo = function (pool, boxId) { return pgPromise(pool, boxInfoQuery, [boxId]); };
+var samplePredictorValuesQuery = 'SELECT * FROM sample.fn_sample_predictor_values($1)';
+exports.getSamplePredictorValues = function (pool, sampleId) {
+    return pgPromise(pool, samplePredictorValuesQuery, [sampleId]);
 };
 //# sourceMappingURL=index.js.map

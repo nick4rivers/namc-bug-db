@@ -6,3 +6,9 @@ This is the development site for modernization of the NAMC bug lab database.
 
 
 This repository requires postgres to be installed
+
+# yarn commands for debugging
+
+```bash
+yarn watch:api
+```

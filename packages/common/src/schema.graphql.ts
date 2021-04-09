@@ -27,7 +27,8 @@ const typeDefs = gql`
         auth: AuthParams
 
         siteInfo(siteId: Int!): SiteInfo
-
+        sampleInfo(sampleId: Int!): SampleInfo
+        boxInfo(boxId: Int!): BoxInfo
         samples(limit: Int = ${queryLimits.samples}, offset: Int = 0): PaginatedSamples
         sampleOrganisms(
             limit: Int = ${queryLimits.sampleOrganisms}
@@ -49,6 +50,7 @@ const typeDefs = gql`
         predictors(modelId: Int, limit: Int = ${queryLimits.predictors}, offset: Int = 0): PaginatedPredictors
         models(limit: Int = ${queryLimits.models}, offset: Int = 0): PaginatedModels
         sitePredictorValues(siteId: Int!, limit: Int = ${queryLimits.sitePredictorValues}, offset: Int = 0): PaginatedSitePredictorValues
+        samplePredictorValues(sampleId: Int!): PaginatedSamplePredictorValue
     }
 
     # this schema allows the following mutation:
@@ -144,6 +146,69 @@ const typeDefs = gql`
         sampleCount: Int
     }
 
+    type SampleInfo {
+        sampleId:     Int
+        boxId:        Int
+        organizationName:       String
+        organizationAbbreviation: String
+        submittedBy:             String
+        boxStateName:          String
+        siteId:                 Int
+        siteName:               String
+        usState:                  String
+        visitId:                  String
+        sampleDate:               String
+        sampleTime:               String
+        sampleTypeName:          String
+        sampleMethodName:        String
+        habitatName:              String
+        area:                      Float
+        fieldSplit:               Float
+        fieldNotes:               String
+        labSplit:                 Float
+        jarCount:                 Int
+        qualitative:              Boolean
+        labNotes:                String
+        mesh:                    Int
+        createdDate:            String
+        updatedDate:            String
+        sampleDateChanged:       String
+        qaSampleId:            Int
+        metadata:                String
+    }
+
+    type BoxInfo {
+        boxId:                    Int
+                customerId:               Int
+                organizationName:         String
+                organizationAbbreviation: String
+                submitterId:              Int
+                submittedBy:              String
+                boxStateId:              Int
+                boxStateName:            String
+                boxReceivedDate:         String
+                processingCompleteDate:  String
+                projectedCompleteDate:   String
+                sampleCount:              Int
+                description:               String
+                metadata:                  String
+                measurements:              Boolean
+                sorterQa:                 Boolean
+                taxaQa:                   Boolean
+                createdDate:              String
+                updatedDate:              String
+    }
+
+type SamplePredictorValue {
+    predictorId:                 Int
+                abbreviation:                 String
+                calculationScript:           String
+                isTemporal:                  Boolean
+                predictorMetadata:           String
+                predictorValue:              String
+                predictorValueUpdatedDate: String
+                status:                       String
+}
     #  type Individual {
     #     entityId: Int
     #     firstName: String
@@ -336,6 +401,11 @@ const typeDefs = gql`
     }
     type PaginatedSitePredictorValues {
         records: [SitePredictorValue]
+        nextOffset: Int
+    }
+
+    type PaginatedSamplePredictorValue {
+        records: [SamplePredictorValue]
         nextOffset: Int
     }
 `

@@ -7,6 +7,8 @@ import {
     BoxState,
     Site,
     SiteInfo,
+    SampleInfo,
+    BoxInfo,
     Individual,
     SampleOrganism,
     Project,
@@ -16,17 +18,20 @@ import {
     PaginatedRecords,
     Predictor,
     Model,
-    SitePredictorValue
+    SitePredictorValue,
+    SamplePredictorValue
 } from '@namcbugdb/common'
 import {
     getPool,
     getSamples,
-    getBoxStates,
     getSites,
     getSiteInfo,
+    getSampleInfo,
+    getBoxInfo,
     getSampleOrganisms,
     getProjectOrganisms,
     getIndividuals,
+    getSamplePredictorValues,
     getBoxes,
     getProjects,
     getTaxonomy,
@@ -122,6 +127,38 @@ export default {
             }
 
             return data.map(util.snake2camel)[0]
+        },
+
+        sampleInfo: async (obj, { sampleId }, { user }): Promise<SampleInfo> => {
+            loggedInGate(user)
+            const pool = await getPool()
+            const data = await getSampleInfo(pool, sampleId)
+
+            if (data.length !== 1) {
+                throw new Error('Record not found')
+            }
+
+            return data.map(util.snake2camel)[0]
+        },
+
+        boxInfo: async (obj, { boxId }, { user }): Promise<BoxInfo> => {
+            loggedInGate(user)
+            const pool = await getPool()
+            const data = await getBoxInfo(pool, boxId)
+
+            if (data.length !== 1) {
+                throw new Error('Record not found')
+            }
+
+            return data.map(util.snake2camel)[0]
+        },
+
+        samplePredictorValues: async (obj, { sampleId }, { user }): Promise<PaginatedRecords<SamplePredictorValue>> => {
+            loggedInGate(user)
+            const pool = await getPool()
+            const data = await getSamplePredictorValues(pool, sampleId)
+
+            return createPagination<SamplePredictorValue>(data, 500, 0)
         },
 
         sampleOrganisms: async (

@@ -160,6 +160,72 @@ exports.default = {
                 });
             });
         },
+        sampleInfo: function (obj, _a, _b) {
+            var sampleId = _a.sampleId;
+            var user = _b.user;
+            return __awaiter(void 0, void 0, void 0, function () {
+                var pool, data;
+                return __generator(this, function (_c) {
+                    switch (_c.label) {
+                        case 0:
+                            loggedInGate(user);
+                            return [4, pg_1.getPool()];
+                        case 1:
+                            pool = _c.sent();
+                            return [4, pg_1.getSampleInfo(pool, sampleId)];
+                        case 2:
+                            data = _c.sent();
+                            if (data.length !== 1) {
+                                throw new Error('Record not found');
+                            }
+                            return [2, data.map(common_1.util.snake2camel)[0]];
+                    }
+                });
+            });
+        },
+        boxInfo: function (obj, _a, _b) {
+            var boxId = _a.boxId;
+            var user = _b.user;
+            return __awaiter(void 0, void 0, void 0, function () {
+                var pool, data;
+                return __generator(this, function (_c) {
+                    switch (_c.label) {
+                        case 0:
+                            loggedInGate(user);
+                            return [4, pg_1.getPool()];
+                        case 1:
+                            pool = _c.sent();
+                            return [4, pg_1.getBoxInfo(pool, boxId)];
+                        case 2:
+                            data = _c.sent();
+                            if (data.length !== 1) {
+                                throw new Error('Record not found');
+                            }
+                            return [2, data.map(common_1.util.snake2camel)[0]];
+                    }
+                });
+            });
+        },
+        samplePredictorValues: function (obj, _a, _b) {
+            var sampleId = _a.sampleId;
+            var user = _b.user;
+            return __awaiter(void 0, void 0, void 0, function () {
+                var pool, data;
+                return __generator(this, function (_c) {
+                    switch (_c.label) {
+                        case 0:
+                            loggedInGate(user);
+                            return [4, pg_1.getPool()];
+                        case 1:
+                            pool = _c.sent();
+                            return [4, pg_1.getSamplePredictorValues(pool, sampleId)];
+                        case 2:
+                            data = _c.sent();
+                            return [2, createPagination(data, 500, 0)];
+                    }
+                });
+            });
+        },
         sampleOrganisms: function (obj, _a, _b) {
             var limit = _a.limit, offset = _a.offset, sampleId = _a.sampleId, boxId = _a.boxId, siteId = _a.siteId, sampleYear = _a.sampleYear, typeId = _a.typeId;
             var user = _b.user;

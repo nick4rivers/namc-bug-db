@@ -90,3 +90,13 @@ export const getModels = (pool, limit: number, offset: number): Promise<any> =>
 const sitePredictorValuesQuery = 'SELECT * FROM geo.fn_site_predictor_values($1, $2, $3)'
 export const getSitePredictorValues = (pool, limit: number, offset: number, siteId): Promise<any> =>
     pgPromise(pool, sitePredictorValuesQuery, [limit, offset, siteId])
+
+const sampleInfoQuery = 'SELECT * FROM sample.fn_sample_info($1)'
+export const getSampleInfo = (pool, sampleId: number): Promise<any> => pgPromise(pool, sampleInfoQuery, [sampleId])
+
+const boxInfoQuery = 'SELECT * FROM sample.fn_box_info($1)'
+export const getBoxInfo = (pool, boxId: number): Promise<any> => pgPromise(pool, boxInfoQuery, [boxId])
+
+const samplePredictorValuesQuery = 'SELECT * FROM sample.fn_sample_predictor_values($1)'
+export const getSamplePredictorValues = (pool, sampleId: number): Promise<any> =>
+    pgPromise(pool, samplePredictorValuesQuery, [sampleId])
