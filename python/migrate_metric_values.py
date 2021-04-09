@@ -38,10 +38,10 @@ def migrate(pgcurs, csv_path):
     # progbar = ProgressBar(len(list(raw_data)), 50, "predictor values")
     raw_data = csv.DictReader(open(csv_path))
     data = {}
-    for row in raw_data:
+    # for row in raw_data:
 
-    print('{:,} site predictor values'.format(len(site_data)))
-    insert_many_rows(pgcurs, 'geo.site_predictors', ['site_id', 'predictor_id', 'metadata'], site_data)
+    # print('{:,} site predictor values'.format(len(site_data)))
+    # insert_many_rows(pgcurs, 'geo.site_predictors', ['site_id', 'predictor_id', 'metadata'], site_data)
 
-    print('{:,} sample predictor values'.format(len(samp_data)))
-    insert_many_rows(pgcurs, 'geo.sample_predictors', ['site_id', 'sample_id', 'predictor_id', 'metadata'], samp_data)
+    # print('{:,} sample predictor values'.format(len(samp_data)))
+    # insert_many_rows(pgcurs, 'geo.sample_predictors', ['site_id', 'sample_id', 'predictor_id', 'metadata'], samp_data)
