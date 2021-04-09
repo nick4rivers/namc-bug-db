@@ -187,7 +187,7 @@ begin
 end
 $$;
 
-CREATE OR REPLACE FUNCTION geo.fn_site_predictor_values(p_limit INT, p_offset INT, p_site_id INT)
+CREATE OR REPLACE FUNCTION geo.fn_site_predictor_values(p_limit INT, p_offset INT = NULL, p_site_id INT = NULL)
     returns table
             (
                 predictor_id        SMALLINT,
@@ -533,7 +533,8 @@ CREATE OR REPLACE FUNCTION sample.fn_sample_predictor_values(p_sample_id INT)
                 predictor_id                 SMALLINT,
                 abbreviation                 VARCHAR(25),
                 calculation_script           VARCHAR(255),
-                predcitor_metadata           TEXT,
+                is_temporal                  boolean,
+                predictor_metadata           TEXT,
                 predictor_value              TEXT,
                 predictor_value_updated_date timestamptz,
                 status                       VARCHAR(20)
@@ -546,6 +547,7 @@ BEGIN
         SELECT p.predictor_id,
                p.abbreviation,
                p.calculation_script,
+               p.is_temporal,
                CAST(p.metadata AS TEXT),
                CAST(sp.metadata AS TEXT),
                sp.updated_date,
@@ -561,12 +563,14 @@ BEGIN
                  inner join geo.model_predictors mp on m.model_id = mp.model_id
                  inner join geo.predictors p on mp.predictor_id = p.predictor_id
                  left join geo.site_predictors sp on sp.site_id = gs.site_id and p.predictor_id = sp.predictor_id
-        where (NOT p.is_temporal)
-          AND (s.sample_id = p_sample_id)
+        where (s.sample_id = p_sample_id)
+          AND (NOT p.is_temporal)
+          AND (m.is_active)
         UNION
         SELECT p.predictor_id,
                p.abbreviation,
                p.calculation_script,
+               p.is_temporal,
                CAST(p.metadata AS TEXT),
                CAST(sp.metadata AS TEXT),
                sp.updated_date,
@@ -583,8 +587,9 @@ BEGIN
                  inner join geo.predictors p on mp.predictor_id = p.predictor_id
                  left join sample.sample_predictors sp
                            on s.sample_id = sp.sample_id and p.predictor_id = sp.predictor_id
-        where (p.is_temporal)
-          AND (s.sample_id = p_sample_id);
+        where (s.sample_id = p_sample_id)
+          AND (p.is_temporal)
+          AND (m.is_active);
 END
 $$;
 
@@ -654,34 +659,34 @@ $$;
 create or replace function sample.fn_sample_info(p_sample_id int)
     returns table
             (
-        sample_id int,
-               box_id int,
-               organization_name varchar(255),
-               organization_abbreviation varchar(50),
-               submitted_by text,
-               box_state_name varchar(50),
-               site_id int,
-               site_name varchar(50),
-               us_state varchar(2),
-               visit_id varchar(100),
-               sample_date date,
-               sample_time time,
-               sample_type_name varchar(50),
-               sample_method_name varchar(50),
-               habitat_name varchar(50),
-               area real,
-               field_split real,
-               field_notes text,
-               lab_split real,
-               jar_count smallint,
-               qualitative boolean,
-               lab_notes text,
-               mesh smallint,
-               created_date timestamptz,
-               updated_date timestamptz,
-               sample_date_changed timestamptz,
-               qa_sample_id int,
-               metadata text
+                sample_id                 int,
+                box_id                    int,
+                organization_name         varchar(255),
+                organization_abbreviation varchar(50),
+                submitted_by              text,
+                box_state_name            varchar(50),
+                site_id                   int,
+                site_name                 varchar(50),
+                us_state                  varchar(2),
+                visit_id                  varchar(100),
+                sample_date               date,
+                sample_time               time,
+                sample_type_name          varchar(50),
+                sample_method_name        varchar(50),
+                habitat_name              varchar(50),
+                area                      real,
+                field_split               real,
+                field_notes               text,
+                lab_split                 real,
+                jar_count                 smallint,
+                qualitative               boolean,
+                lab_notes                 text,
+                mesh                      smallint,
+                created_date              timestamptz,
+                updated_date              timestamptz,
+                sample_date_changed       timestamptz,
+                qa_sample_id              int,
+                metadata                  json
             )
     language plpgsql
 AS
