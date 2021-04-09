@@ -720,29 +720,4 @@ $$;
 
 
 
-CREATE OR REPLACE FUNCTION sample.fn_set_site_catchment(p_site_ID INT, p_catchment TEXT) RETURNS INT
-    language plpgsql
-AS
-$$
-    DECLARE
-        catch_geom GEOMETRY(MultiPolygon, 4326);
-        catch_country_id smallint;
-BEGIN
-
-        if (p_catchment IS NULL) then
-            raise exception 'The site catchment cannot be NULL. Use the clear catchment dedicated method to erase the catchment for a site.';
-        end if;
-
-        catch_geom := st_multi(st_geomfromgeojson(p_catchment));
-
-        SELECT country_id INTO catch_country_id FROM geo.countries WHERE st_intersects(geom, catch_geom) limit 1;
-        if (catch_country_id IS NULL or catch_country_id <>231) then
-            raise exception 'The catchment does not intersect the United States.';
-        end if;
-
-        UPDATE geo.sites set catchment = catch_geom where site_id = p_site_ID;
-        return p_site_id;
-END
-$$;
-
 
