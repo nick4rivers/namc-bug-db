@@ -588,6 +588,146 @@ BEGIN
 END
 $$;
 
+CREATE OR REPLACE FUNCTION sample.fn_box_info(p_box_id INT)
+    returns table
+            (
+                box_id                    INT,
+                customer_id               smallint,
+                organization_name         varchar(255),
+                organization_abbreviation varchar(50),
+                submitter_id              smallint,
+                submitted_by              text,
+                box_state_id              smallint,
+                box_state_name            varchar(50),
+                box_received_date         timestamptz,
+                processing_complete_date  timestamptz,
+                projected_complete_date   timestamptz,
+                sample_count              bigint,
+                description               text,
+                metadata                  json,
+                measurements              boolean,
+                sorter_qa                 boolean,
+                taxa_qa                   boolean,
+                created_date              timestamptz,
+                updated_date              timestamptz
+            )
+    language plpgsql
+AS
+$$
+BEGIN
+    return query
+        SELECT b.box_id,
+               b.customer_id,
+               o.organization_name,
+               o.abbreviation                     organization_abbreviation,
+               b.submitter_id,
+               i.first_name || ' ' || i.last_name submitted_by,
+               bs.box_state_id,
+               bs.box_state_name,
+               b.box_received_date,
+               b.processing_complete_date,
+               b.projected_complete_date,
+               s.sample_count,
+               b.description,
+               b.metadata,
+               b.measurements,
+               b.sorter_qa,
+               b.taxa_qa,
+               b.created_date,
+               b.updated_date
+        FROM sample.boxes b
+                 inner join entity.organizations o on b.customer_id = o.entity_id
+                 inner join entity.individuals i on b.submitter_id = i.entity_id
+                 inner join sample.box_states bs on b.box_state_id = bs.box_state_id
+                 inner join
+             (
+                 select b.box_id, count(s.box_id) sample_count
+                 from sample.boxes b
+                          left join sample.samples s on b.box_id = s.box_id
+                 where b.box_id = p_box_id
+                 group by b.box_id
+             ) s on b.box_id = s.box_id
+        where b.box_id = p_box_id;
+end
+$$;
+
+create or replace function sample.fn_sample_info(p_sample_id int)
+    returns table
+            (
+        sample_id int,
+               box_id int,
+               organization_name varchar(255),
+               organization_abbreviation varchar(50),
+               submitted_by text,
+               box_state_name varchar(50),
+               site_id int,
+               site_name varchar(50),
+               us_state varchar(2),
+               visit_id varchar(100),
+               sample_date date,
+               sample_time time,
+               sample_type_name varchar(50),
+               sample_method_name varchar(50),
+               habitat_name varchar(50),
+               area real,
+               field_split real,
+               field_notes text,
+               lab_split real,
+               jar_count smallint,
+               qualitative boolean,
+               lab_notes text,
+               mesh smallint,
+               created_date timestamptz,
+               updated_date timestamptz,
+               sample_date_changed timestamptz,
+               qa_sample_id int,
+               metadata text
+            )
+    language plpgsql
+AS
+$$
+begin
+    return query
+        SELECT s.sample_id,
+               s.box_id,
+               b.organization_name,
+               b.organization_abbreviation,
+               b.submitted_by,
+               b.box_state_name,
+               gs.site_id,
+               gs.site_name,
+               gs.us_state,
+               s.visit_id,
+               s.sample_date,
+               s.sample_time,
+               t.sample_type_name,
+               m.sample_method_name,
+               h.habitat_name,
+               s.area,
+               s.field_split,
+               s.field_notes,
+               s.lab_split,
+               s.jar_count,
+               s.qualitative,
+               s.lab_notes,
+               s.mesh,
+               s.created_date,
+               s.updated_date,
+               s.sample_date_changed,
+               s.qa_sample_id,
+               s.metadata
+        FROM sample.samples s
+                 inner join sample.fn_box_info(s.box_id) b on s.box_id = b.box_id
+                 inner join geo.fn_site_info(s.site_id) gs on s.site_id = gs.site_id
+                 inner join sample.sample_types t on s.type_id = t.sample_type_id
+                 inner join sample.sample_methods m on s.method_id = m.sample_method_id
+                 inner join geo.habitats h on s.habitat_id = h.habitat_id
+        WHERE s.sample_id = p_sample_id;
+end
+$$;
+
+
+
 CREATE OR REPLACE FUNCTION sample.fn_project_samples(
     p_limit INT,
     p_offset INT,
