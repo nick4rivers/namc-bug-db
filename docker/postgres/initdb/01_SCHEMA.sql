@@ -816,7 +816,7 @@ CREATE TABLE sample.boxes
     updated_date             TIMESTAMPTZ NOT NULL DEFAULT now(),
 
     CONSTRAINT fk_boxes_customer_id FOREIGN KEY (customer_id) REFERENCES entity.entities (entity_id),
-    CONSTRAINT fk_boxes_creator_id FOREIGN KEY (submitter_id) REFERENCES entity.individuals (entity_id),
+    CONSTRAINT fk_boxes_submitter_id FOREIGN KEY (submitter_id) REFERENCES entity.individuals (entity_id),
     CONSTRAINT fk_boxes_state_id FOREIGN KEY (box_state_id) REFERENCES sample.box_states (box_state_id)
 );
 CREATE INDEX fx_boxes_customer_id ON sample.boxes (customer_id);
@@ -904,7 +904,7 @@ CREATE TABLE sample.samples
     created_date        TIMESTAMPTZ NOT NULL DEFAULT now(),
     updated_date        TIMESTAMPTZ NOT NULL DEFAULT now(),
     sample_date_changed TIMESTAMPTZ NOT NULL DEFAULT now(),
-    qa_sample_id        SMALLINT,
+    qa_sample_id        INT,
     metadata            JSON,
 
     CONSTRAINT pk_samples PRIMARY KEY (sample_id),
