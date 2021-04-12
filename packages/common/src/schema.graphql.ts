@@ -29,6 +29,7 @@ const typeDefs = gql`
         siteInfo(siteId: Int!): SiteInfo
         sampleInfo(sampleId: Int!): SampleInfo
         boxInfo(boxId: Int!): BoxInfo
+        modelInfo(modelId: Int!): ModelInfo
         samples(limit: Int = ${queryLimits.samples}, offset: Int = 0): PaginatedSamples
         sampleOrganisms(
             limit: Int = ${queryLimits.sampleOrganisms}
@@ -348,6 +349,31 @@ type SamplePredictorValue {
         isActive: Boolean
         description: String
         predictorCount: Int
+    }
+
+    type ModelInfo {
+        model_id: Int
+        model_name: String
+        abbreviation: String
+        model_type_name: String
+        translation_name: String
+        extent_description: String
+        platform: String
+        reference_sites: Int
+        group_count: Int
+        minimum_count: Int
+        oe_mean: Float
+        oe_stdev: Float
+        taxonomic_effort: String
+        is_active: Boolean
+        fixed_count: Int
+        units: String
+        description: String
+        metadata: String
+        predictor_count: String
+        created_date: String
+        updated_date: String
+        extent: String
     }
 
     type SitePredictorValue {

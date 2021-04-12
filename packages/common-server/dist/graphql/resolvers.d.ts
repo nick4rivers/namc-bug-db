@@ -1,4 +1,4 @@
-import { Sample, AuthResponse, Site, SiteInfo, SampleInfo, BoxInfo, SampleOrganism, Project, Taxonomy, Box, PaginatedRecords, Predictor, Model, SitePredictorValue, SamplePredictorValue } from '@namcbugdb/common';
+import { Sample, AuthResponse, Site, SiteInfo, SampleInfo, BoxInfo, ModelInfo, SampleOrganism, Project, Taxonomy, Box, PaginatedRecords, Predictor, Model, SitePredictorValue, SamplePredictorValue } from '@namcbugdb/common';
 declare const _default: {
     Query: {
         auth: (obj: any, args: any, ctx: any) => Promise<AuthResponse>;
@@ -30,6 +30,11 @@ declare const _default: {
         }, { user }: {
             user: any;
         }) => Promise<BoxInfo>;
+        modelInfo: (obj: any, { modelId }: {
+            modelId: any;
+        }, { user }: {
+            user: any;
+        }) => Promise<ModelInfo>;
         samplePredictorValues: (obj: any, { sampleId }: {
             sampleId: any;
         }, { user }: {

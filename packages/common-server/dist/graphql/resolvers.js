@@ -206,6 +206,29 @@ exports.default = {
                 });
             });
         },
+        modelInfo: function (obj, _a, _b) {
+            var modelId = _a.modelId;
+            var user = _b.user;
+            return __awaiter(void 0, void 0, void 0, function () {
+                var pool, data;
+                return __generator(this, function (_c) {
+                    switch (_c.label) {
+                        case 0:
+                            loggedInGate(user);
+                            return [4, pg_1.getPool()];
+                        case 1:
+                            pool = _c.sent();
+                            return [4, pg_1.getModelInfo(pool, modelId)];
+                        case 2:
+                            data = _c.sent();
+                            if (data.length !== 1) {
+                                throw new Error('Record not found');
+                            }
+                            return [2, data.map(common_1.util.snake2camel)[0]];
+                    }
+                });
+            });
+        },
         samplePredictorValues: function (obj, _a, _b) {
             var sampleId = _a.sampleId;
             var user = _b.user;

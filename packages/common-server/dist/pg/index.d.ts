@@ -11,6 +11,7 @@ export declare const getProjects: (pool: any, limit: number, offset: number) => 
 export declare const getTaxonomy: (pool: any, limit: number, offset: number) => Promise<any>;
 export declare const getPredictors: (pool: any, limit: number, offset: number, modelId: any) => Promise<any>;
 export declare const getModels: (pool: any, limit: number, offset: number) => Promise<any>;
+export declare const getModelInfo: (pool: any, modelId: number) => Promise<any>;
 export declare const getSitePredictorValues: (pool: any, limit: number, offset: number, siteId: any) => Promise<any>;
 export declare const getSampleInfo: (pool: any, sampleId: number) => Promise<any>;
 export declare const getBoxInfo: (pool: any, boxId: number) => Promise<any>;

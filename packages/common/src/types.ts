@@ -232,6 +232,31 @@ export type Model = {
     predictorCount: number
 }
 
+export type ModelInfo = {
+    model_id: number
+    model_name: string
+    abbreviation: string
+    model_type_name: string
+    translation_name: string
+    extent_description: string
+    platform: string
+    reference_sites: number
+    group_count: number
+    minimum_count: number
+    oe_mean: number
+    oe_stdev: number
+    taxonomic_effort: string
+    is_active: boolean
+    fixed_count: number
+    units: string
+    description: string
+    metadata: string
+    predictor_count: string
+    created_date: string
+    updated_date: string
+    extent: string
+}
+
 export type SitePredictorValue = {
     predictorId: number
     predictorName: string

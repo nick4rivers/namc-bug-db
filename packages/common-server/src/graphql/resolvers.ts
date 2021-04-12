@@ -9,6 +9,7 @@ import {
     SiteInfo,
     SampleInfo,
     BoxInfo,
+    ModelInfo,
     Individual,
     SampleOrganism,
     Project,
@@ -28,6 +29,7 @@ import {
     getSiteInfo,
     getSampleInfo,
     getBoxInfo,
+    getModelInfo,
     getSampleOrganisms,
     getProjectOrganisms,
     getIndividuals,
@@ -145,6 +147,18 @@ export default {
             loggedInGate(user)
             const pool = await getPool()
             const data = await getBoxInfo(pool, boxId)
+
+            if (data.length !== 1) {
+                throw new Error('Record not found')
+            }
+
+            return data.map(util.snake2camel)[0]
+        },
+
+        modelInfo: async (obj, { modelId }, { user }): Promise<ModelInfo> => {
+            loggedInGate(user)
+            const pool = await getPool()
+            const data = await getModelInfo(pool, modelId)
 
             if (data.length !== 1) {
                 throw new Error('Record not found')
