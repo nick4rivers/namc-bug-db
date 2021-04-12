@@ -34,7 +34,7 @@ BEGIN
 END
 $$;
 
-CREATE OR REPLACE FUNCTION sample.fn_set_site_predictor_value(p_site_ID INT, p_predictor_id INT, p_value TEXT) RETURNS INT
+CREATE OR REPLACE FUNCTION sample.fn_set_site_predictor_value(p_site_ID INT, p_predictor_id INT, p_value varchar(255)) RETURNS INT
     language plpgsql
 AS
 $$
@@ -42,7 +42,7 @@ DECLARE
     rows_affected INT;
 BEGIN
     UPDATE geo.site_predictors
-    SET metadata = p_value
+    SET predictor_value = p_value
     WHERE (site_id = p_site_ID)
       AND (predictor_id = p_predictor_id);
 
@@ -51,7 +51,7 @@ BEGIN
 END
 $$;
 
-CREATE OR REPLACE FUNCTION sample.fn_set_sample_predictor_value(p_sample_id INT, p_predictor_id INT, p_value TEXT) RETURNS INT
+CREATE OR REPLACE FUNCTION sample.fn_set_sample_predictor_value(p_sample_id INT, p_predictor_id INT, p_value varchar(255)) RETURNS INT
     language plpgsql
 AS
 $$
@@ -59,7 +59,7 @@ DECLARE
     rows_affected INT;
 BEGIN
     UPDATE sample.sample_predictors
-    SET metadata = p_value
+    SET predictor_value = p_value
     WHERE (sample_id = p_sample_id)
       AND (predictor_id = p_predictor_id);
 

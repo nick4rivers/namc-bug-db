@@ -644,7 +644,7 @@ CREATE TABLE geo.model_thresholds
 );
 CREATE UNIQUE INDEX ux_model_thresholds_model_id ON geo.model_thresholds (model_id, display_text);
 CREATE UNIQUE INDEX ux_model_thresholds_model_threshold ON geo.model_thresholds (model_id, threshold);
-CREATE INDEX ix_model_thresholds_threshold ON geo.model_thresholds USING gist(threshold);
+CREATE INDEX ix_model_thresholds_threshold ON geo.model_thresholds USING gist (threshold);
 
 CREATE TABLE geo.model_predictors
 (
@@ -658,11 +658,11 @@ CREATE TABLE geo.model_predictors
 
 CREATE TABLE geo.site_predictors
 (
-    predictor_id SMALLINT    NOT NULL,
-    site_id      INT         NOT NULL,
-    metadata     JSON        NOT NULL,
-    created_date TIMESTAMPTZ NOT NULL DEFAULT now(),
-    updated_date TIMESTAMPTZ NOT NULL DEFAULT now(),
+    predictor_id    SMALLINT     NOT NULL,
+    site_id         INT          NOT NULL,
+    predictor_value VARCHAR(255) NOT NULL,
+    created_date    TIMESTAMPTZ  NOT NULL DEFAULT now(),
+    updated_date    TIMESTAMPTZ  NOT NULL DEFAULT now(),
 
     CONSTRAINT pk_site_predictors PRIMARY KEY (predictor_id, site_id, created_date),
     CONSTRAINT fk_site_predictors FOREIGN KEY (predictor_id) REFERENCES geo.predictors (predictor_id),
@@ -830,8 +830,8 @@ EXECUTE PROCEDURE fn_before_update();
 
 CREATE TABLE sample.box_models
 (
-    box_id INT NOT NULL,
-    model_id  INT NOT NULL,
+    box_id   INT NOT NULL,
+    model_id INT NOT NULL,
 
     CONSTRAINT pk_box_models PRIMARY KEY (box_id, model_id),
     CONSTRAINT fk_box_models_box_id FOREIGN KEY (box_id) REFERENCES sample.boxes (box_id) ON DELETE CASCADE,
@@ -1257,11 +1257,11 @@ CREATE TABLE sample.box_assets
 
 CREATE TABLE sample.sample_predictors
 (
-    sample_id    INT         NOT NULL,
-    predictor_id SMALLINT    NOT NULL,
-    metadata     JSONB,
-    created_date TIMESTAMPTZ NOT NULL DEFAULT now(),
-    updated_date TIMESTAMPTZ NOT NULL DEFAULT now(),
+    sample_id       INT          NOT NULL,
+    predictor_id    SMALLINT     NOT NULL,
+    predictor_value VARCHAR(255) NOT NULL,
+    created_date    TIMESTAMPTZ  NOT NULL DEFAULT now(),
+    updated_date    TIMESTAMPTZ  NOT NULL DEFAULT now(),
 
     CONSTRAINT pk_sample_predictors PRIMARY KEY (sample_id, predictor_id, created_date),
     CONSTRAINT fk_sample_predictors_sample_id FOREIGN KEY (sample_id) REFERENCES sample.samples (sample_id) ON DELETE CASCADE,

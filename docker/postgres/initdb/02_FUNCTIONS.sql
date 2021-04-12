@@ -535,7 +535,7 @@ CREATE OR REPLACE FUNCTION sample.fn_sample_predictor_values(p_sample_id INT)
                 calculation_script           VARCHAR(255),
                 is_temporal                  boolean,
                 predictor_metadata           TEXT,
-                predictor_value              TEXT,
+                predictor_value              varchar(255),
                 predictor_value_updated_date timestamptz,
                 status                       VARCHAR(20)
             )
@@ -549,7 +549,7 @@ BEGIN
                p.calculation_script,
                p.is_temporal,
                CAST(p.metadata AS TEXT),
-               CAST(sp.metadata AS TEXT),
+               sp.predictor_value,
                sp.updated_date,
                CAST(CASE
                         WHEN sp.updated_date IS NULL THEN 'Missing'
@@ -572,7 +572,7 @@ BEGIN
                p.calculation_script,
                p.is_temporal,
                CAST(p.metadata AS TEXT),
-               CAST(sp.metadata AS TEXT),
+               sp.predictor_value,
                sp.updated_date,
                CAST(CASE
                         WHEN sp.updated_date IS NULL THEN 'Missing'
