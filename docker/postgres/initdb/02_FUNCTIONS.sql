@@ -863,6 +863,67 @@ BEGIN
 end
 $$;
 
-
-
-
+create or replace function geo.fn_model_info(p_model_id smallint)
+    returns table
+            (
+                model_id           smallint,
+                model_name         varchar(255),
+                abbreviation       varchar(50),
+                model_type_name    varchar(20),
+                translation_name   varchar(255),
+                extent_description text,
+                platform           varchar(255),
+                reference_sites    smallint,
+                group_count        smallint,
+                minimum_count      smallint,
+                oe_mean            real,
+                oe_stdev           real,
+                taxonomic_effort   text,
+                is_active          bool,
+                fixed_count        smallint,
+                units              varchar(20),
+                description        text,
+                metadata           json,
+                predictor_count    bigint,
+                created_date       timestamptz,
+                updated_date       timestamptz,
+                extent text
+            )
+    language plpgsql
+AS
+$$
+begin
+    return query
+        SELECT m.model_id,
+               m.model_name,
+               m.abbreviation,
+               mt.model_type_name,
+               t.translation_name,
+               m.extent_description,
+               m.platform,
+               m.reference_sites,
+               m.group_count,
+               m.minimum_count,
+               m.oe_mean,
+               m.oe_stdev,
+               CAST(m.taxonomic_effort as text),
+               m.is_active,
+               m.fixed_count,
+               u.abbreviation units,
+               m.description,
+               m.metadata,
+               p.predictor_count,
+               m.created_date,
+               m.updated_date,
+               ST_AsGeoJSON(m.extent) extent
+        FROM geo.models m
+                 inner join geo.model_types mt on m.model_type_id = mt.model_type_id
+                 inner join geo.units u on m.unit_id = u.unit_id
+                 left join taxa.translations t on m.translation_id = t.translation_id
+                 left join
+             (SELECT mp.model_id, count(*) predictor_count
+              from geo.model_predictors mp
+              group by mp.model_id) p ON m.model_id = p.model_id
+    where m.model_id = p_model_id;
+end;
+$$
