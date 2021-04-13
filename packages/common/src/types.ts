@@ -82,9 +82,10 @@ export type SiteInfo = {
     longitude: number
     latitude: number
     usState: string
-    waterbodyTypeName: string
+    waterbodyType: string
     waterbodyCode: string
     waterbodyName: string
+    geometryChanged: string
     createdDate: string
     updatedDate: string
     catchment: string
@@ -112,11 +113,13 @@ export type Individual = {
 
 export type Box = {
     boxId: number
+    customerId: number
     customerName: string
-    samples: number
-    SubmitterName: string
-    boxStateName: string
+    submitterId: number
+    submittedBy: string
+    boxState: string
     boxReceivedDate: string
+    sampleCount: number
     processingCompleteDate: string
     projectedCompleteDate: string
 }
@@ -184,12 +187,14 @@ export type Project = {
     projectName: string
     projectType: string
     isPrivate: boolean
-    contact: string
+    contactId: number
+    contactName: string
     autoUpdateSamples: boolean
     description: string
+    sampleCount: number
+    modelCount: number
     createdDate: string
     updatedDate: string
-    samples: number
 }
 
 export type Taxonomy = {
@@ -233,28 +238,44 @@ export type Model = {
 }
 
 export type ModelInfo = {
-    model_id: number
-    model_name: string
+    modelId: number
+    modelName: string
     abbreviation: string
-    model_type_name: string
-    translation_name: string
-    extent_description: string
+    modelType: string
+    translationId: number
+    translation: string
+    extentDescription: string
     platform: string
-    reference_sites: number
-    group_count: number
-    minimum_count: number
-    oe_mean: number
-    oe_stdev: number
-    taxonomic_effort: string
-    is_active: boolean
-    fixed_count: number
+    referenceSites: number
+    groupCount: number
+    minimumCount: number
+    oeMean: number
+    oeStdev: number
+    taxonomicEffort: string
+    isActive: boolean
+    fixedCount: number
     units: string
     description: string
     metadata: string
-    predictor_count: string
-    created_date: string
-    updated_date: string
+    predictorCount: number
+    createdDate: string
+    updatedDate: string
     extent: string
+}
+
+export type ModelPredictor = {
+    predictorId: number
+    predictorName: string
+    abbreviation: string
+    units: string
+    predictorType: string
+    isTemporal: boolean
+    description: string
+    metadata: string
+    calculationScript: string
+    modelCount: number
+    createdDate: string
+    updatedDate: string
 }
 
 export type SitePredictorValue = {
@@ -272,19 +293,25 @@ export type SitePredictorValue = {
 export type SampleInfo = {
     sampleId: number
     boxId: number
-    organizationName: string
-    organizationAbbreviation: string
+    customerName: string
+    customerAbbreviation: string
     submittedBy: string
-    boxStateName: string
+    boxState: string
     siteId: number
     siteName: string
     usState: string
+    siteLocation: string
+    siteLongitude: number
+    siteLatitude: number
     visitId: string
     sampleDate: string
     sampleTime: string
-    sampleTypeName: string
-    sampleMethodName: string
-    habitatName: string
+    sampleType: string
+    sampleMethod: string
+    habitat: string
+    sampleLocation: string
+    sampleLongitude: number
+    sampleLatitude: number
     area: number
     fieldSplit: number
     fieldNotes: string
@@ -303,12 +330,12 @@ export type SampleInfo = {
 export type BoxInfo = {
     boxId: number
     customerId: number
-    organizationName: string
-    organizationAbbreviation: string
+    customerName: string
+    customerAbbreviation: string
     submitterId: number
     submittedBy: string
     boxStateId: number
-    boxStateName: string
+    boxState: string
     boxReceivedDate: string
     processingCompleteDate: string
     projectedCompleteDate: string

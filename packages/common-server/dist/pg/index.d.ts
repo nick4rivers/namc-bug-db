@@ -1,7 +1,7 @@
 import { Pool } from 'pg';
 export declare const getPool: () => Promise<Pool>;
 export declare const getSamples: (pool: any, limit: number, offset: number) => Promise<any>;
-export declare const getSites: (pool: any, limit: number, offset: number, usState: string) => Promise<any>;
+export declare const getSites: (pool: any, limit: number, offset: number) => Promise<any>;
 export declare const getSiteInfo: (pool: any, siteId: number) => Promise<any>;
 export declare const getIndividuals: (pool: any, limit: number, offset: number) => Promise<any>;
 export declare const getBoxes: (pool: any, limit: number, offset: number) => Promise<any>;
@@ -16,3 +16,7 @@ export declare const getSitePredictorValues: (pool: any, limit: number, offset: 
 export declare const getSampleInfo: (pool: any, sampleId: number) => Promise<any>;
 export declare const getBoxInfo: (pool: any, boxId: number) => Promise<any>;
 export declare const getSamplePredictorValues: (pool: any, sampleId: number) => Promise<any>;
+export declare const getModelPredictors: (pool: any, limit: number, offset: number, modelId: number) => Promise<any>;
+export declare const setSitePredictorValue: (pool: any, siteId: number, predictorId: number, value: string) => Promise<number>;
+export declare const setSamplePredictorValue: (pool: any, sampleId: number, predictorId: number, value: string) => Promise<number>;
+export declare const setSiteCatchment: (pool: any, siteId: number, catchment: string) => Promise<number>;

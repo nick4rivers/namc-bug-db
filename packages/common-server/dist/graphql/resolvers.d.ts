@@ -1,4 +1,4 @@
-import { Sample, AuthResponse, Site, SiteInfo, SampleInfo, BoxInfo, ModelInfo, SampleOrganism, Project, Taxonomy, Box, PaginatedRecords, Predictor, Model, SitePredictorValue, SamplePredictorValue } from '@namcbugdb/common';
+import { Sample, AuthResponse, Site, SiteInfo, SampleInfo, BoxInfo, ModelInfo, SampleOrganism, Project, Taxonomy, Box, PaginatedRecords, Predictor, Model, SitePredictorValue, SamplePredictorValue, ModelPredictor } from '@namcbugdb/common';
 declare const _default: {
     Query: {
         auth: (obj: any, args: any, ctx: any) => Promise<AuthResponse>;
@@ -8,10 +8,9 @@ declare const _default: {
         }, { user }: {
             user: any;
         }, info: any) => Promise<PaginatedRecords<Sample>>;
-        sites: (obj: any, { limit, offset, usState }: {
+        sites: (obj: any, { limit, offset }: {
             limit: any;
             offset: any;
-            usState: any;
         }, { user }: {
             user: any;
         }) => Promise<PaginatedRecords<Site>>;
@@ -96,6 +95,35 @@ declare const _default: {
         }, { user }: {
             user: any;
         }) => Promise<PaginatedRecords<SitePredictorValue>>;
+        modelPredictors: (obj: any, { limit, offset, modelId }: {
+            limit: any;
+            offset: any;
+            modelId: any;
+        }, { user }: {
+            user: any;
+        }) => Promise<PaginatedRecords<ModelPredictor>>;
+    };
+    Mutation: {
+        setSitePredictorValue: (obj: any, { siteId, predictorId, value }: {
+            siteId: any;
+            predictorId: any;
+            value: any;
+        }, { user }: {
+            user: any;
+        }) => Promise<number>;
+        setSamplePredictorValue: (obj: any, { sampleId, predictorId, value }: {
+            sampleId: any;
+            predictorId: any;
+            value: any;
+        }, { user }: {
+            user: any;
+        }) => Promise<number>;
+        setSiteCatchment: (obj: any, { siteId, catchment }: {
+            siteId: any;
+            catchment: any;
+        }, { user }: {
+            user: any;
+        }) => Promise<number>;
     };
 };
 export default _default;

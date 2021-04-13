@@ -14,5 +14,6 @@ export declare const graphql: {
         predictors: number;
         models: number;
         sitePredictorValues: number;
+        modelPredictors: number;
     };
 };

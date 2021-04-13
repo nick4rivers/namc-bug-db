@@ -39,7 +39,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getSamplePredictorValues = exports.getBoxInfo = exports.getSampleInfo = exports.getSitePredictorValues = exports.getModelInfo = exports.getModels = exports.getPredictors = exports.getTaxonomy = exports.getProjects = exports.getProjectOrganisms = exports.getSampleOrganisms = exports.getBoxes = exports.getIndividuals = exports.getSiteInfo = exports.getSites = exports.getSamples = exports.getPool = void 0;
+exports.setSiteCatchment = exports.setSamplePredictorValue = exports.setSitePredictorValue = exports.getModelPredictors = exports.getSamplePredictorValues = exports.getBoxInfo = exports.getSampleInfo = exports.getSitePredictorValues = exports.getModelInfo = exports.getModels = exports.getPredictors = exports.getTaxonomy = exports.getProjects = exports.getProjectOrganisms = exports.getSampleOrganisms = exports.getBoxes = exports.getIndividuals = exports.getSiteInfo = exports.getSites = exports.getSamples = exports.getPool = void 0;
 var config_1 = require("../config");
 var pg_1 = require("pg");
 var loglevel_1 = __importDefault(require("loglevel"));
@@ -82,9 +82,9 @@ var samplesQuery = 'SELECT * FROM sample.vw_samples ORDER BY sample_id LIMIT $1 
 exports.getSamples = function (pool, limit, offset) {
     return pgPromise(pool, samplesQuery, [limit, offset]);
 };
-var sitesQuery = 'SELECT * FROM geo.fn_sites($1, $2, $3)';
-exports.getSites = function (pool, limit, offset, usState) {
-    return pgPromise(pool, sitesQuery, [limit, offset, usState]);
+var sitesQuery = 'SELECT * FROM geo.fn_sites($1, $2)';
+exports.getSites = function (pool, limit, offset) {
+    return pgPromise(pool, sitesQuery, [limit, offset]);
 };
 var siteInfoQuery = 'SELECT * FROM geo.fn_site_info($1)';
 exports.getSiteInfo = function (pool, siteId) { return pgPromise(pool, siteInfoQuery, [siteId]); };
@@ -102,7 +102,7 @@ var projectOrganismsQuery = 'SELECT * FROM sample.fn_project_samples($1, $2, $3)
 exports.getProjectOrganisms = function (pool, projectIds, limit, offset) {
     return pgPromise(pool, projectOrganismsQuery, [limit, offset, projectIds]);
 };
-var projectsQuery = 'SELECT * FROM sample.vw_projects ORDER BY project_id LIMIT $1 OFFSET $2';
+var projectsQuery = 'SELECT * FROM sample.fn_projects($1, $2)';
 exports.getProjects = function (pool, limit, offset) {
     return pgPromise(pool, projectsQuery, [limit, offset]);
 };
@@ -131,5 +131,21 @@ exports.getBoxInfo = function (pool, boxId) { return pgPromise(pool, boxInfoQuer
 var samplePredictorValuesQuery = 'SELECT * FROM sample.fn_sample_predictor_values($1)';
 exports.getSamplePredictorValues = function (pool, sampleId) {
     return pgPromise(pool, samplePredictorValuesQuery, [sampleId]);
+};
+var modelPredictorsQuery = 'SELECT * FROM geo.fn_model_predictors($1, $2, $3)';
+exports.getModelPredictors = function (pool, limit, offset, modelId) {
+    return pgPromise(pool, modelPredictorsQuery, [limit, offset, modelId]);
+};
+var setSitePredictorValueQuery = 'SELECT * FROM sample.fn_set_site_predictor_value($1, $2, $3)';
+exports.setSitePredictorValue = function (pool, siteId, predictorId, value) {
+    return pgPromise(pool, setSitePredictorValueQuery, [siteId, predictorId, value]);
+};
+var setSamplePredictorValueQuery = 'SELECT * FROM sample.fn_set_sample_predictor_value($1, $2, $3)';
+exports.setSamplePredictorValue = function (pool, sampleId, predictorId, value) {
+    return pgPromise(pool, setSamplePredictorValueQuery, [sampleId, predictorId, value]);
+};
+var setSiteCatchmentQuery = 'SELECT sample.fn_set_site_catchment($1, $2)';
+exports.setSiteCatchment = function (pool, siteId, catchment) {
+    return pgPromise(pool, setSiteCatchmentQuery, [siteId, catchment]);
 };
 //# sourceMappingURL=index.js.map

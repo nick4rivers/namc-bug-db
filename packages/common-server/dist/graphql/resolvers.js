@@ -117,7 +117,7 @@ exports.default = {
             });
         },
         sites: function (obj, _a, _b) {
-            var limit = _a.limit, offset = _a.offset, usState = _a.usState;
+            var limit = _a.limit, offset = _a.offset;
             var user = _b.user;
             return __awaiter(void 0, void 0, void 0, function () {
                 var pool, data;
@@ -129,7 +129,7 @@ exports.default = {
                             return [4, pg_1.getPool()];
                         case 1:
                             pool = _c.sent();
-                            return [4, pg_1.getSites(pool, limit, offset, usState)];
+                            return [4, pg_1.getSites(pool, limit, offset)];
                         case 2:
                             data = _c.sent();
                             return [2, createPagination(data, limit, offset)];
@@ -413,6 +413,88 @@ exports.default = {
                         case 2:
                             data = _c.sent();
                             return [2, createPagination(data, limit, offset)];
+                    }
+                });
+            });
+        },
+        modelPredictors: function (obj, _a, _b) {
+            var limit = _a.limit, offset = _a.offset, modelId = _a.modelId;
+            var user = _b.user;
+            return __awaiter(void 0, void 0, void 0, function () {
+                var pool, data;
+                return __generator(this, function (_c) {
+                    switch (_c.label) {
+                        case 0:
+                            loggedInGate(user);
+                            return [4, pg_1.getPool()];
+                        case 1:
+                            pool = _c.sent();
+                            return [4, pg_1.getModelPredictors(pool, limit, offset, modelId)];
+                        case 2:
+                            data = _c.sent();
+                            return [2, createPagination(data, 500, 0)];
+                    }
+                });
+            });
+        }
+    },
+    Mutation: {
+        setSitePredictorValue: function (obj, _a, _b) {
+            var siteId = _a.siteId, predictorId = _a.predictorId, value = _a.value;
+            var user = _b.user;
+            return __awaiter(void 0, void 0, void 0, function () {
+                var pool, data;
+                return __generator(this, function (_c) {
+                    switch (_c.label) {
+                        case 0:
+                            loggedInGate(user);
+                            return [4, pg_1.getPool()];
+                        case 1:
+                            pool = _c.sent();
+                            return [4, pg_1.setSitePredictorValue(pool, siteId, predictorId, value)];
+                        case 2:
+                            data = _c.sent();
+                            return [2, data[0].fn_set_site_predictor_value];
+                    }
+                });
+            });
+        },
+        setSamplePredictorValue: function (obj, _a, _b) {
+            var sampleId = _a.sampleId, predictorId = _a.predictorId, value = _a.value;
+            var user = _b.user;
+            return __awaiter(void 0, void 0, void 0, function () {
+                var pool, data;
+                return __generator(this, function (_c) {
+                    switch (_c.label) {
+                        case 0:
+                            loggedInGate(user);
+                            return [4, pg_1.getPool()];
+                        case 1:
+                            pool = _c.sent();
+                            return [4, pg_1.setSamplePredictorValue(pool, sampleId, predictorId, value)];
+                        case 2:
+                            data = _c.sent();
+                            return [2, data[0].fn_set_sample_predictor_value];
+                    }
+                });
+            });
+        },
+        setSiteCatchment: function (obj, _a, _b) {
+            var siteId = _a.siteId, catchment = _a.catchment;
+            var user = _b.user;
+            return __awaiter(void 0, void 0, void 0, function () {
+                var pool, data;
+                return __generator(this, function (_c) {
+                    switch (_c.label) {
+                        case 0:
+                            loggedInGate(user);
+                            return [4, pg_1.getPool()];
+                        case 1:
+                            pool = _c.sent();
+                            return [4, pg_1.setSiteCatchment(pool, siteId, catchment)];
+                        case 2:
+                            data = _c.sent();
+                            return [2, data[0].fn_set_site_catchment];
                     }
                 });
             });

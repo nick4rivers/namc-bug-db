@@ -37,10 +37,10 @@ export const getSamples = (pool: Pool, limit: number, offset: number): Promise<a
 // export const getBoxStates = (pool, limit: number, offset: number): Promise<any> =>
 //     pgPromise(pool, boxStatesQuery, [limit, offset])
 
-const sitesQuery = 'SELECT * FROM geo.fn_sites($1, $2, $3)'
+const sitesQuery = 'SELECT * FROM geo.fn_sites($1, $2)'
 
-export const getSites = (pool, limit: number, offset: number, usState: string): Promise<any> =>
-    pgPromise(pool, sitesQuery, [limit, offset, usState])
+export const getSites = (pool, limit: number, offset: number): Promise<any> =>
+    pgPromise(pool, sitesQuery, [limit, offset])
 
 const siteInfoQuery = 'SELECT * FROM geo.fn_site_info($1)'
 export const getSiteInfo = (pool, siteId: number): Promise<any> => pgPromise(pool, siteInfoQuery, [siteId])
@@ -71,7 +71,7 @@ const projectOrganismsQuery = 'SELECT * FROM sample.fn_project_samples($1, $2, $
 export const getProjectOrganisms = (pool, projectIds: number[], limit: number, offset: number): Promise<any> =>
     pgPromise(pool, projectOrganismsQuery, [limit, offset, projectIds])
 
-const projectsQuery = 'SELECT * FROM sample.vw_projects ORDER BY project_id LIMIT $1 OFFSET $2'
+const projectsQuery = 'SELECT * FROM sample.fn_projects($1, $2)'
 export const getProjects = (pool, limit: number, offset: number): Promise<any> =>
     pgPromise(pool, projectsQuery, [limit, offset])
 
@@ -103,3 +103,22 @@ export const getBoxInfo = (pool, boxId: number): Promise<any> => pgPromise(pool,
 const samplePredictorValuesQuery = 'SELECT * FROM sample.fn_sample_predictor_values($1)'
 export const getSamplePredictorValues = (pool, sampleId: number): Promise<any> =>
     pgPromise(pool, samplePredictorValuesQuery, [sampleId])
+
+const modelPredictorsQuery = 'SELECT * FROM geo.fn_model_predictors($1, $2, $3)'
+export const getModelPredictors = (pool, limit: number, offset: number, modelId: number): Promise<any> =>
+    pgPromise(pool, modelPredictorsQuery, [limit, offset, modelId])
+
+/*
+ MUTATION QUERIES
+ */
+const setSitePredictorValueQuery = 'SELECT * FROM sample.fn_set_site_predictor_value($1, $2, $3)'
+export const setSitePredictorValue = (pool, siteId: number, predictorId: number, value: string): Promise<number> =>
+    pgPromise(pool, setSitePredictorValueQuery, [siteId, predictorId, value])
+
+const setSamplePredictorValueQuery = 'SELECT * FROM sample.fn_set_sample_predictor_value($1, $2, $3)'
+export const setSamplePredictorValue = (pool, sampleId: number, predictorId: number, value: string): Promise<number> =>
+    pgPromise(pool, setSamplePredictorValueQuery, [sampleId, predictorId, value])
+
+const setSiteCatchmentQuery = 'SELECT sample.fn_set_site_catchment($1, $2)'
+export const setSiteCatchment = (pool, siteId: number, catchment: string): Promise<number> =>
+    pgPromise(pool, setSiteCatchmentQuery, [siteId, catchment])

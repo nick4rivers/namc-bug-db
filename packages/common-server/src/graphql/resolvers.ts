@@ -20,7 +20,8 @@ import {
     Predictor,
     Model,
     SitePredictorValue,
-    SamplePredictorValue
+    SamplePredictorValue,
+    ModelPredictor
 } from '@namcbugdb/common'
 import {
     getPool,
@@ -39,7 +40,11 @@ import {
     getTaxonomy,
     getPredictors,
     getModels,
-    getSitePredictorValues
+    getSitePredictorValues,
+    setSitePredictorValue,
+    setSamplePredictorValue,
+    setSiteCatchment,
+    getModelPredictors
 } from '../pg'
 
 // import log from 'loglevel'
@@ -111,11 +116,11 @@ export default {
         //     return createPagination<BoxState>(data, limit, offset)
         // },
 
-        sites: async (obj, { limit, offset, usState }, { user }): Promise<PaginatedRecords<Site>> => {
+        sites: async (obj, { limit, offset }, { user }): Promise<PaginatedRecords<Site>> => {
             loggedInGate(user)
             limitOffsetCheck(limit, graphql.queryLimits.sites, offset)
             const pool = await getPool()
-            const data = await getSites(pool, limit, offset, usState)
+            const data = await getSites(pool, limit, offset)
             return createPagination<Site>(data, limit, offset)
         },
 
@@ -260,9 +265,43 @@ export default {
             const pool = await getPool()
             const data = await getSitePredictorValues(pool, limit, offset, siteId)
             return createPagination<SitePredictorValue>(data, limit, offset)
+        },
+
+        modelPredictors: async (
+            obj,
+            { limit, offset, modelId },
+            { user }
+        ): Promise<PaginatedRecords<ModelPredictor>> => {
+            loggedInGate(user)
+            const pool = await getPool()
+            const data = await getModelPredictors(pool, limit, offset, modelId)
+            return createPagination<ModelPredictor>(data, 500, 0)
+        }
+    },
+
+    Mutation: {
+        setSitePredictorValue: async (obj, { siteId, predictorId, value }, { user }): Promise<number> => {
+            loggedInGate(user)
+
+            const pool = await getPool()
+            const data = await setSitePredictorValue(pool, siteId, predictorId, value)
+            return data[0].fn_set_site_predictor_value
+        },
+
+        setSamplePredictorValue: async (obj, { sampleId, predictorId, value }, { user }): Promise<number> => {
+            loggedInGate(user)
+
+            const pool = await getPool()
+            const data = await setSamplePredictorValue(pool, sampleId, predictorId, value)
+            return data[0].fn_set_sample_predictor_value
+        },
+
+        setSiteCatchment: async (obj, { siteId, catchment }, { user }): Promise<number> => {
+            loggedInGate(user)
+
+            const pool = await getPool()
+            const data = await setSiteCatchment(pool, siteId, catchment)
+            return data[0].fn_set_site_catchment
         }
     }
-
-    // Mutation: {
-    // },
 }

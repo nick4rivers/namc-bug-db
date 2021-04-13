@@ -13,13 +13,14 @@ export const queryLimits = {
     taxonomy: 500,
     predictors: 500,
     models: 500,
-    sitePredictorValues: 500
+    sitePredictorValues: 500,
+    modelPredictors: 500
 }
 
 const typeDefs = gql`
     schema {
         query: Query
-        # mutation: Mutation
+        mutation: Mutation
     }
 
     type Query {
@@ -27,6 +28,10 @@ const typeDefs = gql`
         auth: AuthParams
 
         siteInfo(siteId: Int!): SiteInfo
+
+        """
+        this is a string
+        """
         sampleInfo(sampleId: Int!): SampleInfo
         boxInfo(boxId: Int!): BoxInfo
         modelInfo(modelId: Int!): ModelInfo
@@ -52,12 +57,18 @@ const typeDefs = gql`
         models(limit: Int = ${queryLimits.models}, offset: Int = 0): PaginatedModels
         sitePredictorValues(siteId: Int!, limit: Int = ${queryLimits.sitePredictorValues}, offset: Int = 0): PaginatedSitePredictorValues
         samplePredictorValues(sampleId: Int!): PaginatedSamplePredictorValue
+        modelPredictors(limit: Int = ${queryLimits.modelPredictors}, offset: Int = 0, modelId: Int!): PaginatedModelPredictors
     }
 
     # this schema allows the following mutation:
-    # type Mutation {
+    type Mutation {
+        setSitePredictorValue(siteId: Int!, predictorId: Int!, value:String!): Int
+        setSamplePredictorValue(sampleId: Int!, predictorId: Int!, value: String!): Int
+        setSiteCatchment(siteId: Int!, catchment: String!): Int
+        
+    }
 
-    # }
+    # union PredictorValue = String|Boolean|Int|Float
 
     type AuthParams {
         loggedIn: Boolean
@@ -129,18 +140,31 @@ const typeDefs = gql`
         hasCatchment: Boolean
     }
 
+"""
+Detailed information about a single site.
+
+This query includes the point and catchment geometries for the site.
+"""
     type SiteInfo {
+        
+        "Unique database generated integer that uniquely identifies each site"
         siteId: Int
+
+        """
+        Unique identifier for each site
+        """
         siteName: String
+        
         system: String
         ecosystem: String
         location: String
         longitude: Float
         latitude: Float
         usState: String
-        waterbodyTypeName: String
+        waterbodyType: String
         waterbodyCode: String
         waterbodyName: String
+        geometryChanged: String
         createdDate: String
         updatedDate: String
         catchment: String
@@ -150,19 +174,25 @@ const typeDefs = gql`
     type SampleInfo {
         sampleId:     Int
         boxId:        Int
-        organizationName:       String
-        organizationAbbreviation: String
+        customerName:       String
+        customerAbbreviation: String
         submittedBy:             String
-        boxStateName:          String
+        boxState:          String
         siteId:                 Int
         siteName:               String
         usState:                  String
+        siteLocation: String
+        siteLongitude: Float
+        siteLatitude: Float
         visitId:                  String
         sampleDate:               String
         sampleTime:               String
-        sampleTypeName:          String
-        sampleMethodName:        String
-        habitatName:              String
+        sampleType:          String
+        sampleMethod:        String
+        habitat:              String
+        sampleLocation: String
+        sampleLongitude: Float
+        sampleLatitude: Float
         area:                      Float
         fieldSplit:               Float
         fieldNotes:               String
@@ -181,12 +211,12 @@ const typeDefs = gql`
     type BoxInfo {
         boxId:                    Int
                 customerId:               Int
-                organizationName:         String
-                organizationAbbreviation: String
+                customerName:         String
+                customerAbbreviation: String
                 submitterId:              Int
                 submittedBy:              String
                 boxStateId:              Int
-                boxStateName:            String
+                boxState:            String
                 boxReceivedDate:         String
                 processingCompleteDate:  String
                 projectedCompleteDate:   String
@@ -231,11 +261,13 @@ type SamplePredictorValue {
 
     type Box {
         boxId: Int
+        customerId: Int
         customerName: String
-        samples: Int
-        SubmitterName: String
-        boxStateName: String
+        submitterId: Int
+        submittedBy: String
+        boxState: String
         boxReceivedDate: String
+        sampleCount: Int
         processingCompleteDate: String
         projectedCompleteDate: String
     }
@@ -303,12 +335,14 @@ type SamplePredictorValue {
         projectName: String
         projectType: String
         isPrivate: Boolean
-        contact: String
+        contactId: Int
+        contactName: String
         autoUpdateSamples: Boolean
         description: String
+        sampleCount: Int
+        modelCount: Int
         createdDate: String
         updatedDate: String
-        samples: Int
     }
 
     type Taxonomy {
@@ -352,27 +386,28 @@ type SamplePredictorValue {
     }
 
     type ModelInfo {
-        model_id: Int
-        model_name: String
+        modelId: Int
+        modelName: String
         abbreviation: String
-        model_type_name: String
-        translation_name: String
-        extent_description: String
+        modelType: String
+        translationId: Int
+        translation: String
+        extentDescription: String
         platform: String
-        reference_sites: Int
-        group_count: Int
-        minimum_count: Int
-        oe_mean: Float
-        oe_stdev: Float
-        taxonomic_effort: String
-        is_active: Boolean
-        fixed_count: Int
+        referenceSites: Int
+        groupCount: Int
+        minimumCount: Int
+        oeMean: Float
+        oeStdev: Float
+        taxonomicEffort: String
+        isActive: Boolean
+        fixedCount: Int
         units: String
         description: String
         metadata: String
-        predictor_count: String
-        created_date: String
-        updated_date: String
+        predictorCount: Int
+        createdDate: String
+        updatedDate: String
         extent: String
     }
 
@@ -381,11 +416,26 @@ type SamplePredictorValue {
         predictorName: String
         abbreviation: String
         description: String
-        predictorTypeName: String
-        metadata: String
+        predictorType: String
+        predictorValue: String
         createdDate: String
         updatedDate: String
         calculationScript: String
+    }
+
+    type ModelPredictor {
+        predictorId: Int
+        predictorName: String
+        abbreviation: String
+        units: String
+        predictorType: String
+        isTemporal: Boolean
+        description: String
+        metadata: String
+        calculationScript: String
+        modelCount: Int
+        createdDate: String
+        updatedDate: String   
     }
 
     # Pagination Types
@@ -432,6 +482,11 @@ type SamplePredictorValue {
 
     type PaginatedSamplePredictorValue {
         records: [SamplePredictorValue]
+        nextOffset: Int
+    }
+
+    type PaginatedModelPredictors {
+        records: [ModelPredictor]
         nextOffset: Int
     }
 `
