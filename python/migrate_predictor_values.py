@@ -82,7 +82,7 @@ def migrate_predictor_values(pgcurs, csv_path):
                 if predictor_id in data[site_id]['sample_predictors']:
                     if sample_id in data[site_id]['sample_predictors']:
                         if value != data[site_id]['sample_predictors'][sample_id]:
-                            log.warning("Sample {} predictor {} value {} does not match {} for sample {}".format(site_name, predictor, value, site_predictor_values[site_id][predictor_id], sample_id))
+                            log.warning("Sample {} predictor {} value {} does not match {} for sample {}".format(site_name, predictor, value, data[site_id][predictor_id], sample_id))
                         continue
                 else:
                     data[site_id][predictor_id] = {}
@@ -104,13 +104,13 @@ def migrate_predictor_values(pgcurs, csv_path):
 
         for predictor_id, samples in types['sample_predictors'].items():
             for sample_id, value in samples.items():
-                samp_data.append((site_id, sample_id, predictor_id, {'value': value}))
+                samp_data.append((site_id, sample_id, predictor_id, str(value)))
 
         for predictor_id, value in types['site_predictors'].items():
-            site_data.append((site_id, predictor_id, {'value': value}))
+            site_data.append((site_id, predictor_id, str(value)))
 
     print('{:,} site predictor values'.format(len(site_data)))
-    insert_many_rows(pgcurs, 'geo.site_predictors', ['site_id', 'predictor_id', 'metadata'], site_data)
+    insert_many_rows(pgcurs, 'geo.site_predictors', ['site_id', 'predictor_id', 'predictor_value'], site_data)
 
     print('{:,} sample predictor values'.format(len(samp_data)))
-    insert_many_rows(pgcurs, 'geo.sample_predictors', ['site_id', 'sample_id', 'predictor_id', 'metadata'], samp_data)
+    insert_many_rows(pgcurs, 'geo.sample_predictors', ['site_id', 'sample_id', 'predictor_id', 'predictor_value'], samp_data)
