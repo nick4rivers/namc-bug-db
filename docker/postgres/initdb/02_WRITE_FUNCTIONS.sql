@@ -6,7 +6,7 @@ $$
 DECLARE
     catch_geom       GEOMETRY(MultiPolygon, 4326);
     catch_country_id smallint;
-    rows_affected int;
+    rows_affected    int;
 BEGIN
 
     if (p_catchment IS NULL) then
@@ -41,10 +41,9 @@ $$
 DECLARE
     rows_affected INT;
 BEGIN
-    UPDATE geo.site_predictors
-    SET predictor_value = p_value
-    WHERE (site_id = p_site_ID)
-      AND (predictor_id = p_predictor_id);
+    INSERT INTO geo.site_predictors (site_id, predictor_id, predictor_value)
+    VALUES (p_site_ID, p_predictor_id, p_value)
+    ON CONFLICT ON CONSTRAINT pk_site_predictors DO UPDATE SET predictor_value = p_value;
 
     GET DIAGNOSTICS rows_affected = ROW_COUNT;
     return rows_affected;
@@ -58,10 +57,9 @@ $$
 DECLARE
     rows_affected INT;
 BEGIN
-    UPDATE sample.sample_predictors
-    SET predictor_value = p_value
-    WHERE (sample_id = p_sample_id)
-      AND (predictor_id = p_predictor_id);
+    INSERT INTO sample.sample_predictors (sample_id, predictor_id, predictor_value)
+    VALUES (p_sample_id, p_predictor_id, p_value)
+    ON CONFLICT ON CONSTRAINT pk_sample_predictors DO UPDATE SET predictor_value = p_value;
 
     GET DIAGNOSTICS rows_affected = ROW_COUNT;
     return rows_affected;

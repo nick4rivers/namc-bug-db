@@ -1,24 +1,27 @@
 /******************************************************************************************************************
 geo SCHEMA
 */
+
+drop function if exists geo.fn_site_info;
 CREATE OR REPLACE FUNCTION geo.fn_site_info(p_site_id INT)
     RETURNS TABLE
             (
-                site_id             INT,
-                site_name           VARCHAR(50),
-                system              VARCHAR(20),
-                ecosystem           VARCHAR(10),
-                location            TEXT,
-                st_x                DOUBLE PRECISION,
-                st_y                DOUBLE PRECISION,
-                us_state            VARCHAR(2),
-                waterbody_type_name VARCHAR(255),
-                waterbody_code      VARCHAR(100),
-                waterbody_name      VARCHAR(255),
-                created_date        timestamptz,
-                updated_date        timestamptz,
-                catchment           TEXT,
-                sample_count        BIGINT
+                site_id          INT,
+                site_name        VARCHAR(50),
+                system           VARCHAR(20),
+                ecosystem        VARCHAR(10),
+                location         TEXT,
+                longitude        DOUBLE PRECISION,
+                latitude         DOUBLE PRECISION,
+                us_state         VARCHAR(2),
+                waterbody_type   VARCHAR(255),
+                waterbody_code   VARCHAR(100),
+                waterbody_name   VARCHAR(255),
+                sample_count     BIGINT,
+                geometry_changed text,
+                created_date     text,
+                updated_date     text,
+                catchment        TEXT
             )
     language plpgsql
 AS
@@ -36,21 +39,20 @@ BEGIN
                w.waterbody_type_name,
                s.waterbody_code,
                s.waterbody_name,
-               s.created_date,
-               s.updated_date,
-               ST_AsGeoJSON(s.catchment) AS catchment,
-               COUNT(ss.site_id)         AS sample_count
+               ss.sample_count,
+               to_json(s.geometry_changed) #>> '{}',
+               to_json(s.created_date) #>> '{}',
+               to_json(s.updated_date) #>> '{}',
+               ST_AsGeoJSON(s.catchment) AS catchment
         FROM geo.sites s
                  LEFT JOIN geo.states st ON st_contains(st.geom, s.location)
                  LEFT JOIN geo.systems sy ON s.system_id = sy.system_id
                  LEFT JOIN geo.ecosystems e ON sy.ecosystem_id = e.ecosystem_id
                  LEFT JOIN geo.waterbody_types w ON s.waterbody_type_id = w.waterbody_type_id
-                 LEFT JOIN sample.samples ss ON s.site_id = ss.site_id
-        WHERE s.site_id = p_site_id
-        GROUP BY s.site_id, s.site_name, sy.system_name, e.ecosystem_name, ST_AsGeoJSON(s.location), st_x(s.location),
-                 st_y(s.location), st.abbreviation, w.waterbody_type_name, s.waterbody_code, s.waterbody_name,
-                 s.created_date,
-                 s.updated_date, ST_AsGeoJSON(s.catchment);
+                 LEFT JOIN (
+            select sc.site_id, count(*) sample_count from sample.samples sc group by sc.site_id
+        ) ss ON s.site_id = ss.site_id
+        WHERE s.site_id = p_site_id;
 end
 $$;
 
@@ -68,8 +70,8 @@ CREATE OR REPLACE FUNCTION geo.fn_sites(p_limit INT, p_offset INT)
                 waterbody_type_name VARCHAR(255),
                 waterbody_code      VARCHAR(100),
                 waterbody_name      VARCHAR(255),
-                created_date        TIMESTAMPTZ,
-                updated_date        TIMESTAMPTZ,
+                created_date        text,
+                updated_date        text,
                 has_catchment       BOOLEAN
             )
     language plpgsql
@@ -87,8 +89,8 @@ begin
                w.waterbody_type_name,
                s.waterbody_code,
                s.waterbody_name,
-               s.created_date,
-               s.updated_date,
+               to_json(s.created_date) #>> '{}',
+               to_json(s.updated_date) #>> '{}',
                s.catchment is NOT NULL
         FROM geo.sites s
                  INNER JOIN (
@@ -106,6 +108,7 @@ begin
 end ;
 $$;
 
+drop function if exists geo.fn_predictors;
 CREATE OR REPLACE FUNCTION geo.fn_predictors(p_limit INT, p_offset INT, p_model_id INT = NULL)
     returns table
             (
@@ -118,8 +121,8 @@ CREATE OR REPLACE FUNCTION geo.fn_predictors(p_limit INT, p_offset INT, p_model_
                 predictor_type_id   SMALLINT,
                 predictor_type_name VARCHAR(255),
                 is_temporal         BOOLEAN,
-                updated_date        timestamptz,
-                created_date        timestamptz,
+                updated_date        text,
+                created_date        text,
                 model_count         BIGINT
             )
     language plpgsql
@@ -136,8 +139,8 @@ begin
                p.predictor_type_id,
                t.predictor_type_name,
                p.is_temporal,
-               p.updated_date,
-               p.created_date,
+               to_json(p.updated_date)#>>'{}',
+               to_json(p.created_date)#>>'{}',
                count(m.predictor_id) model_count
         FROM geo.predictors p
                  inner join geo.predictor_types t On p.predictor_type_id = t.predictor_type_id
@@ -183,22 +186,24 @@ begin
         FROM geo.models m
                  left join geo.model_predictors p ON m.model_id = p.model_id
         group by m.model_id, m.model_name, m.abbreviation, m.is_active, m.description
+        order by m.model_id
         limit p_limit offset p_offset;
 end
 $$;
 
+drop function if exists geo.fn_site_predictor_values;
 CREATE OR REPLACE FUNCTION geo.fn_site_predictor_values(p_limit INT, p_offset INT = NULL, p_site_id INT = NULL)
     returns table
             (
-                predictor_id        SMALLINT,
-                predictor_name      VARCHAR(255),
-                abbreviation        VARCHAR(25),
-                description         TEXT,
-                predictor_type_name VARCHAR(255),
-                metadata            JSON,
-                created_date        timestamptz,
-                updated_date        timestamptz,
-                calculation_script  VARCHAR(255)
+                predictor_id       SMALLINT,
+                predictor_name     VARCHAR(255),
+                abbreviation       VARCHAR(25),
+                description        TEXT,
+                predictor_type     VARCHAR(255),
+                predictor_value    varchar(255),
+                created_date       text,
+                updated_date       text,
+                calculation_script VARCHAR(255)
             )
     language plpgsql
 AS
@@ -210,9 +215,9 @@ begin
                p.abbreviation,
                p.description,
                pt.predictor_type_name,
-               sp.metadata,
-               sp.created_date,
-               sp.updated_date,
+               sp.predictor_value,
+               to_json(sp.created_date)#>>'{}',
+               to_json(sp.updated_date)#>>'{}',
                p.calculation_script
         FROM geo.site_predictors sp
                  inner join geo.predictors p on sp.predictor_id = p.predictor_id
@@ -335,21 +340,21 @@ BEGIN
         WHERE sample_id = p_sample_id;
 end
 $$;
-
+drop function if exists sample.fn_boxes;
 CREATE OR REPLACE FUNCTION sample.fn_boxes(p_limit INT, p_offset INT)
     RETURNs TABLE
             (
                 box_id                   INT,
                 customer_id              SMALLINT,
                 customer_name            VARCHAR(255),
-                samples                  BIGINT,
+                sample_count             BIGINT,
                 submitter_id             SMALLINT,
-                submitter_name           VARCHAR(255),
+                submitted_by             TEXT,
                 box_state_id             SMALLINT,
-                box_state_name           VARCHAR(50),
-                box_received_date        DATE,
-                processing_complete_date TIMESTAMPTZ,
-                projected_complete_date  TIMESTAMPTZ
+                box_state                VARCHAR(50),
+                box_received_date        text,
+                processing_complete_date text,
+                projected_complete_date  text
             )
     LANGUAGE plpgsql
 AS
@@ -359,14 +364,14 @@ BEGIN
         SELECT b.box_id,
                b.customer_id,
                o.organization_name,
-               COUNT(sample_id),
+               s.sample_count,
                b.submitter_id,
                i.first_name || ' ' || i.last_name,
                b.box_state_id,
                t.box_state_name,
-               b.box_received_date,
-               b.processing_complete_date,
-               b.projected_complete_date
+               to_json(b.box_received_date) #>> '{}',
+               to_json(b.processing_complete_date) #>> '{}',
+               to_json(b.projected_complete_date) #>> '{}'
         FROM sample.boxes b
                  INNER JOIN (
             SELECT g.box_id FROM sample.boxes g ORDER BY g.box_id LIMIT p_limit OFFSET p_offset
@@ -374,17 +379,9 @@ BEGIN
                  INNER JOIN sample.box_states t ON b.box_state_id = t.box_state_id
                  INNER JOIN entity.individuals i ON b.submitter_id = i.entity_id
                  INNER JOIN entity.organizations o ON b.customer_id = o.entity_id
-                 LEFT JOIN sample.samples s ON b.box_id = s.box_id
-        GROUP BY b.box_id,
-                 b.customer_id,
-                 o.organization_name,
-                 b.submitter_id,
-                 submitter_name,
-                 b.box_state_id,
-                 t.box_state_name,
-                 b.box_received_date,
-                 b.processing_complete_date,
-                 b.projected_complete_date;
+                 LEFT JOIN (
+            SELECT sc.box_id, count(sc.box_id) sample_count FROM sample.samples sc group by sc.box_id) s
+                           ON b.box_id = s.box_id;
 end
 $$;
 
@@ -527,6 +524,7 @@ BEGIN
 end
 $$;
 
+drop function if exists sample.fn_sample_predictor_values;
 CREATE OR REPLACE FUNCTION sample.fn_sample_predictor_values(p_sample_id INT)
     RETURNS TABLE
             (
@@ -536,7 +534,7 @@ CREATE OR REPLACE FUNCTION sample.fn_sample_predictor_values(p_sample_id INT)
                 is_temporal                  boolean,
                 predictor_metadata           TEXT,
                 predictor_value              varchar(255),
-                predictor_value_updated_date timestamptz,
+                predictor_value_updated_date text,
                 status                       VARCHAR(20)
             )
     language plpgsql
@@ -550,7 +548,7 @@ BEGIN
                p.is_temporal,
                CAST(p.metadata AS TEXT),
                sp.predictor_value,
-               sp.updated_date,
+               to_json(sp.updated_date) #>> '{}',
                CAST(CASE
                         WHEN sp.updated_date IS NULL THEN 'Missing'
                         WHEN gs.geometry_changed > sp.updated_date THEN 'Expired'
@@ -573,7 +571,7 @@ BEGIN
                p.is_temporal,
                CAST(p.metadata AS TEXT),
                sp.predictor_value,
-               sp.updated_date,
+               to_json(sp.updated_date) #>> '{}',
                CAST(CASE
                         WHEN sp.updated_date IS NULL THEN 'Missing'
                         WHEN s.sample_date_changed > sp.updated_date THEN 'Expired'
@@ -592,29 +590,29 @@ BEGIN
           AND (m.is_active);
 END
 $$;
-
+drop function if exists sample.fn_box_info;
 CREATE OR REPLACE FUNCTION sample.fn_box_info(p_box_id INT)
     returns table
             (
-                box_id                    INT,
-                customer_id               smallint,
-                organization_name         varchar(255),
-                organization_abbreviation varchar(50),
-                submitter_id              smallint,
-                submitted_by              text,
-                box_state_id              smallint,
-                box_state_name            varchar(50),
-                box_received_date         timestamptz,
-                processing_complete_date  timestamptz,
-                projected_complete_date   timestamptz,
-                sample_count              bigint,
-                description               text,
-                metadata                  json,
-                measurements              boolean,
-                sorter_qa                 boolean,
-                taxa_qa                   boolean,
-                created_date              timestamptz,
-                updated_date              timestamptz
+                box_id                   INT,
+                customer_id              smallint,
+                customer_name            varchar(255),
+                customer_abbreviation    varchar(50),
+                submitter_id             smallint,
+                submitted_by             text,
+                box_state_id             smallint,
+                box_state                varchar(50),
+                box_received_date        text,
+                processing_complete_date text,
+                projected_complete_date  text,
+                sample_count             bigint,
+                description              text,
+                metadata                 json,
+                measurements             boolean,
+                sorter_qa                boolean,
+                taxa_qa                  boolean,
+                created_date             text,
+                updated_date             text
             )
     language plpgsql
 AS
@@ -624,22 +622,22 @@ BEGIN
         SELECT b.box_id,
                b.customer_id,
                o.organization_name,
-               o.abbreviation                     organization_abbreviation,
+               o.abbreviation,
                b.submitter_id,
-               i.first_name || ' ' || i.last_name submitted_by,
+               i.first_name || ' ' || i.last_name,
                bs.box_state_id,
                bs.box_state_name,
-               b.box_received_date,
-               b.processing_complete_date,
-               b.projected_complete_date,
+               to_json(b.box_received_date) #>> '{}',
+               to_json(b.processing_complete_date) #>> '{}',
+               to_json(b.projected_complete_date) #>> '{}',
                s.sample_count,
                b.description,
                b.metadata,
                b.measurements,
                b.sorter_qa,
                b.taxa_qa,
-               b.created_date,
-               b.updated_date
+               to_json(b.created_date) #>> '{}',
+               to_json(b.updated_date) #>> '{}'
         FROM sample.boxes b
                  inner join entity.organizations o on b.customer_id = o.entity_id
                  inner join entity.individuals i on b.submitter_id = i.entity_id
@@ -656,37 +654,44 @@ BEGIN
 end
 $$;
 
+drop function if exists sample.fn_sample_info;
 create or replace function sample.fn_sample_info(p_sample_id int)
     returns table
             (
-                sample_id                 int,
-                box_id                    int,
-                organization_name         varchar(255),
-                organization_abbreviation varchar(50),
-                submitted_by              text,
-                box_state_name            varchar(50),
-                site_id                   int,
-                site_name                 varchar(50),
-                us_state                  varchar(2),
-                visit_id                  varchar(100),
-                sample_date               date,
-                sample_time               time,
-                sample_type_name          varchar(50),
-                sample_method_name        varchar(50),
-                habitat_name              varchar(50),
-                area                      real,
-                field_split               real,
-                field_notes               text,
-                lab_split                 real,
-                jar_count                 smallint,
-                qualitative               boolean,
-                lab_notes                 text,
-                mesh                      smallint,
-                created_date              timestamptz,
-                updated_date              timestamptz,
-                sample_date_changed       timestamptz,
-                qa_sample_id              int,
-                metadata                  json
+                sample_id             int,
+                box_id                int,
+                customer_name         varchar(255),
+                customer_abbreviation varchar(50),
+                submitted_by          text,
+                box_state             varchar(50),
+                site_id               int,
+                site_name             varchar(50),
+                us_state              varchar(2),
+                site_location         text,
+                site_longitude        double precision,
+                site_latitude         double precision,
+                visit_id              varchar(100),
+                sample_date           char(10),
+                sample_time           time,
+                sample_type           varchar(50),
+                sample_method         varchar(50),
+                habitat               varchar(50),
+                sample_location       text,
+                sample_longitude      double precision,
+                sample_latitude       double precision,
+                area                  real,
+                field_split           real,
+                field_notes           text,
+                lab_split             real,
+                jar_count             smallint,
+                qualitative           boolean,
+                lab_notes             text,
+                mesh                  smallint,
+                created_date          text,
+                updated_date          text,
+                sample_date_changed   text,
+                qa_sample_id          int,
+                metadata              text
             )
     language plpgsql
 AS
@@ -695,19 +700,25 @@ begin
     return query
         SELECT s.sample_id,
                s.box_id,
-               b.organization_name,
-               b.organization_abbreviation,
+               b.customer_name,
+               b.customer_abbreviation,
                b.submitted_by,
-               b.box_state_name,
+               b.box_state,
                gs.site_id,
                gs.site_name,
                gs.us_state,
+               gs.location,
+               gs.longitude,
+               gs.latitude,
                s.visit_id,
-               s.sample_date,
+               CAST(TO_CHAR(s.sample_date :: DATE, 'yyyy-mm-dd') AS CHAR(10)),
                s.sample_time,
                t.sample_type_name,
                m.sample_method_name,
                h.habitat_name,
+               ST_AsGeoJSON(s.location),
+               st_x(s.location),
+               st_y(s.location),
                s.area,
                s.field_split,
                s.field_notes,
@@ -716,11 +727,11 @@ begin
                s.qualitative,
                s.lab_notes,
                s.mesh,
-               s.created_date,
-               s.updated_date,
-               s.sample_date_changed,
+               to_json(s.created_date) #>> '{}',
+               to_json(s.updated_date) #>> '{}',
+               to_json(s.sample_date_changed) #>> '{}',
                s.qa_sample_id,
-               s.metadata
+               cast(s.metadata as text)
         FROM sample.samples s
                  inner join sample.fn_box_info(s.box_id) b on s.box_id = b.box_id
                  inner join geo.fn_site_info(s.site_id) gs on s.site_id = gs.site_id
@@ -863,14 +874,16 @@ BEGIN
 end
 $$;
 
-create or replace function geo.fn_model_info(p_model_id smallint)
+drop function if exists geo.fn_model_info;
+create or replace function geo.fn_model_info(p_model_id int)
     returns table
             (
                 model_id           smallint,
                 model_name         varchar(255),
                 abbreviation       varchar(50),
-                model_type_name    varchar(20),
-                translation_name   varchar(255),
+                model_type         varchar(20),
+                translation_id     smallint,
+                translation        varchar(255),
                 extent_description text,
                 platform           varchar(255),
                 reference_sites    smallint,
@@ -885,9 +898,9 @@ create or replace function geo.fn_model_info(p_model_id smallint)
                 description        text,
                 metadata           json,
                 predictor_count    bigint,
-                created_date       timestamptz,
-                updated_date       timestamptz,
-                extent text
+                created_date       text,
+                updated_date       text,
+                extent             text
             )
     language plpgsql
 AS
@@ -898,6 +911,7 @@ begin
                m.model_name,
                m.abbreviation,
                mt.model_type_name,
+               t.translation_id,
                t.translation_name,
                m.extent_description,
                m.platform,
@@ -909,12 +923,12 @@ begin
                CAST(m.taxonomic_effort as text),
                m.is_active,
                m.fixed_count,
-               u.abbreviation units,
+               u.abbreviation,
                m.description,
                m.metadata,
                p.predictor_count,
-               m.created_date,
-               m.updated_date,
+               to_json(m.created_date) #>> '{}',
+               to_json(m.updated_date) #>> '{}',
                ST_AsGeoJSON(m.extent) extent
         FROM geo.models m
                  inner join geo.model_types mt on m.model_type_id = mt.model_type_id
@@ -924,6 +938,105 @@ begin
              (SELECT mp.model_id, count(*) predictor_count
               from geo.model_predictors mp
               group by mp.model_id) p ON m.model_id = p.model_id
-    where m.model_id = p_model_id;
+        where m.model_id = p_model_id;
+end;
+$$
+drop function geo.fn_model_predictors;
+create or replace function geo.fn_model_predictors(p_limit INT, p_offset INT, p_model_id int)
+    returns table
+            (
+                predictor_id       smallint,
+                predictor_name     varchar(255),
+                abbreviation       varchar(25),
+                units              varchar(20),
+                predictor_type     varchar(255),
+                is_temporal        boolean,
+                description        text,
+                metadata           text,
+                calculation_script varchar(255),
+                model_count        bigint,
+                created_date       text,
+                updated_date       text
+            )
+    language plpgsql
+AS
+$$
+begin
+    return query
+        select p.predictor_id,
+               p.predictor_name,
+               p.abbreviation,
+               u.abbreviation,
+               t.predictor_type_name,
+               p.is_temporal,
+               p.description,
+               cast(p.metadata as text),
+               p.calculation_script,
+               pc.model_count,
+               to_json(p.created_date) #>> '{}',
+               to_json(p.updated_date) #>> '{}'
+        from geo.predictors p
+                 inner join geo.predictor_types t on p.predictor_type_id = t.predictor_type_id
+                 inner join geo.units u on p.unit_id = u.unit_id
+                 inner join geo.model_predictors mp on p.predictor_id = mp.predictor_id
+                 left join (
+            select mc.predictor_id, count(*) model_count from geo.model_predictors mc group by mc.predictor_id
+        ) pc on p.predictor_id = pc.predictor_id
+        where mp.model_id = p_model_id
+        order by p.predictor_id
+        limit p_limit offset p_offset;
+end;
+$$
+
+drop function if exists sample.fn_projects;
+create or replace function sample.fn_projects(p_limit int, p_offset int)
+    returns table
+            (
+                project_id          smallint,
+                project_name        varchar(255),
+                project_type        varchar(255),
+                is_private          boolean,
+                contact_id          smallint,
+                contact_name        text,
+                auto_update_samples boolean,
+                description         text,
+                sample_count        bigint,
+                model_count         bigint,
+                created_date        text,
+                updated_date        text
+            )
+    language plpgsql
+as
+$$
+begin
+    return query
+        SELECT p.project_id,
+               p.project_name,
+               t.project_type_name,
+               p.is_private,
+               i.entity_id,
+               i.first_name || ' ' || i.last_name,
+               p.auto_update_samples,
+               p.description,
+               coalesce(sc.sample_count, 0),
+               coalesce(mc.model_count, 0),
+               to_json(p.created_date) #>> '{}',
+               to_json(p.updated_date) #>> '{}'
+        FROM sample.projects p
+                 inner join (select pc.project_id
+                             from sample.projects pc
+                             order by pc.project_id
+                             limit p_limit offset p_offset) pg
+                            on p.project_id = pg.project_id
+                 inner join sample.project_types t ON p.project_type_id = t.project_type_id
+                 left join entity.individuals i on p.contact_id = i.entity_id
+                 left join (select ps.project_id, count(*) sample_count
+                            from sample.project_samples ps
+                            group by ps.project_id) sc
+                           on sc.project_id = p.project_id
+                 left join (select pm.project_id, count(*) model_count
+                            from sample.project_models pm
+                            group by pm.project_id) mc
+                           on mc.project_id = p.project_id;
 end;
 $$
