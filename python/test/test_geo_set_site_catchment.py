@@ -38,6 +38,11 @@ def test_set_site_catchment_failure(cursor):
         cursor.execute("""SELECT sample.fn_set_site_catchment(1, '{ "type": "Polygon", "coordinates": [ [ [ -131.91284179687497, 41.67291181960206 ], [ -125.76049804687499, 41.67291181960206 ], [ -125.76049804687499, 43.229195113965005 ], [ -131.91284179687497, 43.229195113965005 ], [ -131.91284179687497, 41.67291181960206 ] ] ] }')""")
     assert "catchment does not intersect the United States" in str(exinfo.value)
 
+    # TODO: Invalid JSON
+    with pytest.raises(Exception) as exinfo:
+        cursor.execute("""SELECT sample.fn_set_site_catchment(1, 'Errors Suck')""")
+    assert "catchment does not intersect the United States" in str(exinfo.value)
+
 
 if __name__ == "__main__":
     pytest.main()
