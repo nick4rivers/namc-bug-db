@@ -1,54 +1,30 @@
 // import path from 'path'
 import { getConfigPromise } from '../config'
 import {
-    graphql,
-    Sample,
     AuthResponse,
-    BoxState,
-    Site,
-    SiteInfo,
-    SampleInfo,
-    BoxInfo,
-    ModelInfo,
-    Individual,
-    SampleOrganism,
-    Project,
-    Taxonomy,
     Box,
-    util,
+    BoxInfo,
+    graphql,
+    Model,
+    ModelInfo,
+    ModelPredictor,
     PaginatedRecords,
     Predictor,
-    Model,
-    SitePredictorValue,
+    Project,
+    Sample,
+    SampleInfo,
+    SampleOrganism,
     SamplePredictorValue,
-    ModelPredictor
+    Site,
+    SiteInfo,
+    SitePredictorValue,
+    Taxonomy,
+    util
 } from '@namcbugdb/common'
-import {
-    getPool,
-    getSamples,
-    getSites,
-    getSiteInfo,
-    getSampleInfo,
-    getBoxInfo,
-    getModelInfo,
-    getSampleOrganisms,
-    getProjectOrganisms,
-    getIndividuals,
-    getSamplePredictorValues,
-    getBoxes,
-    getProjects,
-    getTaxonomy,
-    getPredictors,
-    getModels,
-    getSitePredictorValues,
-    setSitePredictorValue,
-    setSamplePredictorValue,
-    setSiteCatchment,
-    getModelPredictors
-} from '../pg'
+import * as pg from '../pg'
 
 // import log from 'loglevel'
-import { UserObj } from '../types'
+import { UserObj, DBReturnType } from '../types'
 
 /**
  * The structure must match what's in the `schema.graphql` file
@@ -70,7 +46,7 @@ function limitOffsetCheck(limit: number, limitMax: number, offset: number): void
     if (!(offset >= 0)) throw new Error('Offset must be a positive integer')
 }
 
-function createPagination<T>(data: [util.StrObj], limit: number, offset: number): PaginatedRecords<T> {
+function createPagination<T>(data: DBReturnType, limit: number, offset: number): PaginatedRecords<T> {
     let nextOffset = null
     try {
         nextOffset = data && data.length === limit ? offset + limit : null
@@ -102,8 +78,8 @@ export default {
         samples: async (obj, { limit, offset }, { user }, info): Promise<PaginatedRecords<Sample>> => {
             loggedInGate(user)
             limitOffsetCheck(limit, graphql.queryLimits.samples, offset)
-            const pool = await getPool()
-            const data = await getSamples(pool, limit, offset)
+            const pool = await pg.getPool()
+            const data = await pg.getSamples(pool, limit, offset)
             console.log(info, obj)
             return createPagination<Sample>(data, limit, offset)
         },
@@ -119,63 +95,65 @@ export default {
         sites: async (obj, { limit, offset }, { user }): Promise<PaginatedRecords<Site>> => {
             loggedInGate(user)
             limitOffsetCheck(limit, graphql.queryLimits.sites, offset)
-            const pool = await getPool()
-            const data = await getSites(pool, limit, offset)
+            const pool = await pg.getPool()
+            const data = await pg.getSites(pool, limit, offset)
             return createPagination<Site>(data, limit, offset)
         },
 
         siteInfo: async (obj, { siteId }, { user }): Promise<SiteInfo> => {
             loggedInGate(user)
-            const pool = await getPool()
-            const data = await getSiteInfo(pool, siteId)
+            const pool = await pg.getPool()
+            const data = await pg.getSiteInfo(pool, siteId)
 
             if (data.length !== 1) {
                 throw new Error('Record not found')
             }
-
-            return data.map(util.snake2camel)[0]
+            const returnVal = data.map(util.snake2camel)[0] as SiteInfo
+            return returnVal
         },
-
         sampleInfo: async (obj, { sampleId }, { user }): Promise<SampleInfo> => {
             loggedInGate(user)
-            const pool = await getPool()
-            const data = await getSampleInfo(pool, sampleId)
+            const pool = await pg.getPool()
+            const data = await pg.getSampleInfo(pool, sampleId)
 
             if (data.length !== 1) {
                 throw new Error('Record not found')
             }
 
-            return data.map(util.snake2camel)[0]
+            const returnVal = data.map(util.snake2camel)[0] as SampleInfo
+            return returnVal
         },
 
         boxInfo: async (obj, { boxId }, { user }): Promise<BoxInfo> => {
             loggedInGate(user)
-            const pool = await getPool()
-            const data = await getBoxInfo(pool, boxId)
+            const pool = await pg.getPool()
+            const data = await pg.getBoxInfo(pool, boxId)
 
             if (data.length !== 1) {
                 throw new Error('Record not found')
             }
 
-            return data.map(util.snake2camel)[0]
+            const returnVal = data.map(util.snake2camel)[0] as BoxInfo
+            return returnVal
         },
 
         modelInfo: async (obj, { modelId }, { user }): Promise<ModelInfo> => {
             loggedInGate(user)
-            const pool = await getPool()
-            const data = await getModelInfo(pool, modelId)
+            const pool = await pg.getPool()
+            const data = await pg.getModelInfo(pool, modelId)
 
             if (data.length !== 1) {
                 throw new Error('Record not found')
             }
 
-            return data.map(util.snake2camel)[0]
+            const returnVal = data.map(util.snake2camel)[0] as ModelInfo
+            return returnVal
         },
 
         samplePredictorValues: async (obj, { sampleId }, { user }): Promise<PaginatedRecords<SamplePredictorValue>> => {
             loggedInGate(user)
-            const pool = await getPool()
-            const data = await getSamplePredictorValues(pool, sampleId)
+            const pool = await pg.getPool()
+            const data = await pg.getSamplePredictorValues(pool, sampleId)
 
             return createPagination<SamplePredictorValue>(data, 500, 0)
         },
@@ -187,8 +165,8 @@ export default {
         ): Promise<PaginatedRecords<SampleOrganism>> => {
             loggedInGate(user)
             limitOffsetCheck(limit, graphql.queryLimits.sampleOrganisms, offset)
-            const pool = await getPool()
-            const data = await getSampleOrganisms(pool, limit, offset, sampleId, boxId, siteId, sampleYear, typeId)
+            const pool = await pg.getPool()
+            const data = await pg.getSampleOrganisms(pool, limit, offset, sampleId, boxId, siteId, sampleYear, typeId)
             return createPagination<SampleOrganism>(data, limit, offset)
         },
 
@@ -199,8 +177,8 @@ export default {
         ): Promise<PaginatedRecords<SampleOrganism>> => {
             loggedInGate(user)
             limitOffsetCheck(limit, graphql.queryLimits.projectOrganisms, offset)
-            const pool = await getPool()
-            const data = await getProjectOrganisms(pool, projectIds, limit, offset)
+            const pool = await pg.getPool()
+            const data = await pg.getProjectOrganisms(pool, projectIds, limit, offset)
             return createPagination<SampleOrganism>(data, limit, offset)
         },
 
@@ -214,16 +192,16 @@ export default {
         boxes: async (obj, { limit, offset }, { user }): Promise<PaginatedRecords<Box>> => {
             loggedInGate(user)
             limitOffsetCheck(limit, graphql.queryLimits.boxes, offset)
-            const pool = await getPool()
-            const data = await getBoxes(pool, limit, offset)
+            const pool = await pg.getPool()
+            const data = await pg.getBoxes(pool, limit, offset)
             return createPagination<Box>(data, limit, offset)
         },
 
         projects: async (obj, { limit, offset }, { user }): Promise<PaginatedRecords<Project>> => {
             loggedInGate(user)
             limitOffsetCheck(limit, graphql.queryLimits.projects, offset)
-            const pool = await getPool()
-            const data = await getProjects(pool, limit, offset)
+            const pool = await pg.getPool()
+            const data = await pg.getProjects(pool, limit, offset)
             return createPagination<Project>(data, limit, offset)
         },
 
@@ -231,8 +209,8 @@ export default {
             loggedInGate(user)
             limitOffsetCheck(limit, graphql.queryLimits.taxonomy, offset)
 
-            const pool = await getPool()
-            const data = await getTaxonomy(pool, limit, offset)
+            const pool = await pg.getPool()
+            const data = await pg.getTaxonomy(pool, limit, offset)
             return createPagination<Taxonomy>(data, limit, offset)
         },
 
@@ -240,8 +218,8 @@ export default {
             loggedInGate(user)
             limitOffsetCheck(limit, graphql.queryLimits.predictors, offset)
 
-            const pool = await getPool()
-            const data = await getPredictors(pool, limit, offset, modelId)
+            const pool = await pg.getPool()
+            const data = await pg.getPredictors(pool, limit, offset, modelId)
             return createPagination<Predictor>(data, limit, offset)
         },
 
@@ -249,8 +227,8 @@ export default {
             loggedInGate(user)
             limitOffsetCheck(limit, graphql.queryLimits.models, offset)
 
-            const pool = await getPool()
-            const data = await getModels(pool, limit, offset)
+            const pool = await pg.getPool()
+            const data = await pg.getModels(pool, limit, offset)
             return createPagination<Model>(data, limit, offset)
         },
 
@@ -262,8 +240,8 @@ export default {
             loggedInGate(user)
             limitOffsetCheck(limit, graphql.queryLimits.sitePredictorValues, offset)
 
-            const pool = await getPool()
-            const data = await getSitePredictorValues(pool, limit, offset, siteId)
+            const pool = await pg.getPool()
+            const data = await pg.getSitePredictorValues(pool, limit, offset, siteId)
             return createPagination<SitePredictorValue>(data, limit, offset)
         },
 
@@ -273,8 +251,8 @@ export default {
             { user }
         ): Promise<PaginatedRecords<ModelPredictor>> => {
             loggedInGate(user)
-            const pool = await getPool()
-            const data = await getModelPredictors(pool, limit, offset, modelId)
+            const pool = await pg.getPool()
+            const data = await pg.getModelPredictors(pool, limit, offset, modelId)
             return createPagination<ModelPredictor>(data, 500, 0)
         }
     },
@@ -283,25 +261,28 @@ export default {
         setSitePredictorValue: async (obj, { siteId, predictorId, value }, { user }): Promise<number> => {
             loggedInGate(user)
 
-            const pool = await getPool()
-            const data = await setSitePredictorValue(pool, siteId, predictorId, value)
-            return data[0].fn_set_site_predictor_value
+            const pool = await pg.getPool()
+            const data = await pg.setSitePredictorValue(pool, siteId, predictorId, value)
+            const returnVal = data[0].fn_set_site_predictor_value as number
+            return returnVal
         },
 
         setSamplePredictorValue: async (obj, { sampleId, predictorId, value }, { user }): Promise<number> => {
             loggedInGate(user)
 
-            const pool = await getPool()
-            const data = await setSamplePredictorValue(pool, sampleId, predictorId, value)
-            return data[0].fn_set_sample_predictor_value
+            const pool = await pg.getPool()
+            const data = await pg.setSamplePredictorValue(pool, sampleId, predictorId, value)
+            const returnVal = data[0].fn_set_sample_predictor_value as number
+            return returnVal
         },
 
         setSiteCatchment: async (obj, { siteId, catchment }, { user }): Promise<number> => {
             loggedInGate(user)
 
-            const pool = await getPool()
-            const data = await setSiteCatchment(pool, siteId, catchment)
-            return data[0].fn_set_site_catchment
+            const pool = await pg.getPool()
+            const data = await pg.setSiteCatchment(pool, siteId, catchment)
+            const returnVal = data[0].fn_set_site_catchment as number
+            return returnVal
         }
     }
 }

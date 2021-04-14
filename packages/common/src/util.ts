@@ -1,6 +1,5 @@
 import { camelCase, snakeCase } from 'change-case'
-
-export type StrObj = { [key: string]: string }
+import { StrObj } from './types'
 
 /**
  * transform an object's keys from one case to another

@@ -1,4 +1,4 @@
-import { Sample, AuthResponse, Site, SiteInfo, SampleInfo, BoxInfo, ModelInfo, SampleOrganism, Project, Taxonomy, Box, PaginatedRecords, Predictor, Model, SitePredictorValue, SamplePredictorValue, ModelPredictor } from '@namcbugdb/common';
+import { AuthResponse, Box, BoxInfo, Model, ModelInfo, ModelPredictor, PaginatedRecords, Predictor, Project, Sample, SampleInfo, SampleOrganism, SamplePredictorValue, Site, SiteInfo, SitePredictorValue, Taxonomy } from '@namcbugdb/common';
 declare const _default: {
     Query: {
         auth: (obj: any, args: any, ctx: any) => Promise<AuthResponse>;

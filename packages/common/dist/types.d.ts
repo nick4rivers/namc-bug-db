@@ -5,6 +5,7 @@ export declare type AuthResponse = {
     region: string;
     domain: string;
 };
+export declare type StrObj = Record<string, unknown>;
 export interface PaginatedRecords<T> {
     records: [T];
     nextOffset?: number;

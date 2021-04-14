@@ -1,4 +1,23 @@
 "use strict";
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -38,7 +57,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var config_1 = require("../config");
 var common_1 = require("@namcbugdb/common");
-var pg_1 = require("../pg");
+var pg = __importStar(require("../pg"));
 function loggedInGate(user) {
     var err = new Error('You must be authenticated to perform this query.');
     try {
@@ -104,10 +123,10 @@ exports.default = {
                         case 0:
                             loggedInGate(user);
                             limitOffsetCheck(limit, common_1.graphql.queryLimits.samples, offset);
-                            return [4, pg_1.getPool()];
+                            return [4, pg.getPool()];
                         case 1:
                             pool = _c.sent();
-                            return [4, pg_1.getSamples(pool, limit, offset)];
+                            return [4, pg.getSamples(pool, limit, offset)];
                         case 2:
                             data = _c.sent();
                             console.log(info, obj);
@@ -126,10 +145,10 @@ exports.default = {
                         case 0:
                             loggedInGate(user);
                             limitOffsetCheck(limit, common_1.graphql.queryLimits.sites, offset);
-                            return [4, pg_1.getPool()];
+                            return [4, pg.getPool()];
                         case 1:
                             pool = _c.sent();
-                            return [4, pg_1.getSites(pool, limit, offset)];
+                            return [4, pg.getSites(pool, limit, offset)];
                         case 2:
                             data = _c.sent();
                             return [2, createPagination(data, limit, offset)];
@@ -141,21 +160,22 @@ exports.default = {
             var siteId = _a.siteId;
             var user = _b.user;
             return __awaiter(void 0, void 0, void 0, function () {
-                var pool, data;
+                var pool, data, returnVal;
                 return __generator(this, function (_c) {
                     switch (_c.label) {
                         case 0:
                             loggedInGate(user);
-                            return [4, pg_1.getPool()];
+                            return [4, pg.getPool()];
                         case 1:
                             pool = _c.sent();
-                            return [4, pg_1.getSiteInfo(pool, siteId)];
+                            return [4, pg.getSiteInfo(pool, siteId)];
                         case 2:
                             data = _c.sent();
                             if (data.length !== 1) {
                                 throw new Error('Record not found');
                             }
-                            return [2, data.map(common_1.util.snake2camel)[0]];
+                            returnVal = data.map(common_1.util.snake2camel)[0];
+                            return [2, returnVal];
                     }
                 });
             });
@@ -164,21 +184,22 @@ exports.default = {
             var sampleId = _a.sampleId;
             var user = _b.user;
             return __awaiter(void 0, void 0, void 0, function () {
-                var pool, data;
+                var pool, data, returnVal;
                 return __generator(this, function (_c) {
                     switch (_c.label) {
                         case 0:
                             loggedInGate(user);
-                            return [4, pg_1.getPool()];
+                            return [4, pg.getPool()];
                         case 1:
                             pool = _c.sent();
-                            return [4, pg_1.getSampleInfo(pool, sampleId)];
+                            return [4, pg.getSampleInfo(pool, sampleId)];
                         case 2:
                             data = _c.sent();
                             if (data.length !== 1) {
                                 throw new Error('Record not found');
                             }
-                            return [2, data.map(common_1.util.snake2camel)[0]];
+                            returnVal = data.map(common_1.util.snake2camel)[0];
+                            return [2, returnVal];
                     }
                 });
             });
@@ -187,21 +208,22 @@ exports.default = {
             var boxId = _a.boxId;
             var user = _b.user;
             return __awaiter(void 0, void 0, void 0, function () {
-                var pool, data;
+                var pool, data, returnVal;
                 return __generator(this, function (_c) {
                     switch (_c.label) {
                         case 0:
                             loggedInGate(user);
-                            return [4, pg_1.getPool()];
+                            return [4, pg.getPool()];
                         case 1:
                             pool = _c.sent();
-                            return [4, pg_1.getBoxInfo(pool, boxId)];
+                            return [4, pg.getBoxInfo(pool, boxId)];
                         case 2:
                             data = _c.sent();
                             if (data.length !== 1) {
                                 throw new Error('Record not found');
                             }
-                            return [2, data.map(common_1.util.snake2camel)[0]];
+                            returnVal = data.map(common_1.util.snake2camel)[0];
+                            return [2, returnVal];
                     }
                 });
             });
@@ -210,21 +232,22 @@ exports.default = {
             var modelId = _a.modelId;
             var user = _b.user;
             return __awaiter(void 0, void 0, void 0, function () {
-                var pool, data;
+                var pool, data, returnVal;
                 return __generator(this, function (_c) {
                     switch (_c.label) {
                         case 0:
                             loggedInGate(user);
-                            return [4, pg_1.getPool()];
+                            return [4, pg.getPool()];
                         case 1:
                             pool = _c.sent();
-                            return [4, pg_1.getModelInfo(pool, modelId)];
+                            return [4, pg.getModelInfo(pool, modelId)];
                         case 2:
                             data = _c.sent();
                             if (data.length !== 1) {
                                 throw new Error('Record not found');
                             }
-                            return [2, data.map(common_1.util.snake2camel)[0]];
+                            returnVal = data.map(common_1.util.snake2camel)[0];
+                            return [2, returnVal];
                     }
                 });
             });
@@ -238,10 +261,10 @@ exports.default = {
                     switch (_c.label) {
                         case 0:
                             loggedInGate(user);
-                            return [4, pg_1.getPool()];
+                            return [4, pg.getPool()];
                         case 1:
                             pool = _c.sent();
-                            return [4, pg_1.getSamplePredictorValues(pool, sampleId)];
+                            return [4, pg.getSamplePredictorValues(pool, sampleId)];
                         case 2:
                             data = _c.sent();
                             return [2, createPagination(data, 500, 0)];
@@ -259,10 +282,10 @@ exports.default = {
                         case 0:
                             loggedInGate(user);
                             limitOffsetCheck(limit, common_1.graphql.queryLimits.sampleOrganisms, offset);
-                            return [4, pg_1.getPool()];
+                            return [4, pg.getPool()];
                         case 1:
                             pool = _c.sent();
-                            return [4, pg_1.getSampleOrganisms(pool, limit, offset, sampleId, boxId, siteId, sampleYear, typeId)];
+                            return [4, pg.getSampleOrganisms(pool, limit, offset, sampleId, boxId, siteId, sampleYear, typeId)];
                         case 2:
                             data = _c.sent();
                             return [2, createPagination(data, limit, offset)];
@@ -280,10 +303,10 @@ exports.default = {
                         case 0:
                             loggedInGate(user);
                             limitOffsetCheck(limit, common_1.graphql.queryLimits.projectOrganisms, offset);
-                            return [4, pg_1.getPool()];
+                            return [4, pg.getPool()];
                         case 1:
                             pool = _c.sent();
-                            return [4, pg_1.getProjectOrganisms(pool, projectIds, limit, offset)];
+                            return [4, pg.getProjectOrganisms(pool, projectIds, limit, offset)];
                         case 2:
                             data = _c.sent();
                             return [2, createPagination(data, limit, offset)];
@@ -301,10 +324,10 @@ exports.default = {
                         case 0:
                             loggedInGate(user);
                             limitOffsetCheck(limit, common_1.graphql.queryLimits.boxes, offset);
-                            return [4, pg_1.getPool()];
+                            return [4, pg.getPool()];
                         case 1:
                             pool = _c.sent();
-                            return [4, pg_1.getBoxes(pool, limit, offset)];
+                            return [4, pg.getBoxes(pool, limit, offset)];
                         case 2:
                             data = _c.sent();
                             return [2, createPagination(data, limit, offset)];
@@ -322,10 +345,10 @@ exports.default = {
                         case 0:
                             loggedInGate(user);
                             limitOffsetCheck(limit, common_1.graphql.queryLimits.projects, offset);
-                            return [4, pg_1.getPool()];
+                            return [4, pg.getPool()];
                         case 1:
                             pool = _c.sent();
-                            return [4, pg_1.getProjects(pool, limit, offset)];
+                            return [4, pg.getProjects(pool, limit, offset)];
                         case 2:
                             data = _c.sent();
                             return [2, createPagination(data, limit, offset)];
@@ -343,10 +366,10 @@ exports.default = {
                         case 0:
                             loggedInGate(user);
                             limitOffsetCheck(limit, common_1.graphql.queryLimits.taxonomy, offset);
-                            return [4, pg_1.getPool()];
+                            return [4, pg.getPool()];
                         case 1:
                             pool = _c.sent();
-                            return [4, pg_1.getTaxonomy(pool, limit, offset)];
+                            return [4, pg.getTaxonomy(pool, limit, offset)];
                         case 2:
                             data = _c.sent();
                             return [2, createPagination(data, limit, offset)];
@@ -364,10 +387,10 @@ exports.default = {
                         case 0:
                             loggedInGate(user);
                             limitOffsetCheck(limit, common_1.graphql.queryLimits.predictors, offset);
-                            return [4, pg_1.getPool()];
+                            return [4, pg.getPool()];
                         case 1:
                             pool = _c.sent();
-                            return [4, pg_1.getPredictors(pool, limit, offset, modelId)];
+                            return [4, pg.getPredictors(pool, limit, offset, modelId)];
                         case 2:
                             data = _c.sent();
                             return [2, createPagination(data, limit, offset)];
@@ -385,10 +408,10 @@ exports.default = {
                         case 0:
                             loggedInGate(user);
                             limitOffsetCheck(limit, common_1.graphql.queryLimits.models, offset);
-                            return [4, pg_1.getPool()];
+                            return [4, pg.getPool()];
                         case 1:
                             pool = _c.sent();
-                            return [4, pg_1.getModels(pool, limit, offset)];
+                            return [4, pg.getModels(pool, limit, offset)];
                         case 2:
                             data = _c.sent();
                             return [2, createPagination(data, limit, offset)];
@@ -406,10 +429,10 @@ exports.default = {
                         case 0:
                             loggedInGate(user);
                             limitOffsetCheck(limit, common_1.graphql.queryLimits.sitePredictorValues, offset);
-                            return [4, pg_1.getPool()];
+                            return [4, pg.getPool()];
                         case 1:
                             pool = _c.sent();
-                            return [4, pg_1.getSitePredictorValues(pool, limit, offset, siteId)];
+                            return [4, pg.getSitePredictorValues(pool, limit, offset, siteId)];
                         case 2:
                             data = _c.sent();
                             return [2, createPagination(data, limit, offset)];
@@ -426,10 +449,10 @@ exports.default = {
                     switch (_c.label) {
                         case 0:
                             loggedInGate(user);
-                            return [4, pg_1.getPool()];
+                            return [4, pg.getPool()];
                         case 1:
                             pool = _c.sent();
-                            return [4, pg_1.getModelPredictors(pool, limit, offset, modelId)];
+                            return [4, pg.getModelPredictors(pool, limit, offset, modelId)];
                         case 2:
                             data = _c.sent();
                             return [2, createPagination(data, 500, 0)];
@@ -443,18 +466,19 @@ exports.default = {
             var siteId = _a.siteId, predictorId = _a.predictorId, value = _a.value;
             var user = _b.user;
             return __awaiter(void 0, void 0, void 0, function () {
-                var pool, data;
+                var pool, data, returnVal;
                 return __generator(this, function (_c) {
                     switch (_c.label) {
                         case 0:
                             loggedInGate(user);
-                            return [4, pg_1.getPool()];
+                            return [4, pg.getPool()];
                         case 1:
                             pool = _c.sent();
-                            return [4, pg_1.setSitePredictorValue(pool, siteId, predictorId, value)];
+                            return [4, pg.setSitePredictorValue(pool, siteId, predictorId, value)];
                         case 2:
                             data = _c.sent();
-                            return [2, data[0].fn_set_site_predictor_value];
+                            returnVal = data[0].fn_set_site_predictor_value;
+                            return [2, returnVal];
                     }
                 });
             });
@@ -463,18 +487,19 @@ exports.default = {
             var sampleId = _a.sampleId, predictorId = _a.predictorId, value = _a.value;
             var user = _b.user;
             return __awaiter(void 0, void 0, void 0, function () {
-                var pool, data;
+                var pool, data, returnVal;
                 return __generator(this, function (_c) {
                     switch (_c.label) {
                         case 0:
                             loggedInGate(user);
-                            return [4, pg_1.getPool()];
+                            return [4, pg.getPool()];
                         case 1:
                             pool = _c.sent();
-                            return [4, pg_1.setSamplePredictorValue(pool, sampleId, predictorId, value)];
+                            return [4, pg.setSamplePredictorValue(pool, sampleId, predictorId, value)];
                         case 2:
                             data = _c.sent();
-                            return [2, data[0].fn_set_sample_predictor_value];
+                            returnVal = data[0].fn_set_sample_predictor_value;
+                            return [2, returnVal];
                     }
                 });
             });
@@ -483,18 +508,19 @@ exports.default = {
             var siteId = _a.siteId, catchment = _a.catchment;
             var user = _b.user;
             return __awaiter(void 0, void 0, void 0, function () {
-                var pool, data;
+                var pool, data, returnVal;
                 return __generator(this, function (_c) {
                     switch (_c.label) {
                         case 0:
                             loggedInGate(user);
-                            return [4, pg_1.getPool()];
+                            return [4, pg.getPool()];
                         case 1:
                             pool = _c.sent();
-                            return [4, pg_1.setSiteCatchment(pool, siteId, catchment)];
+                            return [4, pg.setSiteCatchment(pool, siteId, catchment)];
                         case 2:
                             data = _c.sent();
-                            return [2, data[0].fn_set_site_catchment];
+                            returnVal = data[0].fn_set_site_catchment;
+                            return [2, returnVal];
                     }
                 });
             });

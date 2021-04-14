@@ -97,7 +97,9 @@ exports.getBoxes = function (pool, limit, offset) {
     return pgPromise(pool, boxesQuery, [limit, offset]);
 };
 var sampleOrganismsQuery = 'SELECT * FROM sample.fn_samples($1, $2, $3, $4, $5, $6, $7)';
-exports.getSampleOrganisms = function (pool, limit, offset, sampleId, boxId, siteId, sampleYear, typeId) { return pgPromise(pool, sampleOrganismsQuery, [limit, offset, sampleId, boxId, siteId, sampleYear, typeId]); };
+exports.getSampleOrganisms = function (pool, limit, offset, sampleId, boxId, siteId, sampleYear, typeId) {
+    return pgPromise(pool, sampleOrganismsQuery, [limit, offset, sampleId, boxId, siteId, sampleYear, typeId]);
+};
 var projectOrganismsQuery = 'SELECT * FROM sample.fn_project_samples($1, $2, $3)';
 exports.getProjectOrganisms = function (pool, projectIds, limit, offset) {
     return pgPromise(pool, projectOrganismsQuery, [limit, offset, projectIds]);
@@ -125,7 +127,9 @@ exports.getSitePredictorValues = function (pool, limit, offset, siteId) {
     return pgPromise(pool, sitePredictorValuesQuery, [limit, offset, siteId]);
 };
 var sampleInfoQuery = 'SELECT * FROM sample.fn_sample_info($1)';
-exports.getSampleInfo = function (pool, sampleId) { return pgPromise(pool, sampleInfoQuery, [sampleId]); };
+exports.getSampleInfo = function (pool, sampleId) {
+    return pgPromise(pool, sampleInfoQuery, [sampleId]);
+};
 var boxInfoQuery = 'SELECT * FROM sample.fn_box_info($1)';
 exports.getBoxInfo = function (pool, boxId) { return pgPromise(pool, boxInfoQuery, [boxId]); };
 var samplePredictorValuesQuery = 'SELECT * FROM sample.fn_sample_predictor_values($1)';
@@ -141,9 +145,7 @@ exports.setSitePredictorValue = function (pool, siteId, predictorId, value) {
     return pgPromise(pool, setSitePredictorValueQuery, [siteId, predictorId, value]);
 };
 var setSamplePredictorValueQuery = 'SELECT * FROM sample.fn_set_sample_predictor_value($1, $2, $3)';
-exports.setSamplePredictorValue = function (pool, sampleId, predictorId, value) {
-    return pgPromise(pool, setSamplePredictorValueQuery, [sampleId, predictorId, value]);
-};
+exports.setSamplePredictorValue = function (pool, sampleId, predictorId, value) { return pgPromise(pool, setSamplePredictorValueQuery, [sampleId, predictorId, value]); };
 var setSiteCatchmentQuery = 'SELECT sample.fn_set_site_catchment($1, $2)';
 exports.setSiteCatchment = function (pool, siteId, catchment) {
     return pgPromise(pool, setSiteCatchmentQuery, [siteId, catchment]);

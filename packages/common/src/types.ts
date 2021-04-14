@@ -6,6 +6,8 @@ export type AuthResponse = {
     domain: string
 }
 
+export type StrObj = Record<string, unknown>
+
 export interface PaginatedRecords<T> {
     records: [T]
     nextOffset?: number
