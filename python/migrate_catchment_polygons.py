@@ -30,7 +30,7 @@ def migrate_catchment_polygons(pgcurs, geojson_path):
             log.warning('site {} has duplicate polygon defined.'.format(site_name))
             unsuccessful += 1
         else:
-            pgcurs.execute('UPDATE geo.sites SET catchment = ST_MULTI(%s) WHERE site_id = %s', [json.dumps(feature['geometry']), row['site_id']])
+            pgcurs.execute('UPDATE geo.sites SET catchment = ST_SetSRID(ST_MULTI(ST_GeomFromGeoJSON(%s)), 4326) WHERE site_id = %s', [json.dumps(feature['geometry']), row['site_id']])
             successful += 1
         counter += 1
         progbar.update(counter)
