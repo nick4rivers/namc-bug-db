@@ -141,33 +141,70 @@ const typeDefs = gql`
     }
 
 """
-Detailed information about a single site.
+Detailed information about a single NAMC site.
 
 This query includes the point and catchment geometries for the site.
+It also includes the number of samples available at a particular site.
+
+More succinct information is available for all sites using the
+sites API endpoint.
 """
     type SiteInfo {
         
         "Unique database generated integer that uniquely identifies each site"
         siteId: Int
 
-        """
-        Unique identifier for each site
-        """
+        "Unique text identifier for each site"
         siteName: String
         
+        "The ecological system (e.g. lake, pond, reservoir) in which the site is located."
         system: String
+
+        "The ecosystem in which the site is located."
         ecosystem: String
+
+        "GeoJSON point location of the site in [EPSG:4326](https://epsg.io/4326) spatial reference."
         location: String
+
+        "Longtidue of the site location in decimal degrees."
         longitude: Float
+
+        "Latitude of the site location in decimal degrees."
         latitude: Float
+
+        "US State in which the site is located."
         usState: String
+
+        """
+        If the site has a waterbody code, then the waterbody type identifies the system that
+        this identifier pertains to. The waterbody type might be NHDPlus 1:100,000 or 
+        NHDPlusHR 1:24,000 etc.
+        """
         waterbodyType: String
+
+        """
+        The identifier of the waterbody on which this site occurs. Can be null. If a 
+        waterbody code exists, then the waterbodyType can be used to determine which
+        system the code belongs to, such as NHDPlus or NHDPlusHR.
+        """
         waterbodyCode: String
+
+        "The string name of the waterbody on which the site occurs. Typicall this is the stream name."
         waterbodyName: String
+
+        "The latest date and time that either the site location (point) or catchment (polygon) were changed."
         geometryChanged: String
+
+        "The system generated date and time that the site record was created in the database."
         createdDate: String
+
+        "The system generated date and time that the site record was last changed in the database."
         updatedDate: String
+
+        "GeoJSON polygon of the upstream area that drains into this site in [EPSG:4326](https://epsg.io/4326) spatial reference."
         catchment: String
+
+        "The number of samples that are available for this site."
         sampleCount: Int
     }
 
@@ -411,31 +448,93 @@ type SamplePredictorValue {
         extent: String
     }
 
+    """
+    The value of a non-temporal predictor for a particular site.
+    """
     type SitePredictorValue {
+
+        "The unique system generated identifier for the predictor."
         predictorId: Int
+
+        "The unique textual name for the predictor."
         predictorName: String
+
+        "The unique shorthand abbreviation for the predictor."
         abbreviation: String
+
+        "Long form information about the predictor."
         description: String
+
+        "The predictor type (e.g. metrics, atmosphere, geology, anthro)."
         predictorType: String
+
+        """
+        The predictor value for this site. The value is always a string, even
+        if it represents an integer or floating point value.
+        """
         predictorValue: String
+
+        "The system generated date and time that the site record was created in the database."
         createdDate: String
+
+        "The system generated date and time that the site record was last changed in the database."
         updatedDate: String
+
+        "Optional name of the R function that performs the calculation for this predictor."
         calculationScript: String
     }
 
+    """
+    Information about a model predictor.
+
+    Each predictor can be associated with multiple models. Predictors can also
+    be temporal, in which their values are associated with a particular sample,
+    or they can be non-temporal, in which case their values are associated with
+    sites.
+    """
     type ModelPredictor {
+
+        "The unique system generated identifier for the predictor."
         predictorId: Int
+
+        "The unique textual name for the predictor."
         predictorName: String
+
+        "The unique shorthand abbreviation for the predictor."
         abbreviation: String
+
+        "The units in which the predictor values are stored."
         units: String
+
+       "The predictor type (e.g. metrics, atmosphere, geology, anthro)."
         predictorType: String
+
+        """
+        Boolean representing whether the predictor varies over time or whether
+        there is just a single value for the site. True indicates that the predictor
+        is temporal and values are stored for each sample. False indicates that there
+        is only one predictor value for each site.
+        """
         isTemporal: Boolean
+
+        "Long form information about the predictor."
         description: String
+
+        "Miscellaneou structured metadata in GeoJSON format."
         metadata: String
-        calculationScript: String
+
+        "The number of models that use the predictor"
         modelCount: Int
+
+        "The system generated date and time that the site record was created in the database."
         createdDate: String
-        updatedDate: String   
+
+        "The system generated date and time that the site record was last changed in the database."
+        updatedDate: String
+
+        "Optional name of the R function that performs the calculation for this predictor."
+        calculationScript: String
+
     }
 
     # Pagination Types
