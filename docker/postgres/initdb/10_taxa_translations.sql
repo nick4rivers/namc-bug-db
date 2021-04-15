@@ -20,3 +20,6 @@ INSERT INTO taxa.translations (translation_id, translation_name, description, is
 INSERT INTO taxa.translations (translation_id, translation_name, description, is_active) VALUES (20, 'OTUCodeUTDEQ09', NULL, True);
 INSERT INTO taxa.translations (translation_id, translation_name, description, is_active) VALUES (21, 'OTUCodeWestWide18', NULL, False);
 INSERT INTO taxa.translations (translation_id, translation_name, description, is_active) VALUES (22, 'OTUCodeWY18', NULL, False);
+
+-- Data inserted with manual IDs. Reset the index
+SELECT setval(pg_get_serial_sequence('taxa.translations', 'translation_id'), COALESCE(max(translation_id) + 1, 1), false) FROM taxa.translations;
