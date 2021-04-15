@@ -939,8 +939,9 @@ begin
               from geo.model_predictors mp
               group by mp.model_id) p ON m.model_id = p.model_id
         where m.model_id = p_model_id;
-end;
-$$
+end
+$$;
+
 drop function if exists geo.fn_model_predictors;
 create or replace function geo.fn_model_predictors(p_limit INT, p_offset INT, p_model_id int)
     returns table
@@ -985,8 +986,8 @@ begin
         where mp.model_id = p_model_id
         order by p.predictor_id
         limit p_limit offset p_offset;
-end;
-$$
+end
+$$;
 
 drop function if exists sample.fn_projects;
 create or replace function sample.fn_projects(p_limit int, p_offset int)
@@ -1038,8 +1039,8 @@ begin
                             from sample.project_models pm
                             group by pm.project_id) mc
                            on mc.project_id = p.project_id;
-end;
-$$
+end
+$$;
 
 drop function if exists taxa.fn_translations;
 create or replace function taxa.fn_translations(p_limit int, p_offset int)
@@ -1077,5 +1078,5 @@ begin
             group by tx.translation_id
         ) tx on tx.translation_id = t.translation_id;
 
-end;
-$$
+end
+$$;
