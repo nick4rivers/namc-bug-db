@@ -941,7 +941,7 @@ begin
         where m.model_id = p_model_id;
 end;
 $$
-drop function geo.fn_model_predictors;
+drop function if exists geo.fn_model_predictors;
 create or replace function geo.fn_model_predictors(p_limit INT, p_offset INT, p_model_id int)
     returns table
             (
@@ -1041,7 +1041,7 @@ begin
 end;
 $$
 
-drop function taxa.fn_translations;
+drop function if exists taxa.fn_translations;
 create or replace function taxa.fn_translations(p_limit int, p_offset int)
     returns table
             (
