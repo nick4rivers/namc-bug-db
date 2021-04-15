@@ -19,6 +19,7 @@ import {
     SiteInfo,
     SitePredictorValue,
     Taxonomy,
+    Translation,
     util
 } from '@namcbugdb/common'
 import * as pg from '../pg'
@@ -230,6 +231,15 @@ export default {
             const pool = await pg.getPool()
             const data = await pg.getModels(pool, limit, offset)
             return createPagination<Model>(data, limit, offset)
+        },
+
+        translations: async (obj, { limit, offset }, { user }): Promise<PaginatedRecords<Translation>> => {
+            loggedInGate(user)
+            limitOffsetCheck(limit, graphql.queryLimits.models, offset)
+
+            const pool = await pg.getPool()
+            const data = await pg.getTranslations(pool, limit, offset)
+            return createPagination<Translation>(data, limit, offset)
         },
 
         sitePredictorValues: async (

@@ -115,6 +115,10 @@ const modelPredictorsQuery = 'SELECT * FROM geo.fn_model_predictors($1, $2, $3)'
 export const getModelPredictors = (pool, limit: number, offset: number, modelId: number): DBReturnPromiseType =>
     pgPromise(pool, modelPredictorsQuery, [limit, offset, modelId])
 
+const translationsQuery = 'SELECT * FROM taxa.fn_translations($1, $2)'
+export const getTranslations = (pool, limit: number, offset: number): DBReturnPromiseType =>
+    pgPromise(pool, translationsQuery, [limit, offset])
+
 /**
  * Mutations
  */

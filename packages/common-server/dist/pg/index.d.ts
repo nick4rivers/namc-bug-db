@@ -18,6 +18,7 @@ export declare const getSampleInfo: (pool: any, sampleId: number) => DBReturnPro
 export declare const getBoxInfo: (pool: any, boxId: number) => DBReturnPromiseType;
 export declare const getSamplePredictorValues: (pool: any, sampleId: number) => DBReturnPromiseType;
 export declare const getModelPredictors: (pool: any, limit: number, offset: number, modelId: number) => DBReturnPromiseType;
+export declare const getTranslations: (pool: any, limit: number, offset: number) => DBReturnPromiseType;
 export declare const setSitePredictorValue: (pool: any, siteId: number, predictorId: number, value: string) => DBReturnPromiseType;
 export declare const setSamplePredictorValue: (pool: any, sampleId: number, predictorId: number, value: string) => DBReturnPromiseType;
 export declare const setSiteCatchment: (pool: any, siteId: number, catchment: string) => DBReturnPromiseType;

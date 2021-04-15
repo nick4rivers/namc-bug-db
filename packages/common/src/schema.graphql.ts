@@ -14,7 +14,8 @@ export const queryLimits = {
     predictors: 500,
     models: 500,
     sitePredictorValues: 500,
-    modelPredictors: 500
+    modelPredictors: 500,
+    translations: 500
 }
 
 const typeDefs = gql`
@@ -58,6 +59,7 @@ const typeDefs = gql`
         sitePredictorValues(siteId: Int!, limit: Int = ${queryLimits.sitePredictorValues}, offset: Int = 0): PaginatedSitePredictorValues
         samplePredictorValues(sampleId: Int!): PaginatedSamplePredictorValue
         modelPredictors(limit: Int = ${queryLimits.modelPredictors}, offset: Int = 0, modelId: Int!): PaginatedModelPredictors
+        translations(limit: Int = ${queryLimits.translations}, offset: Int = 0): PaginatedTranslations
     }
 
     # this schema allows the following mutation:
@@ -537,6 +539,16 @@ type SamplePredictorValue {
 
     }
 
+    type Translation {
+        translationId: Int
+        translationName: String
+        description: String
+        isActive: Boolean
+        taxaCount: Int
+        createdDate: String
+        updatedDate: String
+    }
+
     # Pagination Types
     type PaginatedBoxStates {
         records: [BoxState]
@@ -586,6 +598,11 @@ type SamplePredictorValue {
 
     type PaginatedModelPredictors {
         records: [ModelPredictor]
+        nextOffset: Int
+    }
+
+    type PaginatedTranslations {
+        records: [Translation]
         nextOffset: Int
     }
 `

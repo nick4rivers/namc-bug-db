@@ -139,8 +139,8 @@ begin
                p.predictor_type_id,
                t.predictor_type_name,
                p.is_temporal,
-               to_json(p.updated_date)#>>'{}',
-               to_json(p.created_date)#>>'{}',
+               to_json(p.updated_date) #>> '{}',
+               to_json(p.created_date) #>> '{}',
                count(m.predictor_id) model_count
         FROM geo.predictors p
                  inner join geo.predictor_types t On p.predictor_type_id = t.predictor_type_id
@@ -216,8 +216,8 @@ begin
                p.description,
                pt.predictor_type_name,
                sp.predictor_value,
-               to_json(sp.created_date)#>>'{}',
-               to_json(sp.updated_date)#>>'{}',
+               to_json(sp.created_date) #>> '{}',
+               to_json(sp.updated_date) #>> '{}',
                p.calculation_script
         FROM geo.site_predictors sp
                  inner join geo.predictors p on sp.predictor_id = p.predictor_id
@@ -1038,5 +1038,44 @@ begin
                             from sample.project_models pm
                             group by pm.project_id) mc
                            on mc.project_id = p.project_id;
+end;
+$$
+
+drop function taxa.fn_translations;
+create or replace function taxa.fn_translations(p_limit int, p_offset int)
+    returns table
+            (
+                translation_id   smallint,
+                translation_name varchar(255),
+                description      text,
+                is_active        boolean,
+                taxa_count       bigint,
+                created_date     text,
+                updated_date     text
+            )
+    language plpgsql
+as
+$$
+begin
+    return query
+        select t.translation_id,
+               t.translation_name,
+               t.description,
+               t.is_active,
+               coalesce(tx.taxa_count, 0),
+               to_json(t.created_date) #>> '{}',
+               to_json(t.updated_date) #>> '{}'
+        from taxa.translations t
+                 inner join
+             (select tt.translation_id
+              from taxa.translations tt
+              order by translation_id
+              limit p_limit offset p_offset) tt on t.translation_id = tt.translation_id
+                 left join (
+            select tx.translation_id, count(*) taxa_count
+            from taxa.taxa_translations tx
+            group by tx.translation_id
+        ) tx on tx.translation_id = t.translation_id;
+
 end;
 $$

@@ -361,3 +361,13 @@ export type SamplePredictorValue = {
     predictorValueUpdatedDate: string
     status: string
 }
+
+export declare type Translation = {
+    translationId: number
+    translationName: string
+    description: string
+    isActive: boolean
+    taxaCount: number
+    createdDate: string
+    updatedDate: string
+}
