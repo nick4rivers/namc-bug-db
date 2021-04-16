@@ -234,7 +234,7 @@ taxa SCHEMA
 */
 DROP FUNCTION IF EXISTS taxa.fn_tree;
 
-CREATE OR REPLACE FUNCTION taxa.fn_tree(taxa_id SMALLINT)
+CREATE OR REPLACE FUNCTION taxa.fn_tree(taxa_id smallint)
     returns table
             (
                 taxonomy_id     SMALLINT,
@@ -1080,3 +1080,101 @@ begin
 
 end
 $$;
+
+drop function if exists sample.fn_sample_taxa;
+create or replace function sample.fn_sample_taxa(p_sample_id int)
+    returns table
+            (
+                taxonomy_id smallint,
+                level_id    smallint,
+                level_name  varchar(50),
+                phylum      varchar(255),
+                class       varchar(255),
+                subclass    varchar(255),
+                "Order"     varchar(255),
+                family      varchar(255),
+                genus       varchar(255),
+                species     varchar(255)
+            )
+    language plpgsql
+as
+$$
+begin
+    return query
+        select o.taxonomy_id,
+               t.level_id,
+               l.level_name,
+               ct.phylum,
+               ct.class,
+               ct.subclass,
+               ct."Order",
+               ct.family,
+               ct.genus,
+               ct.species
+        FROM sample.organisms o
+                 INNER JOIN taxa.taxonomy t on o.taxonomy_id = t.taxonomy_id
+                 INNER JOIN taxa.taxa_levels l on t.level_id = l.level_id
+                 LEFT JOIN taxa.vw_taxonomy_crosstab ct ON o.taxonomy_id = ct.taxonomy_id
+        where o.sample_id = p_sample_id;
+end
+$$;
+comment on function sample.fn_sample_taxa is
+    'returns the organisms within a particular in their original taxonomic classification';
+
+drop function if exists sample.fn_sample_translation_taxa;
+create or replace function sample.fn_sample_translation_taxa(p_sample_id int, p_translation_id int)
+    returns table
+            (
+                taxonomy_id smallint,
+                level_id    smallint,
+                level_name  varchar(50),
+                phylum      varchar(255),
+                class       varchar(255),
+                subclass    varchar(255),
+                "Order"     varchar(255),
+                family      varchar(255),
+                genus       varchar(255),
+                species     varchar(255)
+            )
+    language plpgsql
+as
+$$
+begin
+    return query select * FROM sample.sample_taxa(p_sample_id);
+end
+$$;
+comment on function sample.fn_sample_translation_taxa is
+    'returns the organisms for a particular sample re-mapped to a particular translation';
+
+drop function if exists taxa.fn_translation_taxa;
+create or replace function taxa.fn_translation_taxa(p_translation_id int, p_taxonomy_id int)
+    returns table
+            (
+                taxonomy_id smallint,
+                scientific_name varchar(255),
+                level_id smallint,
+                level_name varchar(50)
+            )
+    language plpgsql
+as
+$$
+begin
+    return query
+        /*
+         1. Get the taxonomic hierarchy for the original taxa
+         2. Join this hierarchy with the taxa in the translation
+         3. Select the first item up the hierarchy (ensuring sorted lowest to highest
+         */
+        SELECT tt.taxonomy_id, tt.translation_taxonomy_name, l.level_id, l.level_name
+        FROM taxa.fn_tree(cast(p_taxonomy_id as smallint)) t
+                 inner join taxa.taxa_levels l on t.level_id = l.level_id
+                 inner join taxa.taxa_translations tt on t.taxonomy_id = tt.taxonomy_id
+        where tt.translation_id = p_translation_id
+        order by l.level_id desc
+        limit 1;
+end
+$$;
+comment on function taxa.fn_translation_taxa is
+    'function to retrieve the taxonomy ID of a taxa according to a specific translation.' ||
+    'The result could be the same taxonomy ID that was passed in or one higher up in the taxonomic' ||
+    'hierarchy.';
