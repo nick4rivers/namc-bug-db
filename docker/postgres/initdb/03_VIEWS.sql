@@ -128,6 +128,8 @@ FROM crosstab(
              'SELECT t.taxonomy_id, f.level_name, t.scientific_name FROM taxa.taxonomy t, taxa.fn_tree(t.taxonomy_id) f',
              'SELECT level_name FROM taxa.taxa_levels where is_active = TRUE  and level_id > 1 order BY level_id')
          AS final_result(taxonomy_id INT,
+                         level_id INT,
+                         level_name varchar(255),
                          Phylum varchar(255),
                          Class varchar(255),
                          Subclass varchar(255),
