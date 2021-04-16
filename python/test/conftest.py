@@ -20,7 +20,7 @@ def cnxn():
 
 @pytest.fixture
 def cursor(cnxn):
-    cursor = cnxn.cursor()
+    cursor = cnxn.cursor(cursor_factory=psycopg2.extras.DictCursor)
     yield cursor
     cnxn.rollback()
 
@@ -41,7 +41,7 @@ def translation_data(cursor):
     cursor.execute('INSERT INTO sample.samples (box_id, type_id, method_id, habitat_id) VALUES (%s, 1, 1, 1) returning sample_id', [box_id])
     sample_id = cursor.fetchone()[0]
 
-    kid = insert_taxa(cursor, 'Anamilia A', 'Kingdom', None)
+    kid = insert_taxa(cursor, 'Animalia A', 'Kingdom', None)
 
     # Taxonomic hierarchy with two taxa at each level and one sample organism for each taxa
     for p in ['A', 'B']:
@@ -53,16 +53,16 @@ def translation_data(cursor):
                 oid = insert_taxa(cursor, 'Order {}{}{}'.format(p, c, o), 'Order', cid)
                 insert_organism(cursor, sample_id, oid, 1)
 
+    # Need to refresh the taxonomic materialized view after inserting new taxa
+    cursor.execute('REFRESH MATERIALIZED VIEW taxa.vw_taxonomy_crosstab;')
+
     # Test translation
     cursor.execute("INSERT INTO taxa.translations (translation_name) VALUES ('unit test translation') returning translation_id")
     translation_id = cursor.fetchone()[0]
 
-    # Translation has one entry at ClassAA
-    insert_taxa_translation(cursor, translation_id, 'Class AA', 'Test At AA')
-    insert_taxa_translation(cursor, translation_id, 'Phylum B', 'cool phylum')
-
-    # Need to refresh the taxonomic materialized view!
-    cursor.execute('REFRESH MATERIALIZED VIEW taxa.vw_taxonomy_crosstab;')
+    # Translation has one entry at ClassAA and one at Phylum B
+    insert_taxa_translation(cursor, translation_id, 'Class AA', 'test at AA')
+    insert_taxa_translation(cursor, translation_id, 'Phylum B', 'test phylum')
 
 
 def insert_taxa(cursor, scientific_name, level, parent_id):
@@ -89,7 +89,7 @@ def insert_taxa_translation(cursor, translation_id, original_taxa_name, replacem
 
 def insert_organism(cursor, sample_id, taxonomy_id, split_count):
 
-    cursor.execute('INSERT INTO sample.organisms (sample_id, taxonomy_id, life_stage_id) VALUES (%s, %s, 1) returning organism_id', [sample_id, taxonomy_id])
+    cursor.execute('INSERT INTO sample.organisms (sample_id, taxonomy_id, life_stage_id, split_count) VALUES (%s, %s, 1, %s) returning organism_id', [sample_id, taxonomy_id, split_count])
     return cursor.fetchone()[0]
 
 # @pytest.fixture

@@ -1130,17 +1130,19 @@ as
 $$
 begin
     return query
+        /*
+         Use a lateral join that runs "for each" organism in the original sample, it looks
+         up the taxa from the translation.
+         */
         select tt.translation_taxonomy_id,
-               coalesce(tt.translation_scientific_name, o.scientific_name) scientific_alias,
+               coalesce(tt.translation_scientific_name, t.scientific_name) scientific_alias,
                tt.translation_level_id,
                tt.translation_level_name,
                sum(o.split_count)
-        FROM
-             (select t.taxonomy_id, t.scientific_name, o.split_count
-              from sample.organisms o
+        FROM sample.organisms o
                  inner join taxa.taxonomy t on o.taxonomy_id = t.taxonomy_id
-                 where o.sample_id = p_sample_id) o
-                 left join lateral taxa.fn_translation_taxa(p_translation_id, o.taxonomy_id) tt on true
+                 inner join lateral taxa.fn_translation_taxa(p_translation_id, o.taxonomy_id) tt on true
+        where o.sample_id = p_sample_id
         group by tt.translation_taxonomy_id,
                  scientific_alias,
                  tt.translation_level_id,
@@ -1148,13 +1150,15 @@ begin
 end
 $$;
 comment on function sample.fn_sample_translation_taxa is
-    'returns the organisms for a particular sample re-mapped to a particular translation';
+    'Returns the organisms for a particular sample mapped to a particular translation.
+    Note that the output taxonomy_id and scientific name are those of the translation, not
+    the original taxa used by the lab!';
 
 drop function if exists taxa.fn_translation_taxa;
 create or replace function taxa.fn_translation_taxa(p_translation_id int, p_taxonomy_id int)
     returns table
             (
-                taxonomy_id        smallint,
+                taxonomy_id                 smallint,
                 translation_taxonomy_id     smallint,
                 translation_scientific_name varchar(255),
                 translation_level_id        smallint,
@@ -1180,6 +1184,6 @@ begin
 end
 $$;
 comment on function taxa.fn_translation_taxa is
-    'function to retrieve the taxonomy ID of a taxa according to a specific translation.' ||
-    'The result could be the same taxonomy ID that was passed in or one higher up in the taxonomic' ||
-    'hierarchy.';
+    'Function to retrieve the taxonomy ID of a taxa according to a specific translation.
+    The result could be the same taxonomy ID that was passed in or one higher up in the taxonomic
+    hierarchy.';

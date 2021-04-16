@@ -11,15 +11,29 @@ def test_translations(cursor, translation_data):
     translation_id = cursor.fetchone()[0]
 
     cursor.execute("SELECT * FROM sample.fn_sample_taxa(%s)", [sample_id])
-    rows = cursor.fetchall()
+    orig_rows = cursor.fetchall()
+    print_organisms('original taxa', orig_rows)
 
-    for row in rows:
-        cursor.execute("SELECT * FROM taxa.fn_translation_taxa(%s, %s)", [translation_id, row[0]])
+    cursor.execute('SELECT * FROM sample.fn_sample_translation_taxa(%s, %s)', [sample_id, translation_id])
+    trans_rows = cursor.fetchall()
+    print_organisms('translation taxa', trans_rows)
+
+    print('-- Translation taxa mapping --')
+    for row in orig_rows:
+        cursor.execute("SELECT * FROM taxa.fn_translation_taxa(%s, %s)", [translation_id, row['taxonomy_id']])
         trans = cursor.fetchone()
         if trans is not None:
-            print("{} '{}' translates to {} '{}'".format(row[2], row[3], trans[3], trans[1]))
+            print("{} '{}' translates to {} '{}'".format(row['level_name'], row['scientific_name'], trans[4], trans[2]))
 
     assert False
+
+
+def print_organisms(label, rows):
+
+    print('-- {} --'.format(label))
+    if rows is not None:
+        [print('{} ({}) at level {} has count {}'.format(
+            row['scientific_name'], row['taxonomy_id'], row['level_name'], row['organism_count'])) for row in rows]
 
 
 def get_sample_id(cursor, customer_name):
