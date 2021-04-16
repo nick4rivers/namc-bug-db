@@ -265,3 +265,10 @@ def log_record_count(mscurs, table_name, sql=None):
     log = Logger(table_name)
     log.info('Processing {:,} records for table {}'.format(row_count, table_name))
     return row_count
+
+
+def reset_sequence(pgcurs, table, primary_key_column):
+
+    pgcurs.execute("SELECT setval(pg_get_serial_sequence('{0}', '{1}'), COALESCE(max({1}) + 1, 1), false) FROM {0}".format(table, primary_key_column))
+    log = Logger()
+    log.info('Sequence for {} in table {} is {}'.format(primary_key_column, table, pgcurs.fetchone()[0]))

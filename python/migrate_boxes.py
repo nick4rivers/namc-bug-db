@@ -3,6 +3,7 @@ import pyodbc
 from lib.logger import Logger
 from lib.progress_bar import ProgressBar
 from utilities import sanitize_string_col, sanitize_string, write_sql_file, log_record_count
+from utilities import reset_sequence
 from postgres_lookup_data import lookup_data, insert_row, log_row_count, insert_many_rows
 from lookup_data import get_db_id
 
@@ -121,3 +122,6 @@ def associate_models_with_boxes(pgcurs, csv_path):
 
     insert_many_rows(pgcurs, 'sample.box_models', ['box_id', 'model_id'], db_data)
     log_row_count(pgcurs, 'sample.box_models')
+
+    # Data inserted with manual IDs need to reset the table sequence
+    reset_sequence(pgcurs, 'sample.boxes', 'box_id')

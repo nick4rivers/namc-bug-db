@@ -3,6 +3,7 @@ import pyodbc
 from lib.logger import Logger
 from lib.progress_bar import ProgressBar
 from utilities import sanitize_string_col, sanitize_string, sanitize_time, add_metadata, format_values, log_record_count
+from utilities import reset_sequence
 from postgres_lookup_data import lookup_data, insert_row, log_row_count, insert_many_rows, process_table, process_query
 from lookup_data import get_db_id
 
@@ -25,6 +26,9 @@ def migrate(mscurs, pgcurs):
     # Sample ID 16988 exists in BugOMatter but not in BugSample. Use inner join to omit this record
     process_query(mscurs, pgcurs, 'SELECT B.* FROM PilotDB.dbo.BugOMatter B INNER JOIN PilotDB.dbo.BugSample S ON B.SampleID = S.SampleID',
                   'sample.mass', mass_callback, lookup)
+
+    # Data inserted with manual IDs need to reset the table sequence
+    reset_sequence(pgcurs, 'sample.samples', 'sample_id')
 
 
 def migrate_samples(mscurs, pgcurs):

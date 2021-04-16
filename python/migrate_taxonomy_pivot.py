@@ -1,7 +1,7 @@
 import pyodbc
 from lib.logger import Logger
 from lib.progress_bar import ProgressBar
-from utilities import sanitize_string_col, log_record_count, add_metadata, sanitize_string
+from utilities import sanitize_string_col, log_record_count, add_metadata, sanitize_string, reset_sequence
 from postgres_lookup_data import lookup_data, insert_row, log_row_count, process_table, process_query
 
 
@@ -12,6 +12,10 @@ def migrate(mscurs, pgcurs):
     process_query(mscurs, pgcurs,
                   'SELECT a.* FROM PilotDB.taxa.attributes a INNER JOIN PilotDB.taxa.taxonomy t ON a.code = t.code',
                   'taxa.taxa_attributes', taxa_attributes_callback)
+
+    reset_sequence(pgcurs, 'taxa.taxonomy', 'taxonomy_id')
+    reset_sequence(pgcurs, 'taxa.attributes', 'attribute_id')
+    # reset_sequence(pgcurs, 'taxa.taxa_attributes', 'attribute_id')
 
 
 def taxonomy_callback(msdata, lookup):

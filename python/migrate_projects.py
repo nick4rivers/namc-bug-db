@@ -3,7 +3,7 @@ import psycopg2
 from psycopg2.extras import execute_values
 from lib.logger import Logger
 from lib.progress_bar import ProgressBar
-from utilities import sanitize_string_col, log_record_count
+from utilities import sanitize_string_col, log_record_count, reset_sequence
 from postgres_lookup_data import lookup_data, insert_row, log_row_count, process_query
 from lookup_data import get_db_id
 
@@ -28,6 +28,9 @@ FROM (SELECT P.ProjectID, Bs.SampleID
       WHERE SampleID IS NOT NULL
         AND ProjectID IS NOT NULL) T""",
                   'sample.project_samples', project_samples_callback)
+
+    # Data inserted with manual IDs need to reset the table sequence
+    reset_sequence(pgcurs, 'sample.projects', 'project_id')
 
 
 def migrate_projects(mscurs, pgcurs):
