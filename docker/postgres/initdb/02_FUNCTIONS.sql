@@ -1085,16 +1085,11 @@ drop function if exists sample.fn_sample_taxa;
 create or replace function sample.fn_sample_taxa(p_sample_id int)
     returns table
             (
-                taxonomy_id smallint,
-                level_id    smallint,
-                level_name  varchar(50),
-                phylum      varchar(255),
-                class       varchar(255),
-                subclass    varchar(255),
-                "Order"     varchar(255),
-                family      varchar(255),
-                genus       varchar(255),
-                species     varchar(255)
+                taxonomy_id     smallint,
+                scientific_name varchar(255),
+                level_id        smallint,
+                level_name      varchar(50),
+                organism_count  real
             )
     language plpgsql
 as
@@ -1102,20 +1097,19 @@ $$
 begin
     return query
         select o.taxonomy_id,
+               t.scientific_name,
                t.level_id,
                l.level_name,
-               ct.phylum,
-               ct.class,
-               ct.subclass,
-               ct."Order",
-               ct.family,
-               ct.genus,
-               ct.species
+               sum(o.split_count) organism_count
         FROM sample.organisms o
                  INNER JOIN taxa.taxonomy t on o.taxonomy_id = t.taxonomy_id
                  INNER JOIN taxa.taxa_levels l on t.level_id = l.level_id
                  LEFT JOIN taxa.vw_taxonomy_crosstab ct ON o.taxonomy_id = ct.taxonomy_id
-        where o.sample_id = p_sample_id;
+        where o.sample_id = p_sample_id
+        group by o.taxonomy_id,
+                 t.scientific_name,
+                 t.level_id,
+                 l.level_name;
 end
 $$;
 comment on function sample.fn_sample_taxa is
@@ -1125,22 +1119,32 @@ drop function if exists sample.fn_sample_translation_taxa;
 create or replace function sample.fn_sample_translation_taxa(p_sample_id int, p_translation_id int)
     returns table
             (
-                taxonomy_id smallint,
-                level_id    smallint,
-                level_name  varchar(50),
-                phylum      varchar(255),
-                class       varchar(255),
-                subclass    varchar(255),
-                "Order"     varchar(255),
-                family      varchar(255),
-                genus       varchar(255),
-                species     varchar(255)
+                taxonomy_id     smallint,
+                scientific_name varchar(255),
+                level_id        smallint,
+                level_name      varchar(50),
+                organism_count  real
             )
     language plpgsql
 as
 $$
 begin
-    return query select * FROM sample.sample_taxa(p_sample_id);
+    return query
+        select tt.translation_taxonomy_id,
+               coalesce(tt.translation_scientific_name, o.scientific_name) scientific_alias,
+               tt.translation_level_id,
+               tt.translation_level_name,
+               sum(o.split_count)
+        FROM
+             (select t.taxonomy_id, t.scientific_name, o.split_count
+              from sample.organisms o
+                 inner join taxa.taxonomy t on o.taxonomy_id = t.taxonomy_id
+                 where o.sample_id = p_sample_id) o
+                 left join lateral taxa.fn_translation_taxa(p_translation_id, o.taxonomy_id) tt on true
+        group by tt.translation_taxonomy_id,
+                 scientific_alias,
+                 tt.translation_level_id,
+                 tt.translation_level_name;
 end
 $$;
 comment on function sample.fn_sample_translation_taxa is
@@ -1150,10 +1154,11 @@ drop function if exists taxa.fn_translation_taxa;
 create or replace function taxa.fn_translation_taxa(p_translation_id int, p_taxonomy_id int)
     returns table
             (
-                taxonomy_id smallint,
-                scientific_name varchar(255),
-                level_id smallint,
-                level_name varchar(50)
+                taxonomy_id        smallint,
+                translation_taxonomy_id     smallint,
+                translation_scientific_name varchar(255),
+                translation_level_id        smallint,
+                translation_level_name      varchar(50)
             )
     language plpgsql
 as
@@ -1165,7 +1170,7 @@ begin
          2. Join this hierarchy with the taxa in the translation
          3. Select the first item up the hierarchy (ensuring sorted lowest to highest
          */
-        SELECT tt.taxonomy_id, tt.translation_taxonomy_name, l.level_id, l.level_name
+        SELECT cast(p_taxonomy_id as smallint), tt.taxonomy_id, tt.translation_taxonomy_name, l.level_id, l.level_name
         FROM taxa.fn_tree(cast(p_taxonomy_id as smallint)) t
                  inner join taxa.taxa_levels l on t.level_id = l.level_id
                  inner join taxa.taxa_translations tt on t.taxonomy_id = tt.taxonomy_id
