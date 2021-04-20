@@ -1154,8 +1154,117 @@ comment on function sample.fn_sample_translation_taxa is
     Note that the output taxonomy_id and scientific name are those of the translation, not
     the original taxa used by the lab!';
 
+drop function if exists sample.fn_model_taxa;
+create or replace function sample.fn_model_taxa(p_sample_id int, p_model_id int)
+    returns table
+            (
+                model_id        smallint,
+                sample_id       int,
+                taxonomy_id     smallint,
+                scientific_name varchar(2550),
+                level_id        smallint,
+                level_name      varchar(50),
+                organism_count  bigint
+            )
+    language plpgsql
+
+as
+$$
+declare
+    p_translation_id smallint;
+    p_fixed_count    smallint;
+
+begin
+    select into p_translation_id, p_fixed_count,
+        translation_id, fixed_count
+    from geo.models
+    where model_id = p_model_id;
+
+    if (p_translation_id is null) then
+        return query select * from sample.fn_sample_taxa(p_sample_id);
+    else
+        return query select * from sample.fn_rarified_taxa(p_sample_id, p_fixed_count);
+    end if;
+end
+$$;
+
+drop function if exists sample.fn_rarified_taxa;
+create or replace function sample.fn_rarified_taxa(p_sample_id int, p_fixed_count int)
+    returns table
+            (
+                taxonomy_id     smallint,
+                scientific_name varchar(2550),
+                level_id        smallint,
+                level_name      varchar(50),
+                organism_count  bigint
+            )
+    language plpgsql
+as
+$$
+declare
+    available_organisms bigint;
+    rarified_organisms  bigint;
+begin
+
+    create temp table temp_rarified_taxa
+    (
+        taxonomy_id     smallint not null,
+        rarified_count  bigint   not null default 0,
+        available_count bigint   not null default 0,
+        probability     real
+    );
+
+    -- insert the sample organisms into the temporary rarifaction table
+    insert into temp_rarified_taxa (taxonomy_id, available_count)
+    select o.taxonomy_id, cast(sum(o.split_count) as bigint)
+    from sample.organisms o
+    where o.sample_id = p_sample_id
+    group by o.taxonomy_id;
+
+    -- determine the total count of organisms
+    select sum(available_count) into available_organisms from temp_rarified_taxa;
+    select 0 into rarified_organisms;
+
+--     SELECT setseed(0);
+
+    while (available_organisms > p_fixed_count and rarified_organisms < p_fixed_count)
+        loop
+            -- reset all the probabilities
+            update temp_rarified_taxa SET probability = NULL;
+
+            -- calculate the probability of picking one of the taxa based on its proportion of the total
+            update temp_rarified_taxa
+            set probability = random() * available_count / available_organisms
+            where available_count > 0;
+
+            -- take one taxa from the highest probability
+            with highest_probability as (
+                select t.taxonomy_id from temp_rarified_taxa t order by t.probability desc limit 1
+            )
+            update temp_rarified_taxa
+            set available_count = available_count - 1,
+                rarified_count  = rarified_count + 1
+            from highest_probability
+            where temp_rarified_taxa.taxonomy_id = highest_probability.taxonomy_id;
+
+            select sum(available_count) into available_organisms from temp_rarified_taxa;
+            select sum(rarified_count) into rarified_organisms from temp_rarified_taxa;
+        end loop;
+
+    -- return the rarified taxa
+    return query
+        select t.taxonomy_id, tt.scientific_name, l.level_id, l.level_name, t.rarified_count
+        from temp_rarified_taxa t
+                 inner join taxa.taxonomy tt on t.taxonomy_id = tt.taxonomy_id
+                 inner join taxa.taxa_levels l on tt.level_id = l.level_id
+        where rarified_count > 0;
+end
+$$;
+
+
+
 drop function if exists taxa.fn_translation_taxa;
-create or replace function taxa.fn_translation_taxa(p_translation_id int, p_taxonomy_id int)
+create or replace function taxa.fn_sample_translation_taxa(p_translation_id int, p_taxonomy_id int)
     returns table
             (
                 taxonomy_id                 smallint,
@@ -1187,3 +1296,4 @@ comment on function taxa.fn_translation_taxa is
     'Function to retrieve the taxonomy ID of a taxa according to a specific translation.
     The result could be the same taxonomy ID that was passed in or one higher up in the taxonomic
     hierarchy.';
+
