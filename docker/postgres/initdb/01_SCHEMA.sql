@@ -1,6 +1,6 @@
-CREATE EXTENSION postgis;
-CREATE EXTENSION tablefunc;
-
+create extension if not exists postgis;
+create extension if not exists tablefunc;
+create extension if not exists "uuid-ossp";
 
 CREATE FUNCTION fn_before_update()
     RETURNS trigger AS
