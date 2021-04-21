@@ -3,6 +3,7 @@ import pytest
 import psycopg2
 from psycopg2.extras import execute_values
 import textwrap
+import random
 
 
 @pytest.fixture(scope='module')
@@ -28,19 +29,10 @@ def cursor(cnxn):
 @pytest.fixture
 def translation_data(cursor):
 
-    # Insert a customer box and sample
-    cursor.execute("INSERT INTO entity.entities (country_id) VALUES (231) returning entity_id")
-    entity_id = cursor.fetchone()[0]
+    # Insert an entity, box and sample
+    sample_id = insert_test_sample(cursor)
 
-    cursor.execute("INSERT INTO entity.organizations (entity_id, organization_name, organization_type_id) VALUES (%s, 'test organization', 1)", [entity_id])
-    cursor.execute("INSERT INTO entity.individuals (entity_id, first_name, last_name) VALUES (%s, 'test first', 'test last')", [entity_id])
-
-    cursor.execute('INSERT INTO sample.boxes (customer_id, submitter_id, box_state_id) VALUES (%s, %s, 1) returning box_id', [entity_id, entity_id])
-    box_id = cursor.fetchone()[0]
-
-    cursor.execute('INSERT INTO sample.samples (box_id, type_id, method_id, habitat_id) VALUES (%s, 1, 1, 1) returning sample_id', [box_id])
-    sample_id = cursor.fetchone()[0]
-
+    # insert top level taxa
     kid = insert_taxa(cursor, 'Animalia A', 'Kingdom', None)
 
     # Taxonomic hierarchy with two taxa at each level and one sample organism for each taxa
@@ -63,6 +55,22 @@ def translation_data(cursor):
     # Translation has one entry at ClassAA and one at Phylum B
     insert_taxa_translation(cursor, translation_id, 'Class AA', 'test at AA')
     insert_taxa_translation(cursor, translation_id, 'Phylum B', 'test phylum')
+
+
+def insert_test_sample(cursor):
+
+    # Insert a customer box and sample
+    cursor.execute("INSERT INTO entity.entities (country_id) VALUES (231) returning entity_id")
+    entity_id = cursor.fetchone()[0]
+
+    cursor.execute("INSERT INTO entity.organizations (entity_id, organization_name, organization_type_id) VALUES (%s, 'test organization', 1)", [entity_id])
+    cursor.execute("INSERT INTO entity.individuals (entity_id, first_name, last_name) VALUES (%s, 'test first', 'test last')", [entity_id])
+
+    cursor.execute('INSERT INTO sample.boxes (customer_id, submitter_id, box_state_id) VALUES (%s, %s, 1) returning box_id', [entity_id, entity_id])
+    box_id = cursor.fetchone()[0]
+
+    cursor.execute('INSERT INTO sample.samples (box_id, type_id, method_id, habitat_id) VALUES (%s, 1, 1, 1) returning sample_id', [box_id])
+    return cursor.fetchone()[0]
 
 
 def insert_taxa(cursor, scientific_name, level, parent_id):
@@ -91,6 +99,21 @@ def insert_organism(cursor, sample_id, taxonomy_id, split_count):
 
     cursor.execute('INSERT INTO sample.organisms (sample_id, taxonomy_id, life_stage_id, split_count) VALUES (%s, %s, 1, %s) returning organism_id', [sample_id, taxonomy_id, split_count])
     return cursor.fetchone()[0]
+
+
+@pytest.fixture
+def rarefaction_data(cursor):
+
+    cursor.execute('SELECT taxonomy_id from taxa.taxonomy')
+    taxa = [row[0] for row in cursor.fetchall()]
+
+    # Insert an entity, box and sample
+    sample_id = insert_test_sample(cursor)
+
+    for n in range(0, 10):
+        taxonomy_id = random.choice(taxa)
+        cursor.execute('insert into sample.organisms (sample_id, taxonomy_id, life_stage_id, split_count) values (%s, %s, 1, %s)', [sample_id, taxonomy_id, random.randint(1, 15)])
+
 
 # @pytest.fixture
 # def birch_bookshelf_project(cursor):
