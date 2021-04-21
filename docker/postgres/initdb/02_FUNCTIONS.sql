@@ -1276,7 +1276,7 @@ $$;
 
 
 drop function if exists taxa.fn_translation_taxa;
-create or replace function taxa.fn_sample_translation_taxa(p_translation_id int, p_taxonomy_id int)
+create or replace function taxa.fn_translation_taxa(p_translation_id int, p_taxonomy_id int)
     returns table
             (
                 taxonomy_id                 smallint,
