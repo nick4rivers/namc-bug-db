@@ -17,17 +17,17 @@ as
 $$
 begin
     return query
-        select sample_id,
-               diameter,
-               sub_sample_count,
-               tow_length,
-               volume,
-               aliquot,
-               size_interval,
-               tow_type,
-               to_json(updated_date) #>> '{}'
-        From sample.plankton
-        order by sample_id
+        select p.sample_id,
+               p.diameter,
+               p.sub_sample_count,
+               p.tow_length,
+               p.volume,
+               p.aliquot,
+               p.size_interval,
+               p.tow_type,
+               to_json(p.updated_date) #>> '{}'
+        From sample.plankton p
+        order by p.sample_id
         limit p_limit offset p_offset;
 end
 $$;
@@ -48,16 +48,17 @@ create or replace function sample.fn_drift(p_limit int, p_offset int)
 as
 $$
 begin
-    select sample_id,
-           net_area,
-           net_duration,
-           stream_depth,
-           net_depth,
-           net_velocity,
-           to_json(updated_date) #>> '{}'
-    from sample.drift
-    order by sample_id
-    limit p_limit offset p_offset;
+    return query
+        select d.sample_id,
+               d.net_area,
+               d.net_duration,
+               d.stream_depth,
+               d.net_depth,
+               d.net_velocity,
+               to_json(d.updated_date) #>> '{}'
+        from sample.drift d
+        order by d.sample_id
+        limit p_limit offset p_offset;
 end
 $$;
 
@@ -86,7 +87,7 @@ begin
                l.level_name,
                f.fish_length,
                f.fish_mass,
-               to_json(updated_date) #>> '{}'
+               to_json(f.updated_date) #>> '{}'
         FROM (
                  select *
                  from sample.fish
@@ -126,8 +127,8 @@ begin
                m.mass_method_id,
                mm.abbreviation,
                mm.mass_method_name,
-               mass,
-               to_json(updated_date) #>> '{}'
+               m.mass,
+               to_json(m.updated_date) #>> '{}'
         From (
                  select *
                  from sample.mass
