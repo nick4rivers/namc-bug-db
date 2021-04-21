@@ -20,6 +20,7 @@ import {
     SitePredictorValue,
     Taxonomy,
     Translation,
+    RawSampleTaxa,
     util
 } from '@namcbugdb/common'
 import * as pg from '../pg'
@@ -264,6 +265,14 @@ export default {
             const pool = await pg.getPool()
             const data = await pg.getModelPredictors(pool, limit, offset, modelId)
             return createPagination<ModelPredictor>(data, 500, 0)
+        },
+
+        sampleTaxaRaw: async (obj, { limit, offset, siteId }, { user }): Promise<PaginatedRecords<RawSampleTaxa>> => {
+            loggedInGate(user)
+
+            const pool = await pg.getPool()
+            const data = await pg.getSampleTaxaRaw(pool, sampleId)
+            return createPagination<SitePredictorValue>(data, limit, offset)
         }
     },
 

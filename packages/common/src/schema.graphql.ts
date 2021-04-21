@@ -60,6 +60,12 @@ const typeDefs = gql`
         samplePredictorValues(sampleId: Int!): PaginatedSamplePredictorValue
         modelPredictors(limit: Int = ${queryLimits.modelPredictors}, offset: Int = 0, modelId: Int!): PaginatedModelPredictors
         translations(limit: Int = ${queryLimits.translations}, offset: Int = 0): PaginatedTranslations
+
+        sampleTaxaRaw(sampleId: Int!): PaginatedRawSampleTaxa
+        sampleTaxaGeneralized(sampleId: Int!): PaginatedGeneralizedSampleTaxa
+        sampleTaxaTranslated(sampleId: Int!, translationId: Int!): PaginatedSampleTaxa
+        sampleTaxaRarefied(sampleId: Int!, fixedCount: Int!gs): PaginatedSampleTaxa
+        # sampleTaxaModel(sampleId: Int!, modelId: Int!, limit: Int = ${queryLimits.translations}, offset: Int = 0): PaginatedSampleTaxa
     }
 
     # this schema allows the following mutation:
@@ -208,6 +214,37 @@ sites API endpoint.
 
         "The number of samples that are available for this site."
         sampleCount: Int
+    }
+
+    type RawSampleTaxa {
+        taxonomyId: Int,
+        scientificName: String
+        levelId: Int
+        levelName: String
+        rawCount: Float
+        correctedCount: Float
+        rawBigRareCount: Int
+        correctedBigRareCount: Float
+    }
+
+    type SampleTaxa {
+        taxonomyId: Int
+        scientificName: String
+        taxaLevelId: Int
+        taxaLevel: String
+        organismCount: Int
+    }
+
+    type GeneralizedSampleTaxa {
+
+        taxonomyId: Int
+        scientificName: String
+        taxaLevelId: Int
+        taxaLevel: String
+        lifeStageId: Int
+        lifeStage: String
+        bugSize: Float
+        organismCount: Int
     }
 
     type SampleInfo {
@@ -603,6 +640,20 @@ type SamplePredictorValue {
 
     type PaginatedTranslations {
         records: [Translation]
+        nextOffset: Int
+    }
+
+    type PaginatedRawSampleTaxa {
+        records: [RawSampleTaxa]
+    }
+
+    type PaginatedSampleTaxa {
+        records: [SampleTaxa]
+        nextOffset: Int
+    }
+
+    type PaginatedGeneralizedSampleTaxa {
+        records: [GeneralizedSampleTaxa]
         nextOffset: Int
     }
 `

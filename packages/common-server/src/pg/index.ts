@@ -137,3 +137,7 @@ export const setSamplePredictorValue = (
 const setSiteCatchmentQuery = 'SELECT sample.fn_set_site_catchment($1, $2)'
 export const setSiteCatchment = (pool, siteId: number, catchment: string): DBReturnPromiseType =>
     pgPromise(pool, setSiteCatchmentQuery, [siteId, catchment])
+
+const sampleTaxaRawQuery = 'SELECT * FROM sample.fn_sample_taxa_raw($1)'
+export const getSampleTaxaRaw = (pool, sampleId: number): DBReturnPromiseType =>
+    pgPromise(pool, sitePredictorValuesQuery, [sampleId])
