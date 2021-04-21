@@ -73,7 +73,7 @@ create or replace function sample.fn_fish(p_limit int, p_offset int)
                 level_name      varchar(50),
                 fish_length     real,
                 fish_mass       real,
-                to_json         text
+                updated_date    text
             )
     language plpgsql
 as

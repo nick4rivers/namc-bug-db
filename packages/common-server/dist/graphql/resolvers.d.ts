@@ -1,4 +1,4 @@
-import { AuthResponse, Box, BoxInfo, Model, ModelInfo, ModelPredictor, PaginatedRecords, Predictor, Project, Sample, SampleInfo, SampleOrganism, SamplePredictorValue, Site, SiteInfo, SitePredictorValue, Taxonomy, Translation } from '@namcbugdb/common';
+import { AuthResponse, Box, BoxInfo, Model, ModelInfo, ModelPredictor, PaginatedRecords, Predictor, Project, Sample, SampleInfo, SampleOrganism, SamplePredictorValue, Site, SiteInfo, SitePredictorValue, Taxonomy, Translation, RawSampleTaxa, GeneralizedSampleTaxa, TranslationSampleTaxa, RarefiedSampleTaxa, PlanktonSample, DriftSample, FishSample, MassSample } from '@namcbugdb/common';
 declare const _default: {
     Query: {
         auth: (obj: any, args: any, ctx: any) => Promise<AuthResponse>;
@@ -108,6 +108,52 @@ declare const _default: {
         }, { user }: {
             user: any;
         }) => Promise<PaginatedRecords<ModelPredictor>>;
+        sampleTaxaRaw: (obj: any, { sampleId }: {
+            sampleId: any;
+        }, { user }: {
+            user: any;
+        }) => Promise<PaginatedRecords<RawSampleTaxa>>;
+        sampleTaxaGeneralized: (obj: any, { sampleId }: {
+            sampleId: any;
+        }, { user }: {
+            user: any;
+        }) => Promise<PaginatedRecords<GeneralizedSampleTaxa>>;
+        sampleTaxaTranslation: (obj: any, { sampleId, translationId }: {
+            sampleId: any;
+            translationId: any;
+        }, { user }: {
+            user: any;
+        }) => Promise<PaginatedRecords<TranslationSampleTaxa>>;
+        sampleTaxaRarefied: (obj: any, { sampleId, fixedCount }: {
+            sampleId: any;
+            fixedCount: any;
+        }, { user }: {
+            user: any;
+        }) => Promise<PaginatedRecords<RarefiedSampleTaxa>>;
+        planktonSamples: (obj: any, { limit, offset }: {
+            limit: any;
+            offset: any;
+        }, { user }: {
+            user: any;
+        }) => Promise<PaginatedRecords<PlanktonSample>>;
+        driftSamples: (obj: any, { limit, offset }: {
+            limit: any;
+            offset: any;
+        }, { user }: {
+            user: any;
+        }) => Promise<PaginatedRecords<DriftSample>>;
+        fishSamples: (obj: any, { limit, offset }: {
+            limit: any;
+            offset: any;
+        }, { user }: {
+            user: any;
+        }) => Promise<PaginatedRecords<FishSample>>;
+        massSamples: (obj: any, { limit, offset }: {
+            limit: any;
+            offset: any;
+        }, { user }: {
+            user: any;
+        }) => Promise<PaginatedRecords<MassSample>>;
     };
     Mutation: {
         setSitePredictorValue: (obj: any, { siteId, predictorId, value }: {

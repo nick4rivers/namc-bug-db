@@ -61,10 +61,17 @@ const typeDefs = gql`
         modelPredictors(limit: Int = ${queryLimits.modelPredictors}, offset: Int = 0, modelId: Int!): PaginatedModelPredictors
         translations(limit: Int = ${queryLimits.translations}, offset: Int = 0): PaginatedTranslations
 
+        # Sample side tables
+        planktonSamples(limit: Int = ${queryLimits.samples}, offset: Int = 0): PaginatedPlankton
+        driftSamples(limit: Int = ${queryLimits.samples}, offset: Int = 0): PaginatedDrift
+        fishSamples(limit: Int = ${queryLimits.samples}, offset: Int = 0): PaginatedFish
+        massSamples(limit: Int = ${queryLimits.samples}, offset: Int = 0): PaginatedMass
+
+        # Sample Taxonomy
         sampleTaxaRaw(sampleId: Int!): PaginatedRawSampleTaxa
         sampleTaxaGeneralized(sampleId: Int!): PaginatedGeneralizedSampleTaxa
-        sampleTaxaTranslated(sampleId: Int!, translationId: Int!): PaginatedSampleTaxa
-        sampleTaxaRarefied(sampleId: Int!, fixedCount: Int!gs): PaginatedSampleTaxa
+        sampleTaxaTranslation(sampleId: Int!, translationId: Int!): PaginatedSampleTranslationTaxa
+        sampleTaxaRarefied(sampleId: Int!, fixedCount: Int!): PaginatedRarefiedSampleTaxa
         # sampleTaxaModel(sampleId: Int!, modelId: Int!, limit: Int = ${queryLimits.translations}, offset: Int = 0): PaginatedSampleTaxa
     }
 
@@ -217,7 +224,7 @@ sites API endpoint.
     }
 
     type RawSampleTaxa {
-        taxonomyId: Int,
+        taxonomyId: Int
         scientificName: String
         levelId: Int
         levelName: String
@@ -236,14 +243,37 @@ sites API endpoint.
     }
 
     type GeneralizedSampleTaxa {
-
         taxonomyId: Int
         scientificName: String
-        taxaLevelId: Int
-        taxaLevel: String
+        levelId: Int
+        levelName: String
         lifeStageId: Int
         lifeStage: String
+        lifeStageAbbreviation: String
         bugSize: Float
+        rawCount: Float
+        correctedCount: Float
+        rawBigRareCount: Int
+        correctedBigRareCount: Float
+    }
+
+    type TranslationSampleTaxa {  
+        taxonomyId: Int
+        scientificName: String
+        aliasName: String
+        levelId: Int
+        levelName: String
+        rawCount: Float
+        correctedCount: Float
+        rawBigRareCount: Int
+        correctedBigRareCount: Float
+    }
+
+    type RarefiedSampleTaxa {
+        taxonomyId: Int
+        scientificName: String
+        levelId: Int
+        levelName: String
         organismCount: Int
     }
 
@@ -316,6 +346,55 @@ type SamplePredictorValue {
                 predictorValueUpdatedDate: String
                 status:                       String
 }
+
+type PlanktonSample {
+    sampleId:        Int
+    diameter:        Float
+    subSampleCount:  Int
+    towLength:       Float
+    volume:          Float
+    aliquot:         Float
+    sizeInterval:    Float
+    towType:         String
+    updatedDate:     String
+
+}
+
+type DriftSample {
+    sampleId:    Int
+    netArea:     Float
+    netDuration: Float
+    streamDepth: Float
+    netDepth:    Float
+    netVelocity: Float
+    updatedDate: String
+}
+
+type FishSample {
+    sampleId: Int
+    taxonomyId: Int
+    scientificName: String
+    levelId: Int
+    levelName: String
+    fishLength: Float
+    fishMass: Float
+    updatedDate: String
+}
+
+type MassSample {
+    sampleId: Int
+    typeId: Int
+    typeAbbreviation: String
+    typeName: String
+    methodId: Int
+    methodAbbreviation: String
+    methodName: String
+    mass: Float
+    updatedDate: String
+
+}
+
+
     #  type Individual {
     #     entityId: Int
     #     firstName: String
@@ -645,6 +724,7 @@ type SamplePredictorValue {
 
     type PaginatedRawSampleTaxa {
         records: [RawSampleTaxa]
+        nextOffset: Int
     }
 
     type PaginatedSampleTaxa {
@@ -654,6 +734,36 @@ type SamplePredictorValue {
 
     type PaginatedGeneralizedSampleTaxa {
         records: [GeneralizedSampleTaxa]
+        nextOffset: Int
+    }
+
+    type PaginatedSampleTranslationTaxa {
+        records: [TranslationSampleTaxa]
+        nextOffset: Int
+    }
+
+    type PaginatedRarefiedSampleTaxa {
+        records: [RarefiedSampleTaxa]
+        nextOffset: Int
+    }
+
+    type PaginatedPlankton {
+        records: [PlanktonSample]
+        nextOffset: Int
+    }
+
+    type PaginatedDrift {
+        records: [DriftSample]
+        nextOffset: Int
+    }
+
+    type PaginatedFish {
+        records: [FishSample]
+        nextOffset: Int
+    }
+
+    type PaginatedMass {
+        records: [MassSample]
         nextOffset: Int
     }
 `

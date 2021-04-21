@@ -119,6 +119,22 @@ const translationsQuery = 'SELECT * FROM taxa.fn_translations($1, $2)'
 export const getTranslations = (pool, limit: number, offset: number): DBReturnPromiseType =>
     pgPromise(pool, translationsQuery, [limit, offset])
 
+const planktonSampleQuery = 'SELECT * FROM sample.fn_plankton($1, $2)'
+export const getPlanktonSamples = (pool, limit: number, offset: number): DBReturnPromiseType =>
+    pgPromise(pool, planktonSampleQuery, [limit, offset])
+
+const driftSampleQuery = 'SELECT * FROM sample.fn_drift($1, $2)'
+export const getDriftSamples = (pool, limit: number, offset: number): DBReturnPromiseType =>
+    pgPromise(pool, driftSampleQuery, [limit, offset])
+
+const fishSampleQuery = 'SELECT * FROM sample.fn_fish($1, $2)'
+export const getFishSamples = (pool, limit: number, offset: number): DBReturnPromiseType =>
+    pgPromise(pool, fishSampleQuery, [limit, offset])
+
+const massSampleQuery = 'SELECT * FROM sample.fn_mass($1, $2)'
+export const getMassSamples = (pool, limit: number, offset: number): DBReturnPromiseType =>
+    pgPromise(pool, massSampleQuery, [limit, offset])
+
 /**
  * Mutations
  */
@@ -140,4 +156,16 @@ export const setSiteCatchment = (pool, siteId: number, catchment: string): DBRet
 
 const sampleTaxaRawQuery = 'SELECT * FROM sample.fn_sample_taxa_raw($1)'
 export const getSampleTaxaRaw = (pool, sampleId: number): DBReturnPromiseType =>
-    pgPromise(pool, sitePredictorValuesQuery, [sampleId])
+    pgPromise(pool, sampleTaxaRawQuery, [sampleId])
+
+const sampleTaxaGeneralizedQuery = 'SELECT * FROM sample.fn_sample_taxa_generalized($1)'
+export const getSampleTaxaGeneralized = (pool, sampleId: number): DBReturnPromiseType =>
+    pgPromise(pool, sampleTaxaGeneralizedQuery, [sampleId])
+
+const sampleTaxaTranslationQuery = 'SELECT * FROM sample.fn_sample_translation_taxa($1, $2)'
+export const getSampleTaxaTranslation = (pool, sampleId: number, translationId: number): DBReturnPromiseType =>
+    pgPromise(pool, sampleTaxaTranslationQuery, [sampleId, translationId])
+
+const sampleTaxaRarefiedQuery = 'SELECT * FROM sample.fn_rarefied_taxa($1, $2)'
+export const getSampleTaxaRarefied = (pool, sampleId: number, fixedCount: number): DBReturnPromiseType =>
+    pgPromise(pool, sampleTaxaRarefiedQuery, [sampleId, fixedCount])

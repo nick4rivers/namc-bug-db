@@ -1135,6 +1135,7 @@ create or replace function sample.fn_sample_taxa_generalized(p_sample_id int)
                 life_stage_id            smallint,
                 life_stage               varchar(50),
                 life_stage_abbreviation  char,
+                bug_size                 real,
                 raw_count                real,
                 corrected_count          double precision,
                 raw_big_rare_count       bigint,
@@ -1152,6 +1153,7 @@ begin
                ll.life_stage_id,
                ll.life_stage_name,
                ll.abbreviation,
+               o.bug_size,
                sum(o.split_count),
                sum(o.split_count) * 100 / s.lab_split * 100 / s.field_split,
                sum(o.big_rare_count),
@@ -1170,6 +1172,7 @@ begin
                  ll.life_stage_id,
                  ll.life_stage_name,
                  ll.abbreviation,
+                 o.bug_size,
                  s.lab_split,
                  s.field_split;
 end

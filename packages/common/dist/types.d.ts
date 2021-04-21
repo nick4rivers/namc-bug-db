@@ -351,3 +351,89 @@ export declare type Translation = {
     createdDate: string;
     updatedDate: string;
 };
+export declare type PlanktonSample = {
+    sampleId: number;
+    diameter: number;
+    subSampleCount: number;
+    towLength: number;
+    volume: number;
+    aliquot: number;
+    sizeInterval: number;
+    towType: string;
+    updatedDate: string;
+};
+export declare type DriftSample = {
+    sampleId: number;
+    netArea: number;
+    netDuration: number;
+    streamDepth: number;
+    netDepth: number;
+    netVelocity: number;
+    updatedDate: string;
+};
+export declare type FishSample = {
+    sampleId: number;
+    taxonomyId: number;
+    scientificName: string;
+    levelId: number;
+    levelName: string;
+    fishLength: number;
+    fishMass: number;
+    updatedDate: string;
+};
+export declare type MassSample = {
+    sampleId: number;
+    typeId: number;
+    typeAbbreviation: string;
+    typeName: string;
+    methodId: number;
+    methodAbbreviation: string;
+    methodName: string;
+    mass: number;
+    updatedDate: string;
+};
+export declare type RawSampleTaxa = {
+    taxonomyId: number;
+    scientificName: string;
+    levelId: number;
+    levelName: string;
+    lifeStageId: number;
+    lifeStage: string;
+    lifeStageAbbreviation: string;
+    rawCount: number;
+    correctedCount: number;
+    rawBigRareCount: number;
+    correctedBigRareCount: number;
+};
+export declare type GeneralizedSampleTaxa = {
+    taxonomyId: number;
+    scientificName: string;
+    levelId: number;
+    levelName: string;
+    lifeStageId: number;
+    lifeStage: string;
+    lifeStageAbbreviation: string;
+    bugSize: number;
+    rawCount: number;
+    correctedCount: number;
+    rawBigRareCount: number;
+    correctedBigRareCount: number;
+};
+export declare type TranslationSampleTaxa = {
+    taxonomyId: number;
+    scientificName: string;
+    aliasName: string;
+    levelId: number;
+    levelName: string;
+    rawCount: number;
+    correctedCount: number;
+    rawBigRareCount: number;
+    correctedBigRareCount: number;
+};
+export declare type RarefiedSampleTaxa = {
+    taxonomyId: number;
+    scientificName: string;
+    levelId: number;
+    levelName: string;
+    organismCount: number;
+};
