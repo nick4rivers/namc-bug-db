@@ -123,27 +123,44 @@ HAVING count(p.project_id) > 0
 DROP MATERIALIZED VIEW IF EXISTS taxa.vw_taxonomy_crosstab cascade;
 CREATE MATERIALIZED VIEW taxa.vw_taxonomy_crosstab AS
 (
-SELECT *
-FROM crosstab(
-             'SELECT t.taxonomy_id, f.level_id, f.level_name, t.scientific_name FROM taxa.taxonomy t, taxa.fn_tree(t.taxonomy_id) f',
-             'SELECT level_name FROM taxa.taxa_levels where is_active = TRUE  and level_id > 1 order BY level_id')
-         AS final_result(taxonomy_id INT,
-                         level_id INT,
-                         level_name varchar(255),
-                         Phylum varchar(255),
-                         Class varchar(255),
-                         Subclass varchar(255),
-                         "Order" varchar(255),
-                         Suborder varchar(255),
-                         Family varchar(255),
-                         Subfamily varchar(255),
-                         Tribe varchar(255),
-                         Genus varchar(255),
-                         Subgenus varchar(255),
-                         Species varchar(255),
-                         Subspecies varchar(255)
-        )
-    );
+select t.taxonomy_id,
+       t.scientific_name,
+       t.level_id,
+       l.level_name,
+       c.Phylum,
+       c.Class,
+       c.Subclass,
+       c."Order",
+       c.Suborder,
+       c.Family,
+       c.Subfamily,
+       c.Tribe,
+       c.Genus,
+       c.Subgenus,
+       c.Species,
+       c.Subspecies
+from (SELECT *
+      FROM crosstab(
+                   'SELECT t.taxonomy_id, f.level_name, t.scientific_name FROM taxa.taxonomy t, taxa.fn_tree(t.taxonomy_id) f order by 1,2',
+                   'SELECT level_name FROM taxa.taxa_levels where is_active = TRUE  and level_id > 1 order BY level_id')
+               AS final_result(taxonomy_id INT,
+                               Phylum varchar(255),
+                               Class varchar(255),
+                               Subclass varchar(255),
+                               "Order" varchar(255),
+                               Suborder varchar(255),
+                               Family varchar(255),
+                               Subfamily varchar(255),
+                               Tribe varchar(255),
+                               Genus varchar(255),
+                               Subgenus varchar(255),
+                               Species varchar(255),
+                               Subspecies varchar(255)
+              )
+     ) c
+         inner join taxa.taxonomy t on c.taxonomy_id = t.taxonomy_id
+         inner join taxa.taxa_levels l on t.level_id = l.level_id
+);
 
 DROP MATERIALIZED VIEW IF EXISTS sample.vw_samples;
 CREATE MATERIALIZED VIEW sample.vw_samples AS

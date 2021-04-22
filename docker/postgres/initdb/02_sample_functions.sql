@@ -329,90 +329,43 @@ begin
                  inner join taxa.taxonomy t on c.taxonomy_id = t.taxonomy_id
                  inner join taxa.taxa_levels l on t.level_id = l.level_id
         group by c.taxonomy_id, t.scientific_name, c.taxonomy_id, l.level_id, l.level_name;
-
 end
 $$;
 
-drop function if exists sample.fn_model_taxa;
-create or replace function sample.fn_model_taxa(p_sample_id int, p_model_id int)
+drop function if exists sample.fn_translation_rarefied_taxa;
+create or replace function sample.fn_translation_rarefied_taxa(p_sample_id int, p_translation_id int, p_fixed_count int)
     returns table
             (
                 taxonomy_id     smallint,
                 scientific_name varchar(2550),
                 level_id        smallint,
                 level_name      varchar(50),
-                corrected_count  bigint
+                organism_count  bigint
             )
-    language plpgsql
+    language sql
 as
 $$
-declare
-    p_fixed_count    smallint;
-    p_translation_id smallint;
-begin
-
-    -- retrieve the fixed count and translation required by the model
-    select fixed_count, translation_id
-    into p_fixed_count, p_translation_id
-    from geo.models
-    where model_id = p_model_id;
-
-    -- Create a temporary table to hold the input taxa
-    create temp table temp_input_taxa
-    (
-        taxonomy_id     smallint,
-        scientific_name varchar(2550),
-        level_id        smallint,
-        level_name      varchar(50),
-        corrected_count  bigint
-    );
-
-    if (p_translation_id is null) then
-        -- get the raw taxa
-        insert into temp_input_taxa (taxonomy_id,
-                                     scientific_name,
-                                     level_id,
-                                     level_name,
-                                     corrected_count)
-        select taxonomy_id,
-               scientific_name,
-               level_id,
-               level_name,
-               corrected_count
-        from sample.fn_sample_taxa_raw(p_sample_id);
-    else
-        -- get the translated taxa
-        insert into temp_input_taxa (taxonomy_id,
-                                     scientific_name,
-                                     level_id,
-                                     level_name,
-                                     corrected_count)
-        select taxonomy_id,
-               alias_name,
-               level_id,
-               level_name,
-               corrected_count
-        from sample.fn_sample_translation_taxa(p_sample_id, p_translation_id);
-    end if;
-
-    if (p_fixed_count is null) then
-        -- no rarefaction needed, simply return all the taxa
-        select taxonomy_id,
-               scientific_name,
-               level_id,
-               level_name,
-               corrected_count
-        from temp_input_taxa;
-        else
-        -- return the rarefied results
-        select taxonomy_id,
-               scientific_name,
-               level_id,
-               level_name,
-               corrected_count
-        from temp_input_taxa;
-    end if;
-
-
-end
+    -- This is the same query from fn_rarefied_taxa with the exception that it
+    -- queries fn_translation_taxa as the root table instead of sample.organisms directly
+select c.taxonomy_id,
+       t.scientific_name,
+       l.level_id,
+       l.level_name,
+       count(*)
+from (
+         select ts.taxonomy_id
+         from (
+                  select ts.taxonomy_id, uuid_generate_v1() uid
+                  from (
+                           SELECT taxonomy_id,
+                                  corrected_count
+                           FROM sample.fn_sample_translation_taxa(p_sample_id, p_translation_id) t, generate_series(1, cast(round(t.corrected_count) as int))
+                       ) ts
+              ) ts
+         order by uid
+         limit p_fixed_count
+     ) c
+         inner join taxa.taxonomy t on c.taxonomy_id = t.taxonomy_id
+         inner join taxa.taxa_levels l on t.level_id = l.level_id
+group by c.taxonomy_id, t.scientific_name, c.taxonomy_id, l.level_id, l.level_name;
 $$;
