@@ -139,3 +139,280 @@ begin
                  inner join sample.mass_methods mm on m.mass_method_id = mm.mass_method_id;
 end
 $$;
+
+
+drop function if exists sample.fn_sample_taxa_raw;
+create or replace function sample.fn_sample_taxa_raw(p_sample_id int)
+    returns table
+            (
+                taxonomy_id              smallint,
+                scientific_name          varchar(255),
+                level_id                 smallint,
+                level_name               varchar(50),
+                raw_count                real,
+                corrected_count          double precision,
+                raw_big_rare_count       bigint,
+                corrected_big_rare_count double precision
+            )
+    language plpgsql
+as
+$$
+begin
+    return query
+        select o.taxonomy_id,
+               t.scientific_name,
+               t.level_id,
+               l.level_name,
+               sum(o.split_count),
+               sum(o.split_count) * 100 / s.lab_split * 100 / s.field_split,
+               sum(o.big_rare_count),
+               cast(sum(o.big_rare_count) as double precision) * 100 / s.lab_split * 100 / s.field_split
+        from sample.organisms o
+                 inner join sample.samples s on o.sample_id = s.sample_id
+                 inner join taxa.taxonomy t on o.taxonomy_id = t.taxonomy_id
+                 inner join taxa.taxa_levels l on t.level_id = l.level_id
+                 left join taxa.vw_taxonomy_crosstab ct on o.taxonomy_id = ct.taxonomy_id
+        where o.sample_id = p_sample_id
+        group by o.taxonomy_id,
+                 t.scientific_name,
+                 t.level_id,
+                 l.level_name,
+                 s.lab_split,
+                 s.field_split;
+end
+$$;
+comment on function sample.fn_sample_taxa_raw is
+    'returns the organisms within a particular in their original taxonomic classification';
+
+drop function if exists sample.fn_sample_taxa_generalized;
+create or replace function sample.fn_sample_taxa_generalized(p_sample_id int)
+    returns table
+            (
+                taxonomy_id              smallint,
+                scientific_name          varchar(255),
+                level_id                 smallint,
+                level_name               varchar(50),
+                life_stage_id            smallint,
+                life_stage               varchar(50),
+                life_stage_abbreviation  char,
+                bug_size                 real,
+                raw_count                real,
+                corrected_count          double precision,
+                raw_big_rare_count       bigint,
+                corrected_big_rare_count double precision
+            )
+    language plpgsql
+as
+$$
+begin
+    return query
+        select o.taxonomy_id,
+               t.scientific_name,
+               t.level_id,
+               l.level_name,
+               ll.life_stage_id,
+               ll.life_stage_name,
+               ll.abbreviation,
+               o.bug_size,
+               sum(o.split_count),
+               sum(o.split_count) * 100 / s.lab_split * 100 / s.field_split,
+               sum(o.big_rare_count),
+               cast(sum(o.big_rare_count) as double precision) * 100 / s.lab_split * 100 / s.field_split
+        from sample.organisms o
+                 inner join sample.samples s on o.sample_id = s.sample_id
+                 inner join taxa.taxonomy t on o.taxonomy_id = t.taxonomy_id
+                 inner join taxa.taxa_levels l on t.level_id = l.level_id
+                 inner join taxa.life_stages ll on o.life_stage_id = ll.life_stage_id
+                 left join taxa.vw_taxonomy_crosstab ct on o.taxonomy_id = ct.taxonomy_id
+        where o.sample_id = p_sample_id
+        group by o.taxonomy_id,
+                 t.scientific_name,
+                 t.level_id,
+                 l.level_name,
+                 ll.life_stage_id,
+                 ll.life_stage_name,
+                 ll.abbreviation,
+                 o.bug_size,
+                 s.lab_split,
+                 s.field_split;
+end
+$$;
+
+
+drop function if exists sample.fn_sample_translation_taxa;
+create or replace function sample.fn_sample_translation_taxa(p_sample_id int, p_translation_id int)
+    returns table
+            (
+                taxonomy_id              smallint,
+                scientific_name          varchar(255),
+                alias_name               varchar(255),
+                level_id                 smallint,
+                level_name               varchar(50),
+                raw_count                real,
+                corrected_count          double precision,
+                raw_big_rare_count       bigint,
+                corrected_big_rare_count double precision
+            )
+    language plpgsql
+as
+$$
+begin
+    return query
+        /*
+         Use a lateral join that runs "for each" organism in the original sample, it looks
+         up the taxa from the translation.
+         */
+        select tt.translation_taxonomy_id,
+               t.scientific_name,
+               coalesce(tt.translation_scientific_name, t.scientific_name) scientific_alias,
+               tt.translation_level_id,
+               tt.translation_level_name,
+               sum(o.split_count),
+               sum(o.split_count) * 100 / s.lab_split * 100 / s.field_split,
+               sum(o.big_rare_count),
+               cast(sum(o.big_rare_count) as double precision) * 100 / s.lab_split * 100 / s.field_split
+        FROM sample.organisms o
+                 inner join sample.samples s on o.sample_id = s.sample_id
+                 inner join taxa.taxonomy t on o.taxonomy_id = t.taxonomy_id
+                 inner join lateral taxa.fn_translation_taxa(p_translation_id, o.taxonomy_id) tt on true
+        where o.sample_id = p_sample_id
+        group by tt.translation_taxonomy_id,
+                 t.scientific_name,
+                 scientific_alias,
+                 tt.translation_level_id,
+                 tt.translation_level_name,
+                 s.lab_split,
+                 s.field_split;
+end
+$$;
+comment on function sample.fn_sample_translation_taxa is
+    'Returns the organisms for a particular sample mapped to a particular translation.
+    Note that the output taxonomy_id and scientific name are those of the translation, not
+    the original taxa used by the lab!';
+
+drop function if exists sample.fn_rarefied_taxa;
+create or replace function sample.fn_rarefied_taxa(p_sample_id int, p_fixed_count int)
+    returns table
+            (
+                taxonomy_id     smallint,
+                scientific_name varchar(2550),
+                level_id        smallint,
+                level_name      varchar(50),
+                organism_count  bigint
+            )
+    language plpgsql
+as
+$$
+begin
+    return query
+        select c.taxonomy_id,
+               t.scientific_name,
+               l.level_id,
+               l.level_name,
+               count(*)
+        from (
+                 select ts.taxonomy_id
+                 from (
+                          select t.taxonomy_id, uuid_generate_v1() uid
+                          from (
+                                   SELECT o.taxonomy_id,
+                                          cast(round(
+                                                  sum(split_count) * (100 / s.field_split) * (100 / s.lab_split)) as int) corrected_count
+                                   FROM sample.organisms o
+                                            inner join sample.samples s on o.sample_id = s.sample_id
+                                   where s.sample_id = p_sample_id
+                                   group by o.taxonomy_id, field_split, lab_split) t, generate_series(1, t.corrected_count)
+                      ) ts
+                 order by uid
+                 limit p_fixed_count
+             ) c
+                 inner join taxa.taxonomy t on c.taxonomy_id = t.taxonomy_id
+                 inner join taxa.taxa_levels l on t.level_id = l.level_id
+        group by c.taxonomy_id, t.scientific_name, c.taxonomy_id, l.level_id, l.level_name;
+
+end
+$$;
+
+drop function if exists sample.fn_model_taxa;
+create or replace function sample.fn_model_taxa(p_sample_id int, p_model_id int)
+    returns table
+            (
+                taxonomy_id     smallint,
+                scientific_name varchar(2550),
+                level_id        smallint,
+                level_name      varchar(50),
+                corrected_count  bigint
+            )
+    language plpgsql
+as
+$$
+declare
+    p_fixed_count    smallint;
+    p_translation_id smallint;
+begin
+
+    -- retrieve the fixed count and translation required by the model
+    select fixed_count, translation_id
+    into p_fixed_count, p_translation_id
+    from geo.models
+    where model_id = p_model_id;
+
+    -- Create a temporary table to hold the input taxa
+    create temp table temp_input_taxa
+    (
+        taxonomy_id     smallint,
+        scientific_name varchar(2550),
+        level_id        smallint,
+        level_name      varchar(50),
+        corrected_count  bigint
+    );
+
+    if (p_translation_id is null) then
+        -- get the raw taxa
+        insert into temp_input_taxa (taxonomy_id,
+                                     scientific_name,
+                                     level_id,
+                                     level_name,
+                                     corrected_count)
+        select taxonomy_id,
+               scientific_name,
+               level_id,
+               level_name,
+               corrected_count
+        from sample.fn_sample_taxa_raw(p_sample_id);
+    else
+        -- get the translated taxa
+        insert into temp_input_taxa (taxonomy_id,
+                                     scientific_name,
+                                     level_id,
+                                     level_name,
+                                     corrected_count)
+        select taxonomy_id,
+               alias_name,
+               level_id,
+               level_name,
+               corrected_count
+        from sample.fn_sample_translation_taxa(p_sample_id, p_translation_id);
+    end if;
+
+    if (p_fixed_count is null) then
+        -- no rarefaction needed, simply return all the taxa
+        select taxonomy_id,
+               scientific_name,
+               level_id,
+               level_name,
+               corrected_count
+        from temp_input_taxa;
+        else
+        -- return the rarefied results
+        select taxonomy_id,
+               scientific_name,
+               level_id,
+               level_name,
+               corrected_count
+        from temp_input_taxa;
+    end if;
+
+
+end
+$$;

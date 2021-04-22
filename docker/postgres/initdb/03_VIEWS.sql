@@ -120,12 +120,12 @@ HAVING count(p.project_id) > 0
     );
 
 
-DROP VIEW IF EXISTS sample.vw_taxonomy_crosstab;
+DROP MATERIALIZED VIEW IF EXISTS taxa.vw_taxonomy_crosstab cascade;
 CREATE MATERIALIZED VIEW taxa.vw_taxonomy_crosstab AS
 (
 SELECT *
 FROM crosstab(
-             'SELECT t.taxonomy_id, f.level_name, t.scientific_name FROM taxa.taxonomy t, taxa.fn_tree(t.taxonomy_id) f',
+             'SELECT t.taxonomy_id, f.level_id, f.level_name, t.scientific_name FROM taxa.taxonomy t, taxa.fn_tree(t.taxonomy_id) f',
              'SELECT level_name FROM taxa.taxa_levels where is_active = TRUE  and level_id > 1 order BY level_id')
          AS final_result(taxonomy_id INT,
                          level_id INT,
