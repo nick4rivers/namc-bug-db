@@ -30,16 +30,10 @@ const pgPromise = (pool: Pool, query: string, vars?: unknown[]): DBReturnPromise
 }
 
 const samplesQuery = 'SELECT * FROM sample.vw_samples ORDER BY sample_id LIMIT $1 OFFSET $2'
-
 export const getSamples = (pool: Pool, limit: number, offset: number): DBReturnPromiseType =>
     pgPromise(pool, samplesQuery, [limit, offset])
 
-// const boxStatesQuery = 'SELECT * FROM sample.box_states LIMIT $1 OFFSET $2'
-// export const getBoxStates = (pool, limit: number, offset: number): Promise<any> =>
-//     pgPromise(pool, boxStatesQuery, [limit, offset])
-
 const sitesQuery = 'SELECT * FROM geo.fn_sites($1, $2)'
-
 export const getSites = (pool, limit: number, offset: number): DBReturnPromiseType =>
     pgPromise(pool, sitesQuery, [limit, offset])
 
@@ -52,30 +46,12 @@ export const getIndividuals = (pool, limit: number, offset: number): DBReturnPro
     pgPromise(pool, individualsQuery, [limit, offset])
 
 const boxesQuery = 'SELECT * FROM sample.fn_boxes($1, $2)'
-
 export const getBoxes = (pool, limit: number, offset: number): DBReturnPromiseType =>
     pgPromise(pool, boxesQuery, [limit, offset])
-
-const sampleOrganismsQuery = 'SELECT * FROM sample.fn_samples($1, $2, $3, $4, $5, $6, $7)'
-export const getSampleOrganisms = (
-    pool,
-    limit: number,
-    offset: number,
-    sampleId: number,
-    boxId: number,
-    siteId: number,
-    sampleYear: number,
-    typeId: number
-): DBReturnPromiseType =>
-    pgPromise(pool, sampleOrganismsQuery, [limit, offset, sampleId, boxId, siteId, sampleYear, typeId])
 
 /**
  * Queries
  */
-
-const projectOrganismsQuery = 'SELECT * FROM sample.fn_project_samples($1, $2, $3)'
-export const getProjectOrganisms = (pool, projectIds: number[], limit: number, offset: number): DBReturnPromiseType =>
-    pgPromise(pool, projectOrganismsQuery, [limit, offset, projectIds])
 
 const projectsQuery = 'SELECT * FROM sample.fn_projects($1, $2)'
 export const getProjects = (pool, limit: number, offset: number): DBReturnPromiseType =>
@@ -135,6 +111,14 @@ const massSampleQuery = 'SELECT * FROM sample.fn_mass($1, $2)'
 export const getMassSamples = (pool, limit: number, offset: number): DBReturnPromiseType =>
     pgPromise(pool, massSampleQuery, [limit, offset])
 
+const attributesQuery = 'SELECT * FROM taxa.fn_attributes($1, $2)'
+export const getAttributes = (pool, limit: number, offset: number): DBReturnPromiseType =>
+    pgPromise(pool, attributesQuery, [limit, offset])
+
+const attributeValueQuery = 'SELECT * FROM taxa.fn_taxa_attributes($1, $2, $3)'
+export const getTaxaAttributes = (pool, taxonomyId: number, limit: number, offset: number): DBReturnPromiseType =>
+    pgPromise(pool, attributeValueQuery, [taxonomyId, limit, offset])
+
 /**
  * Mutations
  */
@@ -169,3 +153,11 @@ export const getSampleTaxaTranslation = (pool, sampleId: number, translationId: 
 const sampleTaxaRarefiedQuery = 'SELECT * FROM sample.fn_rarefied_taxa($1, $2)'
 export const getSampleTaxaRarefied = (pool, sampleId: number, fixedCount: number): DBReturnPromiseType =>
     pgPromise(pool, sampleTaxaRarefiedQuery, [sampleId, fixedCount])
+
+const sampleTaxaTranslationRarefiedQuery = 'SELECT * FROM sample.fn_translation_rarefied_taxa($1, $2, $3)'
+export const getSampleTaxaTranslationRarefied = (
+    pool,
+    sampleId: number,
+    translationId: number,
+    fixedCount: number
+): DBReturnPromiseType => pgPromise(pool, sampleTaxaTranslationRarefiedQuery, [sampleId, translationId, fixedCount])

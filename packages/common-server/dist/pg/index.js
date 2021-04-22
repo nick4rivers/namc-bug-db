@@ -39,7 +39,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getSampleTaxaRarefied = exports.getSampleTaxaTranslation = exports.getSampleTaxaGeneralized = exports.getSampleTaxaRaw = exports.setSiteCatchment = exports.setSamplePredictorValue = exports.setSitePredictorValue = exports.getMassSamples = exports.getFishSamples = exports.getDriftSamples = exports.getPlanktonSamples = exports.getTranslations = exports.getModelPredictors = exports.getSamplePredictorValues = exports.getBoxInfo = exports.getSampleInfo = exports.getSitePredictorValues = exports.getModelInfo = exports.getModels = exports.getPredictors = exports.getTaxonomy = exports.getProjects = exports.getProjectOrganisms = exports.getSampleOrganisms = exports.getBoxes = exports.getIndividuals = exports.getSiteInfo = exports.getSites = exports.getSamples = exports.getPool = void 0;
+exports.getSampleTaxaTranslationRarefied = exports.getSampleTaxaRarefied = exports.getSampleTaxaTranslation = exports.getSampleTaxaGeneralized = exports.getSampleTaxaRaw = exports.setSiteCatchment = exports.setSamplePredictorValue = exports.setSitePredictorValue = exports.getTaxaAttributes = exports.getAttributes = exports.getMassSamples = exports.getFishSamples = exports.getDriftSamples = exports.getPlanktonSamples = exports.getTranslations = exports.getModelPredictors = exports.getSamplePredictorValues = exports.getBoxInfo = exports.getSampleInfo = exports.getSitePredictorValues = exports.getModelInfo = exports.getModels = exports.getPredictors = exports.getTaxonomy = exports.getProjects = exports.getBoxes = exports.getIndividuals = exports.getSiteInfo = exports.getSites = exports.getSamples = exports.getPool = void 0;
 var config_1 = require("../config");
 var pg_1 = require("pg");
 var loglevel_1 = __importDefault(require("loglevel"));
@@ -95,14 +95,6 @@ exports.getIndividuals = function (pool, limit, offset) {
 var boxesQuery = 'SELECT * FROM sample.fn_boxes($1, $2)';
 exports.getBoxes = function (pool, limit, offset) {
     return pgPromise(pool, boxesQuery, [limit, offset]);
-};
-var sampleOrganismsQuery = 'SELECT * FROM sample.fn_samples($1, $2, $3, $4, $5, $6, $7)';
-exports.getSampleOrganisms = function (pool, limit, offset, sampleId, boxId, siteId, sampleYear, typeId) {
-    return pgPromise(pool, sampleOrganismsQuery, [limit, offset, sampleId, boxId, siteId, sampleYear, typeId]);
-};
-var projectOrganismsQuery = 'SELECT * FROM sample.fn_project_samples($1, $2, $3)';
-exports.getProjectOrganisms = function (pool, projectIds, limit, offset) {
-    return pgPromise(pool, projectOrganismsQuery, [limit, offset, projectIds]);
 };
 var projectsQuery = 'SELECT * FROM sample.fn_projects($1, $2)';
 exports.getProjects = function (pool, limit, offset) {
@@ -160,6 +152,14 @@ var massSampleQuery = 'SELECT * FROM sample.fn_mass($1, $2)';
 exports.getMassSamples = function (pool, limit, offset) {
     return pgPromise(pool, massSampleQuery, [limit, offset]);
 };
+var attributesQuery = 'SELECT * FROM taxa.fn_attributes($1, $2)';
+exports.getAttributes = function (pool, limit, offset) {
+    return pgPromise(pool, attributesQuery, [limit, offset]);
+};
+var attributeValueQuery = 'SELECT * FROM taxa.fn_taxa_attributes($1, $2, $3)';
+exports.getTaxaAttributes = function (pool, taxonomyId, limit, offset) {
+    return pgPromise(pool, attributeValueQuery, [taxonomyId, limit, offset]);
+};
 var setSitePredictorValueQuery = 'SELECT * FROM sample.fn_set_site_predictor_value($1, $2, $3)';
 exports.setSitePredictorValue = function (pool, siteId, predictorId, value) {
     return pgPromise(pool, setSitePredictorValueQuery, [siteId, predictorId, value]);
@@ -186,4 +186,6 @@ var sampleTaxaRarefiedQuery = 'SELECT * FROM sample.fn_rarefied_taxa($1, $2)';
 exports.getSampleTaxaRarefied = function (pool, sampleId, fixedCount) {
     return pgPromise(pool, sampleTaxaRarefiedQuery, [sampleId, fixedCount]);
 };
+var sampleTaxaTranslationRarefiedQuery = 'SELECT * FROM sample.fn_translation_rarefied_taxa($1, $2, $3)';
+exports.getSampleTaxaTranslationRarefied = function (pool, sampleId, translationId, fixedCount) { return pgPromise(pool, sampleTaxaTranslationRarefiedQuery, [sampleId, translationId, fixedCount]); };
 //# sourceMappingURL=index.js.map

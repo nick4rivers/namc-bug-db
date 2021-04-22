@@ -51,9 +51,6 @@ export declare type Sample = {
     netDepth: number;
     netVelocity: number;
 };
-export declare type BoxState = {
-    boxStateId: number;
-};
 export declare type Site = {
     siteId: number;
     siteName: string;
@@ -116,63 +113,6 @@ export declare type Box = {
     sampleCount: number;
     processingCompleteDate: string;
     projectedCompleteDate: string;
-};
-export declare type SampleOrganism = {
-    sampleId: number;
-    boxId: number;
-    customerId: number;
-    customerName: string;
-    boxStateName: string;
-    boxStateId: number;
-    submitterName: string;
-    siteId: number;
-    siteName: string;
-    siteLatitude: number;
-    siteLongitude: number;
-    siteState: string;
-    sampleDate: string;
-    sampleLatitude: number;
-    sampleLongitude: number;
-    sampleTime: string;
-    typeId: number;
-    sampleType: string;
-    methodId: number;
-    sampleMethod: string;
-    habitatId: number;
-    habitatName: string;
-    area: number;
-    fieldSplit: number;
-    labSplit: number;
-    jarCount: number;
-    qualitative: boolean;
-    mesh: number;
-    createdDate: string;
-    updatedDate: string;
-    qaSampleId: number;
-    diameter: number;
-    subSampleCount: number;
-    towLength: number;
-    volume: number;
-    aliquot: number;
-    sizeInterval: number;
-    towType: string;
-    netArea: number;
-    netDuration: number;
-    streamDepth: number;
-    netDepth: number;
-    netVelocity: number;
-    taxonomyId: number;
-    lifeStage: string;
-    bugSize: number;
-    splitCount: number;
-    bigRareCount: number;
-    phylum: string;
-    class: string;
-    subClass: string;
-    order: string;
-    family: string;
-    genus: string;
-    isPrivate: boolean;
 };
 export declare type Project = {
     projectId: number;
@@ -436,4 +376,24 @@ export declare type RarefiedSampleTaxa = {
     levelId: number;
     levelName: string;
     organismCount: number;
+};
+export declare type Attribute = {
+    attributeId: number;
+    attributeName: string;
+    attributeType: string;
+    label: string;
+    description: string;
+    metadata: string;
+    createdDate: string;
+    updatedDate: string;
+};
+export declare type AttributeValue = {
+    taxonomyId: number;
+    scientificName: string;
+    levelId: number;
+    levelName: string;
+    attributeName: string;
+    attributeType: string;
+    label: string;
+    attributeValue: string;
 };

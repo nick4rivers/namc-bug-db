@@ -1,4 +1,4 @@
-import { AuthResponse, Box, BoxInfo, Model, ModelInfo, ModelPredictor, PaginatedRecords, Predictor, Project, Sample, SampleInfo, SampleOrganism, SamplePredictorValue, Site, SiteInfo, SitePredictorValue, Taxonomy, Translation, RawSampleTaxa, GeneralizedSampleTaxa, TranslationSampleTaxa, RarefiedSampleTaxa, PlanktonSample, DriftSample, FishSample, MassSample } from '@namcbugdb/common';
+import { AuthResponse, Box, BoxInfo, Model, ModelInfo, ModelPredictor, PaginatedRecords, Predictor, Project, Sample, SampleInfo, SamplePredictorValue, Site, SiteInfo, SitePredictorValue, Taxonomy, Translation, RawSampleTaxa, GeneralizedSampleTaxa, TranslationSampleTaxa, RarefiedSampleTaxa, PlanktonSample, DriftSample, FishSample, MassSample, Attribute, AttributeValue } from '@namcbugdb/common';
 declare const _default: {
     Query: {
         auth: (obj: any, args: any, ctx: any) => Promise<AuthResponse>;
@@ -39,24 +39,6 @@ declare const _default: {
         }, { user }: {
             user: any;
         }) => Promise<PaginatedRecords<SamplePredictorValue>>;
-        sampleOrganisms: (obj: any, { limit, offset, sampleId, boxId, siteId, sampleYear, typeId }: {
-            limit: any;
-            offset: any;
-            sampleId: any;
-            boxId: any;
-            siteId: any;
-            sampleYear: any;
-            typeId: any;
-        }, { user }: {
-            user: any;
-        }) => Promise<PaginatedRecords<SampleOrganism>>;
-        projectOrganisms: (obj: any, { limit, offset, projectIds }: {
-            limit: any;
-            offset: any;
-            projectIds: any;
-        }, { user }: {
-            user: any;
-        }) => Promise<PaginatedRecords<SampleOrganism>>;
         boxes: (obj: any, { limit, offset }: {
             limit: any;
             offset: any;
@@ -130,6 +112,26 @@ declare const _default: {
         }, { user }: {
             user: any;
         }) => Promise<PaginatedRecords<RarefiedSampleTaxa>>;
+        sampleTaxaTranslationRarefied: (obj: any, { sampleId, translationId, fixedCount }: {
+            sampleId: any;
+            translationId: any;
+            fixedCount: any;
+        }, { user }: {
+            user: any;
+        }) => Promise<PaginatedRecords<RarefiedSampleTaxa>>;
+        attributes: (obj: any, { limit, offset }: {
+            limit: any;
+            offset: any;
+        }, { user }: {
+            user: any;
+        }) => Promise<PaginatedRecords<Attribute>>;
+        taxaAttributes: (obj: any, { taxonomyId, limit, offset }: {
+            taxonomyId: any;
+            limit: any;
+            offset: any;
+        }, { user }: {
+            user: any;
+        }) => Promise<PaginatedRecords<AttributeValue>>;
         planktonSamples: (obj: any, { limit, offset }: {
             limit: any;
             offset: any;

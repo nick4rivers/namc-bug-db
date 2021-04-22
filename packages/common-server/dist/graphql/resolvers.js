@@ -272,48 +272,6 @@ exports.default = {
                 });
             });
         },
-        sampleOrganisms: function (obj, _a, _b) {
-            var limit = _a.limit, offset = _a.offset, sampleId = _a.sampleId, boxId = _a.boxId, siteId = _a.siteId, sampleYear = _a.sampleYear, typeId = _a.typeId;
-            var user = _b.user;
-            return __awaiter(void 0, void 0, void 0, function () {
-                var pool, data;
-                return __generator(this, function (_c) {
-                    switch (_c.label) {
-                        case 0:
-                            loggedInGate(user);
-                            limitOffsetCheck(limit, common_1.graphql.queryLimits.sampleOrganisms, offset);
-                            return [4, pg.getPool()];
-                        case 1:
-                            pool = _c.sent();
-                            return [4, pg.getSampleOrganisms(pool, limit, offset, sampleId, boxId, siteId, sampleYear, typeId)];
-                        case 2:
-                            data = _c.sent();
-                            return [2, createPagination(data, limit, offset)];
-                    }
-                });
-            });
-        },
-        projectOrganisms: function (obj, _a, _b) {
-            var limit = _a.limit, offset = _a.offset, projectIds = _a.projectIds;
-            var user = _b.user;
-            return __awaiter(void 0, void 0, void 0, function () {
-                var pool, data;
-                return __generator(this, function (_c) {
-                    switch (_c.label) {
-                        case 0:
-                            loggedInGate(user);
-                            limitOffsetCheck(limit, common_1.graphql.queryLimits.projectOrganisms, offset);
-                            return [4, pg.getPool()];
-                        case 1:
-                            pool = _c.sent();
-                            return [4, pg.getProjectOrganisms(pool, projectIds, limit, offset)];
-                        case 2:
-                            data = _c.sent();
-                            return [2, createPagination(data, limit, offset)];
-                    }
-                });
-            });
-        },
         boxes: function (obj, _a, _b) {
             var limit = _a.limit, offset = _a.offset;
             var user = _b.user;
@@ -554,6 +512,66 @@ exports.default = {
                         case 1:
                             pool = _c.sent();
                             return [4, pg.getSampleTaxaRarefied(pool, sampleId, fixedCount)];
+                        case 2:
+                            data = _c.sent();
+                            return [2, createPagination(data)];
+                    }
+                });
+            });
+        },
+        sampleTaxaTranslationRarefied: function (obj, _a, _b) {
+            var sampleId = _a.sampleId, translationId = _a.translationId, fixedCount = _a.fixedCount;
+            var user = _b.user;
+            return __awaiter(void 0, void 0, void 0, function () {
+                var pool, data;
+                return __generator(this, function (_c) {
+                    switch (_c.label) {
+                        case 0:
+                            loggedInGate(user);
+                            return [4, pg.getPool()];
+                        case 1:
+                            pool = _c.sent();
+                            return [4, pg.getSampleTaxaTranslationRarefied(pool, sampleId, translationId, fixedCount)];
+                        case 2:
+                            data = _c.sent();
+                            return [2, createPagination(data)];
+                    }
+                });
+            });
+        },
+        attributes: function (obj, _a, _b) {
+            var limit = _a.limit, offset = _a.offset;
+            var user = _b.user;
+            return __awaiter(void 0, void 0, void 0, function () {
+                var pool, data;
+                return __generator(this, function (_c) {
+                    switch (_c.label) {
+                        case 0:
+                            loggedInGate(user);
+                            return [4, pg.getPool()];
+                        case 1:
+                            pool = _c.sent();
+                            return [4, pg.getAttributes(pool, limit, offset)];
+                        case 2:
+                            data = _c.sent();
+                            return [2, createPagination(data)];
+                    }
+                });
+            });
+        },
+        taxaAttributes: function (obj, _a, _b) {
+            var taxonomyId = _a.taxonomyId, limit = _a.limit, offset = _a.offset;
+            var user = _b.user;
+            return __awaiter(void 0, void 0, void 0, function () {
+                var pool, data;
+                return __generator(this, function (_c) {
+                    switch (_c.label) {
+                        case 0:
+                            loggedInGate(user);
+                            return [4, pg.getPool()];
+                        case 1:
+                            pool = _c.sent();
+                            return [4, pg.getTaxaAttributes(pool, taxonomyId, limit, offset)];
                         case 2:
                             data = _c.sent();
                             return [2, createPagination(data)];

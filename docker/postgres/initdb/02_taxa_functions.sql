@@ -7,7 +7,7 @@ create or replace function taxa.fn_attributes(p_limit int, p_offset int)
                 attribute_type attribute_types,
                 label          varchar(255),
                 description    text,
-                metadata       json,
+                metadata       text,
                 created_date   text,
                 updated_date   text
             )
@@ -19,7 +19,7 @@ select attribute_id,
        attribute_type,
        label,
        description,
-       metadata,
+       CAST(metadata AS TEXT),
        to_json(created_date) #>> '{}',
        to_json(updated_date) #>> '{}'
 from taxa.attributes

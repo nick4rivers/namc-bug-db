@@ -13,7 +13,6 @@ import {
     Project,
     Sample,
     SampleInfo,
-    SampleOrganism,
     SamplePredictorValue,
     Site,
     SiteInfo,
@@ -28,6 +27,8 @@ import {
     DriftSample,
     FishSample,
     MassSample,
+    Attribute,
+    AttributeValue,
     util
 } from '@namcbugdb/common'
 import * as pg from '../pg'
@@ -93,14 +94,6 @@ export default {
             return createPagination<Sample>(data, limit, offset)
         },
 
-        // boxStates: async (obj, { limit, offset }, { user }): Promise<PaginatedRecords<BoxState>> => {
-        //     loggedInGate(user)
-        //     limitOffsetCheck(limit, graphql.queryLimits.boxStates, offset)
-        //     const pool = await getPool()
-        //     const data = await getBoxStates(pool, limit, offset)
-        //     return createPagination<BoxState>(data, limit, offset)
-        // },
-
         sites: async (obj, { limit, offset }, { user }): Promise<PaginatedRecords<Site>> => {
             loggedInGate(user)
             limitOffsetCheck(limit, graphql.queryLimits.sites, offset)
@@ -165,30 +158,6 @@ export default {
             const data = await pg.getSamplePredictorValues(pool, sampleId)
 
             return createPagination<SamplePredictorValue>(data, 500, 0)
-        },
-
-        sampleOrganisms: async (
-            obj,
-            { limit, offset, sampleId, boxId, siteId, sampleYear, typeId },
-            { user }
-        ): Promise<PaginatedRecords<SampleOrganism>> => {
-            loggedInGate(user)
-            limitOffsetCheck(limit, graphql.queryLimits.sampleOrganisms, offset)
-            const pool = await pg.getPool()
-            const data = await pg.getSampleOrganisms(pool, limit, offset, sampleId, boxId, siteId, sampleYear, typeId)
-            return createPagination<SampleOrganism>(data, limit, offset)
-        },
-
-        projectOrganisms: async (
-            obj,
-            { limit, offset, projectIds },
-            { user }
-        ): Promise<PaginatedRecords<SampleOrganism>> => {
-            loggedInGate(user)
-            limitOffsetCheck(limit, graphql.queryLimits.projectOrganisms, offset)
-            const pool = await pg.getPool()
-            const data = await pg.getProjectOrganisms(pool, projectIds, limit, offset)
-            return createPagination<SampleOrganism>(data, limit, offset)
         },
 
         // individuals: async (obj, { limit, nextToken }, { user }, info): Promise<Individual[]> => {
@@ -316,6 +285,38 @@ export default {
             const pool = await pg.getPool()
             const data = await pg.getSampleTaxaRarefied(pool, sampleId, fixedCount)
             return createPagination<RarefiedSampleTaxa>(data)
+        },
+
+        sampleTaxaTranslationRarefied: async (
+            obj,
+            { sampleId, translationId, fixedCount },
+            { user }
+        ): Promise<PaginatedRecords<RarefiedSampleTaxa>> => {
+            loggedInGate(user)
+
+            const pool = await pg.getPool()
+            const data = await pg.getSampleTaxaTranslationRarefied(pool, sampleId, translationId, fixedCount)
+            return createPagination<RarefiedSampleTaxa>(data)
+        },
+
+        attributes: async (obj, { limit, offset }, { user }): Promise<PaginatedRecords<Attribute>> => {
+            loggedInGate(user)
+
+            const pool = await pg.getPool()
+            const data = await pg.getAttributes(pool, limit, offset)
+            return createPagination<Attribute>(data)
+        },
+
+        taxaAttributes: async (
+            obj,
+            { taxonomyId, limit, offset },
+            { user }
+        ): Promise<PaginatedRecords<AttributeValue>> => {
+            loggedInGate(user)
+
+            const pool = await pg.getPool()
+            const data = await pg.getTaxaAttributes(pool, taxonomyId, limit, offset)
+            return createPagination<AttributeValue>(data)
         },
 
         planktonSamples: async (obj, { limit, offset }, { user }): Promise<PaginatedRecords<PlanktonSample>> => {

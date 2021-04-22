@@ -4,9 +4,6 @@ import gql from 'graphql-tag'
 
 export const queryLimits = {
     samples: 500,
-    sampleOrganisms: 100,
-    projectOrganisms: 100,
-    boxStates: 500,
     sites: 500,
     boxes: 500,
     projects: 500,
@@ -28,62 +25,108 @@ const typeDefs = gql`
         # Get a project and associated metadata
         auth: AuthParams
 
+        "Detailed information about a single site. Includes the point location and upstream catchment geometries as GeoJSON."
         siteInfo(siteId: Int!): SiteInfo
 
-        """
-        this is a string
-        """
+        "Detailed information about a single sample, including information about the box and customer."
         sampleInfo(sampleId: Int!): SampleInfo
-        boxInfo(boxId: Int!): BoxInfo
-        modelInfo(modelId: Int!): ModelInfo
-        samples(limit: Int = ${queryLimits.samples}, offset: Int = 0): PaginatedSamples
-        sampleOrganisms(
-            limit: Int = ${queryLimits.sampleOrganisms}
-            offset: Int = 0
-            sampleId: Int
-            boxId: Int
-            siteId: Int
-            sampleYear: Int
-            typeId: Int
-        ): PaginatedSampleOrganisms
 
-        projectOrganisms(projectIds: [Int]!, limit: Int = ${queryLimits.projectOrganisms}, offset: Int =0): PaginatedSampleOrganisms
+        "Detailed information about a single box, including information about the customer and number of samples associated with the box."
+        boxInfo(boxId: Int!): BoxInfo
+
+        "Detailed information about a single model, including the number of predictors associated with the model."
+        modelInfo(modelId: Int!): ModelInfo
+
+        "List of all samples in the system, including high level information about the associated box and customer."
+        samples(limit: Int = ${queryLimits.samples}, offset: Int = 0): PaginatedSamples
+
+        "Summary information for all sites, including location coordinates and number of samples. Use the siteInfo query to get more detailed information about a single site."
         sites(limit: Int = ${queryLimits.sites}, offset: Int = 0, usState: [String]): PaginatedSites
-        # boxStates(limit: Int = ${queryLimits.boxStates}, offset: Int = 0): PaginatedBoxStates
+        
         # individuals(limit: Int, offset: Int): [Individual]
+
+        "Summary information for all boxes, including the customer name and number of samples within the box. Use the boxInfo query to get more detailed information about a single box."
         boxes(limit: Int = ${queryLimits.boxes}, offset: Int = 0): PaginatedBoxes
+
+        "Summary information about all projects in the system. Use the projectInfo query to get more detailed about a single project."
         projects(limit: Int = ${queryLimits.projects}, offset: Int = 0): PaginatedProjects
-        taxonomy(limit: Int = ${queryLimits.taxonomy}, offset: Int = 0): PaginatedTaxonomies
+
+        "List of all predictors in the system. Includes summary information about how many models rely on each predictor."
         predictors(modelId: Int, limit: Int = ${queryLimits.predictors}, offset: Int = 0): PaginatedPredictors
+
+        "List of all models in the system. Includes summary information about how many predictors are used by the model as well as the translation that might be required."
         models(limit: Int = ${queryLimits.models}, offset: Int = 0): PaginatedModels
+
+        "List of predictor values at a single site. Site predictors are non-temporal. The value is common to all samples at the specific site."
         sitePredictorValues(siteId: Int!, limit: Int = ${queryLimits.sitePredictorValues}, offset: Int = 0): PaginatedSitePredictorValues
+
+        "List of all predictor values for a single sample. This includes both temporal and non-temporal predictors as well as their calculation status (current, missing, expired)."
         samplePredictorValues(sampleId: Int!): PaginatedSamplePredictorValue
+
+        "List of predictors required by a single model."
         modelPredictors(limit: Int = ${queryLimits.modelPredictors}, offset: Int = 0, modelId: Int!): PaginatedModelPredictors
+
+        ####################################################################################################################################################################################
+        # Taxonomy queries
+
+        "List of all taxa in the system. Includes information about each level of the taxonomic hierarchy above each taxa."
+        taxonomy(limit: Int = ${queryLimits.taxonomy}, offset: Int = 0): PaginatedTaxonomies
+
+        "List of all attributes in the system."
+        attributes(limit: Int = ${queryLimits.taxonomy}, offset: Int = 0): PaginatedAttributes
+
+        "List of all attributes that exist for a single taxa"
+        taxaAttributes(taxonomyId: Int, limit: Int = ${queryLimits.taxonomy}, offset: Int = 0): PaginatedAttributeValues
+  
+
+        ####################################################################################################################################################################################
+        # Sample side table queries
+
+        "List of all translations in the system."
         translations(limit: Int = ${queryLimits.translations}, offset: Int = 0): PaginatedTranslations
 
-        # Sample side tables
+        "List of all plankton samples in the system."
         planktonSamples(limit: Int = ${queryLimits.samples}, offset: Int = 0): PaginatedPlankton
+
+        "List of all drift samples in the system."
         driftSamples(limit: Int = ${queryLimits.samples}, offset: Int = 0): PaginatedDrift
+
+        "List of all fish samples in the system."
         fishSamples(limit: Int = ${queryLimits.samples}, offset: Int = 0): PaginatedFish
+
+        "List of all mass samples in the system."
         massSamples(limit: Int = ${queryLimits.samples}, offset: Int = 0): PaginatedMass
 
-        # Sample Taxonomy
+        ####################################################################################################################################################################################
+        # Sample Taxa queries
+        
+        "Sample organisms summed by taxonomy only. Includes both raw counts as well as counts corrected for lab and field split. Also includes both raw and corrected big rare counts."
         sampleTaxaRaw(sampleId: Int!): PaginatedRawSampleTaxa
+
+        "Sample organisms summed by taxonomy, life stage and bug size. Includes both raw counts as well as counts corrected for lab and field split. Also includes both raw and corrected big rare counts."
         sampleTaxaGeneralized(sampleId: Int!): PaginatedGeneralizedSampleTaxa
+
+        "Sample organisms converted to a translation (OTU). Rolls up counts to those taxa present in the translation and omits any organisms that don't roll up to a taxa in the translation."
         sampleTaxaTranslation(sampleId: Int!, translationId: Int!): PaginatedSampleTranslationTaxa
+
+        "Sample organisms in their original taxonomic designation but rarefied to the specified fixed count."
         sampleTaxaRarefied(sampleId: Int!, fixedCount: Int!): PaginatedRarefiedSampleTaxa
-        # sampleTaxaModel(sampleId: Int!, modelId: Int!, limit: Int = ${queryLimits.translations}, offset: Int = 0): PaginatedSampleTaxa
+
+        "Sample oganisms converted to the translation (OTU) and then rarefied to the specified fixed count."
+        sampleTaxaTranslationRarefied(sampleId: Int!, translationId: Int!, fixedCount:Int!):PaginatedRarefiedSampleTaxa
     }
 
     # this schema allows the following mutation:
     type Mutation {
+        "Store a non-temporal predictor value for a specific site. See setSamplePredictorValue if you want to store a temporal predictor value associated with a particular sample."
         setSitePredictorValue(siteId: Int!, predictorId: Int!, value:String!): Int
-        setSamplePredictorValue(sampleId: Int!, predictorId: Int!, value: String!): Int
-        setSiteCatchment(siteId: Int!, catchment: String!): Int
-        
-    }
 
-    # union PredictorValue = String|Boolean|Int|Float
+        "Store a temporal predictor value for a specific sample. Set setSitePredictorValue if you want to store a temporal predictor value associated with a particular site."
+        setSamplePredictorValue(sampleId: Int!, predictorId: Int!, value: String!): Int
+
+        "Store the upstream catchment polygon for a specific site. The catchment polygon must be a valid, non-empty GeoJSON polygon that partially or entirely intersects with the United States."
+        setSiteCatchment(siteId: Int!, catchment: String!): Int
+    }
 
     type AuthParams {
         loggedIn: Boolean
@@ -135,9 +178,6 @@ const typeDefs = gql`
         netVelocity: Float
     }
 
-    type BoxState {
-        boxStateId: Int
-    }
 
     type Site {
         siteId: Int
@@ -223,14 +263,37 @@ sites API endpoint.
         sampleCount: Int
     }
 
+    """"
+    Raw summary of organisms for a single sample. The data are returned with their original
+    laboratory taxonomic identification.
+    """
     type RawSampleTaxa {
+        "The taxa identified within the laboratory."
         taxonomyId: Int
+        "The name of the taxa identified with the laboratory."
         scientificName: String
+        "The taxonomic level of the taxa identified within the laboratory."
         levelId: Int
+        "The taxonomic level of the taxa identified within the laboratory."
         levelName: String
+        "Sum of the split_counts recorded within the laboratory for this taxa. No other manipulation."
         rawCount: Float
+        
+        """
+        Sum of the split counts multiplied by the sample lab_split and field_split.
+
+        corrected_count = sum(split_count) * (100 / lab_split) * (100 / field_split)
+        """
         correctedCount: Float
+
+        "Sum of the big rare count within the laboratory for this taxa. No other manipulation."
         rawBigRareCount: Int
+
+        """
+        Sum of the big rare counts multipled by the sample lab_split and field_split.
+
+        corrected_big_rare_count = sum(big_rare_count) * (100 / lab_split) * (100 / field_split)
+        """
         correctedBigRareCount: Float
     }
 
@@ -427,64 +490,6 @@ type MassSample {
         projectedCompleteDate: String
     }
 
-    type SampleOrganism {
-        sampleId: Int
-        boxId: Int
-        customerId: Int
-        customerName: String
-        boxStateName: String
-        boxStateId: Int
-        submitterName: String
-        siteId: Int
-        siteName: String
-        siteLatitude: Float
-        siteLongitude: Float
-        siteState: String
-        sampleDate: String
-        sampleLatitude: Float
-        sampleLongitude: Float
-        sampleTime: String
-        typeId: Int
-        sampleType: String
-        methodId: Int
-        sampleMethod: String
-        habitatId: Int
-        habitatName: String
-        area: Float
-        fieldSplit: Float
-        labSplit: Float
-        jarCount: Float
-        qualitative: Boolean
-        mesh: Float
-        createdDate: String
-        updatedDate: String
-        qaSampleId: Int
-        diameter: Float
-        subSampleCount: Float
-        towLength: Float
-        volume: Float
-        aliquot: Float
-        sizeInterval: Float
-        towType: String
-        netArea: Float
-        netDuration: Float
-        streamDepth: Float
-        netDepth: Float
-        netVelocity: Float
-        taxonomyId: Int
-        lifeStage: String
-        bugSize: Float
-        splitCount: Float
-        bigRareCount: Float
-        phylum: String
-        class: String
-        subClass: String
-        order: String
-        family: String
-        genus: String
-        isPrivate: Boolean
-    }
-
     type Project {
         projectId: Int
         projectName: String
@@ -665,11 +670,30 @@ type MassSample {
         updatedDate: String
     }
 
-    # Pagination Types
-    type PaginatedBoxStates {
-        records: [BoxState]
-        nextOffset: Int
+    type Attribute {
+        attributeId: Int
+        attributeName: String
+        attributeType: String
+        label: String
+        description: String
+        metadata: String
+        createdDate: String
+        updatedDate: String
     }
+
+    type AttributeValue {
+        taxonomyId: Int
+        scientificName: String
+        levelId:  Int
+        levelName:  String
+        attributeName: String
+        attributeType: String
+        label: String
+        attributeValue: String
+    }
+
+    # Pagination Types
+  
     type PaginatedModels {
         records: [Model]
         nextOffset: Int
@@ -682,10 +706,7 @@ type MassSample {
         records: [Sample]
         nextOffset: Int
     }
-    type PaginatedSampleOrganisms {
-        records: [SampleOrganism]
-        nextOffset: Int
-    }
+
     type PaginatedBoxes {
         records: [Box]
         nextOffset: Int
@@ -764,6 +785,16 @@ type MassSample {
 
     type PaginatedMass {
         records: [MassSample]
+        nextOffset: Int
+    }
+
+    type PaginatedAttributes {
+        records: [Attribute]
+        nextOffset: Int
+    }
+
+    type PaginatedAttributeValues {
+        records: [AttributeValue]
         nextOffset: Int
     }
 `

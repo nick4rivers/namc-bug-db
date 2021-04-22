@@ -1,8 +1,5 @@
 export declare const queryLimits: {
     samples: number;
-    sampleOrganisms: number;
-    projectOrganisms: number;
-    boxStates: number;
     sites: number;
     boxes: number;
     projects: number;
