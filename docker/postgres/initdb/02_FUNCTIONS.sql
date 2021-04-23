@@ -1105,7 +1105,7 @@ begin
                  inner join taxa.taxa_levels l on t.level_id = l.level_id
                  inner join taxa.taxa_translations tt on t.taxonomy_id = tt.taxonomy_id
         where tt.translation_id = p_translation_id
-        order by l.level_id desc
+        order by l.rank_order desc
         limit 1;
 end
 $$;

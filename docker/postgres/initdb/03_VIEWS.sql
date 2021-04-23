@@ -142,7 +142,7 @@ select t.taxonomy_id,
 from (SELECT *
       FROM crosstab(
                    'SELECT t.taxonomy_id, f.level_name, t.scientific_name FROM taxa.taxonomy t, taxa.fn_tree(t.taxonomy_id) f order by 1,2',
-                   'SELECT level_name FROM taxa.taxa_levels where is_active = TRUE  and level_id > 1 order BY level_id')
+                   'SELECT level_name FROM taxa.taxa_levels where is_active = TRUE  and level_id > 1 order BY rank_order')
                AS final_result(taxonomy_id INT,
                                Phylum varchar(255),
                                Class varchar(255),
