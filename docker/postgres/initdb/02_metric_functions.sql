@@ -8,7 +8,7 @@ create or replace function metric.fn_metrics(p_limit int, p_offset int)
                 type_name             varchar(255),
                 translation_id        smallint,
                 translation_name      varchar(255),
-                formula_id            int,
+                formula_id            smallint,
                 formula_name          text,
                 formula_code_function varchar(100),
                 is_standardized       boolean,
