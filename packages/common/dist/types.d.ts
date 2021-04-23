@@ -130,6 +130,9 @@ export declare type Project = {
 };
 export declare type Taxonomy = {
     taxonomyId: number;
+    scientificName: string;
+    levelId: number;
+    levelName: string;
     phylum: string;
     class: string;
     subclass: string;

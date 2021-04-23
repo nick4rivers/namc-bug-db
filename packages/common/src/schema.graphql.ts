@@ -522,6 +522,9 @@ type MassSample {
 
     type Taxonomy {
         taxonomyId: Int
+        scientificName: String
+        levelId: Int
+        levelName: String
         phylum: String
         class: String
         subclass: String
