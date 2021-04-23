@@ -43,7 +43,7 @@ create or replace function taxa.fn_taxa_attributes(p_taxonomy_id int, p_limit in
     language sql
 as
 $$
-select p_taxonomy_id,
+select t.taxonomy_id,
        t.scientific_name,
        t.level_id,
        l.level_name,
