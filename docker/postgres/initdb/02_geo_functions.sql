@@ -1,4 +1,4 @@
-create or replace function fn_site_location_changed()
+create or replace function geo.fn_site_location_changed()
     returns trigger
     language plpgsql
 as
@@ -10,7 +10,7 @@ begin
 end ;
 $$;
 
-create or replace function fn_site_catchment_changed()
+create or replace function geo.fn_site_catchment_changed()
     returns trigger
     language plpgsql
 as
@@ -20,6 +20,7 @@ begin
         insert into geo.site_catchment_history (site_id, catchment)
         select old.site_id, old.catchment;
     end if;
+    return new;
 end;
 $$;
 
