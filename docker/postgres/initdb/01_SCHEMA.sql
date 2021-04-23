@@ -894,9 +894,9 @@ CREATE TABLE sample.samples
     method_id           SMALLINT    NOT NULL,
     habitat_id          SMALLINT    NOT NULL,
     area                REAL,
-    field_split         REAL,                           -- big sample... in the field keep only 50% or 25% (not submitting the bit they don't keep)
+    field_split         REAL,                           -- big sample... in the field keep only 0.5 (50%) or 0.25 (25%) (not submitting the bit they don't keep)
     field_notes         TEXT,
-    lab_split           REAL,                           -- lab puts all sample in bucket and sorts 25% or 50%
+    lab_split           REAL,                           -- lab puts all sample in bucket and sorts 0.25 (25%) or 0.5 (50%)
     jar_count           SMALLINT    NOT NULL DEFAULT 1, -- lab person verifies the jars match the number in the submission form.
     qualitative         BOOLEAN              DEFAULT FALSE,
     lab_notes           TEXT,
@@ -914,8 +914,8 @@ CREATE TABLE sample.samples
     CONSTRAINT fk_samples_method_id FOREIGN KEY (method_id) REFERENCES sample.sample_methods (sample_method_id),
     CONSTRAINT fk_samples_habitat_id FOREIGN KEY (habitat_id) REFERENCES geo.habitats (habitat_id),
     CONSTRAINT ck_samples_area CHECK (area >= 0),
-    CONSTRAINT ck_samples_field_split CHECK (field_split >= 0),
-    CONSTRAINT ck_samples_lab_split CHECK (lab_split >= 0),
+    CONSTRAINT ck_samples_field_split CHECK (field_split >= 0 AND field_split <= 1.0),
+    CONSTRAINT ck_samples_lab_split CHECK (lab_split >= 0 AND lab_split <= 1.0),
     CONSTRAINT chk_samples_mesh CHECK (mesh > 0),
     CONSTRAINT chk_samples_jar_count CHECK (jar_count > 0)
 );

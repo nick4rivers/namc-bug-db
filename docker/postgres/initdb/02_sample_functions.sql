@@ -164,9 +164,9 @@ begin
                t.level_id,
                l.level_name,
                sum(o.split_count),
-               sum(o.split_count) * 100 / s.lab_split * 100 / s.field_split,
+               sum(o.split_count) * s.lab_split * s.field_split,
                sum(o.big_rare_count),
-               cast(sum(o.big_rare_count) as double precision) * 100 / s.lab_split * 100 / s.field_split
+               cast(sum(o.big_rare_count) as double precision) * s.lab_split * s.field_split
         from sample.organisms o
                  inner join sample.samples s on o.sample_id = s.sample_id
                  inner join taxa.taxonomy t on o.taxonomy_id = t.taxonomy_id
@@ -215,9 +215,9 @@ begin
                ll.abbreviation,
                o.bug_size,
                sum(o.split_count),
-               sum(o.split_count) * 100 / s.lab_split * 100 / s.field_split,
+               sum(o.split_count) * s.lab_split * s.field_split,
                sum(o.big_rare_count),
-               cast(sum(o.big_rare_count) as double precision) * 100 / s.lab_split * 100 / s.field_split
+               cast(sum(o.big_rare_count) as double precision) * s.lab_split * s.field_split
         from sample.organisms o
                  inner join sample.samples s on o.sample_id = s.sample_id
                  inner join taxa.taxonomy t on o.taxonomy_id = t.taxonomy_id
@@ -268,9 +268,9 @@ begin
                tt.translation_level_id,
                tt.translation_level_name,
                sum(o.split_count),
-               sum(o.split_count) * 100 / s.lab_split * 100 / s.field_split,
+               sum(o.split_count) * s.lab_split * s.field_split,
                sum(o.big_rare_count),
-               cast(sum(o.big_rare_count) as double precision) * 100 / s.lab_split * 100 / s.field_split
+               cast(sum(o.big_rare_count) as double precision) * s.lab_split * s.field_split
         FROM sample.organisms o
                  inner join sample.samples s on o.sample_id = s.sample_id
                  inner join taxa.taxonomy t on o.taxonomy_id = t.taxonomy_id
@@ -317,7 +317,7 @@ begin
                           from (
                                    SELECT o.taxonomy_id,
                                           cast(round(
-                                                  sum(split_count) * (100 / s.field_split) * (100 / s.lab_split)) as int) corrected_count
+                                                  sum(split_count) * s.field_split * s.lab_split) as int) corrected_count
                                    FROM sample.organisms o
                                             inner join sample.samples s on o.sample_id = s.sample_id
                                    where s.sample_id = p_sample_id
