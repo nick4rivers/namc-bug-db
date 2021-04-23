@@ -8,6 +8,7 @@ import {
     Model,
     ModelInfo,
     ModelPredictor,
+    ModelThreshold,
     PaginatedRecords,
     Predictor,
     Project,
@@ -29,6 +30,7 @@ import {
     MassSample,
     Attribute,
     AttributeValue,
+    Metric,
     util
 } from '@namcbugdb/common'
 import * as pg from '../pg'
@@ -150,6 +152,14 @@ export default {
 
             const returnVal = data.map(util.snake2camel)[0] as ModelInfo
             return returnVal
+        },
+
+        modelThresholds: async (obj, { modelId }, { user }): Promise<PaginatedRecords<ModelThreshold>> => {
+            loggedInGate(user)
+            const pool = await pg.getPool()
+            const data = await pg.getModelThresholds(pool, modelId)
+
+            return createPagination<ModelThreshold>(data, 500, 0)
         },
 
         samplePredictorValues: async (obj, { sampleId }, { user }): Promise<PaginatedRecords<SamplePredictorValue>> => {
@@ -305,6 +315,14 @@ export default {
             const pool = await pg.getPool()
             const data = await pg.getAttributes(pool, limit, offset)
             return createPagination<Attribute>(data)
+        },
+
+        metrics: async (obj, { limit, offset }, { user }): Promise<PaginatedRecords<Metric>> => {
+            loggedInGate(user)
+
+            const pool = await pg.getPool()
+            const data = await pg.getMetrics(pool, limit, offset)
+            return createPagination<Metric>(data)
         },
 
         taxaAttributes: async (

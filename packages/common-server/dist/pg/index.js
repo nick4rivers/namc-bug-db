@@ -39,7 +39,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getSampleTaxaTranslationRarefied = exports.getSampleTaxaRarefied = exports.getSampleTaxaTranslation = exports.getSampleTaxaGeneralized = exports.getSampleTaxaRaw = exports.setSiteCatchment = exports.setSamplePredictorValue = exports.setSitePredictorValue = exports.getTaxaAttributes = exports.getAttributes = exports.getMassSamples = exports.getFishSamples = exports.getDriftSamples = exports.getPlanktonSamples = exports.getTranslations = exports.getModelPredictors = exports.getSamplePredictorValues = exports.getBoxInfo = exports.getSampleInfo = exports.getSitePredictorValues = exports.getModelInfo = exports.getModels = exports.getPredictors = exports.getTaxonomy = exports.getProjects = exports.getBoxes = exports.getIndividuals = exports.getSiteInfo = exports.getSites = exports.getSamples = exports.getPool = void 0;
+exports.getSampleTaxaTranslationRarefied = exports.getSampleTaxaRarefied = exports.getSampleTaxaTranslation = exports.getSampleTaxaGeneralized = exports.getSampleTaxaRaw = exports.setSiteCatchment = exports.setSamplePredictorValue = exports.setSitePredictorValue = exports.getMetrics = exports.getModelThresholds = exports.getTaxaAttributes = exports.getAttributes = exports.getMassSamples = exports.getFishSamples = exports.getDriftSamples = exports.getPlanktonSamples = exports.getTranslations = exports.getModelPredictors = exports.getSamplePredictorValues = exports.getBoxInfo = exports.getSampleInfo = exports.getSitePredictorValues = exports.getModelInfo = exports.getModels = exports.getPredictors = exports.getTaxonomy = exports.getProjects = exports.getBoxes = exports.getIndividuals = exports.getSiteInfo = exports.getSites = exports.getSamples = exports.getPool = void 0;
 var config_1 = require("../config");
 var pg_1 = require("pg");
 var loglevel_1 = __importDefault(require("loglevel"));
@@ -159,6 +159,14 @@ exports.getAttributes = function (pool, limit, offset) {
 var attributeValueQuery = 'SELECT * FROM taxa.fn_taxa_attributes($1, $2, $3)';
 exports.getTaxaAttributes = function (pool, taxonomyId, limit, offset) {
     return pgPromise(pool, attributeValueQuery, [taxonomyId, limit, offset]);
+};
+var modelThresholdQuery = 'SELECT * FROM geo.fn_model_thresholds($1)';
+exports.getModelThresholds = function (pool, modelId) {
+    return pgPromise(pool, modelThresholdQuery, [modelId]);
+};
+var metricsQuery = 'SELECT * FROM metric.fn_metrics($1, $2)';
+exports.getMetrics = function (pool, limit, offset) {
+    return pgPromise(pool, metricsQuery, [limit, offset]);
 };
 var setSitePredictorValueQuery = 'SELECT * FROM sample.fn_set_site_predictor_value($1, $2, $3)';
 exports.setSitePredictorValue = function (pool, siteId, predictorId, value) {

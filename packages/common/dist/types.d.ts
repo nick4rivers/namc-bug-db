@@ -190,6 +190,13 @@ export declare type ModelInfo = {
     updatedDate: string;
     extent: string;
 };
+export declare type ModelThreshold = {
+    modelId: number;
+    thresholdId: number;
+    threshold: string;
+    displayText: string;
+    description: string;
+};
 export declare type ModelPredictor = {
     predictorId: number;
     predictorName: string;
@@ -396,4 +403,20 @@ export declare type AttributeValue = {
     attributeType: string;
     label: string;
     attributeValue: string;
+};
+export declare type Metric = {
+    metricId: number;
+    metricName: string;
+    metricTypeId: number;
+    typeName: string;
+    translationId: number;
+    translationName: string;
+    formulaId: number;
+    formulaName: string;
+    formulaCodeFunction: string;
+    isStandardized: boolean;
+    perturbDirection: string;
+    description: string;
+    createdDate: string;
+    updatedDate: string;
 };

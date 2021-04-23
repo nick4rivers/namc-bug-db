@@ -119,6 +119,13 @@ const attributeValueQuery = 'SELECT * FROM taxa.fn_taxa_attributes($1, $2, $3)'
 export const getTaxaAttributes = (pool, taxonomyId: number, limit: number, offset: number): DBReturnPromiseType =>
     pgPromise(pool, attributeValueQuery, [taxonomyId, limit, offset])
 
+const modelThresholdQuery = 'SELECT * FROM geo.fn_model_thresholds($1)'
+export const getModelThresholds = (pool, modelId: number): DBReturnPromiseType =>
+    pgPromise(pool, modelThresholdQuery, [modelId])
+
+const metricsQuery = 'SELECT * FROM metric.fn_metrics($1, $2)'
+export const getMetrics = (pool, limit: number, offset: number): DBReturnPromiseType =>
+    pgPromise(pool, metricsQuery, [limit, offset])
 /**
  * Mutations
  */

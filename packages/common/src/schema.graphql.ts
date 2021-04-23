@@ -12,7 +12,8 @@ export const queryLimits = {
     models: 500,
     sitePredictorValues: 500,
     modelPredictors: 500,
-    translations: 500
+    translations: 500,
+    metrics: 500
 }
 
 const typeDefs = gql`
@@ -25,17 +26,26 @@ const typeDefs = gql`
         # Get a project and associated metadata
         auth: AuthParams
 
+        ####################################################################################################################################################################################
+        # Geo queries
+
         "Detailed information about a single site. Includes the point location and upstream catchment geometries as GeoJSON."
         siteInfo(siteId: Int!): SiteInfo
+
+        "Detailed information about a single model, including the number of predictors associated with the model."
+        modelInfo(modelId: Int!): ModelInfo
+
+        "List of all thresholds (e.g. good, fair, poor) for a particular model"
+        modelThresholds(modelId: Int!): PaginatedModelThresholds
+
+        ####################################################################################################################################################################################
+        # Sample queries
 
         "Detailed information about a single sample, including information about the box and customer."
         sampleInfo(sampleId: Int!): SampleInfo
 
         "Detailed information about a single box, including information about the customer and number of samples associated with the box."
         boxInfo(boxId: Int!): BoxInfo
-
-        "Detailed information about a single model, including the number of predictors associated with the model."
-        modelInfo(modelId: Int!): ModelInfo
 
         "List of all samples in the system, including high level information about the associated box and customer."
         samples(limit: Int = ${queryLimits.samples}, offset: Int = 0): PaginatedSamples
@@ -114,6 +124,11 @@ const typeDefs = gql`
 
         "Sample oganisms converted to the translation (OTU) and then rarefied to the specified fixed count."
         sampleTaxaTranslationRarefied(sampleId: Int!, translationId: Int!, fixedCount:Int!):PaginatedRarefiedSampleTaxa
+
+        ####################################################################################################################################################################################
+        # Metric queries
+
+        metrics(limit: Int = ${queryLimits.metrics}, offset: Int = 0): PaginatedMetrics
     }
 
     # this schema allows the following mutation:
@@ -571,6 +586,31 @@ type MassSample {
         extent: String
     }
 
+    type ModelThreshold {
+        modelId: Int
+        thresholdId: Int
+        threshold: String
+        displayText: String
+        description: String
+    }
+
+    type Metric {
+        metricId: Int
+        metricName: String
+        metricTypeId: Int
+        typeName:  String
+        translationId: Int
+        translationName: String
+        formulaId: Int
+        formulaName: String
+        formulaCodeFunction: String
+        isStandardized: Boolean
+        perturbDirection: String
+        description: String
+        createdDate: String
+        updatedDate: String
+    }
+
     """
     The value of a non-temporal predictor for a particular site.
     """
@@ -795,6 +835,16 @@ type MassSample {
 
     type PaginatedAttributeValues {
         records: [AttributeValue]
+        nextOffset: Int
+    }
+
+    type PaginatedModelThresholds {
+        records: [ModelThreshold]
+        nextOffset: Int
+    }
+
+    type PaginatedMetrics {
+        records: [Metric]
         nextOffset: Int
     }
 `

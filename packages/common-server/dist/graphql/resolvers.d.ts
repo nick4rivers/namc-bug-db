@@ -1,4 +1,4 @@
-import { AuthResponse, Box, BoxInfo, Model, ModelInfo, ModelPredictor, PaginatedRecords, Predictor, Project, Sample, SampleInfo, SamplePredictorValue, Site, SiteInfo, SitePredictorValue, Taxonomy, Translation, RawSampleTaxa, GeneralizedSampleTaxa, TranslationSampleTaxa, RarefiedSampleTaxa, PlanktonSample, DriftSample, FishSample, MassSample, Attribute, AttributeValue } from '@namcbugdb/common';
+import { AuthResponse, Box, BoxInfo, Model, ModelInfo, ModelPredictor, ModelThreshold, PaginatedRecords, Predictor, Project, Sample, SampleInfo, SamplePredictorValue, Site, SiteInfo, SitePredictorValue, Taxonomy, Translation, RawSampleTaxa, GeneralizedSampleTaxa, TranslationSampleTaxa, RarefiedSampleTaxa, PlanktonSample, DriftSample, FishSample, MassSample, Attribute, AttributeValue, Metric } from '@namcbugdb/common';
 declare const _default: {
     Query: {
         auth: (obj: any, args: any, ctx: any) => Promise<AuthResponse>;
@@ -34,6 +34,11 @@ declare const _default: {
         }, { user }: {
             user: any;
         }) => Promise<ModelInfo>;
+        modelThresholds: (obj: any, { modelId }: {
+            modelId: any;
+        }, { user }: {
+            user: any;
+        }) => Promise<PaginatedRecords<ModelThreshold>>;
         samplePredictorValues: (obj: any, { sampleId }: {
             sampleId: any;
         }, { user }: {
@@ -125,6 +130,12 @@ declare const _default: {
         }, { user }: {
             user: any;
         }) => Promise<PaginatedRecords<Attribute>>;
+        metrics: (obj: any, { limit, offset }: {
+            limit: any;
+            offset: any;
+        }, { user }: {
+            user: any;
+        }) => Promise<PaginatedRecords<Metric>>;
         taxaAttributes: (obj: any, { taxonomyId, limit, offset }: {
             taxonomyId: any;
             limit: any;

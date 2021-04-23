@@ -200,6 +200,18 @@ CREATE TRIGGER tr_sites_update
     FOR EACH ROW
 EXECUTE PROCEDURE fn_before_update();
 
+CREATE TRIGGER tr_sites_location
+    BEFORE UPDATE OF location
+    ON geo.sites
+    FOR EACH ROW
+EXECUTE PROCEDURE geo.fn_site_location_changed();
+
+CREATE TRIGGER tr_sites_catchment
+    BEFORE UPDATE OF catchment
+    ON geo.sites
+    FOR EACH ROW
+EXECUTE PROCEDURE geo.fn_site_catchment_changed();
+
 /*
  Function to update the timestamp that tracks the last time that a site's
  location or catchment were changed. This can be used to determine when

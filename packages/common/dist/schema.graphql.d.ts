@@ -9,6 +9,7 @@ export declare const queryLimits: {
     sitePredictorValues: number;
     modelPredictors: number;
     translations: number;
+    metrics: number;
 };
 declare const typeDefs: import("graphql").DocumentNode;
 export default typeDefs;
