@@ -150,9 +150,9 @@ create or replace function sample.fn_sample_taxa_raw(p_sample_id int)
                 level_id                 smallint,
                 level_name               varchar(50),
                 raw_count                real,
-                corrected_count          double precision,
+                corrected_count          real,
                 raw_big_rare_count       bigint,
-                corrected_big_rare_count double precision
+                corrected_big_rare_count real
             )
     language plpgsql
 as
@@ -166,7 +166,7 @@ begin
                sum(o.split_count),
                sum(o.split_count) * s.lab_split * s.field_split,
                sum(o.big_rare_count),
-               cast(sum(o.big_rare_count) as double precision) * s.lab_split * s.field_split
+               cast(sum(o.big_rare_count) as real) * s.lab_split * s.field_split
         from sample.organisms o
                  inner join sample.samples s on o.sample_id = s.sample_id
                  inner join taxa.taxonomy t on o.taxonomy_id = t.taxonomy_id
@@ -197,9 +197,9 @@ create or replace function sample.fn_sample_taxa_generalized(p_sample_id int)
                 life_stage_abbreviation  char,
                 bug_size                 real,
                 raw_count                real,
-                corrected_count          double precision,
+                corrected_count          real,
                 raw_big_rare_count       bigint,
-                corrected_big_rare_count double precision
+                corrected_big_rare_count real
             )
     language plpgsql
 as
@@ -217,7 +217,7 @@ begin
                sum(o.split_count),
                sum(o.split_count) * s.lab_split * s.field_split,
                sum(o.big_rare_count),
-               cast(sum(o.big_rare_count) as double precision) * s.lab_split * s.field_split
+               cast(sum(o.big_rare_count) as real) * s.lab_split * s.field_split
         from sample.organisms o
                  inner join sample.samples s on o.sample_id = s.sample_id
                  inner join taxa.taxonomy t on o.taxonomy_id = t.taxonomy_id
@@ -249,9 +249,9 @@ create or replace function sample.fn_sample_translation_taxa(p_sample_id int, p_
                 level_id                 smallint,
                 level_name               varchar(50),
                 raw_count                real,
-                corrected_count          double precision,
+                corrected_count          real,
                 raw_big_rare_count       bigint,
-                corrected_big_rare_count double precision
+                corrected_big_rare_count real
             )
     language plpgsql
 as
@@ -270,7 +270,7 @@ begin
                sum(o.split_count),
                sum(o.split_count) * s.lab_split * s.field_split,
                sum(o.big_rare_count),
-               cast(sum(o.big_rare_count) as double precision) * s.lab_split * s.field_split
+               cast(sum(o.big_rare_count) as real) * s.lab_split * s.field_split
         FROM sample.organisms o
                  inner join sample.samples s on o.sample_id = s.sample_id
                  inner join taxa.taxonomy t on o.taxonomy_id = t.taxonomy_id
