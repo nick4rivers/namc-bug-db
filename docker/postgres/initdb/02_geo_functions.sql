@@ -9,6 +9,11 @@ begin
     return new;
 end ;
 $$;
+CREATE TRIGGER tr_sites_location
+    BEFORE UPDATE OF location
+    ON geo.sites
+    FOR EACH ROW
+EXECUTE PROCEDURE geo.fn_site_location_changed();
 
 create or replace function geo.fn_site_catchment_changed()
     returns trigger
@@ -23,6 +28,12 @@ begin
     return new;
 end;
 $$;
+
+CREATE TRIGGER tr_sites_catchment
+    BEFORE UPDATE OF catchment
+    ON geo.sites
+    FOR EACH ROW
+EXECUTE PROCEDURE geo.fn_site_catchment_changed();
 
 drop function if exists geo.fn_model_thresholds;
 create or replace function geo.fn_model_thresholds(p_model_id int)
