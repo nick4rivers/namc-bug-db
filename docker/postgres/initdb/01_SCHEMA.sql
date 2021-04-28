@@ -1444,7 +1444,7 @@ CREATE TABLE metric.sample_metrics
     metadata     JSON,
 
     CONSTRAINT pk_metric_sample_metrics PRIMARY KEY (run_id, sample_id, metric_id),
-    CONSTRAINT fk_metric_sample_metrics_box_report_id FOREIGN KEY (run_id) REFERENCES metric.box_reports (run_id) ON DELETE CASCADE,
+    CONSTRAINT fk_metric_sample_metrics_box_report_id FOREIGN KEY (run_id) REFERENCES metric.runs (run_id) ON DELETE CASCADE,
     CONSTRAINT fk_metric_sample_metrics_sample_id FOREIGN KEY (sample_id) REFERENCES sample.samples (sample_id) ON DELETE CASCADE,
     CONSTRAINT fk_metric_sample_metrics_metric_id FOREIGN KEY (metric_id) REFERENCES metric.metrics (metric_id)
 );
