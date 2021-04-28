@@ -1474,7 +1474,7 @@ CREATE TABLE metric.box_report_runs
     run_id        INT NOT NULL,
 
     CONSTRAINT pk_metric_box_reports PRIMARY KEY (box_report_id, run_id),
-    CONSTRAINT fk_metric_box_reports_samples FOREIGN KEY (box_report_id) REFERENCES metric.box_reports (report_id),
+    CONSTRAINT fk_metric_box_reports_samples FOREIGN KEY (box_report_id) REFERENCES metric.box_reports (box_report_id),
     CONSTRAINT fk_metric_box_reports_run_id FOREIGN KEY (run_id) REFERENCES metric.runs (run_id)
 );
 
