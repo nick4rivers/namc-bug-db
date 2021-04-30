@@ -66,7 +66,8 @@ def log_row_count(pgcurs, table, expected_rows=None):
 
 def process_query(mscurs, pgcurs, source_query, target_table, call_back, lookup=None):
 
-    count_query = 'SELECT Count(*) {}'.format(source_query[source_query.lower().index('from'):])
+    # count_query = 'SELECT Count(*) {}'.format(source_query[source_query.lower().index('from'):])
+    count_query = 'SELECT count(*) FROM ({}) cc'.format(source_query)
     row_count = log_record_count(mscurs, target_table, count_query)
     __process_data(mscurs, pgcurs, source_query, target_table, call_back, lookup, row_count)
 
