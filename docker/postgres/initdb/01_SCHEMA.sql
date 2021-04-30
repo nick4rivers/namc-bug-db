@@ -311,20 +311,6 @@ CREATE TABLE geo.model_types
     model_type_name VARCHAR(255) UNIQUE NOT NULL
 );
 
-CREATE TABLE geo.model_reference_sites
-(
-    model_id SMALLINT NOT NULL,
-    site_id INT NOT NULL,
-    description TEXT,
-    metadata JSON,
-
-    CONSTRAINT pk_model_reference_sites PRIMARY KEY (model_id, site_id),
-    CONSTRAINT fk_model_reference_sites_model_id FOREIGN KEY (model_id) REFERENCES geo.models(model_id) ON DELETE CASCADE,
-    -- Do not cascade delete. You cannot delete a site if it is used as model reference site
-    CONSTRAINT fk_model_reference_sites_site_id FOREIGN KEY (site_id) REFERENCES geo.sites(site_id)
-);
-CREATE INDEX fx_model_reference_sites_site_id ON geo.model_reference_sites(site_id);
-
 /******************************************************************************************************************
  ENTITY SCHEMA
  */
@@ -678,6 +664,22 @@ CREATE TABLE geo.model_predictors
     CONSTRAINT fk_model_predictors_model_id FOREIGN KEY (model_id) REFERENCES geo.models (model_id) ON DELETE CASCADE,
     CONSTRAINT fk_model_predictors_predictor_id FOREIGN KEY (predictor_id) REFERENCES geo.predictors (predictor_id)
 );
+
+
+CREATE TABLE geo.model_reference_sites
+(
+    model_id SMALLINT NOT NULL,
+    site_id INT NOT NULL,
+    description TEXT,
+    metadata JSON,
+
+    CONSTRAINT pk_model_reference_sites PRIMARY KEY (model_id, site_id),
+    CONSTRAINT fk_model_reference_sites_model_id FOREIGN KEY (model_id) REFERENCES geo.models(model_id) ON DELETE CASCADE,
+    -- Do not cascade delete. You cannot delete a site if it is used as model reference site
+    CONSTRAINT fk_model_reference_sites_site_id FOREIGN KEY (site_id) REFERENCES geo.sites(site_id)
+);
+CREATE INDEX fx_model_reference_sites_site_id ON geo.model_reference_sites(site_id);
+
 
 CREATE TABLE geo.site_predictors
 (
