@@ -31,7 +31,8 @@
       "data/model_metrics.csv",
       "/Users/philip/GISData/bugdb/model_regions/2021_03_25_ModelRegions2/ModelRegions.geojson",
       "data/parent_entities.json",
-      "/Users/philip/GISData/bugdb/catchments/2021_03_26_FromTrip/catchments2.geojson"
+      "/Users/philip/GISData/bugdb/catchments/2021_03_26_FromTrip/catchments2.geojson",
+      "data/official_model_reference_sites.csv"
     ]
   },
   {

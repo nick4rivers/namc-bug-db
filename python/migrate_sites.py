@@ -1,3 +1,4 @@
+import csv
 import json
 import pyodbc
 from lookup_data import get_db_id
@@ -99,3 +100,116 @@ def migrate(mscurs, pgcurs, schema):
     log_row_count(pgcurs, 'geo.sites', expected_rows)
 
     log.info('{} existing sites found'.format(existing_site_count))
+
+
+def migrate_model_reference_sites(pgcurs, csv_path):
+    """ Imports a CSV file of model reference sites provided
+    by Jennifer. The CSV has three columns
+
+    Station (NAMC site name)
+    Model (model name, somewhat matches geo.models.abbreviation)
+    ModelSiteID (name of the site referred to in the model)
+
+    This code attempts to match the Station with NAMC site names
+    and Model with NAMC model abbreviations. The ModelSiteID
+    (if present) is stored in geo.model_reference_sites.metadata
+    """
+
+    log = Logger('Model Ref Sites')
+    log.info('Importing model reference sites')
+
+    models = lookup_data(pgcurs, 'geo.models', 'abbreviation')
+
+    data = {}
+    csv_rows = 0
+    missing_sites = 0
+    for ref_site in csv.DictReader(open(csv_path)):
+        csv_rows += 1
+        site = ref_site['Station']
+        model = ref_site['Model']
+        model_site_code = ref_site['ModelSiteID']
+
+        # Utah model has different name in database
+        if model.lower() == 'ut all seasons':
+            model = 'UTDEQ15'
+
+        # retrieve the site
+        pgcurs.execute('SELECT site_id FROM geo.sites WHERE site_name = %s', [site])
+        site_row = pgcurs.fetchone()
+
+        if site_row is None:
+            log.warning('Missing site {}'.format(site))
+            missing_sites += 1
+            continue
+
+        site_id = site_row['site_id']
+        if site_id not in data:
+            data[site_id] = {}
+
+        # Colorado - match using polygon
+        if model.lower() == 'co':
+            model_id = get_model_by_location(pgcurs, site, site_id, 'CO EDAS Biotype%%')
+
+        # Wyoming - match using polygon
+        elif model.lower() == 'wy':
+            model_id = get_model_by_location(pgcurs, site, site_id, 'WY -%%')
+
+        # Westwide - match using polygon
+        elif model.lower() == 'westwide':
+            model_id = get_model_by_location(pgcurs, site, site_id, 'Westwide%%')
+
+        # AREMP - assign all sites to both models
+        elif model.lower() == 'aremp':
+            model_id = get_all_models_with_prefix(pgcurs, 'AREMP%%')
+
+        # All other models should be straight lookup
+        else:
+            model_id = get_db_id(models, 'model_id', ['abbreviation'], model, True)
+
+        if model_id is None:
+            # Other places in the code should have already logged this issue
+            continue
+
+        if not isinstance(model_id, list):
+            model_id = [model_id]
+
+        for a_model in model_id:
+            if a_model not in data[site_id]:
+                data[site_id][a_model] = None if model_site_code is None else {'ModelSiteID': model_site_code}
+
+    log.warning('{} sites in the CSV file are missing from the database'.format(missing_sites))
+    # Flatten data back to tuples
+    flat_data = []
+    for site_id, model_dict in data.items():
+        [flat_data.append((site_id, model_id, model_site_code)) for model_id, model_site_code in model_dict.items()]
+
+    insert_many_rows(pgcurs, 'geo.model_reference_sites', ['site_id', 'model_id', 'metadata'], flat_data)
+    log_row_count(pgcurs, 'geo.model_reference_sites', csv_rows)
+
+
+def get_model_by_location(pgcurs, site_name, site_id, model_prefix):
+
+    pgcurs.execute("""SELECT m.model_id
+        FROM geo.models m
+        JOIN geo.sites s
+        ON ST_intersects(m.extent, s.location)
+        WHERE (abbreviation ilike ('{}')) and (s.site_id = %s)""".format(model_prefix), [site_id])
+    row = pgcurs.fetchone()
+    if row is None:
+        log = Logger()
+        log.error("Failed to find model with prefix '{}' for site {}".format(model_prefix, site_name))
+        return None
+    else:
+        return row['model_id']
+
+
+def get_all_models_with_prefix(pgcurs, model_prefix):
+
+    pgcurs.execute("SELECT model_id FROM geo.models WHERE abbreviation ilike ('{}%%')".format(model_prefix))
+    models = pgcurs.fetchall()
+    if models is None:
+        log = Logger()
+        log.error("No models with prefix '{}'".format(model_prefix))
+        return None
+
+    return [row['model_id'] for row in models]
