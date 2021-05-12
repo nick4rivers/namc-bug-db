@@ -6,20 +6,20 @@ CREATE OR REPLACE VIEW geo.vw_sites AS
 (
 SELECT s.site_id,
        s.site_name,
-       sy.system_name          as system,
-       e.ecosystem_name        as ecosystem,
-       st_x(location)          AS longitude,
-       st_y(location)          AS latitude,
-       st.abbreviation            us_state,
+       sy.system_name           as system,
+       e.ecosystem_name         as ecosystem,
+       st_x(location::geometry) AS longitude,
+       st_y(location::geometry) AS latitude,
+       st.abbreviation             us_state,
        w.waterbody_type_name,
        waterbody_code,
        waterbody_name,
        s.created_date,
        s.updated_date,
-       s.catchment is NOT NULL AS has_catchment
+       s.catchment is NOT NULL  AS has_catchment
 
 FROM geo.sites s
-         LEFT JOIN geo.states st ON st_contains(st.geom, s.location)
+         LEFT JOIN geo.states st ON st_covers(st.geom, s.location)
          LEFT JOIN geo.systems sy ON s.system_id = sy.system_id
          LEFT JOIN geo.ecosystems e ON sy.ecosystem_id = e.ecosystem_id
          LEFT JOIN geo.waterbody_types w ON s.waterbody_type_id = w.waterbody_type_id
@@ -160,7 +160,7 @@ from (SELECT *
      ) c
          inner join taxa.taxonomy t on c.taxonomy_id = t.taxonomy_id
          inner join taxa.taxa_levels l on t.level_id = l.level_id
-);
+    );
 
 DROP MATERIALIZED VIEW IF EXISTS sample.vw_samples;
 CREATE MATERIALIZED VIEW sample.vw_samples AS
@@ -179,8 +179,8 @@ SELECT s.sample_id,
        si.us_state                      AS site_state,
        s.sample_date,
        extract(year from s.sample_date) as sample_year,
-       st_y(s.location)                 AS sample_latitude,
-       st_x(s.location)                 AS sample_longitude,
+       st_y(s.location::geometry)       AS sample_latitude,
+       st_x(s.location::geometry)       AS sample_longitude,
        s.sample_time,
        s.type_id,
        st.sample_type_name              AS sample_type,
