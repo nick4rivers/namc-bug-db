@@ -97,7 +97,7 @@ def migrate_model_polygons(pgcurs, geojson_path):
 
         # UPDATE queries cannot use aggregate functions like ST_UNION so abstract it to CTE
         pgcurs.execute("""WITH cte_union  AS (
-            SELECT ST_MULTI(ST_UNION(geom)) AS geom FROM geo.states WHERE abbreviation = ANY (%s)
+            SELECT ST_MULTI(ST_UNION(geom::geometry)) AS geom FROM geo.states WHERE abbreviation = ANY (%s)
         )
         UPDATE geo.models m SET extent = geom FROM cte_union WHERE m.abbreviation = %s""", [states, model_name])
 
