@@ -224,7 +224,81 @@ begin
 end
 $$;
 
+drop function if exists sample.fn_taxa_raw_point_distance;
+create or replace function sample.fn_taxa_raw_point_distance(p_longitude double precision, p_latitude double precision,
+                                                             p_distance double precision)
+    returns setof taxa_info
+    language plpgsql
+as
+$$
+declare
+    p_sample_ids int[];
+begin
+    if (p_longitude < -180 or p_longitude > 180) then
+        raise 'Invalid longitude. It must be between -180 and 180 degrees.';
+    end if;
 
+    if (p_latitude < -90 or p_latitude > 90) then
+        raise 'Invalid latitude. It must be between -90 and 90 degrees.';
+    end if;
+
+    if (p_distance <= 0) then
+        raise 'Invalid distance. The distance must be greater than zero, meters.';
+    end if;
+
+    select array(
+                   select sample_id
+                   from sample.samples s
+                            inner join geo.sites ss on s.site_id = ss.site_id
+                   where st_dwithin(ss.location, st_point(p_longitude, p_latitude), p_distance)
+               )
+    into p_sample_ids;
+
+    return query select * from sample.fn_sample_taxa_raw(p_sample_ids);
+
+end
+$$;
+
+drop function if exists sample.fn_taxa_raw_polygon;
+create or replace function sample.fn_taxa_raw_polygon(p_search_polygon json)
+    returns setof taxa_info
+    language plpgsql
+as
+$$
+declare
+    p_search_geography geography(MultiPolygon, 4326);
+    p_sample_ids   int[];
+begin
+
+   if (p_search_polygon IS NULL) then
+        raise exception 'The search polygon cannot be NULL.';
+    end if;
+
+    p_search_geography := st_multi(st_geomfromgeojson(p_search_polygon)::geography);
+
+    if (NOT st_isvalid(p_search_geography)) then
+        raise exception 'The search polygon is invalid.';
+    end if;
+
+    if (st_isempty(p_search_geography)) then
+        raise exception 'The search polygon is empty';
+    end if;
+
+   select array(
+                   select sample_id
+                   from sample.samples s
+                            inner join geo.sites ss on s.site_id = ss.site_id
+                   where st_covers(p_search_geography, ss.location)
+               )
+    into p_sample_ids;
+
+    return query select * from sample.fn_sample_taxa_raw(p_sample_ids);
+
+
+
+
+end
+$$;
 
 drop function if exists sample.fn_sample_taxa_generalized;
 create or replace function sample.fn_sample_taxa_generalized(p_sample_id int)
