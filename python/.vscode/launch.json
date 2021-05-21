@@ -151,5 +151,18 @@
       "/Users/philip/GISData/bugdb/model_regions/ModelRegionsSimplified/ModelRegionsSimplified.shp",
       "/Users/philip/code/bugdb/namc-bug-db/python/data/MMIResults.csv"
     ]
-  }]
+  },
+  {
+    "name": "Build Taxonomy SQLite",
+    "type": "python",
+    "request": "launch",
+    "module": "scripts.sqlite_taxa.build_namc_taxa_sqlite",
+    "console": "integratedTerminal",
+    "args": [
+      "{env:MS_DB}",
+      "{env:MS_USER}",
+      "{env:MS_PASSWORD}",
+     ]
+  } 
+]
 }

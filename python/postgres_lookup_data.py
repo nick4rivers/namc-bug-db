@@ -30,7 +30,7 @@ def insert_row(pgcurs, table, data, id_field=None):
     return pgcurs.fetchone()[0] if id_field else None
 
 
-def insert_many_rows(pgcurs, table, columns, data, sql=None):
+def insert_many_rows(pgcurs, table, columns, data, sql=None, parameter_specifier='%s'):
 
     # Convert dictionaries to JSON
     values = []
@@ -41,7 +41,7 @@ def insert_many_rows(pgcurs, table, columns, data, sql=None):
         sql = 'INSERT INTO {} ({}) VALUES ({});'.format(
             table,
             ','.join(columns),
-            ','.join('s' * len(columns)).replace('s', '%s'))
+            ','.join('s' * len(columns)).replace('s', parameter_specifier))
 
     pgcurs.executemany(sql, values)
 
@@ -50,8 +50,8 @@ def log_row_count(pgcurs, table, expected_rows=None):
 
     log = Logger(table)
 
-    pgcurs.execute('SELECT Count(*) FROM {};'.format(table))
-    total_rows = pgcurs.fetchone()[0]
+    pgcurs.execute('SELECT Count(*) row_count FROM {};'.format(table))
+    total_rows = pgcurs.fetchone()['row_count']
 
     pgcurs.execute("SELECT pg_size_pretty( pg_total_relation_size('{}') )".format(table))
     size = pgcurs.fetchone()[0]
@@ -72,14 +72,14 @@ def process_query(mscurs, pgcurs, source_query, target_table, call_back, lookup=
     __process_data(mscurs, pgcurs, source_query, target_table, call_back, lookup, row_count)
 
 
-def process_table(mscurs, pgcurs, source_table, target_table, call_back, lookup=None):
+def process_table(mscurs, pgcurs, source_table, target_table, call_back, lookup=None, parameter_specifier='%s', log_rows=True):
 
     row_count = log_record_count(mscurs, source_table)
     select_sql = 'SELECT * FROM {}'.format(source_table)
-    __process_data(mscurs, pgcurs, select_sql, target_table, call_back, lookup, row_count)
+    __process_data(mscurs, pgcurs, select_sql, target_table, call_back, lookup, row_count, parameter_specifier, log_rows)
 
 
-def __process_data(mscurs, pgcurs, query, target_table, call_back, lookup, row_count):
+def __process_data(mscurs, pgcurs, query, target_table, call_back, lookup, row_count, parameter_specifier='%s', log_rows=True):
 
     mscurs.execute(query)
     counter = 0
@@ -97,7 +97,7 @@ def __process_data(mscurs, pgcurs, query, target_table, call_back, lookup, row_c
         block_data.append([data[key] for key in columns])
 
         if len(block_data) == block_size:
-            insert_many_rows(pgcurs, target_table, columns, block_data)
+            insert_many_rows(pgcurs, target_table, columns, block_data, None, parameter_specifier)
             block_data = []
             progbar.update(counter)
 
@@ -105,7 +105,9 @@ def __process_data(mscurs, pgcurs, query, target_table, call_back, lookup, row_c
 
     # insert remaining rows
     if len(block_data) > 0:
-        insert_many_rows(pgcurs, target_table, columns, block_data)
+        insert_many_rows(pgcurs, target_table, columns, block_data, None, parameter_specifier)
 
     progbar.finish()
-    log_row_count(pgcurs, target_table, row_count)
+
+    if log_rows == True:
+        log_row_count(pgcurs, target_table, row_count)
