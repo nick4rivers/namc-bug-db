@@ -45,6 +45,26 @@ And we want a translation that includes **ALL** these taxa but simply renames th
 
 The key points here are that each taxa that is needed in the translation must appear in `translation_taxa` table even if they don't rename the taxa. If a taxa does need a new name then it is specified in the `translation_taxonomy_name` column.
 
+# Helpful Filter Queries
+
+To match an integer field simply use an equals sign:
+
+```sql
+SELECT * FROM vwtaxomony WHERE parent_id = 72;
+```
+
+To Match the start of a string field, end the clause with a percent sign:
+
+``sql
+SELECT * FROM vwtaxonomy where scientific_name like 'branch%';
+```
+
+And to search for records that match the middle of a string field use a percent sign at the start and end of the search phrase:
+
+```sql
+SELECT * FROM vwtaxonomy where scientific_name like '%packard%';
+```
+
 
 # Video Explanation of Translations v OTUs
 
