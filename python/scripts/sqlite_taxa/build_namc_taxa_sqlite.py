@@ -7,7 +7,8 @@ import pyodbc
 from migrate_taxonomy_pivot import migrate as taxonomy
 from lib.dotenv import parse_args_env
 from utilities import sanitize_string_col
-from postgres_lookup_data import process_table
+from postgres_lookup_data import process_table, process_query, lookup_data
+from migrate_translation_taxa import taxa_translations_callback
 
 
 def build_sqlite(mscurs, sqcurs):
@@ -18,7 +19,7 @@ def build_sqlite(mscurs, sqcurs):
         sqcurs.executescript(f.read())
 
     # Load the lookup information from SQL files
-    for file_name in ['10_taxa_translations.sql', '20_taxa_levels.sql']:
+    for file_name in ['10_taxa_translations.sql', '20_taxa_levels.sql', '10_taxa_external_sources.sql']:
         file_path = os.path.join(os.path.dirname(__file__), '../../../docker/postgres/initdb', file_name)
         with open(file_path, 'r') as f:
             for line in f.readlines():
@@ -28,6 +29,11 @@ def build_sqlite(mscurs, sqcurs):
                 sqcurs.execute(fixed_line)
     # Load the taxonomy
     process_table(mscurs, sqcurs, 'PilotDB.taxa.taxonomy', 'taxonomy', taxonomy_callback, None, '?', False)
+
+    # Load the translation taxa
+    # Get the list of translations (OTU) in the new database
+    translations = lookup_data(sqcurs, 'translations', 'translation_name')
+    process_query(mscurs, sqcurs, 'SELECT OTUName, OTUCode FROM PilotDB.dbo.BugOTU_pivot WHERE OTUCode IS NOT NULL GROUP BY OTUName, OTUCode', 'translation_taxa', taxa_translations_callback, translations, '?', False)
 
 
 def taxonomy_callback(msdata, lookup):
@@ -65,7 +71,7 @@ def main():
     mscon = pyodbc.connect('DSN={};UID={};PWD={}'.format(args.msdb, args.msuser_name, args.mspassword))
     mscurs = mscon.cursor()
 
-    sqlite_path = os.path.join(os.path.dirname(__file__), 'namc_taxa2.sqlite')
+    sqlite_path = os.path.join(os.path.dirname(__file__), 'namc_taxa.sqlite')
     sqconn = sqlite3.connect(sqlite_path)
     sqconn.row_factory = dict_factory
     sqcurs = sqconn.cursor()
