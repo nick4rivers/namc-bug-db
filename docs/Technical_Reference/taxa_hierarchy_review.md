@@ -50,12 +50,12 @@ The key points here are that each taxa that is needed in the translation must ap
 To match an integer field simply use an equals sign:
 
 ```sql
-SELECT * FROM vwtaxomony WHERE parent_id = 72;
+SELECT * FROM vwtaxonomy WHERE parent_id = 72
 ```
 
 To Match the start of a string field, end the clause with a percent sign:
 
-``sql
+```sql
 SELECT * FROM vwtaxonomy where scientific_name like 'branch%';
 ```
 
