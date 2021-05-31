@@ -30,6 +30,12 @@ def build_sqlite(mscurs, sqcurs):
     # Load the taxonomy
     process_table(mscurs, sqcurs, 'PilotDB.taxa.taxonomy', 'taxonomy', taxonomy_callback, None, '?', False)
 
+    # Insert Animalia
+    sqcurs.execute('SELECT Max(taxonomy_id) taxonomy_id from taxonomy')
+    taxonomy_id = sqcurs.fetchone()['taxonomy_id'] + 1
+    sqcurs.execute("INSERT INTO taxonomy (taxonomy_id, scientific_name, level_id) VALUES (?, 'Animalia', 1)", [taxonomy_id])
+    sqcurs.execute("UPDATE taxonomy SET parent_id = ? WHERE level_id = 5", [taxonomy_id])
+
     # Load the translation taxa
     # Get the list of translations (OTU) in the new database
     translations = lookup_data(sqcurs, 'translations', 'translation_name')

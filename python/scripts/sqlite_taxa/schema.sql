@@ -1,3 +1,9 @@
+CREATE TABLE statuses
+(
+    status_id   INTEGER PRIMARY KEY AUTOINCREMENT,
+    status_name varchar(255) UNIQUE NOT NULL
+);
+
 CREATE TABLE taxa_levels
 (
     level_id        INT PRIMARY KEY    NOT NULL,
@@ -12,20 +18,23 @@ CREATE TABLE taxa_levels
 
 CREATE TABLE taxonomy
 (
-    taxonomy_id     INT PRIMARY KEY NOT NULL,
-    scientific_name VARCHAR(255)    NOT NULL,
-    level_id        int             NOT NULL,
+    taxonomy_id     INTeger PRIMARY KEY autoincrement,
+    scientific_name VARCHAR(255) NOT NULL,
+    level_id        int          NOT NULL,
     parent_id       int,
     author          VARCHAR(255),
     year            int,
-    status          text,
-    created_date    TIMESTAMPTZ     NOT NULL DEFAULT current_timestamp,
-    updated_date    TIMESTAMPTZ     NOT NULL DEFAULT current_timestamp,
+    status_id       int          not null default 1,
+    notes           text,
+    created_date    TIMESTAMPTZ  NOT NULL DEFAULT current_timestamp,
+    updated_date    TIMESTAMPTZ  NOT NULL DEFAULT current_timestamp,
 
-    CONSTRAINT fk_taxonomy_taxa_level_id FOREIGN KEY (level_id) REFERENCES taxa_levels (level_id)
+    CONSTRAINT fk_taxonomy_taxa_level_id FOREIGN KEY (level_id) REFERENCES taxa_levels (level_id),
+    constraint fk_taxonomy_status_id foreign key (status_id) references statuses (status_id)
 );
 CREATE index fx_taxonomy_level_id on taxonomy (level_id);
 create index fx_taxonomy_parent_id on taxonomy (parent_id);
+create index fx_taxonomy_status_id on taxonomy (status_id);
 
 CREATE TRIGGER tr_taxonomy
     AFTER UPDATE OF scientific_name,
@@ -126,16 +135,16 @@ CREATE TABLE translations
 );
 
 CREATE TRIGGER tr_translations
-         AFTER UPDATE OF translation_name,
-                         description,
-                         is_active,
-                         status
-            ON translations
-      FOR EACH ROW
+    AFTER UPDATE OF translation_name,
+        description,
+        is_active,
+        status
+    ON translations
+    FOR EACH ROW
 BEGIN
     UPDATE translations
-       SET updated_date = CURRENT_TIMESTAMP
-     WHERE translation_id = new.translation_id;
+    SET updated_date = CURRENT_TIMESTAMP
+    WHERE translation_id = new.translation_id;
 END;
 
 
@@ -146,51 +155,55 @@ CREATE TABLE translation_taxa
     translation_id            int         NOT NULL,
     taxonomy_id               int         NOT NULL,
     translation_taxonomy_name VARCHAR(255),
-    status                    text,
+    status_id                 int         not null default 1,
+    notes                     text,
     created_date              TIMESTAMPTZ NOT NULL DEFAULT current_timestamp,
     updated_date              TIMESTAMPTZ NOT NULL DEFAULT current_timestamp,
 
     CONSTRAINT fk_translation_taxa_translation_id FOREIGN KEY (translation_id) REFERENCES translations (translation_id) ON DELETE CASCADE,
-    CONSTRAINT fk_translation_taxa_taxonomy_id FOREIGN KEY (taxonomy_id) REFERENCES taxonomy (taxonomy_id)
+    CONSTRAINT fk_translation_taxa_taxonomy_id FOREIGN KEY (taxonomy_id) REFERENCES taxonomy (taxonomy_id),
+    constraint fk_translation_taxa_status_id foreign key (status_id) references statuses (status_id)
 );
 CREATE INDEX fx_translation_taxa_taxonomy_id ON translation_taxa (taxonomy_id);
 CREATE UNIQUE INDEX ux_translation_taxa_taxonomy_id ON translation_taxa (translation_id, taxonomy_id);
+CREATE index fx_translation_taxa_status_id on translation_taxa (status_id);
 
 CREATE TRIGGER tr_translation_taxa
-         AFTER UPDATE OF translation_id,
-                         taxonomy_id,
-                         translation_taxonomy_name,
-                         status
-            ON translation_taxa
-      FOR EACH ROW
+    AFTER UPDATE OF translation_id,
+        taxonomy_id,
+        translation_taxonomy_name,
+        status
+    ON translation_taxa
+    FOR EACH ROW
 BEGIN
     UPDATE translation_taxa
-       SET updated_date = CURRENT_TIMESTAMP
-     WHERE translation_taxonomy_id = new.translation_taxonomy_id;
+    SET updated_date = CURRENT_TIMESTAMP
+    WHERE translation_taxonomy_id = new.translation_taxonomy_id;
 END;
 
-
-
-
-CREATE VIEW vwTaxonomy AS
-SELECT t.taxonomy_id,
+SELECT tt.translation_id,
+       tt.translation_taxonomy_id,
+       t.translation_name,
+       tt.taxonomy_id,
+       t2.scientific_name,
+       tl.level_id,
        tl.level_name,
-       t.scientific_name,
-       t.year,
-       t.author,
-       t.status,
-       p.parent_id,
-       pl.level_name
-FROM taxonomy t
-         inner join taxa_levels tl on t.level_id = tl.level_id
-         inner join taxonomy p on t.parent_id = p.taxonomy_id
-         inner join taxa_levels pl on p.level_id = pl.level_id
-order by tl.rank_order;
+       tt.translation_taxonomy_name,
+       tt.status_id,
+       tt.notes,
+       rank_order
+  FROM translation_taxa tt
+       INNER JOIN
+       translations t ON tt.translation_id = t.translation_id
+       INNER JOIN
+       taxonomy t2 ON tt.taxonomy_id = t2.taxonomy_id
+       INNER JOIN
+       taxa_levels tl ON t2.level_id = tl.level_id
+ ORDER BY t.translation_name,
+          tl.rank_order;
 
-CREATE VIEW vwTranslationTaxa AS
-SELECT tt.translation_id, t.translation_name, tt.taxonomy_id, t2.scientific_name, tl.level_name, tt.translation_taxonomy_name
-FROM translation_taxa tt
-         inner join translations t on tt.translation_id = t.translation_id
-inner join taxonomy t2 on tt.taxonomy_id = t2.taxonomy_id
-inner join taxa_levels tl on t2.level_id = tl.level_id
-order by t.translation_name, tl.rank_order;
+insert into statuses (status_id, status_name) Values (1, 'Unverified');
+insert into statuses (status_id, status_name) Values (2, 'Verified');
+insert into statuses (status_id, status_name) Values (3, 'Confirmation Needed');
+insert into statuses (status_id, status_name) Values (4, 'Error');
+insert into statuses (status_id, status_name) Values (5, 'Delete');
