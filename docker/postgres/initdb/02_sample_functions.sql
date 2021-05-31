@@ -250,7 +250,7 @@ begin
                    select sample_id
                    from sample.samples s
                             inner join geo.sites ss on s.site_id = ss.site_id
-                   where st_dwithin(ss.location, st_point(p_longitude, p_latitude), p_distance)
+                   where st_dwithin(ss.location, ST_SetSRID(st_point(p_longitude, p_latitude), 4326), p_distance, false)
                )
     into p_sample_ids;
 
@@ -266,7 +266,7 @@ create or replace function sample.fn_taxa_raw_polygon(p_search_polygon json)
 as
 $$
 declare
-    p_search_geography geography(MultiPolygon, 4326);
+    p_search_geography geometry(MultiPolygon, 4326);
     p_sample_ids   int[];
 begin
 
@@ -274,7 +274,7 @@ begin
         raise exception 'The search polygon cannot be NULL.';
     end if;
 
-    p_search_geography := st_multi(st_geomfromgeojson(p_search_polygon)::geography);
+    p_search_geography := st_multi(st_geomfromgeojson(p_search_polygon));
 
     if (NOT st_isvalid(p_search_geography)) then
         raise exception 'The search polygon is invalid.';
@@ -288,7 +288,7 @@ begin
                    select sample_id
                    from sample.samples s
                             inner join geo.sites ss on s.site_id = ss.site_id
-                   where st_covers(p_search_geography, ss.location)
+                   where st_covers(p_search_geography::geography, ss.location)
                )
     into p_sample_ids;
 

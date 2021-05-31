@@ -27,6 +27,27 @@ def cursor(cnxn):
 
 
 @pytest.fixture
+def taxonomic_hierarchy(cursor):
+
+    # insert top level taxa
+    kid = insert_taxa(cursor, 'Animalia A', 'Kingdom', None)
+
+    # Taxonomic hierarchy with two taxa at each level and one sample organism for each taxa
+    for p in ['A', 'B']:
+        pid = insert_taxa(cursor, 'Test Phylum {}'.format(p), 'Phylum', kid)
+        for c in ['A', 'B']:
+            cid = insert_taxa(cursor, 'Test Class {}{}'.format(p, c), 'Class', pid)
+            for o in ['A', 'B']:
+                oid = insert_taxa(cursor, 'Test Order {}{}{}'.format(p, c, o), 'Order', cid)
+                for f in ['A', 'B']:
+                    fid = insert_taxa(cursor, 'Test Family {}{}{}{}'.format(p, c, o, f), 'Family', oid)
+                    for g in ['A', 'B']:
+                        gid = insert_taxa(cursor, 'Test Genus {}{}{}{}{}'.format(p, c, o, f, g), 'Species', fid)
+                        for s in ['A', 'B']:
+                            insert_taxa(cursor, 'Test Species {}{}{}{}{}{}'.format(p, c, o, f, g, s), 'Species', gid)
+
+
+@pytest.fixture
 def translation_data(cursor):
 
     # Insert an entity, box and sample
@@ -57,19 +78,19 @@ def translation_data(cursor):
     insert_taxa_translation(cursor, translation_id, 'Phylum B', 'test phylum')
 
 
-def insert_test_sample(cursor):
+def insert_test_sample(cursor, customer_name='test organization', site_id=None):
 
     # Insert a customer box and sample
     cursor.execute("INSERT INTO entity.entities (country_id) VALUES (231) returning entity_id")
     entity_id = cursor.fetchone()[0]
 
-    cursor.execute("INSERT INTO entity.organizations (entity_id, organization_name, organization_type_id) VALUES (%s, 'test organization', 1)", [entity_id])
+    cursor.execute("INSERT INTO entity.organizations (entity_id, organization_name, organization_type_id) VALUES (%s, %s, 1)", [entity_id, customer_name])
     cursor.execute("INSERT INTO entity.individuals (entity_id, first_name, last_name) VALUES (%s, 'test first', 'test last')", [entity_id])
 
     cursor.execute('INSERT INTO sample.boxes (customer_id, submitter_id, box_state_id) VALUES (%s, %s, 1) returning box_id', [entity_id, entity_id])
     box_id = cursor.fetchone()[0]
 
-    cursor.execute('INSERT INTO sample.samples (box_id, type_id, method_id, habitat_id) VALUES (%s, 1, 1, 1) returning sample_id', [box_id])
+    cursor.execute('INSERT INTO sample.samples (box_id, site_id, type_id, method_id, habitat_id) VALUES (%s, %s, 1, 1, 1) returning sample_id', [box_id, site_id])
     return cursor.fetchone()[0]
 
 
@@ -101,6 +122,12 @@ def insert_organism(cursor, sample_id, taxonomy_id, split_count):
     return cursor.fetchone()[0]
 
 
+def insert_site(cursor, site_name, longitude, latitude):
+
+    cursor.execute('INSERT INTO geo.sites (site_name, location) VALUES (%s, ST_MakePoint(%s, %s)) returning site_id', [site_name, longitude, latitude])
+    return cursor.fetchone()[0]
+
+
 @pytest.fixture
 def rarefaction_data(cursor):
 
@@ -113,6 +140,35 @@ def rarefaction_data(cursor):
     for n in range(0, 10):
         taxonomy_id = random.choice(taxa)
         cursor.execute('insert into sample.organisms (sample_id, taxonomy_id, life_stage_id, split_count) values (%s, %s, 1, %s)', [sample_id, taxonomy_id, random.randint(1, 15)])
+
+
+def get_test_taxa(cursor, level, limit):
+
+    cursor.execute("""SELECT taxonomy_id, scientific_name FROM taxa.taxonomy t inner join taxa.taxa_levels l on t.level_id = l.level_id
+    WHERE (level_name ilike %s)
+        AND (scientific_name ilike 'Test%%')
+    ORDER BY scientific_name
+    LIMIT  %s
+    """, [level, limit])
+    return {row['taxonomy_id']: row['scientific_name'] for row in cursor.fetchall()}
+
+
+@pytest.fixture
+def pacific_taxa(cursor):
+    """Inserts two samples into the Pacific Ocean near -150, 30
+    Add more tuples to first loop to get more samples
+    """
+
+    # Insert the test taxonomic hierarchy
+    # taxonomic_hierarchy(cursor)
+
+    taxa = get_test_taxa(cursor, 'Species', 5)
+
+    for location in [(-150, 30), (-151, 31)]:
+        site_id = insert_site(cursor, 'site {0}, {1}'.format(location[0], location[1]), location[0], location[1])
+        sample_id = insert_test_sample(cursor, 'customer for sample at {}'.format(site_id), site_id)
+        for taxonomy_id, scientific_name in taxa.items():
+            insert_organism(cursor, sample_id, taxonomy_id, 1)
 
 
 # @pytest.fixture

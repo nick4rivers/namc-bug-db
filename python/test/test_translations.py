@@ -1,10 +1,12 @@
 import pytest
+from test.test_helper_functions import get_sample_by_customer_name
+from test.test_helper_functions import print_organisms
 
 
 def test_translations(cursor, translation_data):
 
     # Get the first sample associated with the test organization
-    sample_id = get_sample_id(cursor, 'test organization')
+    sample_id = get_sample_by_customer_name(cursor, 'test organization')
 
     # Get the test translation
     cursor.execute("SELECT translation_id from taxa.translations where translation_name ilike 'unit test translation'")
@@ -26,25 +28,6 @@ def test_translations(cursor, translation_data):
             print("{} '{}' translates to {} '{}'".format(row['level_name'], row['scientific_name'], trans[4], trans[2]))
 
     assert False
-
-
-def print_organisms(label, rows):
-
-    print('-- {} --'.format(label))
-    if rows is not None:
-        [print('{} ({}) at level {} has count {}'.format(
-            row['scientific_name'], row['taxonomy_id'], row['level_name'], row['organism_count'])) for row in rows]
-
-
-def get_sample_id(cursor, customer_name):
-
-    cursor.execute("""SELECT s.sample_id
-        FROM entity.organizations o
-                inner join sample.boxes b on o.entity_id = b.customer_id
-                inner join sample.samples s on b.box_id = s.box_id
-        where o.organization_name ilike %s
-        limit 1""", [customer_name])
-    return cursor.fetchone()[0]
 
 
 if __name__ == "__main__":
