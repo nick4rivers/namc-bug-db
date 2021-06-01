@@ -15,7 +15,7 @@ from lib.logger import Logger
 from migrate_model_polygons import migrate_model_polygons
 from migrate_catchment_polygons import migrate_catchment_polygons
 from migrate_model_polygons import associate_models_with_entities
-
+from migrate_translation_taxa import migrate as translation_taxa
 import os
 import argparse
 import pyodbc
@@ -40,6 +40,7 @@ def migrate_all_data(mscon, pgcon, predictor_values_csv_path, metric_values_csv_
     migrate_catchment_polygons(pgcurs, catchment_polygons)
 
     taxonomy(mscurs, pgcurs)
+    translation_taxa(mscurs, pgcurs)
     entities(mscurs, pgcurs, parent_entities)
     associate_models_with_entities(pgcurs)
 
