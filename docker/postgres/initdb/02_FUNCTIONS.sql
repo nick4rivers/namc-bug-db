@@ -232,49 +232,6 @@ $$;
 /******************************************************************************************************************
 taxa SCHEMA
 */
-DROP FUNCTION IF EXISTS taxa.fn_tree;
-
-CREATE OR REPLACE FUNCTION taxa.fn_tree(taxa_id smallint)
-    returns table
-            (
-                taxonomy_id     SMALLINT,
-                scientific_name VARCHAR(255),
-                level_id        SMALLINT,
-                level_name      VARCHAR(50),
-                parent_id       SMALLINT
-            )
-    language plpgsql
-as
-$$
-begin
-    RETURN QUERY
-        WITH RECURSIVE taxa_tree AS (
-            SELECT t.taxonomy_id,
-                   t.scientific_name,
-                   l.level_id,
-                   l.level_name,
-                   t.parent_id
-            FROM taxa.taxonomy t
-                     INNER JOIN taxa.taxa_levels l ON t.level_id = l.level_id
-            WHERE t.taxonomy_id = taxa_id
-            UNION
-            SELECT t.taxonomy_id,
-                   t.scientific_name,
-                   t.level_id,
-                   tl.level_name,
-                   t.parent_id
-            FROM taxa.taxonomy t
-                     INNER JOIN taxa.taxa_levels tl on t.level_id = tl.level_id
-                     INNER JOIN taxa_tree tt ON t.taxonomy_id = tt.parent_id
-        )
-        SELECT taxa_tree.taxonomy_id,
-               taxa_tree.scientific_name,
-               taxa_tree.level_id,
-               taxa_tree.level_name,
-               taxa_tree.parent_id
-        FROM taxa_tree;
-end
-$$;
 
 
 CREATE OR REPLACE FUNCTION sample.fn_sample_organisms(p_sample_id INT)
@@ -1079,38 +1036,3 @@ begin
         ) tx on tx.translation_id = t.translation_id;
 end
 $$;
-
-drop function if exists taxa.fn_translation_taxa;
-create or replace function taxa.fn_translation_taxa(p_translation_id int, p_taxonomy_id int)
-    returns table
-            (
-                taxonomy_id                 smallint,
-                translation_taxonomy_id     smallint,
-                translation_scientific_name varchar(255),
-                translation_level_id        smallint,
-                translation_level_name      varchar(50)
-            )
-    language plpgsql
-as
-$$
-begin
-    return query
-        /*
-         1. Get the taxonomic hierarchy for the original taxa
-         2. Join this hierarchy with the taxa in the translation
-         3. Select the first item up the hierarchy (ensuring sorted lowest to highest
-         */
-        SELECT cast(p_taxonomy_id as smallint), tt.taxonomy_id, tt.translation_taxonomy_name, l.level_id, l.level_name
-        FROM taxa.fn_tree(cast(p_taxonomy_id as smallint)) t
-                 inner join taxa.taxa_levels l on t.level_id = l.level_id
-                 inner join taxa.taxa_translations tt on t.taxonomy_id = tt.taxonomy_id
-        where tt.translation_id = p_translation_id
-        order by l.rank_order desc
-        limit 1;
-end
-$$;
-comment on function taxa.fn_translation_taxa is
-    'Function to retrieve the taxonomy ID of a taxa according to a specific translation.
-    The result could be the same taxonomy ID that was passed in or one higher up in the taxonomic
-    hierarchy.';
-

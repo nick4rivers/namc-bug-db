@@ -289,6 +289,10 @@ sites API endpoint.
     laboratory taxonomic identification.
     """
     type RawSampleTaxa {
+
+        "The sample to which the taxa belong"
+        sampleId: Int
+
         "The taxa identified within the laboratory."
         taxonomyId: Int
         "The name of the taxa identified with the laboratory."
@@ -312,6 +316,7 @@ sites API endpoint.
     }
 
     type SampleTaxa {
+        sampleId: Int
         taxonomyId: Int
         scientificName: String
         taxaLevelId: Int
@@ -320,6 +325,7 @@ sites API endpoint.
     }
 
     type GeneralizedSampleTaxa {
+        sampleId: Int
         taxonomyId: Int
         scientificName: String
         levelId: Int
@@ -331,10 +337,10 @@ sites API endpoint.
         rawCount: Float
         correctedCount: Float
         rawBigRareCount: Int
-        correctedBigRareCount: Float
     }
 
-    type TranslationSampleTaxa {  
+    type TranslationSampleTaxa { 
+        sampleId:Int 
         taxonomyId: Int
         scientificName: String
         aliasName: String
@@ -343,7 +349,6 @@ sites API endpoint.
         rawCount: Float
         correctedCount: Float
         rawBigRareCount: Int
-        correctedBigRareCount: Float
     }
 
     type RarefiedSampleTaxa {

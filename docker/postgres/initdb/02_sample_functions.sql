@@ -267,10 +267,10 @@ as
 $$
 declare
     p_search_geography geometry(MultiPolygon, 4326);
-    p_sample_ids   int[];
+    p_sample_ids       int[];
 begin
 
-   if (p_search_polygon IS NULL) then
+    if (p_search_polygon IS NULL) then
         raise exception 'The search polygon cannot be NULL.';
     end if;
 
@@ -284,7 +284,7 @@ begin
         raise exception 'The search polygon is empty';
     end if;
 
-   select array(
+    select array(
                    select sample_id
                    from sample.samples s
                             inner join geo.sites ss on s.site_id = ss.site_id
@@ -295,8 +295,6 @@ begin
     return query select * from sample.fn_sample_taxa_raw(p_sample_ids);
 
 
-
-
 end
 $$;
 
@@ -304,25 +302,26 @@ drop function if exists sample.fn_sample_taxa_generalized;
 create or replace function sample.fn_sample_taxa_generalized(p_sample_id int)
     returns table
             (
-                taxonomy_id              smallint,
-                scientific_name          varchar(255),
-                level_id                 smallint,
-                level_name               varchar(50),
-                life_stage_id            smallint,
-                life_stage               varchar(50),
-                life_stage_abbreviation  char,
-                bug_size                 real,
-                raw_count                real,
-                corrected_count          real,
-                raw_big_rare_count       bigint,
-                corrected_big_rare_count real
+                sample_id               int,
+                taxonomy_id             smallint,
+                scientific_name         varchar(255),
+                level_id                smallint,
+                level_name              varchar(50),
+                life_stage_id           smallint,
+                life_stage              varchar(50),
+                life_stage_abbreviation char,
+                bug_size                real,
+                raw_count               real,
+                corrected_count         real,
+                raw_big_rare_count      bigint
             )
     language plpgsql
 as
 $$
 begin
     return query
-        select o.taxonomy_id,
+        select s.sample_id,
+               o.taxonomy_id,
                t.scientific_name,
                t.level_id,
                l.level_name,
@@ -332,8 +331,7 @@ begin
                o.bug_size,
                sum(o.split_count),
                sum(o.split_count) * s.lab_split * s.field_split,
-               sum(o.big_rare_count),
-               cast(sum(o.big_rare_count) as real) * s.lab_split * s.field_split
+               sum(o.big_rare_count)
         from sample.organisms o
                  inner join sample.samples s on o.sample_id = s.sample_id
                  inner join taxa.taxonomy t on o.taxonomy_id = t.taxonomy_id
@@ -341,7 +339,8 @@ begin
                  inner join taxa.life_stages ll on o.life_stage_id = ll.life_stage_id
                  left join taxa.vw_taxonomy_crosstab ct on o.taxonomy_id = ct.taxonomy_id
         where o.sample_id = p_sample_id
-        group by o.taxonomy_id,
+        group by s.sample_id,
+                 o.taxonomy_id,
                  t.scientific_name,
                  t.level_id,
                  l.level_name,
@@ -369,13 +368,12 @@ begin
          */
         select o.sample_id,
                tt.translation_taxonomy_id,
-               coalesce(tt.translation_scientific_name, t.scientific_name) scientific_name,
+               cast(coalesce(tt.translation_scientific_name, t.scientific_name) as varchar(255)) scientific_name,
                tt.translation_level_id,
-               tt.translation_level_name,
+               cast(tt.translation_level_name as varchar(50)),
                sum(o.split_count),
                sum(o.split_count) * s.lab_split * s.field_split,
-               sum(o.big_rare_count),
-               cast(sum(o.big_rare_count) as real) * s.lab_split * s.field_split
+               sum(o.big_rare_count)
         FROM sample.organisms o
                  inner join sample.samples s on o.sample_id = s.sample_id
                  inner join taxa.taxonomy t on o.taxonomy_id = t.taxonomy_id
@@ -383,7 +381,8 @@ begin
         where o.sample_id = p_sample_id
         group by o.sample_id,
                  tt.translation_taxonomy_id,
-                 scientific_name,
+                 tt.translation_scientific_name,
+                 t.scientific_name,
                  tt.translation_level_id,
                  tt.translation_level_name,
                  s.lab_split,
@@ -468,5 +467,5 @@ from (
      ) c
          inner join taxa.taxonomy t on c.taxonomy_id = t.taxonomy_id
          inner join taxa.taxa_levels l on t.level_id = l.level_id
-group by c.taxonomy_id, t.scientific_name, c.taxonomy_id, l.level_id, l.level_name;
+group by c.taxonomy_id, t.scientific_name, l.level_id, l.level_name;
 $$;
