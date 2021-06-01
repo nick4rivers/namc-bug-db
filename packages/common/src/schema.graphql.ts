@@ -111,7 +111,7 @@ const typeDefs = gql`
         # Sample Taxa queries
         
         "Sample organisms summed by taxonomy only. Includes both raw counts as well as counts corrected for lab and field split. Also includes both raw and corrected big rare counts."
-        sampleTaxaRaw(sampleId: Int!): PaginatedRawSampleTaxa
+        sampleTaxaRaw(sampleIds: [Int], boxIds: [Int], projectIds: [Int]): PaginatedRawSampleTaxa
 
         "Sample organisms summed by taxonomy, life stage and bug size. Includes both raw counts as well as counts corrected for lab and field split. Also includes both raw and corrected big rare counts."
         sampleTaxaGeneralized(sampleId: Int!): PaginatedGeneralizedSampleTaxa
@@ -122,8 +122,14 @@ const typeDefs = gql`
         "Sample organisms in their original taxonomic designation but rarefied to the specified fixed count."
         sampleTaxaRarefied(sampleId: Int!, fixedCount: Int!): PaginatedRarefiedSampleTaxa
 
-        "Sample oganisms converted to the translation (OTU) and then rarefied to the specified fixed count."
+        "Sample organisms converted to the translation (OTU) and then rarefied to the specified fixed count."
         sampleTaxaTranslationRarefied(sampleId: Int!, translationId: Int!, fixedCount:Int!):PaginatedRarefiedSampleTaxa
+
+        "Sample organisms within distance (meters) of a point (decimal degrees)"
+        pointTaxaRaw(longitude: Float!, latitude: Float!, distance: Float!): PaginatedRawSampleTaxa
+   
+        "Sample organisms within a polygon"
+        polygonTaxaRaw(polygon: String!): PaginatedRawSampleTaxa
 
         ####################################################################################################################################################################################
         # Metric queries
@@ -303,13 +309,6 @@ sites API endpoint.
 
         "Sum of the big rare count within the laboratory for this taxa. No other manipulation."
         rawBigRareCount: Int
-
-        """
-        Sum of the big rare counts multipled by the sample lab_split and field_split.
-
-        corrected_big_rare_count = sum(big_rare_count) * (100 / lab_split) * (100 / field_split)
-        """
-        correctedBigRareCount: Float
     }
 
     type SampleTaxa {

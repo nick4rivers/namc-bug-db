@@ -347,13 +347,9 @@ export declare type RawSampleTaxa = {
     scientificName: string;
     levelId: number;
     levelName: string;
-    lifeStageId: number;
-    lifeStage: string;
-    lifeStageAbbreviation: string;
     rawCount: number;
     correctedCount: number;
     rawBigRareCount: number;
-    correctedBigRareCount: number;
 };
 export declare type GeneralizedSampleTaxa = {
     taxonomyId: number;

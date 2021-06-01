@@ -235,15 +235,15 @@ declare
     p_sample_ids int[];
 begin
     if (p_longitude < -180 or p_longitude > 180) then
-        raise 'Invalid longitude. It must be between -180 and 180 degrees.';
+        raise 'Invalid longitude %. It must be between -180 and 180 degrees.', p_longitude;
     end if;
 
     if (p_latitude < -90 or p_latitude > 90) then
-        raise 'Invalid latitude. It must be between -90 and 90 degrees.';
+        raise 'Invalid latitude %. It must be between -90 and 90 degrees.', p_latitude;
     end if;
 
     if (p_distance <= 0) then
-        raise 'Invalid distance. The distance must be greater than zero, meters.';
+        raise 'Invalid distance %. The distance must be greater than zero, meters.', p_distance;
     end if;
 
     select array(

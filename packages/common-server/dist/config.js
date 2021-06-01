@@ -14,7 +14,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getDBSecretCredentials = exports.getConfigPromise = exports.ssmName = exports.awsRegion = exports.NODECACHE = void 0;
+exports.getDBSecretCredentials = exports.getConfigPromise = exports.maxIdResults = exports.ssmName = exports.awsRegion = exports.NODECACHE = void 0;
 var node_cache_1 = __importDefault(require("node-cache"));
 var ssm_1 = require("./lib/aws/ssm");
 exports.NODECACHE = new node_cache_1.default({ stdTTL: 30, checkperiod: 25 });
@@ -26,6 +26,7 @@ mandatoryKeys.forEach(function (key) {
 });
 exports.awsRegion = process.env.REGION;
 exports.ssmName = process.env.SSM_PARAM;
+exports.maxIdResults = 50;
 exports.getConfigPromise = function () {
     return ssm_1.getParameter(process.env.SSM_PARAM, exports.awsRegion).then(function (param) {
         var newParam = __assign(__assign({}, param), { db: {

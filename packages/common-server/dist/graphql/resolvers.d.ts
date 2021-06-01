@@ -95,8 +95,10 @@ declare const _default: {
         }, { user }: {
             user: any;
         }) => Promise<PaginatedRecords<ModelPredictor>>;
-        sampleTaxaRaw: (obj: any, { sampleId }: {
-            sampleId: any;
+        sampleTaxaRaw: (obj: any, { sampleIds, boxIds, projectIds }: {
+            sampleIds: any;
+            boxIds: any;
+            projectIds: any;
         }, { user }: {
             user: any;
         }) => Promise<PaginatedRecords<RawSampleTaxa>>;
@@ -124,6 +126,18 @@ declare const _default: {
         }, { user }: {
             user: any;
         }) => Promise<PaginatedRecords<RarefiedSampleTaxa>>;
+        pointTaxaRaw: (obj: any, { longitude, latitude, distance }: {
+            longitude: any;
+            latitude: any;
+            distance: any;
+        }, { user }: {
+            user: any;
+        }) => Promise<PaginatedRecords<RawSampleTaxa>>;
+        polygonTaxaRaw: (obj: any, { polygon }: {
+            polygon: any;
+        }, { user }: {
+            user: any;
+        }) => Promise<PaginatedRecords<RawSampleTaxa>>;
         attributes: (obj: any, { limit, offset }: {
             limit: any;
             offset: any;

@@ -58,6 +58,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var config_1 = require("../config");
 var common_1 = require("@namcbugdb/common");
 var pg = __importStar(require("../pg"));
+var config_2 = require("../config");
 function loggedInGate(user) {
     var err = new Error('You must be authenticated to perform this query.');
     try {
@@ -460,21 +461,46 @@ exports.default = {
             });
         },
         sampleTaxaRaw: function (obj, _a, _b) {
-            var sampleId = _a.sampleId;
+            var sampleIds = _a.sampleIds, boxIds = _a.boxIds, projectIds = _a.projectIds;
             var user = _b.user;
             return __awaiter(void 0, void 0, void 0, function () {
-                var pool, data;
+                var check, pool, data;
                 return __generator(this, function (_c) {
                     switch (_c.label) {
                         case 0:
                             loggedInGate(user);
+                            check = [sampleIds, boxIds, projectIds].filter(function (i) { return i; });
+                            if (check.length === 0)
+                                throw new Error('You must provide an array of sample IDs, box IDs or project IDs.');
+                            else if (check.length > 1)
+                                throw new Error('You must choose either an array of sample IDs, an array of box IDs, or an array of project IDs.');
                             return [4, pg.getPool()];
                         case 1:
                             pool = _c.sent();
-                            return [4, pg.getSampleTaxaRaw(pool, sampleId)];
+                            if (!sampleIds) return [3, 3];
+                            if (sampleIds.length < 1 || sampleIds.length > config_2.maxIdResults)
+                                throw new Error(sampleIds.length + " items found. You must specify between 1 and " + config_2.maxIdResults + " item IDs.");
+                            return [4, pg.getSampleTaxaRaw(pool, sampleIds)];
                         case 2:
                             data = _c.sent();
-                            return [2, createPagination(data)];
+                            return [3, 7];
+                        case 3:
+                            if (!boxIds) return [3, 5];
+                            if (boxIds.length > config_2.maxIdResults)
+                                throw new Error(boxIds.length + " items found. You must specify between 1 and " + config_2.maxIdResults + " item IDs.");
+                            return [4, pg.getBoxTaxaRaw(pool, boxIds)];
+                        case 4:
+                            data = _c.sent();
+                            return [3, 7];
+                        case 5:
+                            if (!projectIds) return [3, 7];
+                            if (projectIds.length > config_2.maxIdResults)
+                                throw new Error(projectIds.length + " items found. You must specify between 1 and " + config_2.maxIdResults + " item IDs.");
+                            return [4, pg.getProjectTaxaRaw(pool, projectIds)];
+                        case 6:
+                            data = _c.sent();
+                            _c.label = 7;
+                        case 7: return [2, createPagination(data)];
                     }
                 });
             });
@@ -552,6 +578,46 @@ exports.default = {
                         case 1:
                             pool = _c.sent();
                             return [4, pg.getSampleTaxaTranslationRarefied(pool, sampleId, translationId, fixedCount)];
+                        case 2:
+                            data = _c.sent();
+                            return [2, createPagination(data)];
+                    }
+                });
+            });
+        },
+        pointTaxaRaw: function (obj, _a, _b) {
+            var longitude = _a.longitude, latitude = _a.latitude, distance = _a.distance;
+            var user = _b.user;
+            return __awaiter(void 0, void 0, void 0, function () {
+                var pool, data;
+                return __generator(this, function (_c) {
+                    switch (_c.label) {
+                        case 0:
+                            loggedInGate(user);
+                            return [4, pg.getPool()];
+                        case 1:
+                            pool = _c.sent();
+                            return [4, pg.getPointTaxaRawQuery(pool, longitude, latitude, distance)];
+                        case 2:
+                            data = _c.sent();
+                            return [2, createPagination(data)];
+                    }
+                });
+            });
+        },
+        polygonTaxaRaw: function (obj, _a, _b) {
+            var polygon = _a.polygon;
+            var user = _b.user;
+            return __awaiter(void 0, void 0, void 0, function () {
+                var pool, data;
+                return __generator(this, function (_c) {
+                    switch (_c.label) {
+                        case 0:
+                            loggedInGate(user);
+                            return [4, pg.getPool()];
+                        case 1:
+                            pool = _c.sent();
+                            return [4, pg.getPolygonTaxaRawQuery(pool, polygon)];
                         case 2:
                             data = _c.sent();
                             return [2, createPagination(data)];

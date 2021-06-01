@@ -146,8 +146,23 @@ export const setSiteCatchment = (pool, siteId: number, catchment: string): DBRet
     pgPromise(pool, setSiteCatchmentQuery, [siteId, catchment])
 
 const sampleTaxaRawQuery = 'SELECT * FROM sample.fn_sample_taxa_raw($1)'
-export const getSampleTaxaRaw = (pool, sampleId: number): DBReturnPromiseType =>
-    pgPromise(pool, sampleTaxaRawQuery, [sampleId])
+export const getSampleTaxaRaw = (pool, sampleIds: number[]): DBReturnPromiseType =>
+    pgPromise(pool, sampleTaxaRawQuery, [sampleIds])
+
+const boxTaxaRawQuery = 'SELECT * FROM sample.fn_box_taxa_raw($1)'
+export const getBoxTaxaRaw = (pool, boxIds: number[]): DBReturnPromiseType => pgPromise(pool, boxTaxaRawQuery, [boxIds])
+
+const projectTaxaRawQuery = 'SELECT * FROM sample.fn_project_taxa_raw($1)'
+export const getProjectTaxaRaw = (pool, projectIds: number[]): DBReturnPromiseType =>
+    pgPromise(pool, projectTaxaRawQuery, [projectIds])
+
+const pointTaxaRawQuery = 'SELECT * FROM sample.fn_taxa_raw_point_distance($1, $2, $3)'
+export const getPointTaxaRawQuery = (pool, longitude, latitude, distance): DBReturnPromiseType =>
+    pgPromise(pool, pointTaxaRawQuery, [longitude, latitude, distance])
+
+const polygonTaxaRawQuery = 'SELECT * FROM sample.fn_taxa_raw_polygon($1)'
+export const getPolygonTaxaRawQuery = (pool, polygon: string): DBReturnPromiseType =>
+    pgPromise(pool, polygonTaxaRawQuery, [polygon])
 
 const sampleTaxaGeneralizedQuery = 'SELECT * FROM sample.fn_sample_taxa_generalized($1)'
 export const getSampleTaxaGeneralized = (pool, sampleId: number): DBReturnPromiseType =>

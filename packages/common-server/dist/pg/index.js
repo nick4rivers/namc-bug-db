@@ -39,7 +39,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getSampleTaxaTranslationRarefied = exports.getSampleTaxaRarefied = exports.getSampleTaxaTranslation = exports.getSampleTaxaGeneralized = exports.getSampleTaxaRaw = exports.setSiteCatchment = exports.setSamplePredictorValue = exports.setSitePredictorValue = exports.getMetrics = exports.getModelThresholds = exports.getTaxaAttributes = exports.getAttributes = exports.getMassSamples = exports.getFishSamples = exports.getDriftSamples = exports.getPlanktonSamples = exports.getTranslations = exports.getModelPredictors = exports.getSamplePredictorValues = exports.getBoxInfo = exports.getSampleInfo = exports.getSitePredictorValues = exports.getModelInfo = exports.getModels = exports.getPredictors = exports.getTaxonomy = exports.getProjects = exports.getBoxes = exports.getIndividuals = exports.getSiteInfo = exports.getSites = exports.getSamples = exports.getPool = void 0;
+exports.getSampleTaxaTranslationRarefied = exports.getSampleTaxaRarefied = exports.getSampleTaxaTranslation = exports.getSampleTaxaGeneralized = exports.getPolygonTaxaRawQuery = exports.getPointTaxaRawQuery = exports.getProjectTaxaRaw = exports.getBoxTaxaRaw = exports.getSampleTaxaRaw = exports.setSiteCatchment = exports.setSamplePredictorValue = exports.setSitePredictorValue = exports.getMetrics = exports.getModelThresholds = exports.getTaxaAttributes = exports.getAttributes = exports.getMassSamples = exports.getFishSamples = exports.getDriftSamples = exports.getPlanktonSamples = exports.getTranslations = exports.getModelPredictors = exports.getSamplePredictorValues = exports.getBoxInfo = exports.getSampleInfo = exports.getSitePredictorValues = exports.getModelInfo = exports.getModels = exports.getPredictors = exports.getTaxonomy = exports.getProjects = exports.getBoxes = exports.getIndividuals = exports.getSiteInfo = exports.getSites = exports.getSamples = exports.getPool = void 0;
 var config_1 = require("../config");
 var pg_1 = require("pg");
 var loglevel_1 = __importDefault(require("loglevel"));
@@ -179,8 +179,22 @@ exports.setSiteCatchment = function (pool, siteId, catchment) {
     return pgPromise(pool, setSiteCatchmentQuery, [siteId, catchment]);
 };
 var sampleTaxaRawQuery = 'SELECT * FROM sample.fn_sample_taxa_raw($1)';
-exports.getSampleTaxaRaw = function (pool, sampleId) {
-    return pgPromise(pool, sampleTaxaRawQuery, [sampleId]);
+exports.getSampleTaxaRaw = function (pool, sampleIds) {
+    return pgPromise(pool, sampleTaxaRawQuery, [sampleIds]);
+};
+var boxTaxaRawQuery = 'SELECT * FROM sample.fn_box_taxa_raw($1)';
+exports.getBoxTaxaRaw = function (pool, boxIds) { return pgPromise(pool, boxTaxaRawQuery, [boxIds]); };
+var projectTaxaRawQuery = 'SELECT * FROM sample.fn_project_taxa_raw($1)';
+exports.getProjectTaxaRaw = function (pool, projectIds) {
+    return pgPromise(pool, projectTaxaRawQuery, [projectIds]);
+};
+var pointTaxaRawQuery = 'SELECT * FROM sample.fn_taxa_raw_point_distance($1, $2, $3)';
+exports.getPointTaxaRawQuery = function (pool, longitude, latitude, distance) {
+    return pgPromise(pool, pointTaxaRawQuery, [longitude, latitude, distance]);
+};
+var polygonTaxaRawQuery = 'SELECT * FROM sample.fn_taxa_raw_polygon($1)';
+exports.getPolygonTaxaRawQuery = function (pool, polygon) {
+    return pgPromise(pool, polygonTaxaRawQuery, [polygon]);
 };
 var sampleTaxaGeneralizedQuery = 'SELECT * FROM sample.fn_sample_taxa_generalized($1)';
 exports.getSampleTaxaGeneralized = function (pool, sampleId) {

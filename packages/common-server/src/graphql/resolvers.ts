@@ -37,6 +37,7 @@ import * as pg from '../pg'
 
 // import log from 'loglevel'
 import { UserObj, DBReturnType } from '../types'
+import { maxIdResults } from '../config'
 
 /**
  * The structure must match what's in the `schema.graphql` file
@@ -253,11 +254,43 @@ export default {
             return createPagination<ModelPredictor>(data, 500, 0)
         },
 
-        sampleTaxaRaw: async (obj, { sampleId }, { user }): Promise<PaginatedRecords<RawSampleTaxa>> => {
+        sampleTaxaRaw: async (
+            obj,
+            { sampleIds, boxIds, projectIds },
+            { user }
+        ): Promise<PaginatedRecords<RawSampleTaxa>> => {
             loggedInGate(user)
 
+            const check = [sampleIds, boxIds, projectIds].filter((i) => i)
+            if (check.length === 0) throw new Error('You must provide an array of sample IDs, box IDs or project IDs.')
+            else if (check.length > 1)
+                throw new Error(
+                    'You must choose either an array of sample IDs, an array of box IDs, or an array of project IDs.'
+                )
+
             const pool = await pg.getPool()
-            const data = await pg.getSampleTaxaRaw(pool, sampleId)
+            let data
+
+            if (sampleIds) {
+                if (sampleIds.length < 1 || sampleIds.length > maxIdResults)
+                    throw new Error(
+                        `${sampleIds.length} items found. You must specify between 1 and ${maxIdResults} item IDs.`
+                    )
+                data = await pg.getSampleTaxaRaw(pool, sampleIds)
+            } else if (boxIds) {
+                if (boxIds.length > maxIdResults)
+                    throw new Error(
+                        `${boxIds.length} items found. You must specify between 1 and ${maxIdResults} item IDs.`
+                    )
+                data = await pg.getBoxTaxaRaw(pool, boxIds)
+            } else if (projectIds) {
+                if (projectIds.length > maxIdResults)
+                    throw new Error(
+                        `${projectIds.length} items found. You must specify between 1 and ${maxIdResults} item IDs.`
+                    )
+                data = await pg.getProjectTaxaRaw(pool, projectIds)
+            }
+
             return createPagination<RawSampleTaxa>(data)
         },
 
@@ -307,6 +340,26 @@ export default {
             const pool = await pg.getPool()
             const data = await pg.getSampleTaxaTranslationRarefied(pool, sampleId, translationId, fixedCount)
             return createPagination<RarefiedSampleTaxa>(data)
+        },
+
+        pointTaxaRaw: async (
+            obj,
+            { longitude, latitude, distance },
+            { user }
+        ): Promise<PaginatedRecords<RawSampleTaxa>> => {
+            loggedInGate(user)
+
+            const pool = await pg.getPool()
+            const data = await pg.getPointTaxaRawQuery(pool, longitude, latitude, distance)
+            return createPagination<RawSampleTaxa>(data)
+        },
+
+        polygonTaxaRaw: async (obj, { polygon }, { user }): Promise<PaginatedRecords<RawSampleTaxa>> => {
+            loggedInGate(user)
+
+            const pool = await pg.getPool()
+            const data = await pg.getPolygonTaxaRawQuery(pool, polygon)
+            return createPagination<RawSampleTaxa>(data)
         },
 
         attributes: async (obj, { limit, offset }, { user }): Promise<PaginatedRecords<Attribute>> => {
