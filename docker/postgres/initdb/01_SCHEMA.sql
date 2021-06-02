@@ -929,9 +929,10 @@ CREATE TABLE sample.samples
     method_id           SMALLINT    NOT NULL,
     habitat_id          SMALLINT    NOT NULL,
     area                REAL,
-    field_split         REAL,                           -- big sample... in the field keep only 0.5 (50%) or 0.25 (25%) (not submitting the bit they don't keep)
+    field_split         REAL        NOT NULL,           -- big sample... in the field keep only 0.5 (50%) or 0.25 (25%) (not submitting the bit they don't keep)
     field_notes         TEXT,
-    lab_split           REAL,                           -- lab puts all sample in bucket and sorts 0.25 (25%) or 0.5 (50%)
+    lab_split           REAL        NOT NULL
+,           -- lab puts all sample in bucket and sorts 0.25 (25%) or 0.5 (50%)
     jar_count           SMALLINT    NOT NULL DEFAULT 1, -- lab person verifies the jars match the number in the submission form.
     qualitative         BOOLEAN              DEFAULT FALSE,
     lab_notes           TEXT,

@@ -117,9 +117,9 @@ def migrate_samples(mscurs, pgcurs):
             'method_id': method_id,
             'habitat_id': habitat_id,
             'area': msdata['Area'],
-            'field_split': msdata['FieldSplit'] / 100.0 if msdata['FieldSplit'] else None,
+            'field_split': convert_percent_to_ratio(msdata, 'FieldSplit', metadata),
             'field_notes': sanitize_string_col('BugSample', 'SampleID', msdata, 'FieldNotes'),
-            'lab_split': msdata['LabSplit'] / 100.0 if msdata['LabSplit'] else None,
+            'lab_split': convert_percent_to_ratio(msdata, 'LabSplit', metadata),
             'lab_notes': sanitize_string_col('BugSample', 'SampleID', msdata, 'LabNotes'),
             'qualitative': msdata['Qualitative'] == 'Y',
             'mesh': msdata['Mesh'] if msdata['Mesh'] and msdata['Mesh'] > 0 else None,
@@ -156,6 +156,31 @@ def migrate_samples(mscurs, pgcurs):
 
     progbar.finish()
     log_row_count(pgcurs, table_name, row_count)
+
+
+def convert_percent_to_ratio(msdata, field_name, metadata):
+    """Used to convert LabSplit and FieldSplit from
+    percentages to ratios. Also converts NULLs and 
+    negative values to zero.
+
+    Args:
+        msdata (dict): original SQL Server data
+        field_name (str): name of SQLServer field
+    """
+
+    result = None
+
+    if not msdata[field_name]:
+        result = 0
+        add_metadata(metadata, field_name, '{} converted from NULL to zero.'.format(field_name))
+    else:
+        if msdata[field_name] <= 0:
+            result = 0
+            add_metadata(metadata, field_name, '{} altered from {} to zero.'.format(field_name, msdata[field_name]))
+        else:
+            result = msdata[result] / 100.0
+
+    return result
 
 
 def drift_callback(msdata, lookup):
