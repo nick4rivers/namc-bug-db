@@ -8,6 +8,7 @@ from postgres_lookup_data import lookup_data, insert_row, log_row_count, process
 def migrate(mscurs, pgcurs):
 
     process_table(mscurs, pgcurs, 'PilotDB.taxa.taxonomy', 'taxa.taxonomy', taxonomy_callback, None)
+    process_table(mscurs, pgcurs, 'PilotDB.taxa.synonym', 'taxa.synonyms', synonym_callback, None)
     process_table(mscurs, pgcurs, 'PilotDB.taxa.type_attribute', 'taxa.attributes', attributes_callback, None)
     process_query(mscurs, pgcurs,
                   'SELECT a.* FROM PilotDB.taxa.attributes a INNER JOIN PilotDB.taxa.taxonomy t ON a.code = t.code',
@@ -24,9 +25,17 @@ def taxonomy_callback(msdata, lookup):
         'taxonomy_id': msdata['code'],
         'parent_id': msdata['parent_code'],
         'level_id': msdata['taxa_level_id'],
-        'scientific_name': sanitize_string_col('taxaonomy', 'code', msdata, 'scientific_name'),
+        'scientific_name': sanitize_string_col('taxonomy', 'code', msdata, 'scientific_name'),
         'author': None,
         'year': None
+    }
+
+
+def synonym_callback(msdata, lookup):
+
+    return {
+        'taxonomy_id': msdata['code'],
+        'synonym': sanitize_string_col('synonym', 'code', msdata, 'synonym')
     }
 
 
