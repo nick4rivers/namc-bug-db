@@ -40,7 +40,7 @@ def organisms_callback(msdata, lookup):
         'sample_id': int(msdata['SampleID']),
         'taxonomy_id': int(msdata['Code']),
         'life_stage_id': life_stage_id,
-        'bug_size': msdata['BugSize'],
+        'bug_size': msdata['BugSize'] if msdata['BugSize'] and msdata['BugSize'] > 0 else None,
         'split_count': msdata['SplitCount'],
         'big_rare_count': msdata['BigRareCount']
     }
