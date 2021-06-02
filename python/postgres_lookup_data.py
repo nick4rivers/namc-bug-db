@@ -35,7 +35,17 @@ def insert_many_rows(pgcurs, table, columns, data, sql=None, parameter_specifier
     # Convert dictionaries to JSON
     values = []
     for item in data:
-        values.append([json.dumps(value) if isinstance(value, dict) else value for value in item])
+        cols = []
+        for value in item:
+            if isinstance(value, dict):
+                if len(value) < 1:
+                    cols.append(None)
+                else:
+                    cols.append(json.dumps(value))
+            else:
+                cols.append(value)
+
+        values.append(cols)
 
     if not sql:
         sql = 'INSERT INTO {} ({}) VALUES ({});'.format(
