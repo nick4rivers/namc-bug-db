@@ -23,6 +23,10 @@ BEGIN
         raise exception 'The site catchment geometry is empty';
     end if;
 
+    if (st_area(catch_geom) <= 0) then
+        raise exception 'The site catchment polygon cannot have zero area.';
+    end if;
+
     SELECT country_id INTO catch_country_id FROM geo.countries WHERE st_intersects(geom, catch_geom) limit 1;
     if (catch_country_id IS NULL or catch_country_id <> 231) then
         raise exception 'The catchment does not intersect the United States.';
