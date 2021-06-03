@@ -394,9 +394,10 @@ comment on function sample.fn_sample_translation_taxa is
     Note that the output taxonomy_id and scientific name are those of the translation, not
     the original taxa used by the lab!';
 
-
+drop type rarefied_taxa_info;
 create type rarefied_taxa_info as
 (
+    sample_id       int,
     taxonomy_id     smallint,
     scientific_name varchar(2550),
     level_id        smallint,
@@ -412,7 +413,8 @@ as
 $$
 begin
     return query
-        select c.taxonomy_id,
+        select p_sample_id,
+               c.taxonomy_id,
                t.scientific_name,
                l.level_id,
                l.level_name,
@@ -447,7 +449,8 @@ as
 $$
     -- This is the same query from fn_rarefied_taxa with the exception that it
     -- queries fn_translation_taxa as the root table instead of sample.organisms directly
-select c.taxonomy_id,
+select p_sample_id,
+       c.taxonomy_id,
        t.scientific_name,
        l.level_id,
        l.level_name,
