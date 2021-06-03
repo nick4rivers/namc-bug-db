@@ -1,3 +1,95 @@
+drop type sample_info_type;
+create type sample_info_type as
+(
+    sample_id             int,
+    box_id                int,
+    customer_name         varchar(255),
+    customer_abbreviation varchar(50),
+    submitted_by          text,
+    box_state             varchar(50),
+    site_id               int,
+    site_name             varchar(50),
+    us_state              varchar(2),
+    site_location         text,
+    site_longitude        double precision,
+    site_latitude         double precision,
+    visit_id              varchar(100),
+    sample_date           char(10),
+    sample_time           time,
+    sample_type           varchar(50),
+    sample_method         varchar(50),
+    habitat               varchar(50),
+    sample_location       text,
+    sample_longitude      double precision,
+    sample_latitude       double precision,
+    area                  real,
+    field_split           real,
+    field_notes           text,
+    lab_split             real,
+    jar_count             smallint,
+    qualitative           boolean,
+    lab_notes             text,
+    mesh                  smallint,
+    created_date          text,
+    updated_date          text,
+    sample_date_changed   text,
+    qa_sample_id          int,
+    metadata              text
+);
+
+
+drop function if exists sample.fn_sample_info;
+create or replace function sample.fn_sample_info(p_sample_id int)
+    returns setof sample_info_type
+    language plpgsql
+AS
+$$
+begin
+    return query
+        SELECT s.sample_id,
+               s.box_id,
+               b.customer_name,
+               b.customer_abbreviation,
+               b.submitted_by,
+               b.box_state,
+               gs.site_id,
+               gs.site_name,
+               gs.us_state,
+               gs.location,
+               gs.longitude,
+               gs.latitude,
+               s.visit_id,
+               CAST(TO_CHAR(s.sample_date :: DATE, 'yyyy-mm-dd') AS CHAR(10)),
+               s.sample_time,
+               t.sample_type_name,
+               m.sample_method_name,
+               h.habitat_name,
+               ST_AsGeoJSON(s.location),
+               st_x(s.location::geometry),
+               st_y(s.location::geometry),
+               s.area,
+               s.field_split,
+               s.field_notes,
+               s.lab_split,
+               s.jar_count,
+               s.qualitative,
+               s.lab_notes,
+               s.mesh,
+               to_json(s.created_date) #>> '{}',
+               to_json(s.updated_date) #>> '{}',
+               to_json(s.sample_date_changed) #>> '{}',
+               s.qa_sample_id,
+               cast(s.metadata as text)
+        FROM sample.samples s
+                 inner join sample.fn_box_info(s.box_id) b on s.box_id = b.box_id
+                 inner join geo.fn_site_info(s.site_id) gs on s.site_id = gs.site_id
+                 inner join sample.sample_types t on s.type_id = t.sample_type_id
+                 inner join sample.sample_methods m on s.method_id = m.sample_method_id
+                 inner join geo.habitats h on s.habitat_id = h.habitat_id
+        WHERE s.sample_id = p_sample_id;
+end
+$$;
+
 drop function if exists sample.fn_plankton;
 create or replace function sample.fn_plankton(p_limit int, p_offset int)
     returns table
@@ -153,6 +245,75 @@ create type taxa_info as
 );
 comment on type taxa_info is 'This type is reused as the basic structure of information returned'
     'where requesting taxonomic information about a sample.';
+
+
+drop function if exists sample.fn_projects;
+create or replace function sample.fn_projects(p_limit int, p_offset int)
+    returns table
+            (
+                project_id          smallint,
+                project_name        varchar(255),
+                project_type        varchar(255),
+                is_private          boolean,
+                contact_id          smallint,
+                contact_name        text,
+                auto_update_samples boolean,
+                description         text,
+                sample_count        bigint,
+                model_count         bigint,
+                created_date        text,
+                updated_date        text
+            )
+    language plpgsql
+as
+$$
+begin
+    return query
+        SELECT p.project_id,
+               p.project_name,
+               t.project_type_name,
+               p.is_private,
+               i.entity_id,
+               i.first_name || ' ' || i.last_name,
+               p.auto_update_samples,
+               p.description,
+               coalesce(sc.sample_count, 0),
+               coalesce(mc.model_count, 0),
+               to_json(p.created_date) #>> '{}',
+               to_json(p.updated_date) #>> '{}'
+        FROM sample.projects p
+                 inner join (select pc.project_id
+                             from sample.projects pc
+                             order by pc.project_id
+                             limit p_limit offset p_offset) pg
+                            on p.project_id = pg.project_id
+                 inner join sample.project_types t ON p.project_type_id = t.project_type_id
+                 left join entity.individuals i on p.contact_id = i.entity_id
+                 left join (select ps.project_id, count(*) sample_count
+                            from sample.project_samples ps
+                            group by ps.project_id) sc
+                           on sc.project_id = p.project_id
+                 left join (select pm.project_id, count(*) model_count
+                            from sample.project_models pm
+                            group by pm.project_id) mc
+                           on mc.project_id = p.project_id;
+end
+$$;
+
+drop function if exists sample.fn_project_samples(int, int, int);
+create or replace function sample.fn_project_samples(p_limit int, p_offset int, p_project_id int)
+    returns setof sample_info_type
+    language sql
+as
+$$
+select s.*
+FROM (
+         select sample_id from sample.project_samples where project_id = p_project_id
+     ) p,
+     sample.fn_sample_info(p.sample_id) s
+     ORDER BY s.sample_id
+        LIMIT p_limit OFFSET p_offset;
+$$;
 
 drop function if exists sample.fn_sample_taxa_raw;
 create or replace function sample.fn_sample_taxa_raw(p_sample_id int[])
@@ -394,7 +555,6 @@ comment on function sample.fn_sample_translation_taxa is
     Note that the output taxonomy_id and scientific name are those of the translation, not
     the original taxa used by the lab!';
 
-drop type rarefied_taxa_info;
 create type rarefied_taxa_info as
 (
     sample_id       int,
