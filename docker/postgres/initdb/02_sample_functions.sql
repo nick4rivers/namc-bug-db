@@ -252,7 +252,6 @@ create or replace function sample.fn_projects(p_limit int, p_offset int)
             (
                 project_id          smallint,
                 project_name        varchar(255),
-                project_type        varchar(255),
                 is_private          boolean,
                 contact_id          smallint,
                 contact_name        text,
@@ -270,7 +269,6 @@ begin
     return query
         SELECT p.project_id,
                p.project_name,
-               t.project_type_name,
                p.is_private,
                i.entity_id,
                i.first_name || ' ' || i.last_name,
@@ -286,7 +284,6 @@ begin
                              order by pc.project_id
                              limit p_limit offset p_offset) pg
                             on p.project_id = pg.project_id
-                 inner join sample.project_types t ON p.project_type_id = t.project_type_id
                  left join entity.individuals i on p.contact_id = i.entity_id
                  left join (select ps.project_id, count(*) sample_count
                             from sample.project_samples ps
