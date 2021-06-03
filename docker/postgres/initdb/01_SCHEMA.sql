@@ -848,7 +848,7 @@ CREATE TABLE sample.projects
     updated_date    TIMESTAMPTZ         NOT NULL DEFAULT now(),
 
     CONSTRAINT ck_project_name CHECK (length(project_name) > 0),
-    CONSTRAINT fk_projects_contact_id FOREIGN KEY (contact_id) REFERENCES entity.entities (entity_id),
+    CONSTRAINT fk_projects_contact_id FOREIGN KEY (contact_id) REFERENCES entity.entities (entity_id)
 );
 CREATE INDEX fx_projects_contact_id ON sample.projects (contact_id);
 CREATE TRIGGER tr_projects_update
