@@ -170,7 +170,7 @@ def convert_percent_to_ratio(msdata, field_name, metadata):
 
     result = None
 
-    if not msdata[field_name]:
+    if msdata[field_name] is None:
         result = 0
         add_metadata(metadata, field_name, '{} converted from NULL to zero.'.format(field_name))
     else:
@@ -178,7 +178,7 @@ def convert_percent_to_ratio(msdata, field_name, metadata):
             result = 0
             add_metadata(metadata, field_name, '{} altered from {} to zero.'.format(field_name, msdata[field_name]))
         else:
-            result = msdata[result] / 100.0
+            result = msdata[field_name] / 100.0
 
     return result
 
