@@ -183,7 +183,25 @@ def project_data(cursor):
     for i in range(1, 5):
         sample_id = insert_test_sample(cursor, 'customer for sample at {}'.format(site_id), site_id)
         cursor.execute("INSERT INTO sample.project_samples (project_id, sample_id) VALUES (%s, %s)", [project_id, sample_id])
+        insert_organism(cursor, sample_id,)
 
+
+@pytest.fixture
+def abundance(cursor):
+
+    # insert 5 samples (with no sites)
+    for i in range(1, 5):
+        sample_id = insert_test_sample(cursor, 'test customer', None)
+        # insert some organisms
+
+
+def insert_organism(cursor, sample_id, taxonomy_id, split_count, life_stage_id, bug_size):
+    cursor.execute('INSERT INTO sample.organisms (sample_id, taxonomy_id, split_count, life_stage_id, bug_size) VALUES (%s, %s, %s, %s, %s)', [sample_id, taxonomy_id, split_count, life_stage_id, bug_size])
+
+
+def get_taxonomy_id(cursor, scientific_name):
+    cursor.execute('SELECT taxonomy_id where scientific_name = %s', [scientific_name])
+    return cursor.fetchone()[0]
 
 # @pytest.fixture
 # def birch_bookshelf_project(cursor):
