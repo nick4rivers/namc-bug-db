@@ -90,7 +90,7 @@ def insert_test_sample(cursor, customer_name='test organization', site_id=None):
     cursor.execute('INSERT INTO sample.boxes (customer_id, submitter_id, box_state_id) VALUES (%s, %s, 1) returning box_id', [entity_id, entity_id])
     box_id = cursor.fetchone()[0]
 
-    cursor.execute('INSERT INTO sample.samples (box_id, site_id, type_id, method_id, habitat_id) VALUES (%s, %s, 1, 1, 1) returning sample_id', [box_id, site_id])
+    cursor.execute('INSERT INTO sample.samples (box_id, site_id, type_id, method_id, habitat_id, field_split, lab_split) VALUES (%s, %s, 1, 1, 1, 1, 1) returning sample_id', [box_id, site_id])
     return cursor.fetchone()[0]
 
 
@@ -169,6 +169,20 @@ def pacific_taxa(cursor):
         sample_id = insert_test_sample(cursor, 'customer for sample at {}'.format(site_id), site_id)
         for taxonomy_id, scientific_name in taxa.items():
             insert_organism(cursor, sample_id, taxonomy_id, 1)
+
+
+@pytest.fixture
+def project_data(cursor):
+
+    x, y = -115, 20
+    site_id = insert_site(cursor, 'site {0}, {1}'.format(x, y), x, y)
+
+    cursor.execute("INSERT INTO sample.projects (project_name) VALUES ('test project') returning project_id")
+    project_id = cursor.fetchone()[0]
+
+    for i in range(1, 5):
+        sample_id = insert_test_sample(cursor, 'customer for sample at {}'.format(site_id), site_id)
+        cursor.execute("INSERT INTO sample.project_samples (project_id, sample_id) VALUES (%s, %s)", [project_id, sample_id])
 
 
 # @pytest.fixture

@@ -69,3 +69,81 @@ BEGIN
     return rows_affected;
 END
 $$;
+
+/******************************************************************************************************************************
+  PROJECT creation functions
+ */
+drop function if exists sample.fn_create_project(varchar(255), boolean, smallint, text, json);
+create or replace function sample.fn_create_project(p_project_name varchar(255), p_is_private bool,
+                                                    p_contact_id smallint, p_description text, p_metadata json)
+    returns int
+    language sql
+as
+$$
+insert into sample.projects (project_name, is_private, contact_id, description, metadata)
+values (p_project_name, p_is_private, p_contact_id, p_description, p_metadata)
+returning project_id;
+$$;
+
+drop function if exists sample.add_project_samples;
+CREATE or replace function sample.add_project_samples(p_project_id int, p_sample_ids int[])
+    returns int
+    language sql
+as
+$$
+insert into sample.project_samples(project_id, sample_id)
+select p_project_id, sample_id
+from sample.samples
+where sample_id = any (p_sample_ids)
+ON CONFLICT ON CONSTRAINT pk_project_samples
+    DO NOTHING;
+
+    -- return the new number of samples in the project
+select count(*)
+from sample.project_samples
+where project_id = p_project_id;
+$$;
+
+create or replace function sample.add_project_boxes(p_project_id int, p_box_ids int[])
+    returns int
+    language sql
+as
+$$
+insert into sample.project_samples(project_id, sample_id)
+select p_project_id, sample_id
+from sample.samples
+where box_id = any (p_box_ids)
+ON CONFLICT ON CONSTRAINT pk_project_samples
+    DO NOTHING;
+
+    -- return the new number of samples in the project
+select count(*)
+from sample.project_samples
+where project_id = p_project_id;
+$$;
+
+create or replace function sample.remove_project_samples(p_project_id int, p_sample_ids int[])
+    returns int
+    language sql
+as
+$$
+delete
+from sample.project_samples
+where (project_id = p_project_id)
+  AND (sample_id = any (p_sample_ids));
+
+-- return the new number of samples in the project
+select count(*)
+from sample.project_samples
+where project_id = p_project_id;
+$$;
+
+create or replace function sample.delete_project(p_project_id int)
+    returns void
+    language sql
+as
+$$
+delete
+from sample.projects
+where project_id = p_project_id;
+$$;
