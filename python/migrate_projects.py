@@ -38,8 +38,8 @@ def migrate_projects(mscurs, pgcurs):
     row_count = log_record_count(mscurs, 'PilotDB.dbo.Project')
 
     # Default all historical projects to customer project types
-    project_types = lookup_data(pgcurs, 'sample.project_types', 'project_type_name')
-    cust_project_type_id = get_db_id(project_types, 'project_type_id', ['project_type_name'], 'Customer Projects')
+    # project_types = lookup_data(pgcurs, 'sample.project_types', 'project_type_name')
+    # cust_project_type_id = get_db_id(project_types, 'project_type_id', ['project_type_name'], 'Customer Projects')
 
     progbar = ProgressBar(row_count, 50, "projects")
     mscurs.execute("SELECT * FROM PilotDB.dbo.Project")
@@ -50,7 +50,7 @@ def migrate_projects(mscurs, pgcurs):
             'project_id': msdata['ProjectID'],
             'project_name': sanitize_string_col('Project', 'ProjectID', msdata, 'Name'),
             'description': sanitize_string_col('Project', 'ProjectID', msdata, 'ProjectDesc'),
-            'project_type_id': cust_project_type_id,
+            # 'project_type_id': cust_project_type_id,
             'is_private': True if not msdata['Privacy'] or msdata['Privacy'].lower() == 'p' else False
         }
         insert_row(pgcurs, table_name, data)
