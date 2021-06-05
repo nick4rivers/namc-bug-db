@@ -77,15 +77,17 @@ create or replace function metric.fn_sample_abundance(p_sample_id int)
     returns real
     language sql
     immutable
+    returns null on null input
 as
 $$
-select metric.fn_abundance(sum(split_count),
-                           sum(big_rare_count),
+select metric.fn_abundance(sum(coalesce(split_count, 0)),
+                           sum(coalesce(big_rare_count, 0)),
                            lab_split,
                            field_split,
-                           area) abundance
+                           area)
 from sample.samples s
-         inner join sample.organisms o on s.sample_id = o.sample_id
+         inner join
+     sample.organisms o on s.sample_id = o.sample_id
 where s.sample_id = p_sample_id
 group by lab_split, field_split, area;
 $$;

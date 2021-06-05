@@ -22,3 +22,8 @@ def print_organisms(label, rows):
     if rows is not None:
         [print('{} ({}) at level {} has count {}'.format(
             row['scientific_name'], row['taxonomy_id'], row['level_name'], row['organism_count'])) for row in rows]
+
+
+def get_taxa_by_name(cursor, scientific_name):
+    cursor.execute('SELECT taxonomy_id FROM taxa.taxonomy where scientific_name ilike (%s)', [scientific_name])
+    return cursor.fetchone()[0]

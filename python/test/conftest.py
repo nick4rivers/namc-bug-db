@@ -90,7 +90,7 @@ def insert_test_sample(cursor, customer_name='test organization', site_id=None):
     cursor.execute('INSERT INTO sample.boxes (customer_id, submitter_id, box_state_id) VALUES (%s, %s, 1) returning box_id', [entity_id, entity_id])
     box_id = cursor.fetchone()[0]
 
-    cursor.execute('INSERT INTO sample.samples (box_id, site_id, type_id, method_id, habitat_id, field_split, lab_split) VALUES (%s, %s, 1, 1, 1, 1, 1) returning sample_id', [box_id, site_id])
+    cursor.execute('INSERT INTO sample.samples (box_id, site_id, type_id, method_id, habitat_id, field_split, lab_split, area) VALUES (%s, %s, 1, 1, 1, 1, 1, 1) returning sample_id', [box_id, site_id])
     return cursor.fetchone()[0]
 
 
@@ -183,7 +183,7 @@ def project_data(cursor):
     for i in range(1, 5):
         sample_id = insert_test_sample(cursor, 'customer for sample at {}'.format(site_id), site_id)
         cursor.execute("INSERT INTO sample.project_samples (project_id, sample_id) VALUES (%s, %s)", [project_id, sample_id])
-        insert_organism(cursor, sample_id,)
+        # insert_organism_by_ (cursor, sample_id,)
 
 
 @pytest.fixture
@@ -194,14 +194,24 @@ def abundance(cursor):
         sample_id = insert_test_sample(cursor, 'test customer', None)
         # insert some organisms
 
+        insert_organism_by_name(cursor, sample_id, 'Test Phylum A', 10, 0)
+        insert_organism_by_name(cursor, sample_id, 'Test Class AA', 10, 0)
 
-def insert_organism(cursor, sample_id, taxonomy_id, split_count, life_stage_id, bug_size):
-    cursor.execute('INSERT INTO sample.organisms (sample_id, taxonomy_id, split_count, life_stage_id, bug_size) VALUES (%s, %s, %s, %s, %s)', [sample_id, taxonomy_id, split_count, life_stage_id, bug_size])
+    # Insert a sample with no organisms
+    insert_test_sample(cursor, 'customer with sample containing no organisms', None)
 
 
-def get_taxonomy_id(cursor, scientific_name):
-    cursor.execute('SELECT taxonomy_id where scientific_name = %s', [scientific_name])
-    return cursor.fetchone()[0]
+def insert_organism_by_name(cursor, sample_id, scientific_name, split_count, big_rare_count):
+
+    # any old life stage
+    cursor.execute('SELECT life_stage_id FROM taxa.life_stages LIMIT 1')
+    life_stage_id = cursor.fetchone()[0]
+
+    cursor.execute('SELECT taxonomy_id from taxa.taxonomy where scientific_name ilike (%s)', [scientific_name])
+    taxonomy_id = cursor.fetchone()[0]
+
+    cursor.execute('INSERT INTO sample.organisms (sample_id, taxonomy_id, split_count, big_rare_count, life_stage_id) VALUES (%s, %s, %s, %s, %s)', [sample_id, taxonomy_id, split_count, big_rare_count, life_stage_id])
+
 
 # @pytest.fixture
 # def birch_bookshelf_project(cursor):
