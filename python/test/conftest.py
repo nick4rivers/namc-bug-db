@@ -48,6 +48,20 @@ def taxonomic_hierarchy(cursor):
 
 
 @pytest.fixture
+def taxonomic_attributes(cursor):
+
+    ta1 = insert_attribute(cursor, 'Test Attribute 1')
+    ta2 = insert_attribute(cursor, 'Test Attribute 2')
+
+    # associate test attribute 1 with all taxa that end with A
+    # associate test attribute 2 with all taxa that end with B
+    for attribute_id, pattern in {ta1: '%A', ta2: '%B'}.items():
+        cursor.execute("""INSERT INTO taxa.taxa_attributes (taxonomy_id, attribute_id, attribute_value)
+                    SELECT taxonomy_id, %s, '1'
+                    FROM taxa.taxonomy WHERE scientific_name like (%s)""", [attribute_id, pattern])
+
+
+@pytest.fixture
 def translation_data(cursor):
 
     # Insert an entity, box and sample
@@ -104,6 +118,12 @@ def insert_taxa(cursor, scientific_name, level, parent_id):
     #     cursor.execute("SELECT taxa_id FROM taxa.taxonomy WHERE scientific_name ilike %s", [parent])
 
     cursor.execute('INSERT INTO taxa.taxonomy (scientific_name, level_id, parent_id) VALUES (%s, %s, %s) returning taxonomy_id', [scientific_name, level_id, parent_id])
+    return cursor.fetchone()[0]
+
+
+def insert_attribute(cursor, attribute_name):
+
+    cursor.execute("INSERT INTO taxa.attributes (attribute_name, attribute_type) VALUES (%s, 'Float') returning attribute_id", [attribute_name])
     return cursor.fetchone()[0]
 
 

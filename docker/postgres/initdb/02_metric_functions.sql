@@ -48,10 +48,11 @@ create or replace function metric.fn_taxa_abundance(p_sample_id int, p_taxonomy_
     returns real
     language sql
     immutable
+    returns null on null input
 as
 $$
-select metric.fn_abundance(sum(split_count),
-                           sum(big_rare_count),
+select metric.fn_abundance(sum(coalesce(split_count, 0)),
+                           sum(coalesce(big_rare_count, 0)),
                            lab_split,
                            field_split,
                            area) abundance
@@ -98,8 +99,8 @@ create or replace function metric.fn_attribute_abundance(p_sample_id int, p_attr
     immutable
 as
 $$
-select metric.fn_abundance(sum(split_count),
-                           sum(big_rare_count),
+select metric.fn_abundance(coalesce(sum(split_count), 0),
+                           coalesce(sum(big_rare_count), 0),
                            lab_split,
                            field_split,
                            area)

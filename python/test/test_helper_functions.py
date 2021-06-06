@@ -27,3 +27,8 @@ def print_organisms(label, rows):
 def get_taxa_by_name(cursor, scientific_name):
     cursor.execute('SELECT taxonomy_id FROM taxa.taxonomy where scientific_name ilike (%s)', [scientific_name])
     return cursor.fetchone()[0]
+
+
+def get_attribute_by_name(cursor, attribute_name):
+    cursor.execute('SELECT attribute_id FROM taxa.attributes WHERE attribute_name ilike (%s)', [attribute_name])
+    return cursor.fetchone()[0]

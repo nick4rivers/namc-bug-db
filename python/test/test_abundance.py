@@ -1,3 +1,4 @@
+from test_helper_functions import get_attribute_by_name
 from test_helper_functions import get_taxa_by_name
 import pytest
 from test_helper_functions import get_samples_by_customer_name
@@ -89,6 +90,19 @@ def test_taxa_abundance(cursor, taxonomic_hierarchy, abundance):
     assert classaa_abundance == 10
 
 
+def test_attribute_abundance(cursor, taxonomic_hierarchy, taxonomic_attributes, abundance):
+
+    samples = get_samples_by_customer_name(cursor, 'test customer')
+    sample_id = samples[0]
+
+    # Taxa ending in A should all have attribute 1
+    attributea = get_attribute_by_name(cursor, 'Test Attribute 1')
+    phyluma = get_taxa_by_name(cursor, 'Test Phylum A')
+    cursor.execute('SELECT metric.fn_attribute_abundance(%s, %s)', [sample_id, attributea])
+    atta_abundance = cursor.fetchone()[0]
+    assert atta_abundance == 20
+
+
 if __name__ == "__main__":
 
-    pytest.main(['test/test_abundance.py::test_taxa_abundance'])
+    pytest.main(['test/test_abundance.py::test_attribute_abundance'])
