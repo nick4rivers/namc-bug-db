@@ -129,6 +129,22 @@ $$;
 comment on function metric.fn_abundance is 'Abundance calculation taken from NAMC metric report spreadsheet.
  ( ([Split Count] * (100/[Lab Split])) + [Big_Rare Count]) *(100/[Field Split]) *(1/[Area Sampled])';
 
+
+drop function if exists metric.fn_shannons_diversity;
+create or replace function metric.fn_shannons_diversity(p_taxa taxa_info[])
+    returns setof taxa_info
+    language sql
+    immutable
+    returns null on null input
+as
+$$
+    select * from unnest(p_taxa);
+$$;
+comment on function metric.fn_shannons_diversity is 'Shannons Diversity Index.
+-∑([Relative Abundance]taxa *ln([Relative Abundance]taxa))
+https://en.wikipedia.org/wiki/Diversity_index#Shannon_index';
+
+
 -- create or replace function metric.fn_sample_richness(p_rarefaction_id int)
 --     returns int
 --     language sql
