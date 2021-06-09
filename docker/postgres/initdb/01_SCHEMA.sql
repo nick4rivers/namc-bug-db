@@ -633,6 +633,10 @@ CREATE TABLE taxa.translation_taxa
 );
 CREATE INDEX fx_translation_taxa_taxonomy_id ON taxa.translation_taxa (taxonomy_id);
 CREATE UNIQUE INDEX ux_translation_taxa_taxonomy_id ON taxa.translation_taxa (translation_id, taxonomy_id);
+comment on table taxa.translation_taxa is 'Identifies the taxa within each translation (OTU).';
+comment on column  taxa.translation_taxa.is_final is 'True when a taxa is part of the core model. False means
+    the taxa was part of the list that was originally used to develop the model, but ultimately was not
+    used as part of the final model calculation.';
 
 CREATE TABLE taxa.translation_predictors
 (
