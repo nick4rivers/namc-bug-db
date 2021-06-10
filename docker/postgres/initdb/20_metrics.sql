@@ -65,10 +65,10 @@ INSERT INTO metric.metrics (metric_id, group_id, metric_name, description, is_st
 INSERT INTO metric.metrics (metric_id, group_id, metric_name, description, is_standardized, perturb_direction) VALUES (65, 8, '# of Crustacea taxa', NULL, TRUE, 'Variable');
 INSERT INTO metric.metrics (metric_id, group_id, metric_name, description, is_standardized, perturb_direction) VALUES (66, 8, 'Crustacea abundance', NULL, FALSE, 'Variable');
 INSERT INTO metric.metrics (metric_id, group_id, metric_name, description, is_standardized, perturb_direction) VALUES (67, 8, '# of Oligochaete taxa', NULL, TRUE, 'Increase');
-INSERT INTO metric.metrics (metric_id, group_id, metric_name, description, is_standardized, perturb_direction) VALUES (68, 8, 'Oligochaete abundance', NULL, FALSE, 'Increase');
+INSERT INTO metric.metrics (metric_id, group_id, metric_name, description, is_standardized, perturb_direction) VALUES (68, 8, 'Oligochaeta abundance', NULL, FALSE, 'Increase');
 INSERT INTO metric.metrics (metric_id, group_id, metric_name, description, is_standardized, perturb_direction) VALUES (69, 8, '# of Mollusca taxa', NULL, TRUE, 'Variable');
 INSERT INTO metric.metrics (metric_id, group_id, metric_name, description, is_standardized, perturb_direction) VALUES (70, 8, 'Mollusca abundance', NULL, FALSE, 'Variable');
 INSERT INTO metric.metrics (metric_id, group_id, metric_name, description, is_standardized, perturb_direction) VALUES (71, 8, '# of Insect taxa', NULL, TRUE, 'Decrease');
-INSERT INTO metric.metrics (metric_id, group_id, metric_name, description, is_standardized, perturb_direction) VALUES (72, 8, 'Insect abundance', NULL, FALSE, 'Decrease');
+INSERT INTO metric.metrics (metric_id, group_id, metric_name, description, is_standardized, perturb_direction) VALUES (72, 8, 'Insecta abundance', NULL, FALSE, 'Decrease');
 INSERT INTO metric.metrics (metric_id, group_id, metric_name, description, is_standardized, perturb_direction) VALUES (73, 8, '# of non-insect taxa', NULL, TRUE, 'Increase');
 INSERT INTO metric.metrics (metric_id, group_id, metric_name, description, is_standardized, perturb_direction) VALUES (74, 8, 'Non-insect abundance', NULL, FALSE, 'Increase');
