@@ -163,6 +163,22 @@
       "{env:MS_USER}",
       "{env:MS_PASSWORD}",
      ]
+  } ,
+  ,
+  {
+    "name": "Build Translation Taxa SQL",
+    "type": "python",
+    "request": "launch",
+    "module": "scripts.build_translation_taxa",
+    "console": "integratedTerminal",
+    "args": [
+      "{env:MS_DB}",
+      "{env:MS_USER}",
+      "{env:MS_PASSWORD}",
+      "/Users/philip/code/bugdb/namc-bug-db/docker/postgres/initdb/10_taxa_translations.sql",
+      "data/translation_taxa.csv",
+      "/Users/philip/code/bugdb/namc-bug-db/docker/postgres/initdb/30_translation_taxa.sql"
+     ]
   } 
 ]
 }
