@@ -27,7 +27,6 @@ Wormaldia,AREMP
 Yoraperla,AREMP
 Zaitzevia,AREMP
 Zapada,AREMP
-scientific_name,model_abbreviation
 Ablabesmyia,CSCI
 Aeshna,CSCI
 Aeshnidae,CSCI
@@ -369,7 +368,6 @@ Zapada columbiana,CSCI
 Zapada frigida,CSCI
 Zapada oregonensis group,CSCI
 Zavrelimyia/ Paramerina,CSCI
-scientific_name,model_abbreviation
 Acari,PIBO
 Acentrella,PIBO
 Agapetus,PIBO
@@ -517,7 +515,6 @@ Wiedemannia,PIBO
 Wormaldia,PIBO
 Zaitzevia,PIBO
 Zapada,PIBO
-scientific_name,model_abbreviation
 ABEDUS,WestWide
 Acentrella,WestWide
 Acerpenna,WestWide
@@ -791,7 +788,6 @@ YPHRIA,WestWide
 Zaitzevia,WestWide
 Zapada,WestWide
 Zumatrichia,WestWide
-scientific_name,model_abbreviation
 Acari,WY
 Acentrella,WY
 Agapetus,WY
@@ -917,7 +913,6 @@ Zaitzevia,WY
 Zapada_cinctipes,WY
 Zapada_columbiana,WY
 Zapada_oregonensis,WY
-scientific_name,model_abbreviation
 Ablabesmyia,NV
 Acentrella,NV
 Agabus,NV
@@ -1173,7 +1168,6 @@ Zaitzevia,NV
 Zapada_cinctipes,NV
 Zapada_columbiana,NV
 Zapada_oregonensis_group,NV
-scientific_name,model_abbreviation
 Acentrella,ORWCCP
 Acerpenna,ORWCCP
 Acneus,ORWCCP
@@ -1424,7 +1418,6 @@ Wormaldia,ORWCCP
 Yoraperla,ORWCCP
 Zaitzevia,ORWCCP
 Zapada,ORWCCP
-scientific_name,model_abbreviation
 Acentrella,ORMWCF
 Acneus,ORMWCF
 Agapetus,ORMWCF
@@ -1637,7 +1630,7 @@ Baetis,ORNBR
 Brachycentrus,ORNBR
 Chironominae,ORNBR
 Diphetor_hageni,ORNBR
-Epeorus, Zaitzevia,ORNBR
+Epeorus Zaitzevia,ORNBR
 Optioservus,ORNBR
 Orthocladiinae,ORNBR
 Rhyacophila,ORNBR
