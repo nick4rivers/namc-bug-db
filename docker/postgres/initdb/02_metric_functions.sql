@@ -52,11 +52,12 @@ create or replace function metric.fn_richness(p_taxa metric_taxa[])
     returns null on null input
 as
 $$
-    select count(*) from (
-                             select taxonomy_id
-                             from unnest(p_taxa)
-                             group by taxonomy_id
-                         ) mt;
+select count(*)
+from (
+         select taxonomy_id
+         from unnest(p_taxa)
+         group by taxonomy_id
+     ) mt;
 $$;
 
 create or replace function metric.fn_sample_richness(p_sample_id int)
@@ -67,7 +68,7 @@ create or replace function metric.fn_sample_richness(p_sample_id int)
 as
 $$
 select metric.fn_richness(
-               array_agg((taxonomy_id, split_count, big_rare_count, lab_split, field_split, area)::metric_taxa))
+               array_agg((taxonomy_id, split_count, lab_split, field_split, area)::metric_taxa))
 from sample.samples s
          inner join sample.organisms o on s.sample_id = o.sample_id
 where s.sample_id = p_sample_id
@@ -82,15 +83,10 @@ create or replace function metric.fn_taxa_abundance(p_sample_id int, p_taxonomy_
     returns null on null input
 as
 $$
-select metric.fn_abundance(sum(coalesce(split_count, 0)),
-                           sum(coalesce(big_rare_count, 0)),
-                           lab_split,
-                           field_split,
-                           area) abundance
+select metric.fn_abundance(sum(coalesce(split_count, 0)), lab_split, field_split, area) abundance
 from (
          select taxonomy_id,
-                sum(split_count)    split_count,
-                sum(big_rare_count) big_rare_count
+                sum(split_count) split_count
          from sample.organisms
          where sample_id = p_sample_id
          group by taxonomy_id
@@ -112,11 +108,7 @@ create or replace function metric.fn_sample_abundance(p_sample_id int)
     returns null on null input
 as
 $$
-select metric.fn_abundance(sum(coalesce(split_count, 0)),
-                           sum(coalesce(big_rare_count, 0)),
-                           lab_split,
-                           field_split,
-                           area)
+select metric.fn_abundance(sum(coalesce(split_count, 0)), lab_split, field_split, area)
 from sample.samples s
          inner join
      sample.organisms o on s.sample_id = o.sample_id
@@ -130,11 +122,7 @@ create or replace function metric.fn_attribute_abundance(p_sample_id int, p_attr
     immutable
 as
 $$
-select metric.fn_abundance(coalesce(sum(split_count), 0),
-                           coalesce(sum(big_rare_count), 0),
-                           lab_split,
-                           field_split,
-                           area)
+select metric.fn_abundance(coalesce(sum(split_count), 0),lab_split,field_split,area)
 from sample.samples s
          inner join sample.organisms o on o.sample_id = s.sample_id
          inner join taxa.taxa_attributes a on o.taxonomy_id = a.taxonomy_id
@@ -144,32 +132,26 @@ group by lab_split, field_split, area;
 $$;
 
 drop function if exists metric.fn_abundance;
-create or replace function metric.fn_abundance(split_count real,
-                                               big_rare_count real,
-                                               lab_split real,
-                                               field_split real,
-                                               area_sampled real)
+create or replace function metric.fn_abundance(split_count real, lab_split real, field_split real, area_sampled real)
     returns real
     language sql
     immutable
     returns null on null input
 as
 $$
-select ((split_count * (1 / lab_split) + big_rare_count) * (1 / field_split) * (1 / area_sampled));
+select (split_count * (1 / nullif(lab_split, 0)) * (1 / nullif(field_split, 0)) * (1 / nullif(area_sampled, 0)));
 $$;
 comment on function metric.fn_abundance is 'Abundance calculation taken from NAMC metric report spreadsheet.
- ( ([Split Count] * (100/[Lab Split])) + [Big_Rare Count]) *(100/[Field Split]) *(1/[Area Sampled])';
-
-
+ ( ([Split Count] * (100/[Lab Split])) + [Big_Rare Count]) *(100/[Field Split]) *(1/[Area Sampled])
+8 Jun 2021, Trip Armstrong requested removing big rare from this equation';
 
 create type metric_taxa as
 (
-    taxonomy_id    smallint,
-    split_count    real,
-    big_rare_count real,
-    lab_split      real,
-    field_split    real,
-    area_sampled   real
+    taxonomy_id  smallint,
+    split_count  real,
+    lab_split    real,
+    field_split  real,
+    area_sampled real
 );
 
 drop function if exists metric.fn_shannons_diversity;
@@ -182,11 +164,12 @@ as
 $$
 select -1 * sum(relative_abundance * ln(relative_abundance))
 from (
-         select (metric.fn_abundance(split_count, big_rare_count, lab_split, field_split, area_sampled) /
+         select (metric.fn_abundance(split_count, lab_split, field_split, area_sampled) /
                  total_abundance) relative_abundance
          from unnest(p_taxa) s,
               (
-                  select sum(split_count) + sum(big_rare_count) total_abundance from unnest(p_taxa)
+                  select sum(split_count) total_abundance
+                  from unnest(p_taxa)
               ) t
      ) ra;
 $$;
@@ -194,7 +177,8 @@ comment on function metric.fn_shannons_diversity is 'Shannons Diversity Index.
 -∑([Relative Abundance]taxa *ln([Relative Abundance]taxa))
 https://en.wikipedia.org/wiki/Diversity_index#Shannon_index';
 
-create or replace function metric.fn_sample_shannons_Diversity(p_sample_id int)
+drop function if exists metric.fn_sample_shannons_diversity;
+create or replace function metric.fn_sample_shannons_diversity(p_sample_id int)
     returns real
     language sql
     immutable
@@ -202,14 +186,14 @@ create or replace function metric.fn_sample_shannons_Diversity(p_sample_id int)
 as
 $$
 select metric.fn_shannons_diversity(
-               array_agg((taxonomy_id, split_count, big_rare_count, lab_split, field_split, area)::metric_taxa))
+               array_agg((taxonomy_id, split_count, lab_split, field_split, area)::metric_taxa))
 from sample.samples s
          inner join sample.organisms o on s.sample_id = o.sample_id
 where s.sample_id = p_sample_id
 group by s.sample_id;
 $$;
 
-
+drop function if exists metric.fn_simpsons_diversity;
 create or replace function metric.fn_simpsons_diversity(p_taxa metric_taxa[])
     returns real
     language sql
@@ -220,11 +204,12 @@ $$
 
 select 1 - pow(sum(relative_abundance), 2)
 from (
-         select (metric.fn_abundance(split_count, big_rare_count, lab_split, field_split, area_sampled) /
+         select (metric.fn_abundance(split_count, lab_split, field_split, area_sampled) /
                  total_abundance) relative_abundance
          from unnest(p_taxa) s,
               (
-                  select sum(split_count) + sum(big_rare_count) total_abundance from unnest(p_taxa)
+                  select sum(split_count) total_abundance
+                  from unnest(p_taxa)
               ) t
      ) ra;
 $$;
@@ -241,7 +226,7 @@ create or replace function metric.fn_sample_simpsons_diversity(p_sample_id int)
 as
 $$
 select metric.fn_simpsons_diversity(
-               array_agg((taxonomy_id, split_count, big_rare_count, lab_split, field_split, area)::metric_taxa))
+               array_agg((taxonomy_id, split_count, lab_split, field_split, area)::metric_taxa))
 from sample.samples s
          inner join sample.organisms o on s.sample_id = o.sample_id
 where s.sample_id = p_sample_id
