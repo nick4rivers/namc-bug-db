@@ -41,6 +41,7 @@ drop function if exists sample.fn_sample_info;
 create or replace function sample.fn_sample_info(p_sample_id int)
     returns setof sample_info_type
     language plpgsql
+    immutable
 AS
 $$
 begin
@@ -104,6 +105,7 @@ create or replace function sample.fn_plankton(p_limit int, p_offset int)
                 updated_date     text
             )
     language plpgsql
+    immutable
 as
 $$
 begin
@@ -136,6 +138,7 @@ create or replace function sample.fn_drift(p_limit int, p_offset int)
                 updated_date text
             )
     language plpgsql
+    immutable
 as
 $$
 begin
@@ -167,6 +170,7 @@ create or replace function sample.fn_fish(p_limit int, p_offset int)
                 updated_date    text
             )
     language plpgsql
+    immutable
 as
 $$
 begin
@@ -207,6 +211,7 @@ create or replace function sample.fn_mass(p_limit int, p_offset int)
                 updated_date        text
             )
     language plpgsql
+    immutable
 as
 $$
 begin
@@ -262,6 +267,7 @@ create or replace function sample.fn_projects(p_limit int, p_offset int)
                 updated_date        text
             )
     language plpgsql
+    immutable
 as
 $$
 begin
@@ -298,6 +304,7 @@ drop function if exists sample.fn_project_samples(int, int, int);
 create or replace function sample.fn_project_samples(p_limit int, p_offset int, p_project_id int)
     returns setof sample_info_type
     language sql
+    immutable
 as
 $$
 select s.*
@@ -313,6 +320,7 @@ drop function if exists sample.fn_sample_taxa_raw;
 create or replace function sample.fn_sample_taxa_raw(p_sample_id int[])
     returns setof taxa_info
     language plpgsql
+    immutable
 as
 $$
 begin
@@ -365,6 +373,7 @@ drop function if exists sample.fn_box_taxa_raw;
 create or replace function sample.fn_box_taxa_raw(p_box_id int[])
     returns setof taxa_info
     language plpgsql
+    immutable
 as
 $$
 declare
@@ -384,6 +393,7 @@ create or replace function sample.fn_taxa_raw_point_distance(p_longitude double 
                                                              p_distance double precision)
     returns setof taxa_info
     language plpgsql
+    immutable
 as
 $$
 declare
@@ -418,6 +428,7 @@ drop function if exists sample.fn_taxa_raw_polygon;
 create or replace function sample.fn_taxa_raw_polygon(p_search_polygon json)
     returns setof taxa_info
     language plpgsql
+    immutable
 as
 $$
 declare
@@ -448,8 +459,6 @@ begin
     into p_sample_ids;
 
     return query select * from sample.fn_sample_taxa_raw(p_sample_ids);
-
-
 end
 $$;
 
@@ -471,6 +480,7 @@ create or replace function sample.fn_sample_taxa_generalized(p_sample_id int)
                 raw_big_rare_count      bigint
             )
     language plpgsql
+    immutable
 as
 $$
 begin
@@ -513,6 +523,7 @@ drop function if exists sample.fn_sample_translation_taxa;
 create or replace function sample.fn_sample_translation_taxa(p_sample_id int, p_translation_id int)
     returns setof taxa_info
     language plpgsql
+    immutable
 as
 $$
 begin
@@ -563,6 +574,7 @@ drop function if exists sample.fn_rarefied_taxa;
 create or replace function sample.fn_rarefied_taxa(p_sample_id int, p_fixed_count int)
     returns setof rarefied_taxa_info
     language plpgsql
+    immutable
 as
 $$
 begin
@@ -599,6 +611,7 @@ drop function if exists sample.fn_translation_rarefied_taxa;
 create or replace function sample.fn_translation_rarefied_taxa(p_sample_id int, p_translation_id int, p_fixed_count int)
     returns setof rarefied_taxa_info
     language sql
+    immutable
 as
 $$
     -- This is the same query from fn_rarefied_taxa with the exception that it

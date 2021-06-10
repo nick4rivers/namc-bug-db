@@ -46,6 +46,7 @@ create or replace function geo.fn_model_thresholds(p_model_id int)
                 description  text
             )
     language sql
+    immutable
 as
 $$
 select model_id,

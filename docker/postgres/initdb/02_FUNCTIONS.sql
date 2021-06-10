@@ -24,6 +24,7 @@ CREATE OR REPLACE FUNCTION geo.fn_site_info(p_site_id INT)
                 catchment        TEXT
             )
     language plpgsql
+    immutable
 AS
 $$
 BEGIN
@@ -75,6 +76,7 @@ CREATE OR REPLACE FUNCTION geo.fn_sites(p_limit INT, p_offset INT)
                 has_catchment       BOOLEAN
             )
     language plpgsql
+    immutable
 AS
 $$
 begin
@@ -126,6 +128,7 @@ CREATE OR REPLACE FUNCTION geo.fn_predictors(p_limit INT, p_offset INT, p_model_
                 model_count         BIGINT
             )
     language plpgsql
+    immutable
 AS
 $$
 begin
@@ -173,6 +176,7 @@ CREATE OR REPLACE FUNCTION geo.fn_models(p_limit INT, p_offset INT, p_is_active 
                 predictor_count BIGINT
             )
     language plpgsql
+    immutable
 AS
 $$
 begin
@@ -206,6 +210,7 @@ CREATE OR REPLACE FUNCTION geo.fn_site_predictor_values(p_limit INT, p_offset IN
                 calculation_script VARCHAR(255)
             )
     language plpgsql
+    immutable
 AS
 $$
 begin
@@ -263,6 +268,7 @@ CREATE OR REPLACE FUNCTION sample.fn_sample_organisms(p_sample_id INT)
                 Subspecies       varchar(255)
             )
     LANGUAGE plpgsql
+    immutable
 AS
 $$
 BEGIN
@@ -314,6 +320,7 @@ CREATE OR REPLACE FUNCTION sample.fn_boxes(p_limit INT, p_offset INT)
                 projected_complete_date  text
             )
     LANGUAGE plpgsql
+    immutable
 AS
 $$
 BEGIN
@@ -411,6 +418,7 @@ CREATE OR REPLACE FUNCTION sample.fn_samples(
                 is_private       BOOLEAN
             )
     LANGUAGE plpgsql
+    immutable
 AS
 $$
 BEGIN
@@ -495,6 +503,7 @@ CREATE OR REPLACE FUNCTION sample.fn_sample_predictor_values(p_sample_id INT)
                 status                       VARCHAR(20)
             )
     language plpgsql
+    immutable
 AS
 $$
 BEGIN
@@ -572,6 +581,7 @@ CREATE OR REPLACE FUNCTION sample.fn_box_info(p_box_id INT)
                 updated_date             text
             )
     language plpgsql
+    immutable
 AS
 $$
 BEGIN
@@ -677,6 +687,7 @@ CREATE OR REPLACE FUNCTION sample.fn_project_samples(
                 is_private       BOOLEAN
             )
     LANGUAGE plpgsql
+    immutable
 AS
 $$
 BEGIN
@@ -773,6 +784,7 @@ create or replace function geo.fn_model_info(p_model_id int)
                 extent             text
             )
     language plpgsql
+    immutable
 AS
 $$
 begin
@@ -830,6 +842,7 @@ create or replace function geo.fn_model_predictors(p_limit INT, p_offset INT, p_
                 updated_date       text
             )
     language plpgsql
+    immutable
 AS
 $$
 begin
@@ -872,6 +885,7 @@ create or replace function taxa.fn_translations(p_limit int, p_offset int)
                 updated_date     text
             )
     language plpgsql
+    immutable
 as
 $$
 begin

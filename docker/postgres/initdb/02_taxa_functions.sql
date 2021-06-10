@@ -12,6 +12,7 @@ create or replace function taxa.fn_attributes(p_limit int, p_offset int)
                 updated_date   text
             )
     language sql
+    immutable
 as
 $$
 select attribute_id,
@@ -41,6 +42,7 @@ create or replace function taxa.fn_taxa_attributes(p_taxonomy_id int, p_limit in
                 attribute_value varchar(100)
             )
     language sql
+    immutable
 as
 $$
 select t.taxonomy_id,
@@ -75,6 +77,7 @@ create or replace function taxa.fn_translation_taxa(p_translation_id int, p_taxo
                 translation_level_name      varchar(50)
             )
     language plpgsql
+    immutable
 as
 $$
 begin
@@ -115,6 +118,8 @@ CREATE OR REPLACE FUNCTION taxa.fn_tree(taxa_id smallint)
                 parent_id       SMALLINT
             )
     language plpgsql
+    immutable
+    returns null on null input
 as
 $$
 begin
