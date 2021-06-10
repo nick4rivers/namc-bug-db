@@ -153,7 +153,7 @@ CREATE TABLE translation_taxa
 (
     translation_taxonomy_id   INTEGER PRIMARY KEY AUTOINCREMENT,
     translation_id            int         NOT NULL,
-    taxonomy_id               int         NOT NULL,
+    taxonomy_id               int,
     translation_taxonomy_name VARCHAR(255),
     status_id                 int         not null default 1,
     notes                     text,
