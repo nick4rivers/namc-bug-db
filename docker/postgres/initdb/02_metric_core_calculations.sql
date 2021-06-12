@@ -1,20 +1,20 @@
-create type metric_taxa as
-(
-    taxonomy_id  smallint,
-    split_count  real,
-    lab_split    real,
-    field_split  real,
-    area_sampled real
-);
-comment on type metric_taxa is 'basic set of data required to calculate metrics.
-The taxonomy_id and split_count come from sample.organisms while the lab_split
-field_split and area_sampled are from sample.samples';
+-- create type metric_taxa as
+-- (
+--     taxonomy_id  smallint,
+--     split_count  real,
+--     lab_split    real,
+--     field_split  real,
+--     area_sampled real
+-- );
+-- comment on type metric_taxa is 'basic set of data required to calculate metrics.
+-- The taxonomy_id and split_count come from sample.organisms while the lab_split
+-- field_split and area_sampled are from sample.samples';
 /*
  ******************************************************************************************************************
  */
 
 drop function if exists metric.fn_richness;
-create or replace function metric.fn_calc_richness(p_taxa metric_taxa[])
+create or replace function metric.fn_calc_richness(p_taxa taxa_info[])
     returns int
     language sql
     immutable
@@ -29,8 +29,8 @@ from (
      ) mt;
 $$;
 comment on function metric.fn_calc_richness is
-'Core richness calculation on an array of organisms. It assumes that the organisms
-have already be translated and rarefied. This is purely a count of distinct taxa.';
+    'Core richness calculation on an array of organisms. It assumes that the organisms
+    have already be translated and rarefied. This is purely a count of distinct taxa.';
 
 /*
  ******************************************************************************************************************
@@ -54,23 +54,21 @@ comment on function metric.fn_calc_abundance is 'Abundance calculation taken fro
  */
 
 drop function if exists metric.fn_calc_shannons_diversity;
-create or replace function metric.fn_calc_shannons_diversity(p_taxa metric_taxa[])
+create or replace function metric.fn_calc_shannons_diversity(p_taxa taxa_info[])
     returns real
     language sql
     immutable
     returns null on null input
 as
 $$
-select -1 * sum(relative_abundance * ln(relative_abundance))
+select -1 * sum((taxa_abundance / total_abundance) * ln(taxa_abundance / total_abundance))
 from (
-         select (metric.fn_calc_abundance(split_count, lab_split, field_split, area_sampled) /
-                 total_abundance) relative_abundance
-         from unnest(p_taxa) s,
-              (
-                  select sum(split_count) total_abundance
-                  from unnest(p_taxa)
-              ) t
-     ) ra;
+         select sum(abundance) as taxa_abundance from unnest(p_taxa) group by taxonomy_id
+     ) taxa
+         join
+     (
+         select sum(abundance) total_abundance from unnest(p_taxa)
+     ) total on true;
 $$;
 comment on function metric.fn_calc_shannons_diversity is 'Shannons Diversity Index.
 -∑([Relative Abundance]taxa *ln([Relative Abundance]taxa))
@@ -81,23 +79,21 @@ https://en.wikipedia.org/wiki/Diversity_index#Shannon_index';
  */
 
 drop function if exists metric.fn_calc_simpsons_diversity;
-create or replace function metric.fn_calc_simpsons_diversity(p_taxa metric_taxa[])
+create or replace function metric.fn_calc_simpsons_diversity(p_taxa taxa_info[])
     returns real
     language sql
     immutable
     returns null on null input
 as
 $$
-select 1 - sum(pow(relative_abundance, 2))
+select 1 - sum(pow(taxa_abundance / total_abundance, 2))
 from (
-         select (metric.fn_calc_abundance(split_count, lab_split, field_split, area_sampled) /
-                 total_abundance) relative_abundance
-         from unnest(p_taxa) s,
-              (
-                  select sum(split_count) total_abundance
-                  from unnest(p_taxa)
-              ) t
-     ) ra;
+         select sum(abundance) as taxa_abundance from unnest(p_taxa) group by taxonomy_id
+     ) taxa
+         join
+     (
+         select sum(abundance) total_abundance from unnest(p_taxa)
+     ) total on true;
 $$;
 comment on function metric.fn_calc_simpsons_diversity is 'Simpsons Diversity Index.
 1 - [Simpsons Diversity] = 1 - ∑([Relative Abundance]taxa)^2

@@ -236,35 +236,34 @@ begin
 end
 $$;
 
+drop type taxa_info;
 create type taxa_info as
 (
-    sample_id          int,
-    taxonomy_id        smallint,
-    scientific_name    varchar(255),
-    level_id           smallint,
-    level_name         varchar(50),
-    raw_count          real,
-    corrected_count    real,
-    raw_big_rare_count bigint
+    sample_id       int,
+    taxonomy_id     smallint,
+    scientific_name varchar(255),
+    level_id        smallint,
+    level_name      varchar(50),
+    abundance       real
 );
-comment on type taxa_info is 'This type is reused as the basic structure of information returned'
-    'where requesting taxonomic information about a sample.';
+comment on type taxa_info is 'This type is reused as the basic structure of information returned
+    where requesting taxonomic information about a sample.';
 
 
 drop function if exists sample.fn_projects;
 create or replace function sample.fn_projects(p_limit int, p_offset int)
     returns table
             (
-                project_id          smallint,
-                project_name        varchar(255),
-                is_private          boolean,
-                contact_id          smallint,
-                contact_name        text,
-                description         text,
-                sample_count        bigint,
-                model_count         bigint,
-                created_date        text,
-                updated_date        text
+                project_id   smallint,
+                project_name varchar(255),
+                is_private   boolean,
+                contact_id   smallint,
+                contact_name text,
+                description  text,
+                sample_count bigint,
+                model_count  bigint,
+                created_date text,
+                updated_date text
             )
     language plpgsql
     immutable
@@ -312,8 +311,19 @@ FROM (
          select sample_id from sample.project_samples where project_id = p_project_id
      ) p,
      sample.fn_sample_info(p.sample_id) s
-     ORDER BY s.sample_id
-        LIMIT p_limit OFFSET p_offset;
+ORDER BY s.sample_id
+LIMIT p_limit OFFSET p_offset;
+$$;
+
+drop function sample.fn_corrected_count;
+create or replace function sample.fn_corrected_count(split_count real, lab_split real, field_split real)
+    returns real
+    language sql
+    immutable
+    returns null on null input
+as
+$$
+select (split_count * (1 / nullif(lab_split, 0)) * (1 / nullif(field_split, 0)));
 $$;
 
 drop function if exists sample.fn_sample_taxa_raw;
@@ -330,9 +340,7 @@ begin
                t.scientific_name,
                t.level_id,
                l.level_name,
-               sum(o.split_count),
-               sum(o.split_count) * s.lab_split * s.field_split,
-               sum(o.big_rare_count)
+               sum(metric.fn_calc_abundance(split_count, lab_split, field_split, area))
         from sample.organisms o
                  inner join sample.samples s on o.sample_id = s.sample_id
                  inner join taxa.taxonomy t on o.taxonomy_id = t.taxonomy_id
@@ -537,9 +545,7 @@ begin
                cast(coalesce(tt.translation_scientific_name, t.scientific_name) as varchar(255)) scientific_name,
                tt.translation_level_id,
                cast(tt.translation_level_name as varchar(50)),
-               sum(o.split_count),
-               sum(o.split_count) * s.lab_split * s.field_split,
-               sum(o.big_rare_count)
+               sum(metric.fn_calc_abundance(o.split_count, s.lab_split, s.field_split, s.area))
         FROM sample.organisms o
                  inner join sample.samples s on o.sample_id = s.sample_id
                  inner join taxa.taxonomy t on o.taxonomy_id = t.taxonomy_id
@@ -560,19 +566,19 @@ comment on function sample.fn_sample_translation_taxa is
     Note that the output taxonomy_id and scientific name are those of the translation, not
     the original taxa used by the lab!';
 
-create type rarefied_taxa_info as
-(
-    sample_id       int,
-    taxonomy_id     smallint,
-    scientific_name varchar(2550),
-    level_id        smallint,
-    level_name      varchar(50),
-    organism_count  bigint
-);
+-- create type rarefied_taxa_info as
+-- (
+--     sample_id       int,
+--     taxonomy_id     smallint,
+--     scientific_name varchar(2550),
+--     level_id        smallint,
+--     level_name      varchar(50),
+--     organism_count  bigint
+-- );
 
 drop function if exists sample.fn_rarefied_taxa;
 create or replace function sample.fn_rarefied_taxa(p_sample_id int, p_fixed_count int)
-    returns setof rarefied_taxa_info
+    returns setof taxa_info
     language plpgsql
     immutable
 as
@@ -591,27 +597,31 @@ begin
                           select t.taxonomy_id, uuid_generate_v1() uid
                           from (
                                    SELECT o.taxonomy_id,
-                                          cast(round(
-                                                  sum(split_count) * s.field_split * s.lab_split) as int) corrected_count
+                                          round(sum(
+                                                  sample.fn_corrected_count(o.split_count, s.lab_split,
+                                                                            s.field_split)))::int corrected_count
                                    FROM sample.organisms o
-                                            inner join sample.samples s on o.sample_id = s.sample_id
+                                            inner join sample.samples s
+                                                       on o.sample_id = s.sample_id
                                    where s.sample_id = p_sample_id
                                    group by o.taxonomy_id, field_split, lab_split) t, generate_series(1, t.corrected_count)
                       ) ts
                  order by uid
-                 limit p_fixed_count
-             ) c
-                 inner join taxa.taxonomy t on c.taxonomy_id = t.taxonomy_id
-                 inner join taxa.taxa_levels l on t.level_id = l.level_id
+                 limit p_fixed_count) c
+                 inner join taxa.taxonomy t on c.
+                                                   taxonomy_id = t.taxonomy_id
+                 inner join taxa.taxa_levels l on t.
+                                                      level_id = l.level_id
         group by c.taxonomy_id, t.scientific_name, c.taxonomy_id, l.level_id, l.level_name;
 end
 $$;
 
 drop function if exists sample.fn_translation_rarefied_taxa;
 create or replace function sample.fn_translation_rarefied_taxa(p_sample_id int, p_translation_id int, p_fixed_count int)
-    returns setof rarefied_taxa_info
+    returns setof taxa_info
     language sql
     immutable
+    returns null on null input
 as
 $$
     -- This is the same query from fn_rarefied_taxa with the exception that it
@@ -627,9 +637,10 @@ from (
          from (
                   select ts.taxonomy_id, uuid_generate_v1() uid
                   from (
+                           -- Duplicates each row the number of times there are in the correct count
                            SELECT taxonomy_id,
-                                  corrected_count
-                           FROM sample.fn_sample_translation_taxa(p_sample_id, p_translation_id) t, generate_series(1, cast(round(t.corrected_count) as int))
+                                  abundance
+                           FROM sample.fn_sample_translation_taxa(p_sample_id, p_translation_id) t, generate_series(1, cast(round(t.abundance) as int))
                        ) ts
               ) ts
          order by uid

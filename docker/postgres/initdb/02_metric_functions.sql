@@ -44,191 +44,220 @@ from metric.metrics m
          left join metric.formulae f on m.formula_id = f.formula_id
 $$;
 
-drop function if exists metric.fn_richness;
-create or replace function metric.fn_richness(p_taxa metric_taxa[])
-    returns int
-    language sql
-    immutable
-    returns null on null input
-as
-$$
-select count(*)
-from (
-         select taxonomy_id
-         from unnest(p_taxa)
-         group by taxonomy_id
-     ) mt;
-$$;
-
-create or replace function metric.fn_sample_richness(p_sample_id int)
-    returns int
-    language sql
-    immutable
-    returns null on null input
-as
-$$
-select metric.fn_richness(
-               array_agg((taxonomy_id, split_count, lab_split, field_split, area)::metric_taxa))
-from sample.samples s
-         inner join sample.organisms o on s.sample_id = o.sample_id
-where s.sample_id = p_sample_id
-group by s.sample_id;
-$$;
-
-
-create or replace function metric.fn_taxa_abundance(p_sample_id int, p_taxonomy_id int)
+drop function if exists metric.fn_sample_richness;
+create or replace function metric.fn_sample_richness(p_metric_id int, p_sample_id int, p_translation_id int,
+                                                     p_fixed_count int)
     returns real
     language sql
     immutable
     returns null on null input
 as
 $$
-select metric.fn_abundance(sum(coalesce(split_count, 0)), lab_split, field_split, area) abundance
-from (
-         select taxonomy_id,
-                sum(split_count) split_count
-         from sample.organisms
-         where sample_id = p_sample_id
-         group by taxonomy_id
-     ) o
-         inner join lateral taxa.fn_tree(o.taxonomy_id) t
-                    on true
-         join
-     (
-         select area, lab_split, field_split from sample.samples where sample_id = p_sample_id
-     ) s on true
-where (t.taxonomy_id = p_taxonomy_id)
-group by lab_split, field_split, area;
+select metric.fn_calc_richness(
+               array_agg((p_sample_id, taxonomy_id, scientific_name, level_id, level_name, abundance)::taxa_info))::real
+from sample.fn_translation_rarefied_taxa(p_sample_id, p_translation_id, p_fixed_count);
 $$;
 
-create or replace function metric.fn_sample_abundance(p_sample_id int)
+create or replace function metric.fn_taxa_richness(p_metric_id int, p_sample_id int, p_translation_id int,
+                                                   p_fixed_count int)
     returns real
     language sql
     immutable
     returns null on null input
 as
 $$
-select metric.fn_abundance(sum(coalesce(split_count, 0)), lab_split, field_split, area)
-from sample.samples s
+select metric.fn_calc_richness(
+               array_agg((p_sample_id, t.taxonomy_id, scientific_name, level_id, level_name, abundance)::taxa_info))::real
+from (
+         -- Duplicate the rarefied taxa for all taxa up through the hierarchy
+         select tt.taxonomy_id, tt.scientific_name, tt.level_id, tt.level_name, st.abundance
+         from sample.fn_translation_rarefied_taxa(p_sample_id, p_translation_id, p_fixed_count) st
+                  join
+              taxa.fn_tree(taxonomy_id) tt on true
+     ) t
+         -- join the taxa to the metric taxa to filter to just the ones we want inner join
          inner join
-     sample.organisms o on s.sample_id = o.sample_id
-where s.sample_id = p_sample_id
-group by lab_split, field_split, area;
+     (
+         select taxonomy_id
+         from metric.metric_taxa
+         where metric_id = p_metric_id
+     ) mt
+     on t.taxonomy_id = mt.taxonomy_id;
 $$;
 
-create or replace function metric.fn_attribute_abundance(p_sample_id int, p_attribute_id int)
-    returns real
-    language sql
-    immutable
-as
-$$
-select metric.fn_abundance(coalesce(sum(split_count), 0),lab_split,field_split,area)
-from sample.samples s
-         inner join sample.organisms o on o.sample_id = s.sample_id
-         inner join taxa.taxa_attributes a on o.taxonomy_id = a.taxonomy_id
-where (s.sample_id = p_sample_id)
-  and (a.attribute_id = p_attribute_id)
-group by lab_split, field_split, area;
-$$;
 
-drop function if exists metric.fn_abundance;
-create or replace function metric.fn_abundance(split_count real, lab_split real, field_split real, area_sampled real)
+
+drop function if exists metric.fn_taxa_abundance;
+create or replace function metric.fn_taxa_abundance(p_metric_id int, p_sample_id int, p_translation_id int,
+                                                    p_fixed_count int)
     returns real
     language sql
     immutable
     returns null on null input
 as
 $$
-select (split_count * (1 / nullif(lab_split, 0)) * (1 / nullif(field_split, 0)) * (1 / nullif(area_sampled, 0)));
-$$;
-comment on function metric.fn_abundance is 'Abundance calculation taken from NAMC metric report spreadsheet.
- ( ([Split Count] * (100/[Lab Split])) + [Big_Rare Count]) *(100/[Field Split]) *(1/[Area Sampled])
-8 Jun 2021, Trip Armstrong requested removing big rare from this equation';
-
-create type metric_taxa as
-(
-    taxonomy_id  smallint,
-    split_count  real,
-    lab_split    real,
-    field_split  real,
-    area_sampled real
-);
-
-drop function if exists metric.fn_shannons_diversity;
-create or replace function metric.fn_shannons_diversity(p_taxa metric_taxa[])
-    returns real
-    language sql
-    immutable
-    returns null on null input
-as
-$$
-select -1 * sum(relative_abundance * ln(relative_abundance))
+select coalesce(sum(abundance), 0)
 from (
-         select (metric.fn_abundance(split_count, lab_split, field_split, area_sampled) /
-                 total_abundance) relative_abundance
-         from unnest(p_taxa) s,
-              (
-                  select sum(split_count) total_abundance
-                  from unnest(p_taxa)
-              ) t
-     ) ra;
+         -- select all the sample organisms and duplicate the abundance for each
+         -- taxa up the hierarchy
+         select tt.taxonomy_id, abundance
+         from sample.fn_sample_taxa_raw(Array [p_sample_id]) st
+                  join
+              taxa.fn_tree(taxonomy_id) tt on true
+     ) t
+         -- join the duplicated sample taxa to metric taxa and filter for
+         -- those taxa that exist in the metric
+         inner join
+     (
+         select taxonomy_id
+         from metric.metric_taxa
+         where metric_id = p_metric_id
+     ) mt
+     on t.taxonomy_id = mt.taxonomy_id;
 $$;
-comment on function metric.fn_shannons_diversity is 'Shannons Diversity Index.
--∑([Relative Abundance]taxa *ln([Relative Abundance]taxa))
-https://en.wikipedia.org/wiki/Diversity_index#Shannon_index';
+
+drop function if exists metric.fn_sample_abundance;
+create or replace function metric.fn_sample_abundance(p_metric_id int, p_sample_id int, p_translation_id int,
+                                                      p_fixed_count int)
+    returns real
+    language sql
+    immutable
+as
+$$
+select sum(abundance)
+from sample.fn_sample_taxa_raw(Array [p_sample_id]);
+$$;
+
+-- create or replace function metric.fn_attribute_abundance(p_sample_id int, p_attribute_id int)
+--     returns real
+--     language sql
+--     immutable
+-- as
+-- $$
+-- select metric.fn_abundance(coalesce(sum(split_count), 0), lab_split, field_split, area)
+-- from sample.samples s
+--          inner join sample.organisms o on o.sample_id = s.sample_id
+--          inner join taxa.taxa_attributes a on o.taxonomy_id = a.taxonomy_id
+-- where (s.sample_id = p_sample_id)
+--   and (a.attribute_id = p_attribute_id)
+-- group by lab_split, field_split, area;
+-- $$;
+
+-- create type metric_taxa as
+-- (
+--     taxonomy_id  smallint,
+--     split_count  real,
+--     lab_split    real,
+--     field_split  real,
+--     area_sampled real
+-- );
 
 drop function if exists metric.fn_sample_shannons_diversity;
-create or replace function metric.fn_sample_shannons_diversity(p_sample_id int)
+create or replace function metric.fn_sample_shannons_diversity(p_metric_id int, p_sample_id int, p_translation_id int,
+                                                               p_fixed_count int)
     returns real
     language sql
     immutable
     returns null on null input
 as
 $$
-select metric.fn_shannons_diversity(
-               array_agg((taxonomy_id, split_count, lab_split, field_split, area)::metric_taxa))
-from sample.samples s
-         inner join sample.organisms o on s.sample_id = o.sample_id
-where s.sample_id = p_sample_id
-group by s.sample_id;
+select metric.fn_calc_shannons_diversity(
+               array_agg((p_sample_id, taxonomy_id, scientific_name, level_id, level_name, abundance)::taxa_info))
+from sample.fn_translation_rarefied_taxa(p_sample_id, p_translation_id, p_fixed_count);
 $$;
 
-drop function if exists metric.fn_simpsons_diversity;
-create or replace function metric.fn_simpsons_diversity(p_taxa metric_taxa[])
+drop function metric.fn_sample_simpsons_diversity;
+create or replace function metric.fn_sample_simpsons_diversity(p_metric_id int, p_sample_id int, p_translation_id int,
+                                                               p_fixed_count int)
     returns real
     language sql
     immutable
     returns null on null input
 as
 $$
-
-select 1 - pow(sum(relative_abundance), 2)
-from (
-         select (metric.fn_abundance(split_count, lab_split, field_split, area_sampled) /
-                 total_abundance) relative_abundance
-         from unnest(p_taxa) s,
-              (
-                  select sum(split_count) total_abundance
-                  from unnest(p_taxa)
-              ) t
-     ) ra;
+select metric.fn_calc_simpsons_diversity(
+               array_agg((p_sample_id, taxonomy_id, scientific_name, level_id, level_name, abundance)::taxa_info))
+from sample.fn_translation_rarefied_taxa(p_sample_id, p_translation_id, p_fixed_count);
 $$;
-comment on function metric.fn_simpsons_diversity is 'Simpsons Diversity Index.
-    1 - [Simpsons Diversity] = 1 - ∑([Relative Abundance]taxa)2
-    https://en.wikipedia.org/wiki/Diversity_index#Simpson_index';
 
-
-create or replace function metric.fn_sample_simpsons_diversity(p_sample_id int)
+create or replace function metric.fn_sample_evenness(p_metric_id int, p_sample_id int, p_translation_id int,
+                                                     p_fixed_count int)
     returns real
     language sql
     immutable
     returns null on null input
 as
 $$
-select metric.fn_simpsons_diversity(
-               array_agg((taxonomy_id, split_count, lab_split, field_split, area)::metric_taxa))
-from sample.samples s
-         inner join sample.organisms o on s.sample_id = o.sample_id
-where s.sample_id = p_sample_id
-group by s.sample_id;
+select metric.fn_calc_shannons_diversity(
+               array_agg((p_sample_id, taxonomy_id, scientific_name, level_id, level_name, abundance)::taxa_info))
+           / ln(metric.fn_calc_richness(
+            array_agg((p_sample_id, taxonomy_id, scientific_name, level_id, level_name, abundance)::taxa_info)))
+from sample.fn_translation_rarefied_taxa(p_sample_id, p_translation_id, p_fixed_count); k$$;
+
+-- drop function if exists metric.fn_sample_taxa;
+-- create or replace function metric.fn_sample_taxa(p_sample_id int, p_translation_id int, p_fixed_count int)
+--     returns setof taxa_info
+--     language plpgsql
+-- as
+-- $$
+--     declare p_rarefaction_id int;
+-- begin
+--     if (p_translation_id IS NULL) then
+--         return query select * from sample.fn_sample_taxa_raw(Array[p_sample_id]);
+--     else
+--         if (p_fixed_count IS NULL) then
+--             return query select * FROM sample.fn_sample_translation_taxa(p_sample_id, p_translation_id);
+--         else
+--             return query select * from sample.fn_translation_rarefied_taxa(p_sample_id, p_translation_id, p_fixed_count);
+--         end if;
+--     end if;
+-- end;
+-- $$;
+
+drop type metric_result;
+create type metric_result as
+(
+    group_id     smallint,
+    group_name   varchar(255),
+    metric_id    smallint,
+    metric_name  varchar(255),
+    metric_value real
+);
+
+drop function if exists metric.run_metric;
+create or replace function metric.run_metric(p_metric_id int, p_metric_function text,
+                                             p_sample_id int, p_translation_id int, p_fixed_count int)
+    returns setof real
+    language plpgsql
+as
+$$
+begin
+    return query execute format('select %s(%L::int, %L::int, %L::int, %L::int)',
+                                p_metric_function,
+                                p_metric_id,
+                                p_sample_id,
+                                p_translation_id,
+                                p_fixed_count);
+end
+$$;
+
+drop function if exists metric.sample_metrics;
+create or replace function metric.sample_metrics(p_sample_id int, p_translation_id int, p_fixed_count int)
+    returns setof metric_result
+    language sql
+as
+$$
+select g.group_id,
+       g.group_name,
+       m.metric_id,
+       m.metric_name,
+       metric.run_metric(metric_id::int,
+                         m.display_text,
+                         p_sample_id,
+                         p_translation_id,
+                         p_fixed_count) metric_value
+from metric.metrics m
+         inner join metric.metric_groups g on m.group_id = g.group_id
+where is_active = true
+order by g.sort_order;
 $$;
