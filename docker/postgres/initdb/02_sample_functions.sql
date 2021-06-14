@@ -249,6 +249,16 @@ create type taxa_info as
 comment on type taxa_info is 'This type is reused as the basic structure of information returned
     where requesting taxonomic information about a sample.';
 
+create type taxa_info2 as
+(
+    taxonomy_id     smallint,
+    scientific_name varchar(255),
+    level_id        smallint,
+    level_name      varchar(50),
+    abundance       real
+);
+
+
 
 drop function if exists sample.fn_projects;
 create or replace function sample.fn_projects(p_limit int, p_offset int)

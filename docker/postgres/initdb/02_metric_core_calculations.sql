@@ -14,7 +14,7 @@
  */
 
 drop function if exists metric.fn_richness;
-create or replace function metric.fn_calc_richness(p_taxa taxa_info[])
+create or replace function metric.fn_calc_richness(p_taxa taxa_info2[])
     returns int
     language sql
     immutable
@@ -54,7 +54,7 @@ comment on function metric.fn_calc_abundance is 'Abundance calculation taken fro
  */
 
 drop function if exists metric.fn_calc_shannons_diversity;
-create or replace function metric.fn_calc_shannons_diversity(p_taxa taxa_info[])
+create or replace function metric.fn_calc_shannons_diversity(p_taxa taxa_info2[])
     returns real
     language sql
     immutable
@@ -79,7 +79,7 @@ https://en.wikipedia.org/wiki/Diversity_index#Shannon_index';
  */
 
 drop function if exists metric.fn_calc_simpsons_diversity;
-create or replace function metric.fn_calc_simpsons_diversity(p_taxa taxa_info[])
+create or replace function metric.fn_calc_simpsons_diversity(p_taxa taxa_info2[])
     returns real
     language sql
     immutable
