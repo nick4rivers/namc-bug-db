@@ -76,7 +76,7 @@ $$;
 drop function if exists sample.fn_create_project(varchar(255), boolean, smallint, text, json);
 create or replace function sample.fn_create_project(p_project_name varchar(255), p_is_private bool,
                                                     p_contact_id smallint, p_description text, p_metadata json)
-    returns int
+    returns smallint
     language sql
 as
 $$
@@ -87,7 +87,7 @@ $$;
 
 drop function if exists sample.add_project_samples;
 CREATE or replace function sample.add_project_samples(p_project_id int, p_sample_ids int[])
-    returns int
+    returns bigint
     language sql
 as
 $$
@@ -105,7 +105,7 @@ where project_id = p_project_id;
 $$;
 
 create or replace function sample.add_project_boxes(p_project_id int, p_box_ids int[])
-    returns int
+    returns bigint
     language sql
 as
 $$
@@ -123,7 +123,7 @@ where project_id = p_project_id;
 $$;
 
 create or replace function sample.remove_project_samples(p_project_id int, p_sample_ids int[])
-    returns int
+    returns bigint
     language sql
 as
 $$

@@ -47,7 +47,7 @@ $$;
 /********************************************************************************************************************
   ENTRY POINT FUNCTIONS
 */
-drop type metric_result;
+-- drop type metric_result;
 create type metric_result as
 (
     group_id     smallint,
@@ -93,256 +93,6 @@ from metric.metrics m
          inner join metric.metric_groups g on m.group_id = g.group_id
 where is_active = true
 order by g.sort_order;
-$$;
-
-/********************************************************************************************************************
-  ABUNDANCE
-*/
-drop function if exists metric.sample_abundance;
-create or replace function metric.fn_sample_abundance(p_metric_id int, p_sample_id int, p_translation_id int,
-                                                      p_fixed_count int)
-    returns real
-    language sql
-    immutable
-    returns null on null input
-as
-$$
-select sum(abundance)
-from unnest(metric.fn_load_sample_taxa(p_sample_id));
-$$;
-
-drop function if exists metric.fn_taxa_abundance;
-create or replace function metric.fn_taxa_abundance(p_metric_id int, p_sample_id int, p_translation_id int,
-                                                    p_fixed_count int)
-    returns real
-    language sql
-    immutable
-    returns null on null input
-as
-$$
-select sum(abundance)
-from unnest(metric.fn_filter_taxa_by_taxa(metric.fn_load_sample_taxa(p_sample_id), p_metric_id));
-$$;
-
-
-drop function if exists metric.fn_attribute_abundance;
-create or replace function metric.fn_attribute_abundance(p_metric_id int, p_sample_id int, p_translation_id int,
-                                                         p_fixed_count int)
-    returns real
-    language sql
-    immutable
-    returns null on null input
-as
-$$
-select sum(abundance)
-from unnest(metric.fn_filter_taxa_by_attribute(metric.fn_load_sample_taxa(p_sample_id), p_metric_id));
-$$;
-
-
-
-drop function if exists metric.fn_exclude_taxa_abundance;
-create or replace function metric.fn_exclude_taxa_abundance(p_metric_id int, p_sample_id int, p_translation_id int,
-                                                            p_fixed_count int)
-    returns real
-    language sql
-    immutable
-    returns null on null input
-as
-$$
-    -- Sample abundance - abundance of selected taxa;
-select metric.fn_sample_abundance(p_metric_id, p_sample_id, p_translation_id, p_fixed_count)
-           - metric.fn_taxa_abundance(p_metric_id, p_sample_id, p_translation_id, p_fixed_count);
-$$;
-
-/********************************************************************************************************************
-  RICHNESS
-*/
-
-drop function if exists metric.sample_richness;
-create or replace function metric.fn_sample_richness(p_metric_id int, p_sample_id int, p_translation_id int,
-                                                     p_fixed_count int)
-    returns real
-    language sql
-    immutable
-    returns null on null input
-as
-$$
-select metric.fn_calc_richness(
-               metric.fn_load_rarefied_taxa(p_sample_id, p_translation_id, p_fixed_count));
-$$;
-
-drop function if exists metric.taxa_richness;
-create or replace function metric.fn_taxa_richness(p_metric_id int, p_sample_id int, p_translation_id int,
-                                                   p_fixed_count int)
-    returns real
-    language sql
-    immutable
-    returns null on null input
-as
-$$
-select metric.fn_calc_richness(
-               metric.fn_filter_taxa_by_taxa(
-                       metric.fn_load_rarefied_taxa(
-                               p_sample_id,
-                               p_translation_id,
-                               p_fixed_count),
-                       p_metric_id));
-$$;
-
-drop function if exists metric.attribute_richness;
-create or replace function metric.fn_attribute_richness(p_metric_id int, p_sample_id int, p_translation_id int,
-                                                        p_fixed_count int)
-    returns real
-    language sql
-    immutable
-    returns null on null input
-as
-$$
-select metric.fn_calc_richness(
-               metric.fn_filter_taxa_by_attribute(
-                       metric.fn_load_rarefied_taxa(
-                               p_sample_id,
-                               p_translation_id,
-                               p_fixed_count),
-                       p_metric_id));
-$$;
-
-
-create or replace function metric.fn_exclude_taxa_richness(p_metric_id int, p_sample_id int, p_translation_id int,
-                                                           p_fixed_count int)
-    returns real
-    language sql
-    immutable
-    returns null on null input
-as
-$$
-    -- Total sample richness - taxa richness;
-select metric.fn_sample_richness(p_metric_id, p_sample_id, p_translation_id, p_fixed_count)
-           - metric.fn_taxa_richness(p_metric_id, p_sample_id, p_translation_id, p_fixed_count);
-$$;
-
-/********************************************************************************************************************
-  SHANNON'S DIVERSITY
-*/
-drop function if exists metric.fn_shannons_diversity;
-create or replace function metric.fn_shannons_diversity(p_metric_id int, p_sample_id int, p_translation_id int,
-                                                        p_fixed_count int)
-    returns real
-    language sql
-    immutable
-    returns null on null input
-as
-$$
-select metric.fn_calc_shannons_diversity(
-               metric.fn_load_rarefied_taxa(
-                       p_sample_id,
-                       p_translation_id,
-                       p_fixed_count));
-$$;
-
-/********************************************************************************************************************
-  SIMPSON'S DIVERSITY
-*/
-drop function if exists metric.fn_simpsons_diversity;
-create or replace function metric.fn_simpsons_diversity(p_metric_id int, p_sample_id int, p_translation_id int,
-                                                        p_fixed_count int)
-    returns real
-    language sql
-    immutable
-    returns null on null input
-as
-$$
-select metric.fn_calc_simpsons_diversity(
-               metric.fn_load_rarefied_taxa(
-                       p_sample_id,
-                       p_translation_id,
-                       p_fixed_count));
-$$;
-
-/********************************************************************************************************************
-  EVENNESS
-*/
-drop function if exists metric.fn_evenness;
-create or replace function metric.fn_evenness(p_metric_id int, p_sample_id int, p_translation_id int,
-                                              p_fixed_count int)
-    returns real
-    language plpgsql
-    immutable
-    returns null on null input
-as
-$$
-declare
-    taxa   taxa_info2[];
-    result real;
-begin
-    taxa = metric.fn_load_rarefied_taxa(p_sample_id, p_translation_id, p_fixed_count);
-    select metric.fn_calc_shannons_diversity(taxa) / ln(metric.fn_calc_richness(taxa)) into result;
-    return result;
-end
-$$;
-
-/********************************************************************************************************************
-  DOMINANCE
-*/
-
-create or replace function metric.fn_dominant_family(p_metric_id int, p_sample_id int, p_translation_id int,
-                                                     p_fixed_count int)
-    returns text
-    language sql
-    immutable
-    returns null on null input
-as
-$$
--- level_id 19 = family
-select scientific_name
-from unnest(metric.fn_filter_taxa_by_level(metric.fn_load_sample_taxa(p_sample_id), 19))
-order by abundance DESC
-limit 1;
-$$;
-
-create or replace function metric.fn_dominant_family_abundance(p_metric_id int, p_sample_id int, p_translation_id int,
-                                                               p_fixed_count int)
-    returns real
-    language sql
-    immutable
-    returns null on null input
-as
-$$
--- level_id 19 = family
-select abundance
-from unnest(metric.fn_filter_taxa_by_level(metric.fn_load_sample_taxa(p_sample_id), 19))
-order by abundance DESC
-limit 1;
-$$;
-
-drop function if exists metric.fn_dominant_taxa;
-create or replace function metric.fn_dominant_taxa(p_metric_id int, p_sample_id int, p_translation_id int,
-                                                   p_fixed_count int)
-    returns text
-    language sql
-    immutable
-    returns null on null input
-as
-$$
-select scientific_name
-from unnest(metric.fn_load_sample_taxa(p_sample_id))
-order by abundance DESC
-limit 1;
-$$;
-
-drop function if exists metric.fn_dominant_taxa_abundance;
-create or replace function metric.fn_dominant_taxa_abundance(p_metric_id int, p_sample_id int, p_translation_id int,
-                                                             p_fixed_count int)
-    returns real
-    language sql
-    immutable
-    returns null on null input
-as
-$$
-select abundance
-from unnest(metric.fn_load_sample_taxa(p_sample_id))
-order by abundance DESC
-limit 1;
 $$;
 
 /********************************************************************************************************************
@@ -441,4 +191,255 @@ from (
          where level_id = p_level_id
          group by t2.taxonomy_id, t2.scientific_name, t2.level_id, t2.level_name
      ) ta
+$$;
+
+
+/********************************************************************************************************************
+  ABUNDANCE
+*/
+drop function if exists metric.sample_abundance;
+create or replace function metric.fn_sample_abundance(p_metric_id int, p_sample_id int, p_translation_id int,
+                                                      p_fixed_count int)
+    returns real
+    language sql
+    immutable
+    returns null on null input
+as
+$$
+select sum(abundance)
+from unnest(metric.fn_load_sample_taxa(p_sample_id));
+$$;
+
+drop function if exists metric.fn_taxa_abundance;
+create or replace function metric.fn_taxa_abundance(p_metric_id int, p_sample_id int, p_translation_id int,
+                                                    p_fixed_count int)
+    returns real
+    language sql
+    immutable
+    returns null on null input
+as
+$$
+select sum(abundance)
+from unnest(metric.fn_filter_taxa_by_taxa(metric.fn_load_sample_taxa(p_sample_id), p_metric_id));
+$$;
+
+
+drop function if exists metric.fn_attribute_abundance;
+create or replace function metric.fn_attribute_abundance(p_metric_id int, p_sample_id int, p_translation_id int,
+                                                         p_fixed_count int)
+    returns real
+    language sql
+    immutable
+    returns null on null input
+as
+$$
+select sum(abundance)
+from unnest(metric.fn_filter_taxa_by_attribute(metric.fn_load_sample_taxa(p_sample_id), p_metric_id));
+$$;
+
+
+
+drop function if exists metric.fn_exclude_taxa_abundance;
+create or replace function metric.fn_exclude_taxa_abundance(p_metric_id int, p_sample_id int, p_translation_id int,
+                                                            p_fixed_count int)
+    returns real
+    language sql
+    immutable
+    returns null on null input
+as
+$$
+    -- Sample abundance - abundance of selected taxa;
+select metric.fn_sample_abundance(p_metric_id, p_sample_id, p_translation_id, p_fixed_count)
+           - metric.fn_taxa_abundance(p_metric_id, p_sample_id, p_translation_id, p_fixed_count);
+$$;
+
+/********************************************************************************************************************
+  RICHNESS
+*/
+
+drop function if exists metric.sample_richness;
+create or replace function metric.fn_sample_richness(p_metric_id int, p_sample_id int, p_translation_id int,
+                                                     p_fixed_count int)
+    returns bigint
+    language sql
+    immutable
+    returns null on null input
+as
+$$
+select metric.fn_calc_richness(
+               metric.fn_load_rarefied_taxa(p_sample_id, p_translation_id, p_fixed_count));
+$$;
+
+drop function if exists metric.taxa_richness;
+create or replace function metric.fn_taxa_richness(p_metric_id int, p_sample_id int, p_translation_id int,
+                                                   p_fixed_count int)
+    returns bigint
+    language sql
+    immutable
+    returns null on null input
+as
+$$
+select metric.fn_calc_richness(
+               metric.fn_filter_taxa_by_taxa(
+                       metric.fn_load_rarefied_taxa(
+                               p_sample_id,
+                               p_translation_id,
+                               p_fixed_count),
+                       p_metric_id));
+$$;
+
+drop function if exists metric.attribute_richness;
+create or replace function metric.fn_attribute_richness(p_metric_id int, p_sample_id int, p_translation_id int,
+                                                        p_fixed_count int)
+    returns bigint
+    language sql
+    immutable
+    returns null on null input
+as
+$$
+select metric.fn_calc_richness(
+               metric.fn_filter_taxa_by_attribute(
+                       metric.fn_load_rarefied_taxa(
+                               p_sample_id,
+                               p_translation_id,
+                               p_fixed_count),
+                       p_metric_id));
+$$;
+
+
+create or replace function metric.fn_exclude_taxa_richness(p_metric_id int, p_sample_id int, p_translation_id int,
+                                                           p_fixed_count int)
+    returns bigint
+    language sql
+    immutable
+    returns null on null input
+as
+$$
+    -- Total sample richness - taxa richness;
+select metric.fn_sample_richness(p_metric_id, p_sample_id, p_translation_id, p_fixed_count)
+           - metric.fn_taxa_richness(p_metric_id, p_sample_id, p_translation_id, p_fixed_count);
+$$;
+
+/********************************************************************************************************************
+  SHANNON'S DIVERSITY
+*/
+drop function if exists metric.fn_shannons_diversity;
+create or replace function metric.fn_shannons_diversity(p_metric_id int, p_sample_id int, p_translation_id int,
+                                                        p_fixed_count int)
+    returns double precision
+    language sql
+    immutable
+    returns null on null input
+as
+$$
+select metric.fn_calc_shannons_diversity(
+               metric.fn_load_rarefied_taxa(
+                       p_sample_id,
+                       p_translation_id,
+                       p_fixed_count));
+$$;
+
+/********************************************************************************************************************
+  SIMPSON'S DIVERSITY
+*/
+drop function if exists metric.fn_simpsons_diversity;
+create or replace function metric.fn_simpsons_diversity(p_metric_id int, p_sample_id int, p_translation_id int,
+                                                        p_fixed_count int)
+    returns double precision
+    language sql
+    immutable
+    returns null on null input
+as
+$$
+select metric.fn_calc_simpsons_diversity(
+               metric.fn_load_rarefied_taxa(
+                       p_sample_id,
+                       p_translation_id,
+                       p_fixed_count));
+$$;
+
+/********************************************************************************************************************
+  EVENNESS
+*/
+drop function if exists metric.fn_evenness;
+create or replace function metric.fn_evenness(p_metric_id int, p_sample_id int, p_translation_id int,
+                                              p_fixed_count int)
+    returns real
+    language plpgsql
+    immutable
+    returns null on null input
+as
+$$
+declare
+    taxa   taxa_info2[];
+    result real;
+begin
+    taxa = metric.fn_load_rarefied_taxa(p_sample_id, p_translation_id, p_fixed_count);
+    select metric.fn_calc_shannons_diversity(taxa) / ln(metric.fn_calc_richness(taxa)) into result;
+    return result;
+end
+$$;
+
+/********************************************************************************************************************
+  DOMINANCE
+*/
+
+create or replace function metric.fn_dominant_family(p_metric_id int, p_sample_id int, p_translation_id int,
+                                                     p_fixed_count int)
+    returns text
+    language sql
+    immutable
+    returns null on null input
+as
+$$
+-- level_id 19 = family
+select scientific_name
+from unnest(metric.fn_filter_taxa_by_level(metric.fn_load_sample_taxa(p_sample_id), 19))
+order by abundance DESC
+limit 1;
+$$;
+
+create or replace function metric.fn_dominant_family_abundance(p_metric_id int, p_sample_id int, p_translation_id int,
+                                                               p_fixed_count int)
+    returns real
+    language sql
+    immutable
+    returns null on null input
+as
+$$
+-- level_id 19 = family
+select abundance
+from unnest(metric.fn_filter_taxa_by_level(metric.fn_load_sample_taxa(p_sample_id), 19))
+order by abundance DESC
+limit 1;
+$$;
+
+drop function if exists metric.fn_dominant_taxa;
+create or replace function metric.fn_dominant_taxa(p_metric_id int, p_sample_id int, p_translation_id int,
+                                                   p_fixed_count int)
+    returns text
+    language sql
+    immutable
+    returns null on null input
+as
+$$
+select scientific_name
+from unnest(metric.fn_load_sample_taxa(p_sample_id))
+order by abundance DESC
+limit 1;
+$$;
+
+drop function if exists metric.fn_dominant_taxa_abundance;
+create or replace function metric.fn_dominant_taxa_abundance(p_metric_id int, p_sample_id int, p_translation_id int,
+                                                             p_fixed_count int)
+    returns real
+    language sql
+    immutable
+    returns null on null input
+as
+$$
+select abundance
+from unnest(metric.fn_load_sample_taxa(p_sample_id))
+order by abundance DESC
+limit 1;
 $$;

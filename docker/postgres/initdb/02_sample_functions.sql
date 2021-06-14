@@ -236,7 +236,7 @@ begin
 end
 $$;
 
-drop type taxa_info;
+-- drop type taxa_info;
 create type taxa_info as
 (
     sample_id       int,
@@ -248,15 +248,6 @@ create type taxa_info as
 );
 comment on type taxa_info is 'This type is reused as the basic structure of information returned
     where requesting taxonomic information about a sample.';
-
-create type taxa_info2 as
-(
-    taxonomy_id     smallint,
-    scientific_name varchar(255),
-    level_id        smallint,
-    level_name      varchar(50),
-    abundance       real
-);
 
 
 
@@ -325,9 +316,9 @@ ORDER BY s.sample_id
 LIMIT p_limit OFFSET p_offset;
 $$;
 
-drop function sample.fn_corrected_count;
+drop function if exists sample.fn_corrected_count;
 create or replace function sample.fn_corrected_count(split_count real, lab_split real, field_split real)
-    returns real
+    returns double precision
     language sql
     immutable
     returns null on null input
@@ -641,7 +632,7 @@ select p_sample_id,
        t.scientific_name,
        l.level_id,
        l.level_name,
-       count(*)
+       count(*)::real
 from (
          select ts.taxonomy_id
          from (

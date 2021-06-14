@@ -1,21 +1,19 @@
--- create type metric_taxa as
--- (
---     taxonomy_id  smallint,
---     split_count  real,
---     lab_split    real,
---     field_split  real,
---     area_sampled real
--- );
--- comment on type metric_taxa is 'basic set of data required to calculate metrics.
--- The taxonomy_id and split_count come from sample.organisms while the lab_split
--- field_split and area_sampled are from sample.samples';
+
+create type taxa_info2 as
+(
+    taxonomy_id     smallint,
+    scientific_name varchar(255),
+    level_id        smallint,
+    level_name      varchar(50),
+    abundance       real
+);
 /*
  ******************************************************************************************************************
  */
 
-drop function if exists metric.fn_richness;
+drop function if exists metric.fn_calc_richness;
 create or replace function metric.fn_calc_richness(p_taxa taxa_info2[])
-    returns int
+    returns bigint
     language sql
     immutable
     returns null on null input
@@ -37,7 +35,7 @@ comment on function metric.fn_calc_richness is
  */
 drop function if exists metric.fn_calc_abundance;
 create or replace function metric.fn_calc_abundance(split_count real, lab_split real, field_split real, area_sampled real)
-    returns real
+    returns double precision
     language sql
     immutable
     returns null on null input
@@ -55,7 +53,7 @@ comment on function metric.fn_calc_abundance is 'Abundance calculation taken fro
 
 drop function if exists metric.fn_calc_shannons_diversity;
 create or replace function metric.fn_calc_shannons_diversity(p_taxa taxa_info2[])
-    returns real
+    returns double precision
     language sql
     immutable
     returns null on null input
@@ -80,7 +78,7 @@ https://en.wikipedia.org/wiki/Diversity_index#Shannon_index';
 
 drop function if exists metric.fn_calc_simpsons_diversity;
 create or replace function metric.fn_calc_simpsons_diversity(p_taxa taxa_info2[])
-    returns real
+    returns double precision
     language sql
     immutable
     returns null on null input
