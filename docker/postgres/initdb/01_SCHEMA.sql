@@ -1436,6 +1436,7 @@ CREATE TABLE metric.metrics
     is_standardized   BOOLEAN,
     is_active         BOOLEAN             NOT NULL DEFAULT TRUE,
     perturb_direction PERTURBATION_DIRECTIONS,
+    code_function     TEXT,
     description       TEXT,
     metadata          JSON,
 
@@ -1469,8 +1470,9 @@ CREATE TABLE metric.metric_attributes
 (
     metric_id    SMALLINT NOT NULL,
     attribute_id INT      NOT NULL,
+    where_clause text     NOT NULL,
 
-    CONSTRAINT pk_metric_metric_attributes PRIMARY KEY (metric_id, attribute_id),
+    CONSTRAINT pk_metric_metric_attributes PRIMARY KEY (metric_id, attribute_id, where_clause),
     CONSTRAINT fk_metric_metric_attributes_metric_id FOREIGN KEY (metric_id) REFERENCES metric.metrics (metric_id) ON DELETE CASCADE,
     CONSTRAINT fk_metric_metric_attributes_attribute_id FOREIGN KEY (attribute_id) REFERENCES taxa.attributes (attribute_id) ON DELETE CASCADE
 );
