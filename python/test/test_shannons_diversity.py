@@ -8,8 +8,8 @@ def test_calc_shannons_diversity(cursor):
 
     # -1 * ((100/300) * ln(100/300)) + (200/300) * ln(200/300)))
     cursor.execute("""select * from metric.fn_calc_shannons_diversity(Array[
-        (100,10,1,1,1)::metric_taxa,
-        (200,20,1,1,1)::metric_taxa
+        (1, 'taxa 1',1,'level a',100)::taxa_info2,
+        (2, 'taxa 2',1,'level b',200)::taxa_info2
         ])""")
     assert cursor.fetchone()[0] == pytest.approx(0.63651, 0.001)
 

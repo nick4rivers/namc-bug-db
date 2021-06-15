@@ -216,6 +216,11 @@ def abundance(cursor):
 
         insert_organism_by_name(cursor, sample_id, 'Test Phylum A', 10, 0)
         insert_organism_by_name(cursor, sample_id, 'Test Class AA', 10, 0)
+        insert_organism_by_name(cursor, sample_id, 'Test Class AA', 30, 0)
+        insert_organism_by_name(cursor, sample_id, 'Test Order AAA', 1, 0)
+        insert_organism_by_name(cursor, sample_id, 'Test Order ABA', 1, 0)
+        insert_organism_by_name(cursor, sample_id, 'Test Order BBA', 1, 0)
+        insert_organism_by_name(cursor, sample_id, 'Test Order BBB', 1, 0)
 
     # Insert a sample with no organisms
     insert_test_sample(cursor, 'customer with sample containing no organisms', None)
