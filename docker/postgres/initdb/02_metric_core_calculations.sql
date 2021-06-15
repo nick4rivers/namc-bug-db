@@ -65,7 +65,7 @@ from (
      ) taxa
          join
      (
-         select sum(abundance) total_abundance from unnest(p_taxa)
+         select sum(abundance)::double precision total_abundance from unnest(p_taxa)
      ) total on true;
 $$;
 comment on function metric.fn_calc_shannons_diversity is 'Shannons Diversity Index.
