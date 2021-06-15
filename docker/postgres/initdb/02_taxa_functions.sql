@@ -89,7 +89,7 @@ begin
          */
         SELECT cast(p_taxonomy_id as smallint),
                tt.taxonomy_id,
-               tt.translation_taxonomy_name,
+               coalesce(tt.alias, t.scientific_name),
                l.level_id,
                l.level_name
         FROM taxa.fn_tree(cast(p_taxonomy_id as smallint)) t

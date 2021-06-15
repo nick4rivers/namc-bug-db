@@ -47,30 +47,33 @@ $$;
 /********************************************************************************************************************
   ENTRY POINT FUNCTIONS
 */
--- drop type metric_result;
+drop type metric_result;
 create type metric_result as
 (
     group_id     smallint,
     group_name   varchar(255),
     metric_id    smallint,
     metric_name  varchar(255),
-    metric_value real
+    metric_value text
 );
 
 drop function if exists metric.run_metric;
 create or replace function metric.run_metric(p_metric_id int, p_metric_function text,
                                              p_sample_id int, p_translation_id int, p_fixed_count int)
-    returns setof real
+    returns text
     language plpgsql
 as
 $$
+declare
+    result text;
 begin
-    return query execute format('select %s(%L::int, %L::int, %L::int, %L::int)',
-                                p_metric_function,
-                                p_metric_id,
-                                p_sample_id,
-                                p_translation_id,
-                                p_fixed_count);
+    execute format('select %s(%L::int, %L::int, %L::int, %L::int)::text',
+                   p_metric_function,
+                   p_metric_id,
+                   p_sample_id,
+                   p_translation_id,
+                   p_fixed_count) into result;
+    return result;
 end
 $$;
 
@@ -85,13 +88,15 @@ select g.group_id,
        m.metric_id,
        m.metric_name,
        metric.run_metric(metric_id::int,
-                         m.display_text,
+                         m.code_function,
                          p_sample_id,
                          p_translation_id,
-                         p_fixed_count) metric_value
+                         p_fixed_count)
 from metric.metrics m
-         inner join metric.metric_groups g on m.group_id = g.group_id
-where is_active = true
+         inner join metric.metric_groups g
+                    on m.group_id = g.group_id
+where (is_active = true)
+  and (code_function is not null)
 order by g.sort_order;
 $$;
 
@@ -372,9 +377,15 @@ as
 $$
 declare
     taxa   taxa_info2[];
+    richness bigint;
     result real;
 begin
     taxa = metric.fn_load_rarefied_taxa(p_sample_id, p_translation_id, p_fixed_count);
+    richness = metric.fn_calc_richness(taxa);
+    if (richness <= 1) then
+        return 0;
+    end if;
+
     select metric.fn_calc_shannons_diversity(taxa) / ln(metric.fn_calc_richness(taxa)) into result;
     return result;
 end

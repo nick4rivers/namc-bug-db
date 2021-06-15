@@ -236,7 +236,7 @@ begin
 end
 $$;
 
--- drop type taxa_info;
+drop type taxa_info;
 create type taxa_info as
 (
     sample_id       int,
@@ -244,7 +244,7 @@ create type taxa_info as
     scientific_name varchar(255),
     level_id        smallint,
     level_name      varchar(50),
-    abundance       real
+    abundance       double precision
 );
 comment on type taxa_info is 'This type is reused as the basic structure of information returned
     where requesting taxonomic information about a sample.';
