@@ -163,8 +163,7 @@
       "{env:MS_USER}",
       "{env:MS_PASSWORD}",
      ]
-  } ,
-  ,
+  },
   {
     "name": "Build Translation Taxa SQL",
     "type": "python",
@@ -178,6 +177,17 @@
       "/Users/philip/code/bugdb/namc-bug-db/docker/postgres/initdb/10_taxa_translations.sql",
       "data/translation_taxa.csv",
       "/Users/philip/code/bugdb/namc-bug-db/docker/postgres/initdb/30_translation_taxa.sql"
+     ]
+  } ,
+  {
+    // Export the curated SQLite to SQL files for incorporation into the postgres database
+    "name": "Export Taxonomy SQLite",
+    "type": "python",
+    "request": "launch",
+    "module": "scripts.sqlite_taxa.export_sqlite_taxa",
+    "console": "integratedTerminal",
+    "args": [
+      "/Users/philip/GNAR/NARDrive/Projects/BugDatabase/client_files/2021_06_16_taxonomy_andrew/2021_06_16_1423_namc_taxa.sqlite"
      ]
   } 
 ]

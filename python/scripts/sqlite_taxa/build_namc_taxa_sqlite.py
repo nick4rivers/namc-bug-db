@@ -1,3 +1,6 @@
+"""Creates and populates a SQLite database with the taxonomic information
+    from PilotDB.
+    """
 import os
 import argparse
 import sqlite3
