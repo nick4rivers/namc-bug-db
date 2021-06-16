@@ -500,6 +500,7 @@ CREATE TABLE taxa.taxonomy
     author          VARCHAR(255),
     year            SMALLINT,
     notes           TEXT,
+    metadata        JSON,
     created_date    TIMESTAMPTZ  NOT NULL DEFAULT now(),
     updated_date    TIMESTAMPTZ  NOT NULL DEFAULT now(),
 
