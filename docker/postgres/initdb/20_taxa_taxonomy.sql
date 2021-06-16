@@ -5661,7 +5661,7 @@ insert into taxa.taxonomy (taxonomy_id, scientific_name, level_id, parent_id, au
 insert into taxa.taxonomy (taxonomy_id, scientific_name, level_id, parent_id, author, year, notes, metadata) values (6085, 'Monoporeia', 23, 4501, NULL, NULL, NULL, '{"status": "Verified"}');
 insert into taxa.taxonomy (taxonomy_id, scientific_name, level_id, parent_id, author, year, notes, metadata) values (6086, 'Microprosopa', 23, 2416, NULL, NULL, NULL, '{"status": "Verified"}');
 insert into taxa.taxonomy (taxonomy_id, scientific_name, level_id, parent_id, author, year, notes, metadata) values (6087, 'Rheotanytarsus exiguus group', 25, 1105, NULL, NULL, NULL, '{"status": "Verified"}');
-insert into taxa.taxonomy (taxonomy_id, scientific_name, level_id, parent_id, author, year, notes, metadata) values (6088, 'Animalia', 1, None, NULL, NULL, NULL, '{"status": "Delete"}');
+insert into taxa.taxonomy (taxonomy_id, scientific_name, level_id, parent_id, author, year, notes, metadata) values (6088, 'Animalia', 1, NULL, NULL, NULL, NULL, '{"status": "Delete"}');
 insert into taxa.taxonomy (taxonomy_id, scientific_name, level_id, parent_id, author, year, notes, metadata) values (6089, 'Crocothemis', 23, 396, NULL, NULL, NULL, '{"status": "Verified"}');
 insert into taxa.taxonomy (taxonomy_id, scientific_name, level_id, parent_id, author, year, notes, metadata) values (6090, 'Erythrodiplax', 23, 396, NULL, NULL, NULL, '{"status": "Verified"}');
 insert into taxa.taxonomy (taxonomy_id, scientific_name, level_id, parent_id, author, year, notes, metadata) values (6091, 'Miathyria', 23, 396, NULL, NULL, NULL, '{"status": "Verified"}');
