@@ -47,7 +47,7 @@ $$;
 /********************************************************************************************************************
   ENTRY POINT FUNCTIONS
 */
-drop type metric_result;
+-- drop type metric_result;
 create type metric_result as
 (
     group_id     smallint,
