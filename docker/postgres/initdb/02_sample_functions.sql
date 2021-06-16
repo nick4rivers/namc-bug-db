@@ -36,6 +36,30 @@ create type sample_info_type as
     metadata              text
 );
 
+-- drop type taxa_info;
+create type taxa_info as
+(
+    sample_id       int,
+    taxonomy_id     smallint,
+    scientific_name varchar(255),
+    level_id        smallint,
+    level_name      varchar(50),
+    abundance       double precision
+);
+comment on type taxa_info is 'This type is reused as the basic structure of information returned
+    where requesting taxonomic information about a sample.';
+
+
+-- create type rarefied_taxa_info as
+-- (
+--     sample_id       int,
+--     taxonomy_id     smallint,
+--     scientific_name varchar(2550),
+--     level_id        smallint,
+--     level_name      varchar(50),
+--     organism_count  bigint
+-- );
+
 
 drop function if exists sample.fn_sample_info;
 create or replace function sample.fn_sample_info(p_sample_id int)
@@ -235,21 +259,6 @@ begin
                  inner join sample.mass_methods mm on m.mass_method_id = mm.mass_method_id;
 end
 $$;
-
-drop type taxa_info;
-create type taxa_info as
-(
-    sample_id       int,
-    taxonomy_id     smallint,
-    scientific_name varchar(255),
-    level_id        smallint,
-    level_name      varchar(50),
-    abundance       double precision
-);
-comment on type taxa_info is 'This type is reused as the basic structure of information returned
-    where requesting taxonomic information about a sample.';
-
-
 
 drop function if exists sample.fn_projects;
 create or replace function sample.fn_projects(p_limit int, p_offset int)
@@ -567,15 +576,6 @@ comment on function sample.fn_sample_translation_taxa is
     Note that the output taxonomy_id and scientific name are those of the translation, not
     the original taxa used by the lab!';
 
-create type rarefied_taxa_info as
-(
-    sample_id       int,
-    taxonomy_id     smallint,
-    scientific_name varchar(2550),
-    level_id        smallint,
-    level_name      varchar(50),
-    organism_count  bigint
-);
 
 drop function if exists sample.fn_rarefied_taxa;
 create or replace function sample.fn_rarefied_taxa(p_sample_id int, p_fixed_count int)
