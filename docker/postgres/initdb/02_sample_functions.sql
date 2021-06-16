@@ -567,15 +567,15 @@ comment on function sample.fn_sample_translation_taxa is
     Note that the output taxonomy_id and scientific name are those of the translation, not
     the original taxa used by the lab!';
 
--- create type rarefied_taxa_info as
--- (
---     sample_id       int,
---     taxonomy_id     smallint,
---     scientific_name varchar(2550),
---     level_id        smallint,
---     level_name      varchar(50),
---     organism_count  bigint
--- );
+create type rarefied_taxa_info as
+(
+    sample_id       int,
+    taxonomy_id     smallint,
+    scientific_name varchar(2550),
+    level_id        smallint,
+    level_name      varchar(50),
+    organism_count  bigint
+);
 
 drop function if exists sample.fn_rarefied_taxa;
 create or replace function sample.fn_rarefied_taxa(p_sample_id int, p_fixed_count int)
