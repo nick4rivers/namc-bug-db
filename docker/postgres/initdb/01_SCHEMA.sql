@@ -626,7 +626,7 @@ CREATE TABLE taxa.translation_taxa
     translation_id          SMALLINT NOT NULL,
     taxonomy_id             SMALLINT NOT NULL,
     alias                   VARCHAR(255),
-    is_final                boolean  NOT NULL,
+    is_final                boolean  NOT NULL default true,
 
     CONSTRAINT ck_translation_taxonomy_name CHECK (alias IS NULL OR
                                                    length(alias) > 0),
