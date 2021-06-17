@@ -1460,7 +1460,7 @@ EXECUTE PROCEDURE fn_before_update();
 CREATE TABLE metric.metric_taxa
 (
     metric_id   SMALLINT NOT NULL,
-    taxonomy_id INT      NOT NULL,
+    taxonomy_id SMALLINT NOT NULL,
 
     CONSTRAINT pk_metric_metric_taxa PRIMARY KEY (metric_id, taxonomy_id),
     CONSTRAINT fk_metric_metric_taxa_metric_id FOREIGN KEY (metric_id) REFERENCES metric.metrics (metric_id) ON DELETE CASCADE,

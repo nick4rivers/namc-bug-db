@@ -632,7 +632,7 @@ select p_sample_id,
        t.scientific_name,
        l.level_id,
        l.level_name,
-       count(*)::real
+       count(*)::double precision
 from (
          select ts.taxonomy_id
          from (
