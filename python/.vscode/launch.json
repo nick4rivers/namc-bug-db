@@ -189,6 +189,21 @@
     "args": [
       "/Users/philip/GNAR/NARDrive/Projects/BugDatabase/client_files/2021_06_16_taxonomy_andrew/2021_06_16_1423_namc_taxa.sqlite"
      ]
-  } 
+  } ,
+  {
+    "name": "Metric Validation",
+    "type": "python",
+    "request": "launch",
+    "module": "scripts.validate_metrics",
+    "console": "integratedTerminal",
+    "args": [
+      "{env:POSTGRES_HOST}",
+      "{env:POSTGRES_PORT}",
+      "{env:POSTGRES_DB}",
+      "{env:POSTGRES_USER}",
+      "{env:POSTGRES_PASSWORD}",
+      "data/MetricsNARtest.csv"
+    ]
+  }
 ]
 }
