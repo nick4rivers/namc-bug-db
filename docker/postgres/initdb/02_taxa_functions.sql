@@ -151,3 +151,20 @@ begin
         FROM taxa_tree;
 end
 $$;
+
+drop function if exists taxa.fn_is_descended_from;
+create or replace function taxa.fn_is_descended_from(p_taxonomy_id int, p_parent_taxonomy_id int)
+    returns boolean
+    immutable
+    returns null on null input
+    language sql
+as
+$$
+select count(*) > 0
+from taxa.fn_tree(p_taxonomy_id)
+where taxonomy_id = p_parent_taxonomy_id;
+$$;
+comment on function taxa.fn_is_descended_from is
+'Returns true if the taxa (argument 1) is a descdendant of the parent taxa (argument 2).
+Descendant means that the taxa is at the same or lower level of the taxonomic hierarchy
+as the parent';
