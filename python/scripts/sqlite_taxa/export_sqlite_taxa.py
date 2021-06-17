@@ -23,10 +23,10 @@ def export_sqlite(sqcurs):
                 row['taxonomy_id'],
                 row['scientific_name'],
                 row['level_id'],
-                row['parent_id'],
-                row['author'],
-                row['year'],
-                row['notes'],
+                'NULL' if row['parent_id'] is None else row['parent_id'],
+                'NULL' if row['author'] is None else row['author'],
+                'NULL' if row['year'] is None else row['year'],
+                'NULL' if row['notes'] is None or len(row['notes']) < 1 else "'{}'".format(row['notes'].replace("'", "''")),
                 json.dumps({"status": row['status_name']})
             ))
 
