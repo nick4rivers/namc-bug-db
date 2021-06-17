@@ -153,7 +153,7 @@ end
 $$;
 
 drop function if exists taxa.fn_is_descended_from;
-create or replace function taxa.fn_is_descended_from(p_taxonomy_id int, p_parent_taxonomy_id int)
+create or replace function taxa.fn_is_descended_from(p_taxonomy_id smallint, p_parent_taxonomy_id smallint)
     returns boolean
     immutable
     returns null on null input
