@@ -636,7 +636,7 @@ select p_sample_id,
 from (
          select ts.taxonomy_id
          from (
-                  select ts.taxonomy_id, uuid_generate_v1() uid
+                  select ts.taxonomy_id
                   from (
                            -- Duplicates each row the number of times there are in the correct count
                            SELECT taxonomy_id,
@@ -644,7 +644,7 @@ from (
                            FROM sample.fn_sample_translation_taxa(p_sample_id, p_translation_id) t, generate_series(1, cast(round(t.abundance) as int))
                        ) ts
               ) ts
-         order by uid
+         order by random()
          limit p_fixed_count
      ) c
          inner join taxa.taxonomy t on c.taxonomy_id = t.taxonomy_id

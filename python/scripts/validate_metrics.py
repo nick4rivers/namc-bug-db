@@ -1,5 +1,6 @@
 import os
 import csv
+import json
 import argparse
 import psycopg2
 import matplotlib.pyplot as plt
@@ -9,8 +10,16 @@ from lib.dotenv import parse_args_env
 from lib.logger import Logger
 
 # database metric ID keyed to CSV column header
-metric_ids = {
-    21: 'Abundance'
+# The original CSV column headers had asterix after those columns
+# that use standardized names (e.g. "Richness*"). These asterix
+# were removed when saving the file to disk.
+# Only those metrics whose column header don't match the database
+# metric name are listed below.
+metric_aliases = {
+    '# of Long-lived Taxa': 'Long-lived Taxa',
+    '# of Elmidae taxa': '# of Elmidae Taxa',
+    '# of non-insect taxa': '# of Non-insect taxa'
+
 }
 
 
@@ -18,14 +27,24 @@ def validate_metrics(pgcurs, metric_csv, output):
 
     csv_metrics = csv.DictReader(open(metric_csv))
 
+    # Load metrics into dictionary keyed by name (skip dominant family and dominant taxa)
+    pgcurs.execute('SELECT * FROM metric.metrics where (is_active) and (code_function is not null) and (metric_id not in (27, 29)) order by group_id, metric_id')
+    metrics = {row['metric_name']: {'metric_id': row['metric_id']} for row in pgcurs.fetchall()}
+
     data = {}
     for csv_row in csv_metrics:
 
         sample_id = csv_row['SampleID']
-        data[sample_id] = {'original': None, 'postgres': None}
+        data[sample_id] = {}
 
-        for metric_id, csv_column in metric_ids.items():
-            data[sample_id]['original'] = float(csv_row[csv_column])
+        for metric_name, metric_data in metrics.items():
+            csv_column = metric_name if metric_name in csv_row else metric_aliases[metric_name]
+            metric_id = metric_data['metric_id']
+
+            data[sample_id][metric_id] = {'original': None, 'postgres': None}
+
+            if csv_row[csv_column] is not None and csv_row[csv_column] != 'NULL':
+                data[sample_id][metric_id]['original'] = float(csv_row[csv_column])
 
         # Check Sample Exists in database
         pgcurs.execute('SELECT * FROM sample.samples WHERE sample_id = %s', [sample_id])
@@ -33,26 +52,37 @@ def validate_metrics(pgcurs, metric_csv, output):
         if sample is None:
             continue
 
-        pgcurs.execute('SELECT * FROM metric.sample_metrics(%s, 1,1)', [sample_id])
+        pgcurs.execute('SELECT * FROM metric.sample_metrics(%s, 3,300)', [sample_id])
         db_metrics = pgcurs.fetchall()
 
-        for metric_id, csv_column in metric_ids.items():
+        for metric_name, metric_data in metrics.items():
+            metric_id = metric_data['metric_id']
             for row in db_metrics:
-                if row['metric_id'] == metric_id:
-                    data[sample_id]['postgres'] = float(row['metric_value'])
+                if row['metric_id'] == metric_id and row['metric_value'] is not None:
+                    data[sample_id][metric_id]['postgres'] = float(row['metric_value'])
+                    break
 
         # if len(data) >= 10:
         #     break
 
-    for metric_id, csv_column in metric_ids.items():
+    # Loop over metrics and generate graphic and add to markdown string
+    markdown = '---\ntitle: Metric Validation\n---\n'
+    for metric_name, metric_data in metrics.items():
+        metric_id = metric_data['metric_id']
 
         values = []
         for sample_id, sample_values in data.items():
-            if sample_values['original'] is not None and sample_values['postgres'] is not None:
-                values.append((sample_values['original'], sample_values['postgres']))
+            if sample_values[metric_id]['original'] is not None and sample_values[metric_id]['postgres'] is not None:
+                values.append((sample_values[metric_id]['original'], sample_values[metric_id]['postgres']))
 
-        img_path = os.path.join(os.path.dirname(output), '../assets/images/validation/{}_{}.png'.format(metric_id, csv_column))
-        xyscatter(values, 'NAMC Legacy Values', 'Postgres', metric_id, img_path, True)
+        img_path = os.path.join(os.path.dirname(output), '../assets/images/validation/{}_{}.png'.format(metric_id, metric_name))
+        xyscatter(values, '{} (Legacy Values)'.format(metric_name), '{} (Postgres)'.format(metric_name), metric_name, img_path, True)
+        markdown += '# {}'.format(csv_column)
+        markdown += '![{}]({})\n'.format(csv_column, img_path)
+
+    # Write the markdown file
+    with open(output, 'w+') as f:
+        f.write(markdown)
 
 
 def xyscatter(values, xlabel, ylabel, chart_title, file_path, one2one=False):
@@ -78,14 +108,17 @@ def xyscatter(values, xlabel, ylabel, chart_title, file_path, one2one=False):
 
     if one2one:
         if len(x) < 3:
-            raise Exception('Attempting linear regression with less than three data points.')
+            print('Skipping regression because less than 3 data points')
+            # raise Exception('Attempting linear regression with less than three data points.')
+        else:
+            m, c, r_value, _p_value, _std_err = stats.linregress(x, y)
 
-        m, c, r_value, p_value, std_err = stats.linregress(x, y)
+            min_value = min(x)  # min(min(x), min(y))
+            max_value = max(x)  # max(max(x), max(y))
 
-        min_value = min(x)  # min(min(x), min(y))
-        max_value = max(x)  # max(max(x), max(y))
-        plt.plot([min_value, max_value], [m * min_value + c, m * max_value + c], 'blue', lw=1, label='regression m: {:.2f}, r2: {:.2f}'.format(m, r_value))
-        plt.plot([min_value, max_value], [min_value, max_value], 'red', lw=1, label='1:1')
+            plt.plot([min_value, max_value], [m * min_value + c, m * max_value + c], 'blue', lw=1, label='regression m: {:.2f}, r2: {:.2f}'.format(m, r_value))
+
+            plt.plot([min_value, max_value], [min_value, max_value], 'red', lw=1, label='1:1')
 
     plt.legend(loc='upper left')
     plt.tight_layout()
