@@ -85,6 +85,7 @@ def validate_metrics(pgcurs, metric_csv, output):
     # Loop over metrics and generate graphic and add to markdown string
     markdown = '---\ntitle: Metric Validation\n---\n'
 
+    all_values = [('metric_id,metric_name,legacy,postgres')]
     for group in groups:
 
         if len(group['metrics']) < 1:
@@ -98,17 +99,24 @@ def validate_metrics(pgcurs, metric_csv, output):
 
             values = []
             for sample_id, sample_values in data.items():
+                all_values.append((metric_id, metric_name, sample_values[metric_id]['original'], sample_values[metric_id]['postgres']))
+
                 if sample_values[metric_id]['original'] is not None and sample_values[metric_id]['postgres'] is not None:
                     values.append((sample_values[metric_id]['original'], sample_values[metric_id]['postgres']))
 
             img_path = os.path.join(os.path.dirname(output), '../assets/images/validation/{}_{}.png'.format(metric_id, metric_name.replace("'", "").replace("#", "").replace(' ', '_')))
             xyscatter(values, '{} (Legacy Values)'.format(metric_name), '{} (Postgres)'.format(metric_name), metric_name, img_path, True)
             markdown += '## {}\n\n'.format(metric_name)
-            markdown += '![{}]({{{{ site.baseurl }}}}/assets/images/{})\n\n'.format(metric_name, os.path.basename(img_path))
+            markdown += '![{}]({{{{ site.baseurl }}}}/assets/images/validation/{})\n\n'.format(metric_name, os.path.basename(img_path))
 
     # Write the markdown file
     with open(output, 'w+') as f:
         f.write(markdown)
+
+    # data_path = os.path.join(os.path.dirname(__file__), 'data_dump.csv')
+    # with open(data_path, 'w+') as f:
+    #     for value in all_values:
+    #         f.write('{}\n'.format(value))
 
 
 def xyscatter(values, xlabel, ylabel, chart_title, file_path, one2one=False):
