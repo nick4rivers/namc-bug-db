@@ -187,7 +187,7 @@
     "module": "scripts.sqlite_taxa.export_sqlite_taxa",
     "console": "integratedTerminal",
     "args": [
-      "/Users/philip/GNAR/NARDrive/Projects/BugDatabase/client_files/2021_06_16_taxonomy_andrew/2021_06_16_1423_namc_taxa.sqlite"
+      "/Users/philip/GNAR/NARDrive/Projects/BugDatabase/client_files/2021_06_17_Taxonomy_Andrew/2021_06_09_1312_namc_taxa.sqlite"
      ]
   } ,
   {
@@ -202,7 +202,7 @@
       "{env:POSTGRES_DB}",
       "{env:POSTGRES_USER}",
       "{env:POSTGRES_PASSWORD}",
-      "data/MetricsNARtest.csv"
+      "data/NAR_metricstest.csv"
     ]
   }
 ]

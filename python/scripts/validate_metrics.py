@@ -22,14 +22,29 @@ metric_aliases = {
 
 }
 
+models = {
+    'OTUcode2': 3,
+    'OTUcode_PIBO': 17
+}
+
 
 def validate_metrics(pgcurs, metric_csv, output):
 
     csv_metrics = csv.DictReader(open(metric_csv))
 
+    pgcurs.execute('SELECT * FROM metric.metric_groups order by sort_order')
+    groups = [{'group_id': row['group_id'], 'group_name': row['group_name'], 'metrics':[]} for row in pgcurs.fetchall()]
+
     # Load metrics into dictionary keyed by name (skip dominant family and dominant taxa)
-    pgcurs.execute('SELECT * FROM metric.metrics where (is_active) and (code_function is not null) and (metric_id not in (27, 29)) order by group_id, metric_id')
-    metrics = {row['metric_name']: {'metric_id': row['metric_id']} for row in pgcurs.fetchall()}
+    pgcurs.execute('SELECT * FROM metric.metrics where (is_active) and (code_function is not null) and (metric_id not in (27, 29)) order by metric_id')
+    metrics = {}
+    for row in pgcurs.fetchall():
+        metrics[row['metric_name']] = {'metric_id': row['metric_id']}
+
+        for group in groups:
+            if group['group_id'] == row['group_id']:
+                group['metrics'].append(row['metric_name'])
+                break
 
     data = {}
     for csv_row in csv_metrics:
@@ -52,7 +67,9 @@ def validate_metrics(pgcurs, metric_csv, output):
         if sample is None:
             continue
 
-        pgcurs.execute('SELECT * FROM metric.sample_metrics(%s, 3,300)', [sample_id])
+        translation_id = models[csv_row['Model code']]
+
+        pgcurs.execute('SELECT * FROM metric.sample_metrics(%s, %s,300)', [sample_id, translation_id])
         db_metrics = pgcurs.fetchall()
 
         for metric_name, metric_data in metrics.items():
@@ -67,18 +84,27 @@ def validate_metrics(pgcurs, metric_csv, output):
 
     # Loop over metrics and generate graphic and add to markdown string
     markdown = '---\ntitle: Metric Validation\n---\n'
-    for metric_name, metric_data in metrics.items():
-        metric_id = metric_data['metric_id']
 
-        values = []
-        for sample_id, sample_values in data.items():
-            if sample_values[metric_id]['original'] is not None and sample_values[metric_id]['postgres'] is not None:
-                values.append((sample_values[metric_id]['original'], sample_values[metric_id]['postgres']))
+    for group in groups:
 
-        img_path = os.path.join(os.path.dirname(output), '../assets/images/validation/{}_{}.png'.format(metric_id, metric_name))
-        xyscatter(values, '{} (Legacy Values)'.format(metric_name), '{} (Postgres)'.format(metric_name), metric_name, img_path, True)
-        markdown += '# {}'.format(csv_column)
-        markdown += '![{}]({})\n'.format(csv_column, img_path)
+        if len(group['metrics']) < 1:
+            continue
+
+        markdown += '\n# {}\n\n'.format(group['group_name'])
+
+        for metric_name in group['metrics']:
+            metric_data = metrics[metric_name]
+            metric_id = metric_data['metric_id']
+
+            values = []
+            for sample_id, sample_values in data.items():
+                if sample_values[metric_id]['original'] is not None and sample_values[metric_id]['postgres'] is not None:
+                    values.append((sample_values[metric_id]['original'], sample_values[metric_id]['postgres']))
+
+            img_path = os.path.join(os.path.dirname(output), '../assets/images/validation/{}_{}.png'.format(metric_id, metric_name.replace("'", "").replace("#", "").replace(' ', '_')))
+            xyscatter(values, '{} (Legacy Values)'.format(metric_name), '{} (Postgres)'.format(metric_name), metric_name, img_path, True)
+            markdown += '## {}\n\n'.format(metric_name)
+            markdown += '![{}]({{{{ site.baseurl }}}}/assets/images/{})\n\n'.format(metric_name, os.path.basename(img_path))
 
     # Write the markdown file
     with open(output, 'w+') as f:
