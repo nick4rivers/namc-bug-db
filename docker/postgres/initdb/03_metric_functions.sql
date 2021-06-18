@@ -347,6 +347,27 @@ select metric.fn_calc_simpsons_diversity(p_rarefied_taxa);
 $$;
 
 /********************************************************************************************************************
+  Hilsenhoff
+*/
+
+drop function if exists metric.fn_hilsenhoff;
+create or replace function metric.fn_hilsenhoff(p_metric_id int, p_raw_taxa taxa_info2[], p_rarefied_taxa taxa_info2[])
+    returns double precision
+    language sql
+    immutable
+    returns null on null input
+as
+$$
+select sum(t.abundance * ta.attribute_value::int) /
+       metric.fn_sample_abundance(p_metric_id, p_rarefied_taxa, p_rarefied_taxa)
+from unnest(p_rarefied_taxa) t
+         inner join taxa.taxa_attributes ta on t.taxonomy_id = ta.taxonomy_id
+where (ta.attribute_id = 6) and (ta.attribute_value <> '11');
+$$;
+comment on function metric.fn_hilsenhoff is '∑([Abundance]taxa *[Tolerance]taxa) /[Abundance]Total';
+
+
+/********************************************************************************************************************
   EVENNESS
 */
 drop function if exists metric.fn_evenness;

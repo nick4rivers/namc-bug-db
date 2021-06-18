@@ -1,3 +1,9 @@
+INSERT INTO metric.metric_taxa(metric_id, taxonomy_id) VALUES (25, 248); -- EPT Richness - Ephemeroptera
+INSERT INTO metric.metric_taxa(metric_id, taxonomy_id) VALUES (25, 403);-- EPT Richness - Plecoptera
+INSERT INTO metric.metric_taxa(metric_id, taxonomy_id) VALUES (25, 480);-- EPT Richness - Trichoptera
+INSERT INTO metric.metric_taxa(metric_id, taxonomy_id) VALUES (26, 248); -- EPT Abundance - Ephemeroptera
+INSERT INTO metric.metric_taxa(metric_id, taxonomy_id) VALUES (26, 403);-- EPT Abundance - Plecoptera
+INSERT INTO metric.metric_taxa(metric_id, taxonomy_id) VALUES (26, 480);-- EPT Abundance - Trichoptera
 INSERT INTO metric.metric_taxa(metric_id, taxonomy_id) VALUES (49, 248); -- Richness Ephemeroptera
 INSERT INTO metric.metric_taxa(metric_id, taxonomy_id) VALUES (50, 248); -- Abundance Ephemeroptera
 INSERT INTO metric.metric_taxa(metric_id, taxonomy_id) VALUES (51, 403); -- Richness Plecoptera
@@ -22,4 +28,6 @@ INSERT INTO metric.metric_taxa(metric_id, taxonomy_id) VALUES (69, 595); -- Rich
 INSERT INTO metric.metric_taxa(metric_id, taxonomy_id) VALUES (70, 595); -- Abundance Mollusca
 INSERT INTO metric.metric_taxa(metric_id, taxonomy_id) VALUES (71, 99); -- Richness Insecta
 INSERT INTO metric.metric_taxa(metric_id, taxonomy_id) VALUES (72, 99); -- Abundance Insecta
+INSERT INTO metric.metric_taxa(metric_id, taxonomy_id) VALUES (73, 99); -- Richness Non-Insecta (note DB function excludes this taxa)
+INSERT INTO metric.metric_taxa(metric_id, taxonomy_id) VALUES (74, 99); -- Abundance Non-Insecta (note DB function excludes this taxa)
 
