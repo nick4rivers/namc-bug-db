@@ -1,4 +1,4 @@
-drop type sample_info_type;
+-- drop type sample_info_type;
 create type sample_info_type as
 (
     sample_id             int,
