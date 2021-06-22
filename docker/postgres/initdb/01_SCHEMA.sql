@@ -399,8 +399,8 @@ CREATE INDEX fx_organizations_organization_type_id ON entity.organizations (orga
 CREATE TABLE entity.individuals
 (
     entity_id      SMALLINT    NOT NULL PRIMARY KEY,
-    first_name     VARCHAR(50) NOT NULL,
-    last_name      VARCHAR(50) NOT NULL,
+    first_name     VARCHAR(255) NOT NULL,
+    last_name      VARCHAR(255) NOT NULL,
     initials       VARCHAR(3),
     affiliation_id SMALLINT,
     email          VARCHAR(255),
