@@ -1,23 +1,24 @@
+drop type sample_info_type;
 create type sample_info_type as
 (
     sample_id             int,
     box_id                int,
-    customer_name         varchar(255),
-    customer_abbreviation varchar(50),
+    customer_name         varchar,
+    customer_abbreviation varchar,
     submitted_by          text,
-    box_state             varchar(50),
+    box_state             varchar,
     site_id               int,
-    site_name             varchar(50),
-    us_state              varchar(2),
+    site_name             varchar,
+    us_state              varchar,
     site_location         text,
     site_longitude        double precision,
     site_latitude         double precision,
-    visit_id              varchar(100),
+    visit_id              varchar,
     sample_date           char(10),
     sample_time           time,
-    sample_type           varchar(50),
-    sample_method         varchar(50),
-    habitat               varchar(50),
+    sample_type           varchar,
+    sample_method         varchar,
+    habitat               varchar,
     sample_location       text,
     sample_longitude      double precision,
     sample_latitude       double precision,
@@ -591,7 +592,7 @@ begin
                t.scientific_name,
                l.level_id,
                l.level_name,
-               count(*)
+               count(*)::double precision
         from (
                  select ts.taxonomy_id
                  from (

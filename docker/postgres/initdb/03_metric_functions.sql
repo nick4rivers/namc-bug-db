@@ -47,9 +47,10 @@ $$;
 /********************************************************************************************************************
   ENTRY POINT FUNCTIONS
 */
--- drop type metric_result;
+--drop type metric_result;
 create type metric_result as
 (
+    sample_id    int,
     group_id     smallint,
     group_name   varchar(255),
     metric_id    smallint,
@@ -96,7 +97,8 @@ begin
     into rarefied_taxa;
 
     return query
-        select g.group_id,
+        select p_sample_id,
+               g.group_id,
                g.group_name,
                m.metric_id,
                m.metric_name,
@@ -109,6 +111,43 @@ begin
         order by g.sort_order;
 end
 $$;
+
+create or replace function metric.fn_sample_metrics_array(p_sample_ids int[], p_translation_id int, p_fixed_count int)
+    returns setof metric_result
+    language sql
+    immutable
+as
+$$
+select m.*
+from unnest(p_sample_ids) s(p_sample_id)
+         join lateral metric.sample_metrics(p_sample_id, p_translation_id, p_fixed_count) m on true;
+$$;
+
+create or replace function metric.fn_project_metrics(p_project_ids int[], p_translation_id int, p_fixed_count int)
+    returns setof metric_result
+    language sql
+    immutable
+as
+$$
+select m.*
+from unnest(p_project_ids) p(project_id)
+    inner join sample.project_samples ps on p.project_id = ps.project_id
+         join lateral metric.sample_metrics(ps.sample_id, p_translation_id, p_fixed_count) m on true;
+$$;
+
+create or replace function metric.fn_box_metrics(p_box_ids int[], p_translation_id int, p_fixed_count int)
+    returns setof metric_result
+    language sql
+    immutable
+as
+$$
+select m.*
+from unnest(p_box_ids) b(box_id)
+    inner join sample.samples s on b.box_id = s.box_id
+         join lateral metric.sample_metrics(s.sample_id, p_translation_id, p_fixed_count) m on true;
+$$;
+
+
 
 /********************************************************************************************************************
   SUPPORT FUNCTIONS
@@ -362,7 +401,8 @@ select sum(t.abundance * ta.attribute_value::int) /
        metric.fn_sample_abundance(p_metric_id, p_rarefied_taxa, p_rarefied_taxa)
 from unnest(p_rarefied_taxa) t
          inner join taxa.taxa_attributes ta on t.taxonomy_id = ta.taxonomy_id
-where (ta.attribute_id = 6) and (ta.attribute_value <> '11');
+where (ta.attribute_id = 6)
+  and (ta.attribute_value <> '11');
 $$;
 comment on function metric.fn_hilsenhoff is '∑([Abundance]taxa *[Tolerance]taxa) /[Abundance]Total';
 

@@ -1,3 +1,43 @@
+drop function if exists taxa.fn_translations;
+create or replace function taxa.fn_translations(p_limit int, p_offset int)
+    returns table
+            (
+                translation_id   smallint,
+                translation_name varchar(255),
+                description      text,
+                is_active        boolean,
+                taxa_count       bigint,
+                created_date     text,
+                updated_date     text
+            )
+    language plpgsql
+    immutable
+as
+$$
+begin
+    return query
+        select t.translation_id,
+               t.translation_name,
+               t.description,
+               t.is_active,
+               coalesce(tx.taxa_count, 0),
+               to_json(t.created_date) #>> '{}',
+               to_json(t.updated_date) #>> '{}'
+        from taxa.translations t
+                 inner join
+             (select tt.translation_id
+              from taxa.translations tt
+              order by translation_id
+              limit p_limit offset p_offset) tt on t.translation_id = tt.translation_id
+                 left join (
+            select tx.translation_id, count(*) taxa_count
+            from taxa.translations tx
+            group by tx.translation_id
+        ) tx on tx.translation_id = t.translation_id;
+end
+$$;
+
+
 drop function if exists taxa.fn_attributes;
 create or replace function taxa.fn_attributes(p_limit int, p_offset int)
     returns table

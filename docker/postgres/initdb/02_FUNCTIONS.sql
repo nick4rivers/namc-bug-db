@@ -18,7 +18,7 @@ CREATE OR REPLACE FUNCTION geo.fn_site_info(p_site_id INT)
                 waterbody_code   VARCHAR(100),
                 waterbody_name   VARCHAR(255),
                 sample_count     BIGINT,
-                geometry_changed text,
+                geography_changed text,
                 created_date     text,
                 updated_date     text,
                 catchment        TEXT
@@ -41,12 +41,12 @@ BEGIN
                s.waterbody_code,
                s.waterbody_name,
                ss.sample_count,
-               to_json(s.geometry_changed) #>> '{}',
+               to_json(s.geography_changed) #>> '{}',
                to_json(s.created_date) #>> '{}',
                to_json(s.updated_date) #>> '{}',
                ST_AsGeoJSON(s.catchment) AS catchment
         FROM geo.sites s
-                 LEFT JOIN geo.states st ON st_contains(st.geom, s.location)
+                 LEFT JOIN geo.states st ON st_covers(st.geom, s.location)
                  LEFT JOIN geo.systems sy ON s.system_id = sy.system_id
                  LEFT JOIN geo.ecosystems e ON sy.ecosystem_id = e.ecosystem_id
                  LEFT JOIN geo.waterbody_types w ON s.waterbody_type_id = w.waterbody_type_id
@@ -102,11 +102,11 @@ begin
             ORDER BY g.site_id
             LIMIT p_limit OFFSET p_offset
         ) ss ON s.site_id = ss.site_id
-                 LEFT JOIN geo.states st ON st_contains(st.geom, s.location)
+                 LEFT JOIN geo.states st ON st_covers(st.geom, s.location)
                  LEFT JOIN geo.systems sy ON s.system_id = sy.system_id
                  LEFT JOIN geo.ecosystems e ON sy.ecosystem_id = e.ecosystem_id
                  LEFT JOIN geo.waterbody_types w ON s.waterbody_type_id = w.waterbody_type_id
-                 LEFT JOIN geo.states gst ON st_contains(gst.geom, s.location);
+                 LEFT JOIN geo.states gst ON st_covers(gst.geom, s.location);
 end ;
 $$;
 
@@ -517,13 +517,13 @@ BEGIN
                to_json(sp.updated_date) #>> '{}',
                CAST(CASE
                         WHEN sp.updated_date IS NULL THEN 'Missing'
-                        WHEN gs.geometry_changed > sp.updated_date THEN 'Expired'
+                        WHEN gs.geography_changed > sp.updated_date THEN 'Expired'
                         ELSE 'Current'
                    END AS VARCHAR(20)) Status
         FROM sample.samples s
                  inner join sample.box_models bm on s.box_id = bm.box_id
                  inner join geo.sites gs on s.site_id = gs.site_id
-                 inner join geo.models m on st_contains(m.extent, gs.catchment) and bm.model_id = m.model_id
+                 inner join geo.models m on st_covers(m.extent, gs.catchment) and bm.model_id = m.model_id
                  inner join geo.model_predictors mp on m.model_id = mp.model_id
                  inner join geo.predictors p on mp.predictor_id = p.predictor_id
                  left join geo.site_predictors sp on sp.site_id = gs.site_id and p.predictor_id = sp.predictor_id
@@ -546,7 +546,7 @@ BEGIN
         FROM sample.samples s
                  inner join sample.box_models bm on s.box_id = bm.box_id
                  inner join geo.sites gs on s.site_id = gs.site_id
-                 inner join geo.models m on st_contains(m.extent, gs.catchment) and bm.model_id = m.model_id
+                 inner join geo.models m on st_covers(m.extent, gs.catchment) and bm.model_id = m.model_id
                  inner join geo.model_predictors mp on m.model_id = mp.model_id
                  inner join geo.predictors p on mp.predictor_id = p.predictor_id
                  left join sample.sample_predictors sp
@@ -872,41 +872,3 @@ begin
 end
 $$;
 
-drop function if exists taxa.fn_translations;
-create or replace function taxa.fn_translations(p_limit int, p_offset int)
-    returns table
-            (
-                translation_id   smallint,
-                translation_name varchar(255),
-                description      text,
-                is_active        boolean,
-                taxa_count       bigint,
-                created_date     text,
-                updated_date     text
-            )
-    language plpgsql
-    immutable
-as
-$$
-begin
-    return query
-        select t.translation_id,
-               t.translation_name,
-               t.description,
-               t.is_active,
-               coalesce(tx.taxa_count, 0),
-               to_json(t.created_date) #>> '{}',
-               to_json(t.updated_date) #>> '{}'
-        from taxa.translations t
-                 inner join
-             (select tt.translation_id
-              from taxa.translations tt
-              order by translation_id
-              limit p_limit offset p_offset) tt on t.translation_id = tt.translation_id
-                 left join (
-            select tx.translation_id, count(*) taxa_count
-            from taxa.taxa_translations tx
-            group by tx.translation_id
-        ) tx on tx.translation_id = t.translation_id;
-end
-$$;
