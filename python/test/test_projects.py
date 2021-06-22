@@ -9,8 +9,8 @@ def test_create_project(cursor, project_data):
     assert project_id > 0
 
     # Check the new project, plus the existing fixture test one makes 2
-    cursor.execute('SELECT count(*) from sample.projects')
-    assert cursor.fetchone()[0] == 2
+    cursor.execute('SELECT count(*) from sample.projects where project_id = %s', [project_id])
+    assert cursor.fetchone()[0] == 1
 
     try:
         # Duplicate names not allowd
@@ -41,7 +41,7 @@ def test_list_projects(cursor, project_data):
 
     cursor.execute('SELECT * FROM sample.fn_projects(100, 0)')
     projects = cursor.fetchall()
-    assert len(projects) == 1
+    assert len(projects) > 0
 
 
 def test_add_project_samples(cursor, project_data):
@@ -59,7 +59,7 @@ def test_add_project_samples(cursor, project_data):
     # Add all the samples. This should return the length of the samples array
     # Note that the one already inserted should cause an upsert
     cursor.execute('SELECT * FROM sample.add_project_samples(%s, %s)', [project_id, sample_ids])
-    assert cursor.fetchone()[0] == 1
+    assert cursor.fetchone()[0] == len(sample_ids)
 
 
 def test_add_project_boxes(cursor, project_data):
@@ -70,11 +70,11 @@ def test_add_project_boxes(cursor, project_data):
     cursor.execute('SELECT box_id from sample.samples group by box_id limit 10;')
     box_ids = [row['box_id'] for row in cursor.fetchall()]
 
-    cursor.execute('select count(*) from sample.boxes where box_id = any(%s)', [box_ids])
+    cursor.execute('select count(*) from sample.samples where box_id = any(%s)', [box_ids])
     sample_count = cursor.fetchone()[0]
 
     # Add all the boxes
-    cursor.execute('SELECT * FROM sample.add_project_samples(%s, %s)', [project_id, box_ids])
+    cursor.execute('SELECT * FROM sample.add_project_boxes(%s, %s)', [project_id, box_ids])
     assert cursor.fetchone()[0] == sample_count
 
 

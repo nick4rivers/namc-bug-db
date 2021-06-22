@@ -1,12 +1,12 @@
 import pytest
-from test.test_helper_functions import get_sample_by_customer_name
-from test.test_helper_functions import print_organisms
+from test.helper_functions import get_samples_by_customer_name
+from test.helper_functions import print_organisms
 
 
 def test_translations(cursor, translation_data):
 
     # Get the first sample associated with the test organization
-    sample_id = get_sample_by_customer_name(cursor, 'test organization')
+    sample_id = get_samples_by_customer_name(cursor, 'test organization')
 
     # Get the test translation
     cursor.execute("SELECT translation_id from taxa.translations where translation_name ilike 'unit test translation'")

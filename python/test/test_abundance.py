@@ -1,7 +1,7 @@
-from test_helper_functions import get_attribute_by_name
-from test_helper_functions import get_taxa_by_name
 import pytest
-from test_helper_functions import get_samples_by_customer_name
+from test.helper_functions import get_attribute_by_name
+from test.helper_functions import get_taxa_by_name
+from test.helper_functions import get_samples_by_customer_name
 
 
 def test_abundance_core_calc(cursor):
@@ -59,40 +59,40 @@ def test_sample_abundance(cursor, taxonomic_hierarchy, abundance):
     samples = get_samples_by_customer_name(cursor, 'test customer')
     sample_id = samples[0]
 
-    cursor.callproc('metric.fn_sample_abundance', [0, sample_id, 0, 0])
+    cursor.callproc('metric.fn_sample_abundance', [sample_id, 0, 0])
     sa = cursor.fetchone()
     assert sa[0] == 20
 
 
-def test_taxa_abundance(cursor, taxonomic_hierarchy, abundance):
+# def test_taxa_abundance(cursor, taxonomic_hierarchy, abundance):
 
-    samples = get_samples_by_customer_name(cursor, 'test customer')
-    sample_id = samples[0]
+#     samples = get_samples_by_customer_name(cursor, 'test customer')
+#     sample_id = samples[0]
 
-    # Abundance at the Phylum should be all organisms for the sample
-    phyluma = get_taxa_by_name(cursor, 'Test Phylum A')
-    cursor.execute('SELECT * FROM metric.fn_taxa_abundance(%s, %s)', [sample_id, phyluma])
-    phyluma_abundance = cursor.fetchone()[0]
-    assert phyluma_abundance == 20
+#     # Abundance at the Phylum should be all organisms for the sample
+#     phyluma = get_taxa_by_name(cursor, 'Test Phylum A')
+#     cursor.execute('SELECT * FROM metric.fn_taxa_abundance(%s, %s)', [sample_id, phyluma])
+#     phyluma_abundance = cursor.fetchone()[0]
+#     assert phyluma_abundance == 20
 
-    # Abundance at the class under the phylum should just be the class
-    classaa = get_taxa_by_name(cursor, 'Test Class AA')
-    cursor.execute('SELECT metric.fn_taxa_abundance(%s, %s)', [sample_id, classaa])
-    classaa_abundance = cursor.fetchone()[0]
-    assert classaa_abundance == 10
+#     # Abundance at the class under the phylum should just be the class
+#     classaa = get_taxa_by_name(cursor, 'Test Class AA')
+#     cursor.execute('SELECT metric.fn_taxa_abundance(%s, %s)', [sample_id, classaa])
+#     classaa_abundance = cursor.fetchone()[0]
+#     assert classaa_abundance == 10
 
 
-def test_attribute_abundance(cursor, taxonomic_hierarchy, taxonomic_attributes, abundance):
+# def test_attribute_abundance(cursor, taxonomic_hierarchy, taxonomic_attributes, abundance):
 
-    samples = get_samples_by_customer_name(cursor, 'test customer')
-    sample_id = samples[0]
+#     samples = get_samples_by_customer_name(cursor, 'test customer')
+#     sample_id = samples[0]
 
-    # Taxa ending in A should all have attribute 1
-    attributea = get_attribute_by_name(cursor, 'Test Attribute 1')
-    phyluma = get_taxa_by_name(cursor, 'Test Phylum A')
-    cursor.execute('SELECT metric.fn_attribute_abundance(%s, %s)', [sample_id, attributea])
-    atta_abundance = cursor.fetchone()[0]
-    assert atta_abundance == 20
+#     # Taxa ending in A should all have attribute 1
+#     attributea = get_attribute_by_name(cursor, 'Test Attribute 1')
+#     phyluma = get_taxa_by_name(cursor, 'Test Phylum A')
+#     cursor.execute('SELECT metric.fn_attribute_abundance(%s, %s)', [sample_id, attributea])
+#     atta_abundance = cursor.fetchone()[0]
+#     assert atta_abundance == 20
 
 
 if __name__ == "__main__":

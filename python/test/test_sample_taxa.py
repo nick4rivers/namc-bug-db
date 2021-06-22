@@ -1,5 +1,5 @@
 import pytest
-from test_helper_functions import get_samples_by_customer_name
+from test.helper_functions import get_samples_by_customer_name
 
 
 def test_sample_taxa_raw(cursor, taxonomic_hierarchy, pacific_taxa):
@@ -10,7 +10,7 @@ def test_sample_taxa_raw(cursor, taxonomic_hierarchy, pacific_taxa):
 
     for sample_id in samples:
         cursor.execute('SELECT * FROM sample.fn_sample_taxa_raw(Array[%s])', [sample_id])
-        organisms = {row['taxonomy_id']: row['raw_count'] for row in cursor.fetchall()}
+        organisms = {row['taxonomy_id']: row['abundance'] for row in cursor.fetchall()}
         assert len(organisms) == 5
 
 
@@ -28,7 +28,7 @@ def test_box_taxa_raw(cursor, taxonomic_hierarchy, pacific_taxa):
         box_ids.append(box_id)
 
         cursor.execute('SELECT * FROM sample.fn_box_taxa_raw(Array[%s])', [box_id])
-        organisms = {row['taxonomy_id']: row['raw_count'] for row in cursor.fetchall()}
+        organisms = {row['taxonomy_id']: row['abundance'] for row in cursor.fetchall()}
         assert len(organisms) == 5
 
     # Now query all the boxes together
@@ -57,7 +57,7 @@ def test_point_and_distance(cursor, taxonomic_hierarchy, pacific_taxa):
     orig_rows = cursor.fetchall()
     assert len(orig_rows) == 10
     for row in orig_rows:
-        assert row['raw_count'] == 1
+        assert row['abundance'] == 1
 
     # Verify that the procedure throw exception with invalid parmeters
     for data in [(-181, 30, 5), (181, 30, 5), (-150, -91, 5), (150, 91, 5), (-150, 30, -1)]:
@@ -83,7 +83,7 @@ def test_taxa_polygon(cursor, taxonomic_hierarchy, pacific_taxa):
     orig_rows = cursor.fetchall()
     assert len(orig_rows) == 10
     for row in orig_rows:
-        assert row['raw_count'] == 1
+        assert row['abundance'] == 1
 
 
 if __name__ == "__main__":
