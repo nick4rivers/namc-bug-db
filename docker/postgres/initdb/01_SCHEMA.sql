@@ -384,7 +384,7 @@ CREATE TABLE entity.organization_types
 CREATE TABLE entity.organizations
 (
     entity_id            SMALLINT     NOT NULL PRIMARY KEY,
-    abbreviation         VARCHAR(50),
+    abbreviation         VARCHAR(255),
     organization_name    VARCHAR(255) NOT NULL,
     organization_type_id SMALLINT     NOT NULL,
     is_lab               BOOLEAN      NOT NULL DEFAULT FALSE,
