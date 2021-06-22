@@ -7,12 +7,14 @@ from postgres_lookup_data import lookup_data, insert_row, log_row_count, process
 
 def migrate(mscurs, pgcurs):
 
-    process_table(mscurs, pgcurs, 'PilotDB.taxa.taxonomy', 'taxa.taxonomy', taxonomy_callback, None)
-    process_table(mscurs, pgcurs, 'PilotDB.taxa.synonym', 'taxa.synonyms', synonym_callback, None)
-    process_table(mscurs, pgcurs, 'PilotDB.taxa.type_attribute', 'taxa.attributes', attributes_callback, None)
+    existing_taxa = lookup_data(pgcurs, 'taxa.taxonomy', 'taxonomy_id')
+
+    # process_table(mscurs, pgcurs, 'PilotDB.taxa.taxonomy', 'taxa.taxonomy', taxonomy_callback, None)
+    process_table(mscurs, pgcurs, 'PilotDB.taxa.synonym', 'taxa.synonyms', synonym_callback, existing_taxa)
+    # process_table(mscurs, pgcurs, 'PilotDB.taxa.type_attribute', 'taxa.attributes', attributes_callback, None)
     process_query(mscurs, pgcurs,
                   'SELECT a.* FROM PilotDB.taxa.attributes a INNER JOIN PilotDB.taxa.taxonomy t ON a.code = t.code',
-                  'taxa.taxa_attributes', taxa_attributes_callback)
+                  'taxa.taxa_attributes', taxa_attributes_callback, existing_taxa)
 
     reset_sequence(pgcurs, 'taxa.taxonomy', 'taxonomy_id')
     reset_sequence(pgcurs, 'taxa.attributes', 'attribute_id')
@@ -32,6 +34,12 @@ def taxonomy_callback(msdata, lookup):
 
 
 def synonym_callback(msdata, lookup):
+
+    # ignore synonyms for missing taxa
+    if msdata['code'] not in lookup:
+        log = Logger('synonyms')
+        log.warning('Skipping synonym')
+        return None
 
     return {
         'taxonomy_id': msdata['code'],
@@ -68,6 +76,12 @@ def attributes_callback(msdata, lookup):
 
 
 def taxa_attributes_callback(msdata, lookup):
+
+    # ignore synonyms for missing taxa
+    if msdata['Code'] not in lookup:
+        log = Logger('tax atts')
+        log.warning('Skipping taxonomy')
+        return None
 
     return {
         'taxonomy_id': msdata['Code'],

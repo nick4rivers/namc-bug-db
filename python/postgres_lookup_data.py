@@ -101,6 +101,9 @@ def __process_data(mscurs, pgcurs, query, target_table, call_back, lookup, row_c
 
         data = call_back(msdata, lookup)
 
+        if data is None:
+            continue
+
         if not columns:
             columns = list(data.keys())
 

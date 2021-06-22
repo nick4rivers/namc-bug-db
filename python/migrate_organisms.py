@@ -12,7 +12,8 @@ def migrate(mscurs, pgcurs):
     log.info('starting organisms')
 
     lookup = {
-        'life_stages': lookup_data(pgcurs, 'taxa.life_stages', 'abbreviation')
+        'life_stages': lookup_data(pgcurs, 'taxa.life_stages', 'abbreviation'),
+        'taxa': lookup_data(pgcurs, 'taxa.taxonomy', 'taxonomy_id')
     }
 
     # Sum the counts over the required unique index. Join to Samples so we only get
@@ -32,6 +33,11 @@ def organisms_callback(msdata, lookup):
     life_stage_id = get_db_id(lookup['life_stages'], 'life_stage_id', ['abbreviation'], original_life_stage)
     if not life_stage_id:
         life_stage_id = lookup['life_stages']['U']['life_stage_id']
+
+    if msdata['Code'] not in lookup['taxa']:
+        log = Logger('organisms')
+        log.error('Missing taxonomy')
+        return None
 
     # Sanitize the notes string here so empty strings get converted to NULL
     # but notes are post-processed using a different method

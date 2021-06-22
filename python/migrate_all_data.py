@@ -32,6 +32,9 @@ def migrate_all_data(mscon, pgcon, predictor_values_csv_path, metric_values_csv_
     # Import GeoJSON model polygons from local file exported from ShapeFile provided by NAMC
     migrate_model_polygons(pgcurs, model_polygons_geojson_path)
 
+    taxonomy(mscurs, pgcurs)
+    # translation_taxa(mscurs, pgcurs)
+
     sites(mscurs, pgcurs, 'PilotDB')
     sites(mscurs, pgcurs, 'BugLab')
     model_reference_sites(pgcurs, model_ref_sites)
@@ -39,8 +42,6 @@ def migrate_all_data(mscon, pgcon, predictor_values_csv_path, metric_values_csv_
     # Import GeoJSON catchment polygons from local file exported from ShapeFile provided by NAMC
     migrate_catchment_polygons(pgcurs, catchment_polygons)
 
-    taxonomy(mscurs, pgcurs)
-    translation_taxa(mscurs, pgcurs)
     entities(mscurs, pgcurs, parent_entities)
     associate_models_with_entities(pgcurs)
 
@@ -51,6 +52,7 @@ def migrate_all_data(mscon, pgcon, predictor_values_csv_path, metric_values_csv_
     predictor_values(pgcurs, predictor_values_csv_path)
     # metrics(pgcurs, metric_values_csv_path)
     projects(mscurs, pgcurs)
+
     organisms(mscurs, pgcurs)
 
     # Refresh any materialized views
