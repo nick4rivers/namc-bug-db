@@ -88,12 +88,14 @@ const typeDefs = gql`
         "List of all attributes that exist for a single taxa"
         taxaAttributes(taxonomyId: Int, limit: Int = ${queryLimits.taxonomy}, offset: Int = 0): PaginatedAttributeValues
   
+        "List all the taxa within a specific translation (OTU)"
+        translationTaxa(limit: Int = ${queryLimits.taxonomy}, offset: Int = 0, translationId: Int!): PaginatedTranslationTaxa
+       
+        "List of all translations in the system."
+        translations(limit: Int = ${queryLimits.translations}, offset: Int = 0): PaginatedTranslations
 
         ####################################################################################################################################################################################
         # Sample side table queries
-
-        "List of all translations in the system."
-        translations(limit: Int = ${queryLimits.translations}, offset: Int = 0): PaginatedTranslations
 
         "List of all plankton samples in the system."
         planktonSamples(limit: Int = ${queryLimits.samples}, offset: Int = 0): PaginatedPlankton
@@ -135,6 +137,8 @@ const typeDefs = gql`
         # Metric queries
 
         metrics(limit: Int = ${queryLimits.metrics}, offset: Int = 0): PaginatedMetrics
+
+        sampleMetrics(sampleIds: [Int], boxIds: [Int], projectIds: [Int], translationId: Int!, fixedCount: Int!): PaginatedMetricResult
     }
 
     # this schema allows the following mutation:
@@ -717,6 +721,17 @@ type MassSample {
         updatedDate: String
     }
 
+    type TranslationTaxa {
+        translationId: Int
+        translationName: String
+        taxonomyId: Int
+        levelId: Int
+        levelName: String
+        originalScientificName: String
+        translationScientificName: String
+        isFinal: Boolean
+    }
+
     type Attribute {
         attributeId: Int
         attributeName: String
@@ -738,6 +753,16 @@ type MassSample {
         label: String
         attributeValue: String
     }
+
+    type MetricResult  {
+    sampleId:    Int
+    groupId:     Int
+    groupName:   String
+    metricId:    Int
+    metricName:  String
+    metricValue: String
+}
+
 
     # Pagination Types
   
@@ -787,6 +812,11 @@ type MassSample {
 
     type PaginatedTranslations {
         records: [Translation]
+        nextOffset: Int
+    }
+
+    type PaginatedTranslationTaxa {
+        records: [TranslationTaxa]
         nextOffset: Int
     }
 
@@ -852,6 +882,11 @@ type MassSample {
 
     type PaginatedMetrics {
         records: [Metric]
+        nextOffset: Int
+    }
+
+    type PaginatedMetricResult {
+        records: [MetricResult]
         nextOffset: Int
     }
 `

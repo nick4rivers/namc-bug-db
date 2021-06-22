@@ -39,7 +39,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getSampleTaxaTranslationRarefied = exports.getSampleTaxaRarefied = exports.getSampleTaxaTranslation = exports.getSampleTaxaGeneralized = exports.getPolygonTaxaRawQuery = exports.getPointTaxaRawQuery = exports.getProjectTaxaRaw = exports.getBoxTaxaRaw = exports.getSampleTaxaRaw = exports.setSiteCatchment = exports.setSamplePredictorValue = exports.setSitePredictorValue = exports.getMetrics = exports.getModelThresholds = exports.getTaxaAttributes = exports.getAttributes = exports.getMassSamples = exports.getFishSamples = exports.getDriftSamples = exports.getPlanktonSamples = exports.getTranslations = exports.getModelPredictors = exports.getSamplePredictorValues = exports.getBoxInfo = exports.getSampleInfo = exports.getSitePredictorValues = exports.getModelInfo = exports.getModels = exports.getPredictors = exports.getTaxonomy = exports.getProjects = exports.getBoxes = exports.getIndividuals = exports.getSiteInfo = exports.getSites = exports.getSamples = exports.getPool = void 0;
+exports.getProjectMetrics = exports.getBoxMetrics = exports.getSampleMetrics = exports.getSampleTaxaTranslationRarefied = exports.getSampleTaxaRarefied = exports.getSampleTaxaTranslation = exports.getSampleTaxaGeneralized = exports.getPolygonTaxaRawQuery = exports.getPointTaxaRawQuery = exports.getProjectTaxaRaw = exports.getBoxTaxaRaw = exports.getSampleTaxaRaw = exports.setSiteCatchment = exports.setSamplePredictorValue = exports.setSitePredictorValue = exports.getMetrics = exports.getModelThresholds = exports.getTaxaAttributes = exports.getAttributes = exports.getMassSamples = exports.getFishSamples = exports.getDriftSamples = exports.getPlanktonSamples = exports.getTranslationTaxa = exports.getTranslations = exports.getModelPredictors = exports.getSamplePredictorValues = exports.getBoxInfo = exports.getSampleInfo = exports.getSitePredictorValues = exports.getModelInfo = exports.getModels = exports.getPredictors = exports.getTaxonomy = exports.getProjects = exports.getBoxes = exports.getIndividuals = exports.getSiteInfo = exports.getSites = exports.getSamples = exports.getPool = void 0;
 var config_1 = require("../config");
 var pg_1 = require("pg");
 var loglevel_1 = __importDefault(require("loglevel"));
@@ -136,6 +136,10 @@ var translationsQuery = 'SELECT * FROM taxa.fn_translations($1, $2)';
 exports.getTranslations = function (pool, limit, offset) {
     return pgPromise(pool, translationsQuery, [limit, offset]);
 };
+var translationTaxaQuery = 'SELECT * FROM taxa.fn_translation_taxa($1, $2, $3)';
+exports.getTranslationTaxa = function (pool, limit, offset, translationId) {
+    return pgPromise(pool, translationTaxaQuery, [limit, offset, translationId]);
+};
 var planktonSampleQuery = 'SELECT * FROM sample.fn_plankton($1, $2)';
 exports.getPlanktonSamples = function (pool, limit, offset) {
     return pgPromise(pool, planktonSampleQuery, [limit, offset]);
@@ -210,4 +214,12 @@ exports.getSampleTaxaRarefied = function (pool, sampleId, fixedCount) {
 };
 var sampleTaxaTranslationRarefiedQuery = 'SELECT * FROM sample.fn_translation_rarefied_taxa($1, $2, $3)';
 exports.getSampleTaxaTranslationRarefied = function (pool, sampleId, translationId, fixedCount) { return pgPromise(pool, sampleTaxaTranslationRarefiedQuery, [sampleId, translationId, fixedCount]); };
+var sampleMetricsQuery = 'SELECT * FROM metric.fn_sample_metrics_array($1, $2, $3)';
+exports.getSampleMetrics = function (pool, sampleIds, translationId, fixedCount) { return pgPromise(pool, sampleMetricsQuery, [sampleIds, translationId, fixedCount]); };
+var boxMetricsQuery = 'SELECT * FROM metric.fn_box_metrics($1, $2, $3)';
+exports.getBoxMetrics = function (pool, boxIds, translationId, fixedCount) {
+    return pgPromise(pool, boxMetricsQuery, [boxIds, translationId, fixedCount]);
+};
+var projectMetricsQuery = 'SELECT * FROM metric.fn_project_metrics($1, $2, $3)';
+exports.getProjectMetrics = function (pool, projectIds, translationId, fixedCount) { return pgPromise(pool, projectMetricsQuery, [projectIds, translationId, fixedCount]); };
 //# sourceMappingURL=index.js.map

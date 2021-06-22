@@ -81,6 +81,13 @@ declare const _default: {
         }, { user }: {
             user: any;
         }) => Promise<PaginatedRecords<Translation>>;
+        translationTaxa: (obj: any, { limit, offset, translationId }: {
+            limit: any;
+            offset: any;
+            translationId: any;
+        }, { user }: {
+            user: any;
+        }) => Promise<PaginatedRecords<TranslationTaxa>>;
         sitePredictorValues: (obj: any, { limit, offset, siteId }: {
             limit: any;
             offset: any;
@@ -150,6 +157,15 @@ declare const _default: {
         }, { user }: {
             user: any;
         }) => Promise<PaginatedRecords<Metric>>;
+        sampleMetrics: (obj: any, { sampleIds, boxIds, projectIds, translationId, fixedCount }: {
+            sampleIds: any;
+            boxIds: any;
+            projectIds: any;
+            translationId: any;
+            fixedCount: any;
+        }, { user }: {
+            user: any;
+        }) => Promise<PaginatedRecords<MetricResult>>;
         taxaAttributes: (obj: any, { taxonomyId, limit, offset }: {
             taxonomyId: any;
             limit: any;

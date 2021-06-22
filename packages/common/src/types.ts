@@ -321,6 +321,17 @@ export declare type Translation = {
     updatedDate: string
 }
 
+export declare type TranslationTaxa = {
+    translationId: number
+    translationName: string
+    taxonomyId: number
+    levelId: number
+    levelName: string
+    originalScientificName: string
+    translationScientificName: string
+    isFinal: boolean
+}
+
 export declare type PlanktonSample = {
     sampleId: number
     diameter: number
@@ -449,4 +460,13 @@ export declare type Metric = {
     description: string
     createdDate: string
     updatedDate: string
+}
+
+export declare type MetricResult = {
+    sampleId: number
+    groupId: number
+    groupName: string
+    metricId: number
+    metricName: string
+    metricValue: string
 }

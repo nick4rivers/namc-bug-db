@@ -95,6 +95,10 @@ const translationsQuery = 'SELECT * FROM taxa.fn_translations($1, $2)'
 export const getTranslations = (pool, limit: number, offset: number): DBReturnPromiseType =>
     pgPromise(pool, translationsQuery, [limit, offset])
 
+const translationTaxaQuery = 'SELECT * FROM taxa.fn_translation_taxa($1, $2, $3)'
+export const getTranslationTaxa = (pool, limit: number, offset: number, translationId: number): DBReturnPromiseType =>
+    pgPromise(pool, translationTaxaQuery, [limit, offset, translationId])
+
 const planktonSampleQuery = 'SELECT * FROM sample.fn_plankton($1, $2)'
 export const getPlanktonSamples = (pool, limit: number, offset: number): DBReturnPromiseType =>
     pgPromise(pool, planktonSampleQuery, [limit, offset])
@@ -183,3 +187,23 @@ export const getSampleTaxaTranslationRarefied = (
     translationId: number,
     fixedCount: number
 ): DBReturnPromiseType => pgPromise(pool, sampleTaxaTranslationRarefiedQuery, [sampleId, translationId, fixedCount])
+
+const sampleMetricsQuery = 'SELECT * FROM metric.fn_sample_metrics_array($1, $2, $3)'
+export const getSampleMetrics = (
+    pool,
+    sampleIds: number[],
+    translationId: number,
+    fixedCount: number
+): DBReturnPromiseType => pgPromise(pool, sampleMetricsQuery, [sampleIds, translationId, fixedCount])
+
+const boxMetricsQuery = 'SELECT * FROM metric.fn_box_metrics($1, $2, $3)'
+export const getBoxMetrics = (pool, boxIds: number[], translationId: number, fixedCount: number): DBReturnPromiseType =>
+    pgPromise(pool, boxMetricsQuery, [boxIds, translationId, fixedCount])
+
+const projectMetricsQuery = 'SELECT * FROM metric.fn_project_metrics($1, $2, $3)'
+export const getProjectMetrics = (
+    pool,
+    projectIds: number[],
+    translationId: number,
+    fixedCount: number
+): DBReturnPromiseType => pgPromise(pool, projectMetricsQuery, [projectIds, translationId, fixedCount])

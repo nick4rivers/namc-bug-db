@@ -419,6 +419,27 @@ exports.default = {
                 });
             });
         },
+        translationTaxa: function (obj, _a, _b) {
+            var limit = _a.limit, offset = _a.offset, translationId = _a.translationId;
+            var user = _b.user;
+            return __awaiter(void 0, void 0, void 0, function () {
+                var pool, data;
+                return __generator(this, function (_c) {
+                    switch (_c.label) {
+                        case 0:
+                            loggedInGate(user);
+                            limitOffsetCheck(limit, common_1.graphql.queryLimits.models, offset);
+                            return [4, pg.getPool()];
+                        case 1:
+                            pool = _c.sent();
+                            return [4, pg.getTranslationTaxa(pool, limit, offset, translationId)];
+                        case 2:
+                            data = _c.sent();
+                            return [2, createPagination(data, limit, offset)];
+                    }
+                });
+            });
+        },
         sitePredictorValues: function (obj, _a, _b) {
             var limit = _a.limit, offset = _a.offset, siteId = _a.siteId;
             var user = _b.user;
@@ -661,6 +682,51 @@ exports.default = {
                         case 2:
                             data = _c.sent();
                             return [2, createPagination(data)];
+                    }
+                });
+            });
+        },
+        sampleMetrics: function (obj, _a, _b) {
+            var sampleIds = _a.sampleIds, boxIds = _a.boxIds, projectIds = _a.projectIds, translationId = _a.translationId, fixedCount = _a.fixedCount;
+            var user = _b.user;
+            return __awaiter(void 0, void 0, void 0, function () {
+                var check, pool, data;
+                return __generator(this, function (_c) {
+                    switch (_c.label) {
+                        case 0:
+                            loggedInGate(user);
+                            check = [sampleIds, boxIds, projectIds].filter(function (i) { return i; });
+                            if (check.length === 0)
+                                throw new Error('You must provide an array of sample IDs, box IDs or project IDs.');
+                            else if (check.length > 1)
+                                throw new Error('You must choose either an array of sample IDs, an array of box IDs, or an array of project IDs.');
+                            return [4, pg.getPool()];
+                        case 1:
+                            pool = _c.sent();
+                            if (!sampleIds) return [3, 3];
+                            if (sampleIds.length < 1 || sampleIds.length > config_2.maxIdResults)
+                                throw new Error(sampleIds.length + " items found. You must specify between 1 and " + config_2.maxIdResults + " item IDs.");
+                            return [4, pg.getSampleMetrics(pool, sampleIds, translationId, fixedCount)];
+                        case 2:
+                            data = _c.sent();
+                            return [3, 7];
+                        case 3:
+                            if (!boxIds) return [3, 5];
+                            if (boxIds.length > config_2.maxIdResults)
+                                throw new Error(boxIds.length + " items found. You must specify between 1 and " + config_2.maxIdResults + " item IDs.");
+                            return [4, pg.getBoxMetrics(pool, boxIds, translationId, fixedCount)];
+                        case 4:
+                            data = _c.sent();
+                            return [3, 7];
+                        case 5:
+                            if (!projectIds) return [3, 7];
+                            if (projectIds.length > config_2.maxIdResults)
+                                throw new Error(projectIds.length + " items found. You must specify between 1 and " + config_2.maxIdResults + " item IDs.");
+                            return [4, pg.getProjectMetrics(pool, projectIds, translationId, fixedCount)];
+                        case 6:
+                            data = _c.sent();
+                            _c.label = 7;
+                        case 7: return [2, createPagination(data)];
                     }
                 });
             });

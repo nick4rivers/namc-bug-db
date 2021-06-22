@@ -230,6 +230,19 @@ export default {
             return createPagination<Translation>(data, limit, offset)
         },
 
+        translationTaxa: async (
+            obj,
+            { limit, offset, translationId },
+            { user }
+        ): Promise<PaginatedRecords<TranslationTaxa>> => {
+            loggedInGate(user)
+            limitOffsetCheck(limit, graphql.queryLimits.models, offset)
+
+            const pool = await pg.getPool()
+            const data = await pg.getTranslationTaxa(pool, limit, offset, translationId)
+            return createPagination<TranslationTaxa>(data, limit, offset)
+        },
+
         sitePredictorValues: async (
             obj,
             { limit, offset, siteId },
@@ -376,6 +389,46 @@ export default {
             const pool = await pg.getPool()
             const data = await pg.getMetrics(pool, limit, offset)
             return createPagination<Metric>(data)
+        },
+
+        sampleMetrics: async (
+            obj,
+            { sampleIds, boxIds, projectIds, translationId, fixedCount },
+            { user }
+        ): Promise<PaginatedRecords<MetricResult>> => {
+            loggedInGate(user)
+
+            const check = [sampleIds, boxIds, projectIds].filter((i) => i)
+            if (check.length === 0) throw new Error('You must provide an array of sample IDs, box IDs or project IDs.')
+            else if (check.length > 1)
+                throw new Error(
+                    'You must choose either an array of sample IDs, an array of box IDs, or an array of project IDs.'
+                )
+
+            const pool = await pg.getPool()
+            let data
+
+            if (sampleIds) {
+                if (sampleIds.length < 1 || sampleIds.length > maxIdResults)
+                    throw new Error(
+                        `${sampleIds.length} items found. You must specify between 1 and ${maxIdResults} item IDs.`
+                    )
+                data = await pg.getSampleMetrics(pool, sampleIds, translationId, fixedCount)
+            } else if (boxIds) {
+                if (boxIds.length > maxIdResults)
+                    throw new Error(
+                        `${boxIds.length} items found. You must specify between 1 and ${maxIdResults} item IDs.`
+                    )
+                data = await pg.getBoxMetrics(pool, boxIds, translationId, fixedCount)
+            } else if (projectIds) {
+                if (projectIds.length > maxIdResults)
+                    throw new Error(
+                        `${projectIds.length} items found. You must specify between 1 and ${maxIdResults} item IDs.`
+                    )
+                data = await pg.getProjectMetrics(pool, projectIds, translationId, fixedCount)
+            }
+
+            return createPagination<MetricResult>(data)
         },
 
         taxaAttributes: async (

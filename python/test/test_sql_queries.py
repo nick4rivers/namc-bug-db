@@ -98,6 +98,12 @@ def test_translations(cursor):
     assert True
 
 
+def test_translation_taxa(cursor):
+
+    cursor.execute('SELECT * FROM taxa.fn_translation_taxa(100, 0, 3)')
+    assert True
+
+
 def test_plankton(cursor):
     cursor.execute('SELECT * FROM sample.fn_plankton(100, 0)')
     assert True

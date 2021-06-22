@@ -106,6 +106,40 @@ from (
 $$;
 
 
+create or replace function taxa.fn_translation_taxa(p_limit int, p_offset int, p_translation_id int)
+    returns table
+            (
+                translation_id              smallint,
+                translation_name            varchar,
+                taxonomy_id                 smallint,
+                level_id                    smallint,
+                level_name                  varchar,
+                original_scientific_name    varchar,
+                translation_scientific_name varchar,
+                is_final                    bool
+            )
+    language sql
+    immutable
+as
+
+$$
+select p_translation_id,
+       tr.translation_name,
+       t.taxonomy_id,
+       l.level_id,
+       l.level_name,
+       t.scientific_name,
+       coalesce(tt.alias, t.scientific_name) translation_scientific_name,
+       tt.is_final
+from taxa.translations tr
+         inner join taxa.translation_taxa tt on tr.translation_id = tt.translation_id
+         inner join taxa.taxonomy t on tt.taxonomy_id = t.taxonomy_id
+         inner join taxa.taxa_levels l on t.level_id = l.level_id
+where (tt.translation_id = p_translation_id)
+order by level_id, translation_scientific_name
+limit p_limit offset p_offset;
+$$;
+
 drop function if exists taxa.fn_translation_taxa;
 create or replace function taxa.fn_translation_taxa(p_translation_id int, p_taxonomy_id int)
     returns table
@@ -205,6 +239,6 @@ from taxa.fn_tree(p_taxonomy_id)
 where taxonomy_id = p_parent_taxonomy_id;
 $$;
 comment on function taxa.fn_is_descended_from is
-'Returns true if the taxa (argument 1) is a descdendant of the parent taxa (argument 2).
-Descendant means that the taxa is at the same or lower level of the taxonomic hierarchy
-as the parent';
+    'Returns true if the taxa (argument 1) is a descdendant of the parent taxa (argument 2).
+    Descendant means that the taxa is at the same or lower level of the taxonomic hierarchy
+    as the parent';
