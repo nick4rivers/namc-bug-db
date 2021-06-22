@@ -28,8 +28,10 @@ import {
     DriftSample,
     FishSample,
     MassSample,
+    MetricResult,
     Attribute,
     AttributeValue,
+    TranslationTaxa,
     Metric,
     util
 } from '@namcbugdb/common'
