@@ -5909,3 +5909,6 @@ insert into taxa.taxonomy (taxonomy_id, scientific_name, level_id, parent_id, au
 insert into taxa.taxonomy (taxonomy_id, scientific_name, level_id, parent_id, author, year, notes, metadata) values (6333, 'Povilla', 23, 298, NULL, NULL, NULL, '{"status": "Verified"}');
 insert into taxa.taxonomy (taxonomy_id, scientific_name, level_id, parent_id, author, year, notes, metadata) values (6334, 'Allocrangonyctidae', 19, 4501, NULL, NULL, NULL, '{"status": "Verified"}');
 insert into taxa.taxonomy (taxonomy_id, scientific_name, level_id, parent_id, author, year, notes, metadata) values (6335, 'Chromista', 1, NULL, NULL, NULL, NULL, '{"status": "Unverified"}');
+
+
+SELECT setval(pg_get_serial_sequence('taxa.taxonomy', 'taxonomy_id'), COALESCE(max(taxonomy_id) + 1, 1), false) FROM taxa.taxonomy;
