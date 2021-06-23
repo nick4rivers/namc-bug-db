@@ -10,6 +10,7 @@ postgis==1.0.4
 psycopg2-binary==2.8.5
 pycodestyle==2.7.0
 pylint==2.8.3
+pyodbc==4.0.30
 pyparsing==2.4.7
 pytest==6.2.4
 python-dotenv==0.18.0
