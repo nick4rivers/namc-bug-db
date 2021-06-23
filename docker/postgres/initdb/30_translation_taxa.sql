@@ -650,7 +650,6 @@ insert into taxa.translation_taxa (translation_id, taxonomy_id, alias) values (3
 insert into taxa.translation_taxa (translation_id, taxonomy_id, alias) values (3, 431, NULL);
 insert into taxa.translation_taxa (translation_id, taxonomy_id, alias) values (3, 766, NULL);
 insert into taxa.translation_taxa (translation_id, taxonomy_id, alias) values (3, 1487, NULL);
-insert into taxa.translation_taxa (translation_id, taxonomy_id, alias) values (3, 639, NULL);
 insert into taxa.translation_taxa (translation_id, taxonomy_id, alias) values (3, 680, NULL);
 insert into taxa.translation_taxa (translation_id, taxonomy_id, alias) values (3, 6173, NULL);
 insert into taxa.translation_taxa (translation_id, taxonomy_id, alias) values (3, 215, NULL);
@@ -829,7 +828,6 @@ insert into taxa.translation_taxa (translation_id, taxonomy_id, alias) values (3
 insert into taxa.translation_taxa (translation_id, taxonomy_id, alias) values (3, 3978, 'Pseudhydrovatus');
 insert into taxa.translation_taxa (translation_id, taxonomy_id, alias) values (3, 955, NULL);
 insert into taxa.translation_taxa (translation_id, taxonomy_id, alias) values (3, 3897, NULL);
-insert into taxa.translation_taxa (translation_id, taxonomy_id, alias) values (3, 2277, NULL);
 insert into taxa.translation_taxa (translation_id, taxonomy_id, alias) values (3, 3925, NULL);
 insert into taxa.translation_taxa (translation_id, taxonomy_id, alias) values (3, 678, NULL);
 insert into taxa.translation_taxa (translation_id, taxonomy_id, alias) values (3, 554, NULL);
@@ -1036,10 +1034,8 @@ insert into taxa.translation_taxa (translation_id, taxonomy_id, alias) values (8
 insert into taxa.translation_taxa (translation_id, taxonomy_id, alias) values (8, 2219, 'Cricotopus (Nostococladius) nostocicola');
 insert into taxa.translation_taxa (translation_id, taxonomy_id, alias) values (8, 6271, NULL);
 insert into taxa.translation_taxa (translation_id, taxonomy_id, alias) values (8, 6272, NULL);
-insert into taxa.translation_taxa (translation_id, taxonomy_id, alias) values (8, 2762, 'Cricotopus cf. trifascia');
 insert into taxa.translation_taxa (translation_id, taxonomy_id, alias) values (8, 2590, 'Cricotopus curtus gr');
 insert into taxa.translation_taxa (translation_id, taxonomy_id, alias) values (8, 2808, 'Cricotopus isocladius');
-insert into taxa.translation_taxa (translation_id, taxonomy_id, alias) values (8, 2808, 'Cricotopus isocladius group');
 insert into taxa.translation_taxa (translation_id, taxonomy_id, alias) values (8, 6274, NULL);
 insert into taxa.translation_taxa (translation_id, taxonomy_id, alias) values (8, 157, 'Cymbiodyta sp. adults');
 insert into taxa.translation_taxa (translation_id, taxonomy_id, alias) values (8, 6022, 'Dero (Dero) nivea');
@@ -1089,10 +1085,8 @@ insert into taxa.translation_taxa (translation_id, taxonomy_id, alias) values (8
 insert into taxa.translation_taxa (translation_id, taxonomy_id, alias) values (8, 6286, NULL);
 insert into taxa.translation_taxa (translation_id, taxonomy_id, alias) values (8, 31, 'Nais spp.');
 insert into taxa.translation_taxa (translation_id, taxonomy_id, alias) values (8, 134, 'Narpus concolor adults');
-insert into taxa.translation_taxa (translation_id, taxonomy_id, alias) values (8, 652, NULL);
 insert into taxa.translation_taxa (translation_id, taxonomy_id, alias) values (8, 2181, 'Neoporus sp. adults');
 insert into taxa.translation_taxa (translation_id, taxonomy_id, alias) values (8, 5421, 'Nixe simplicioides');
-insert into taxa.translation_taxa (translation_id, taxonomy_id, alias) values (8, 2809, 'Nostococladius');
 insert into taxa.translation_taxa (translation_id, taxonomy_id, alias) values (8, 1349, 'Notonecta undulata adults');
 insert into taxa.translation_taxa (translation_id, taxonomy_id, alias) values (8, 1221, 'Ochthebius sp. adults');
 insert into taxa.translation_taxa (translation_id, taxonomy_id, alias) values (8, 6287, NULL);
@@ -1154,7 +1148,6 @@ insert into taxa.translation_taxa (translation_id, taxonomy_id, alias) values (8
 insert into taxa.translation_taxa (translation_id, taxonomy_id, alias) values (8, 2603, 'Tricorythodes edmundsi');
 insert into taxa.translation_taxa (translation_id, taxonomy_id, alias) values (8, 789, NULL);
 insert into taxa.translation_taxa (translation_id, taxonomy_id, alias) values (8, 5418, 'Tropisternus ellipticus');
-insert into taxa.translation_taxa (translation_id, taxonomy_id, alias) values (8, 5418, 'Tropisternus ellipticus adults');
 insert into taxa.translation_taxa (translation_id, taxonomy_id, alias) values (8, 3961, 'Tropisternus lateralis adults');
 insert into taxa.translation_taxa (translation_id, taxonomy_id, alias) values (8, 6317, NULL);
 insert into taxa.translation_taxa (translation_id, taxonomy_id, alias) values (8, 5732, 'Tropisternus lateralis nimbatus adults');
@@ -1167,7 +1160,6 @@ insert into taxa.translation_taxa (translation_id, taxonomy_id, alias) values (8
 insert into taxa.translation_taxa (translation_id, taxonomy_id, alias) values (8, 5419, 'Tvetenia discoloripes');
 insert into taxa.translation_taxa (translation_id, taxonomy_id, alias) values (8, 652, 'Unid. Nematoda');
 insert into taxa.translation_taxa (translation_id, taxonomy_id, alias) values (8, 2643, 'Uvarus lacustris adults');
-insert into taxa.translation_taxa (translation_id, taxonomy_id, alias) values (8, 6323, NULL);
 insert into taxa.translation_taxa (translation_id, taxonomy_id, alias) values (8, 6323, 'Zaitzevia parvula adults');
 insert into taxa.translation_taxa (translation_id, taxonomy_id, alias) values (8, 909, 'Zapada cintipes');
 insert into taxa.translation_taxa (translation_id, taxonomy_id, alias) values (9, 1170, NULL);
@@ -1955,7 +1947,6 @@ insert into taxa.translation_taxa (translation_id, taxonomy_id, alias) values (1
 insert into taxa.translation_taxa (translation_id, taxonomy_id, alias) values (15, 895, NULL);
 insert into taxa.translation_taxa (translation_id, taxonomy_id, alias) values (15, 286, NULL);
 insert into taxa.translation_taxa (translation_id, taxonomy_id, alias) values (15, 225, NULL);
-insert into taxa.translation_taxa (translation_id, taxonomy_id, alias) values (15, 418, NULL);
 insert into taxa.translation_taxa (translation_id, taxonomy_id, alias) values (15, 419, NULL);
 insert into taxa.translation_taxa (translation_id, taxonomy_id, alias) values (15, 231, NULL);
 insert into taxa.translation_taxa (translation_id, taxonomy_id, alias) values (15, 474, NULL);
@@ -2204,7 +2195,6 @@ insert into taxa.translation_taxa (translation_id, taxonomy_id, alias) values (1
 insert into taxa.translation_taxa (translation_id, taxonomy_id, alias) values (16, 143, NULL);
 insert into taxa.translation_taxa (translation_id, taxonomy_id, alias) values (16, 286, NULL);
 insert into taxa.translation_taxa (translation_id, taxonomy_id, alias) values (16, 225, NULL);
-insert into taxa.translation_taxa (translation_id, taxonomy_id, alias) values (16, 418, NULL);
 insert into taxa.translation_taxa (translation_id, taxonomy_id, alias) values (16, 419, NULL);
 insert into taxa.translation_taxa (translation_id, taxonomy_id, alias) values (16, 231, NULL);
 insert into taxa.translation_taxa (translation_id, taxonomy_id, alias) values (16, 474, NULL);

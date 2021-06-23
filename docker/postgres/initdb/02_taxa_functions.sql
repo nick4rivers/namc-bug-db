@@ -105,7 +105,7 @@ from (
          inner join taxa.attributes a on ta.attribute_id = a.attribute_id;
 $$;
 
-
+drop function if exists taxa.fn_translation_taxa(int, int, int);
 create or replace function taxa.fn_translation_taxa(p_limit int, p_offset int, p_translation_id int)
     returns table
             (
