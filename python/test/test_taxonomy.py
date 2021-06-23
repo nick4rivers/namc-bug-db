@@ -10,7 +10,7 @@ def test_set_taxonomy(cursor):
     parent2_id = cursor.fetchone()[0]
 
     taxonomy_name = 'test child'
-    cursor.execute('INSERT INTO taxa.taxonomy (scientific_name, level_id, parent_id) VALUES (%s, %s) returning taxonomy_id', [taxonomy_name, 1, parent1_id])
+    cursor.execute('INSERT INTO taxa.taxonomy (scientific_name, level_id, parent_id) VALUES (%s, %s, %s) returning taxonomy_id', [taxonomy_name, 1, parent1_id])
     taxonomy_id = cursor.fetchone()[0]
 
     new_name = 'new_name'

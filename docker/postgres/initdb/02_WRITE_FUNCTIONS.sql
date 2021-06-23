@@ -223,7 +223,6 @@ begin
         parent_id       = p_parent_id,
         author          = p_author,
         year            = p_year,
-        author          = p_author,
         notes           = p_notes,
         metadata        = p_metadata
     where taxonomy_id = p_taxonomy_id;
