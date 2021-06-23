@@ -5908,4 +5908,4 @@ insert into taxa.taxonomy (taxonomy_id, scientific_name, level_id, parent_id, au
 insert into taxa.taxonomy (taxonomy_id, scientific_name, level_id, parent_id, author, year, notes, metadata) values (6332, 'Suphis', 23, 1391, NULL, NULL, NULL, '{"status": "Verified"}');
 insert into taxa.taxonomy (taxonomy_id, scientific_name, level_id, parent_id, author, year, notes, metadata) values (6333, 'Povilla', 23, 298, NULL, NULL, NULL, '{"status": "Verified"}');
 insert into taxa.taxonomy (taxonomy_id, scientific_name, level_id, parent_id, author, year, notes, metadata) values (6334, 'Allocrangonyctidae', 19, 4501, NULL, NULL, NULL, '{"status": "Verified"}');
-insert into taxa.taxonomy (taxonomy_id, scientific_name, level_id, parent_id, author, year, notes, metadata) values (6334, 'Chromista', 1, NULL, NULL, NULL, NULL, '{"status": "Unverified"}');
+insert into taxa.taxonomy (taxonomy_id, scientific_name, level_id, parent_id, author, year, notes, metadata) values (6335, 'Chromista', 1, NULL, NULL, NULL, NULL, '{"status": "Unverified"}');
