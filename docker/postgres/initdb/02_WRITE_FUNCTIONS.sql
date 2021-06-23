@@ -147,3 +147,53 @@ delete
 from sample.projects
 where project_id = p_project_id;
 $$;
+
+/******************************************************************************************************************************
+  Translation Functions
+ */
+
+create or replace function taxa.fn_create_translation(p_translation_name text, p_description text)
+    returns smallint
+    language sql
+as
+$$
+insert into taxa.translations (translation_name, description)
+values (p_translation_name, p_description)
+returning translation_id;
+$$;
+
+create or replace function taxa.fn_set_translation_taxa(p_translation_id int, p_taxonomy_id int, p_alias text,
+                                                        p_is_final boolean)
+    returns bigint
+    language plpgsql
+as
+$$
+declare
+    rows_affected bigint;
+begin
+    insert into taxa.translation_taxa (translation_id, taxonomy_id, alias, is_final)
+    values (p_translation_id, p_taxonomy_id, p_alias, p_is_final)
+    on conflict on constraint pk_translation_taxa do update set alias    = case
+                                                                               when p_alias is null then null
+                                                                               when length(p_alias) < 1 then NULL
+                                                                               else p_alias end,
+                                                                is_final = p_is_final;
+    GET DIAGNOSTICS rows_affected = ROW_COUNT;
+    return rows_affected;
+end
+$$;
+
+create or replace function taxa.fn_delete_translation_taxa(p_translation_id int, p_taxonomy_id int)
+    returns bigint
+    language plpgsql
+as
+$$
+declare
+    rows_affected bigint;
+begin
+    delete from taxa.translation_taxa where (translation_id = p_translation_id) and (taxonomy_id = p_taxonomy_id);
+
+    GET DIAGNOSTICS rows_affected = ROW_COUNT;
+    return rows_affected;
+end
+$$;
