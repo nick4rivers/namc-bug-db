@@ -42,7 +42,3 @@ def test_set_site_catchment_failure(cursor):
     with pytest.raises(Exception) as exinfo:
         cursor.execute("""SELECT sample.fn_set_site_catchment(1, 'Errors Suck')""")
     assert "catchment does not intersect the United States" in str(exinfo.value)
-
-
-if __name__ == "__main__":
-    pytest.main([__file__])

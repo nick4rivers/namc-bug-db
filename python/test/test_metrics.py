@@ -16,7 +16,3 @@ def test_metric_load_sample_taxa(cursor, taxonomic_hierarchy, abundance):
     # cursor.execute('select metric.fn_sample_abundance(1, %s, 1, 1)', [sample_id])
     # assert cursor.fetchone()[0] == 54.0
     assert True
-
-
-if __name__ == "__main__":
-    pytest.main([__file__])

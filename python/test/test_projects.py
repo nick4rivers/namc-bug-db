@@ -112,7 +112,3 @@ def test_delete_project(cursor, project_data):
 
     cursor.execute('select count(*) from sample.projects where project_id = %s', [project_id])
     assert cursor.fetchone()[0] == 0
-
-
-if __name__ == "__main__":
-    pytest.main([__file__])

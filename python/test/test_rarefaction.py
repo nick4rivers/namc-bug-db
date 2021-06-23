@@ -27,7 +27,3 @@ def get_sample_id(cursor, customer_name):
         where o.organization_name ilike %s
         limit 1""", [customer_name])
     return cursor.fetchone()[0]
-
-
-if __name__ == "__main__":
-    pytest.main([__file__])

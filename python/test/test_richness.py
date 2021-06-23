@@ -27,7 +27,3 @@ def test_cal_richness(cursor):
         (5,'taxa 5',1,'level e',1)::taxa_info2
         ])""")
     assert cursor.fetchone()[0] == 4
-
-
-if __name__ == "__main__":
-    pytest.main([__file__])

@@ -84,7 +84,3 @@ def test_taxa_polygon(cursor, taxonomic_hierarchy, pacific_taxa):
     assert len(orig_rows) == 10
     for row in orig_rows:
         assert row['abundance'] == 1
-
-
-if __name__ == "__main__":
-    pytest.main([__file__])

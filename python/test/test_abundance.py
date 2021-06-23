@@ -93,7 +93,3 @@ def test_sample_abundance(cursor, taxonomic_hierarchy, abundance):
 #     cursor.execute('SELECT metric.fn_attribute_abundance(%s, %s)', [sample_id, attributea])
 #     atta_abundance = cursor.fetchone()[0]
 #     assert atta_abundance == 20
-
-
-if __name__ == "__main__":
-    pytest.main([__file__])

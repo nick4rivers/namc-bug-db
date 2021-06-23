@@ -12,7 +12,3 @@ def test_calc_shannons_diversity(cursor):
         (2, 'taxa 2',1,'level b',200)::taxa_info2
         ])""")
     assert cursor.fetchone()[0] == pytest.approx(0.63651, 0.001)
-
-
-if __name__ == "__main__":
-    pytest.main([__file__])
