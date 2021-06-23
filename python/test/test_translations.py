@@ -1,6 +1,6 @@
 import pytest
-from helper_functions import get_samples_by_customer_name
-from helper_functions import print_organisms
+from test.helper_functions import get_samples_by_customer_name
+from test.helper_functions import print_organisms
 
 
 def test_translations(cursor, translation_data):
@@ -88,11 +88,23 @@ def test_set_translation_taxa(cursor):
     assert taxa[taxonomy_id] == taxonomy_name
 
 
+def test_delete_translation_data(cursor):
+
+    taxonomy_name = 'test taxa'
+    cursor.execute('INSERT INTO taxa.taxonomy (scientific_name, level_id) VALUES (%s, %s) returning taxonomy_id', [taxonomy_name, 1])
+    taxonomy_id = cursor.fetchone()[0]
+
+    cursor.execute('SELECT taxa.fn_create_translation(%s, NULL)', ['test translation'])
+    translation_id = cursor.fetchone()[0]
+
+    # Add taxa 1 to translation, with no name
+    cursor.execute('SELECT taxa.fn_set_translation_taxa(%s, %s, NULL, True)', [translation_id, taxonomy_id])
+
+    cursor.callproc('taxa.fn_delete_translation_taxa', [translation_id, taxonomy_id])
+    assert cursor.fetchone()[0] == 1
+
+
 def load_translation_taxa(cursor, translation_id):
 
     cursor.execute('SELECT * FROM taxa.fn_translation_taxa(1000, 0, %s)', [translation_id])
     return {row['taxonomy_id']: row['translation_scientific_name'] for row in cursor.fetchall()}
-
-
-if __name__ == "__main__":
-    pytest.main([__file__])

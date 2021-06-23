@@ -169,14 +169,18 @@ create or replace function taxa.fn_set_translation_taxa(p_translation_id int, p_
 as
 $$
 declare
-    rows_affected bigint;
+    rows_affected       bigint;
+    declare clean_alias text;
 begin
+    select case
+               when p_alias is null then null
+               when length(p_alias) < 1 then NULL
+               else p_alias end
+    into clean_alias;
+
     insert into taxa.translation_taxa (translation_id, taxonomy_id, alias, is_final)
-    values (p_translation_id, p_taxonomy_id, p_alias, p_is_final)
-    on conflict on constraint pk_translation_taxa do update set alias    = case
-                                                                               when p_alias is null then null
-                                                                               when length(p_alias) < 1 then NULL
-                                                                               else p_alias end,
+    values (p_translation_id, p_taxonomy_id, clean_alias, p_is_final)
+    on conflict on constraint pk_translation_taxa do update set alias    =clean_alias,
                                                                 is_final = p_is_final;
     GET DIAGNOSTICS rows_affected = ROW_COUNT;
     return rows_affected;
