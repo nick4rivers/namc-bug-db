@@ -201,3 +201,34 @@ begin
     return rows_affected;
 end
 $$;
+
+create or replace function taxa.fn_set_taxonomy(p_taxonomy_id int,
+                                                p_scientific_name varchar,
+                                                p_level_id int,
+                                                p_parent_id int,
+                                                p_author varchar,
+                                                p_year int,
+                                                p_notes text,
+                                                p_metadata json)
+    returns bigint
+    language plpgsql
+as
+$$
+declare
+    rows_affected bigint;
+begin
+    update taxa.taxonomy
+    set scientific_name = p_scientific_name,
+        level_id        = p_level_id,
+        parent_id       = p_parent_id,
+        author          = p_author,
+        year            = p_year,
+        author          = p_author,
+        notes           = p_notes,
+        metadata        = p_metadata
+    where taxonomy_id = p_taxonomy_id;
+
+    get diagnostics rows_affected = row_count;
+    return rows_affected;
+end
+$$;
