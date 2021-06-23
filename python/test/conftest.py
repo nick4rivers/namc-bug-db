@@ -2,6 +2,7 @@
 import os
 import random
 import psycopg2
+from psycopg2.extras import execute_values
 from dotenv import load_dotenv
 import pytest
 
@@ -10,21 +11,21 @@ load_dotenv(os.path.join(os.path.dirname(__file__), '..', '.env'))
 
 @pytest.fixture(scope='module')
 def cnxn():
-    cnxn_obj = psycopg2.connect(
+    cnxn = psycopg2.connect(
         user=os.getenv('POSTGRES_USER'),
         password=os.getenv('POSTGRES_PASSWORD'),
         host=os.getenv('POSTGRES_HOST'),
         port=os.getenv('POSTGRES_PORT'),
         database=os.getenv('POSTGRES_DB'))
-    yield cnxn_obj
-    cnxn_obj.close()
+    yield cnxn
+    cnxn.close()
 
 
 @pytest.fixture
 def cursor(cnxn):
-    my_cursor = cnxn.cursor(cursor_factory=psycopg2.extras.DictCursor)
-    yield my_cursor
-    my_cursor.rollback()
+    cursor = cnxn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+    yield cursor
+    cnxn.rollback()
 
 
 @pytest.fixture
@@ -133,8 +134,8 @@ def insert_taxa_translation(cursor, translation_id, original_taxa_name, replacem
     cursor.execute("SELECT taxonomy_id FROM taxa.taxonomy WHERE scientific_name ilike %s", [original_taxa_name])
     taxonomy_id = cursor.fetchone()[0]
 
-    cursor.execute("INSERT INTO taxa.taxa_translations (translation_id, taxonomy_id, translation_taxonomy_name) VALUES (%s, %s, %s) returning translation_taxonomy_id", [translation_id, taxonomy_id, replacement_taxa_name])
-    return cursor.fetchone()[0]
+    cursor.execute("INSERT INTO taxa.translation_taxa (translation_id, taxonomy_id, alias) VALUES (%s, %s, %s)", [translation_id, taxonomy_id, replacement_taxa_name])
+    return taxonomy_id
 
 
 def insert_organism(cursor, sample_id, taxonomy_id, split_count):
