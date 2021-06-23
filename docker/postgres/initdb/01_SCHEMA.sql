@@ -505,6 +505,7 @@ CREATE TABLE taxa.taxonomy
     updated_date    TIMESTAMPTZ  NOT NULL DEFAULT now(),
 
     CONSTRAINT ck_scientific_name CHECK (length(scientific_name) > 0),
+    CONSTRAINT ck_parent_id CHECK ( (parent_id IS NULL) OR (parent_id <> taxonomy_id)),
     CONSTRAINT fk_organism_taxonomy_taxa_level_id FOREIGN KEY (level_id) REFERENCES taxa.taxa_levels (level_id)
 );
 CREATE INDEX fx_organism_taxonomy_taxa_level_id ON taxa.taxonomy (level_id);
