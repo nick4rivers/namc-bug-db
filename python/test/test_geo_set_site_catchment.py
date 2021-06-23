@@ -45,4 +45,4 @@ def test_set_site_catchment_failure(cursor):
 
 
 if __name__ == "__main__":
-    pytest.main()
+    pytest.main([__file__])

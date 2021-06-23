@@ -96,5 +96,4 @@ def test_sample_abundance(cursor, taxonomic_hierarchy, abundance):
 
 
 if __name__ == "__main__":
-
-    pytest.main(['test/test_abundance.py::test_sample_abundance'])
+    pytest.main([__file__])

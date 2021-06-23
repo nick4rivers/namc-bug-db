@@ -31,4 +31,4 @@ def test_translations(cursor, translation_data):
 
 
 if __name__ == "__main__":
-    pytest.main(['test/test_translations.py::test_translations'])
+    pytest.main([__file__])

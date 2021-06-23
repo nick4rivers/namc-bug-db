@@ -30,5 +30,4 @@ def test_cal_richness(cursor):
 
 
 if __name__ == "__main__":
-
-    pytest.main(['test/test_richness.py::test_cal_richness'])
+    pytest.main([__file__])

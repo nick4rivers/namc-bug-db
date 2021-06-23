@@ -1,29 +1,30 @@
+# pylint: disable=redefined-outer-name
 import os
-import pytest
-import psycopg2
-from psycopg2.extras import execute_values
-import textwrap
 import random
+import psycopg2
+from dotenv import load_dotenv
+import pytest
+
+load_dotenv(os.path.join(os.path.dirname(__file__), '..', '.env'))
 
 
 @pytest.fixture(scope='module')
 def cnxn():
-
-    cnxn = psycopg2.connect(
+    cnxn_obj = psycopg2.connect(
         user=os.getenv('POSTGRES_USER'),
         password=os.getenv('POSTGRES_PASSWORD'),
         host=os.getenv('POSTGRES_HOST'),
         port=os.getenv('POSTGRES_PORT'),
         database=os.getenv('POSTGRES_DB'))
-    yield cnxn
-    cnxn.close()
+    yield cnxn_obj
+    cnxn_obj.close()
 
 
 @pytest.fixture
 def cursor(cnxn):
-    cursor = cnxn.cursor(cursor_factory=psycopg2.extras.DictCursor)
-    yield cursor
-    cnxn.rollback()
+    my_cursor = cnxn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+    yield my_cursor
+    my_cursor.rollback()
 
 
 @pytest.fixture

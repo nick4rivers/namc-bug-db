@@ -30,5 +30,4 @@ def get_sample_id(cursor, customer_name):
 
 
 if __name__ == "__main__":
-
-    pytest.main(['test/test_rarefaction.py::test_rarefaction'])
+    pytest.main([__file__])

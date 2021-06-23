@@ -15,5 +15,4 @@ def test_calc_simpsons_diversity(cursor):
 
 
 if __name__ == "__main__":
-
-    pytest.main(['test/test_simpsons_diversity.py::test_calc_simpsons_diversity'])
+    pytest.main([__file__])

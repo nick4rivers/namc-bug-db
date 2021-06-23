@@ -115,5 +115,4 @@ def test_delete_project(cursor, project_data):
 
 
 if __name__ == "__main__":
-
-    pytest.main(['test/test_projects.py::test_add_project_boxes'])
+    pytest.main([__file__])

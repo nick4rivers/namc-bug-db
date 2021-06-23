@@ -87,4 +87,4 @@ def test_taxa_polygon(cursor, taxonomic_hierarchy, pacific_taxa):
 
 
 if __name__ == "__main__":
-    pytest.main(['test/test_sample_taxa.py::test_box_taxa_raw'])
+    pytest.main([__file__])

@@ -19,5 +19,4 @@ def test_metric_load_sample_taxa(cursor, taxonomic_hierarchy, abundance):
 
 
 if __name__ == "__main__":
-
-    pytest.main(['test/test_metrics.py::test_metric_load_sample_taxa'])
+    pytest.main([__file__])
