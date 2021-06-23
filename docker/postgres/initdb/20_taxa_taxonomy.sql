@@ -3635,7 +3635,7 @@ insert into taxa.taxonomy (taxonomy_id, scientific_name, level_id, parent_id, au
 insert into taxa.taxonomy (taxonomy_id, scientific_name, level_id, parent_id, author, year, notes, metadata) values (4038, 'Peltodytes dispersus', 25, 152, NULL, NULL, NULL, '{"status": "Verified"}');
 insert into taxa.taxonomy (taxonomy_id, scientific_name, level_id, parent_id, author, year, notes, metadata) values (4039, 'Laccophilus pictus', 25, 117, NULL, NULL, NULL, '{"status": "Verified"}');
 insert into taxa.taxonomy (taxonomy_id, scientific_name, level_id, parent_id, author, year, notes, metadata) values (4040, 'Galba bulimoides', 25, 618, NULL, NULL, NULL, '{"status": "Verified"}');
-insert into taxa.taxonomy (taxonomy_id, scientific_name, level_id, parent_id, author, year, notes, metadata) values (4041, 'Didymosphenia geminata', 25, 4041, NULL, NULL, NULL, '{"status": "Unverified"}');
+insert into taxa.taxonomy (taxonomy_id, scientific_name, level_id, parent_id, author, year, notes, metadata) values (4041, 'Didymosphenia geminata', 25, 6334, NULL, NULL, NULL, '{"status": "Unverified"}');
 insert into taxa.taxonomy (taxonomy_id, scientific_name, level_id, parent_id, author, year, notes, metadata) values (4042, 'Paraleptophlebia helena (tusks)', 25, 292, NULL, NULL, NULL, '{"status": "Delete"}');
 insert into taxa.taxonomy (taxonomy_id, scientific_name, level_id, parent_id, author, year, notes, metadata) values (4043, 'Hygrotus marklini', 25, 115, NULL, NULL, NULL, '{"status": "Verified"}');
 insert into taxa.taxonomy (taxonomy_id, scientific_name, level_id, parent_id, author, year, notes, metadata) values (4044, 'Lymnaea catascopium', 25, 927, NULL, NULL, NULL, '{"status": "Delete"}');
@@ -5908,3 +5908,4 @@ insert into taxa.taxonomy (taxonomy_id, scientific_name, level_id, parent_id, au
 insert into taxa.taxonomy (taxonomy_id, scientific_name, level_id, parent_id, author, year, notes, metadata) values (6332, 'Suphis', 23, 1391, NULL, NULL, NULL, '{"status": "Verified"}');
 insert into taxa.taxonomy (taxonomy_id, scientific_name, level_id, parent_id, author, year, notes, metadata) values (6333, 'Povilla', 23, 298, NULL, NULL, NULL, '{"status": "Verified"}');
 insert into taxa.taxonomy (taxonomy_id, scientific_name, level_id, parent_id, author, year, notes, metadata) values (6334, 'Allocrangonyctidae', 19, 4501, NULL, NULL, NULL, '{"status": "Verified"}');
+insert into taxa.taxonomy (taxonomy_id, scientific_name, level_id, parent_id, author, year, notes, metadata) values (6334, 'Chromista', 1, NULL, NULL, NULL, NULL, '{"status": "Unverified"}');
