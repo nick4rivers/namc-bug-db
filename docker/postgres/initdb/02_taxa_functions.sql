@@ -57,31 +57,27 @@ create or replace function taxa.fn_translations(p_limit int, p_offset int)
                 created_date     text,
                 updated_date     text
             )
-    language plpgsql
+    language sql
     immutable
 as
 $$
-begin
-    return query
-        select t.translation_id,
-               t.translation_name,
-               t.description,
-               t.is_active,
-               coalesce(tx.taxa_count, 0),
-               to_json(t.created_date) #>> '{}',
-               to_json(t.updated_date) #>> '{}'
-        from taxa.translations t
-                 inner join
-             (select tt.translation_id
-              from taxa.translations tt
-              order by translation_id
-              limit p_limit offset p_offset) tt on t.translation_id = tt.translation_id
-                 left join (
-            select tx.translation_id, count(*) taxa_count
-            from taxa.translations tx
-            group by tx.translation_id
-        ) tx on tx.translation_id = t.translation_id;
-end
+select t.translation_id,
+       t.translation_name,
+       t.description,
+       t.is_active,
+       tf.taxa_count,
+       to_json(t.created_date) #>> '{}',
+       to_json(t.updated_date) #>> '{}'
+from taxa.translations t
+         inner join
+     (
+         select t.translation_id, count(tt.*) taxa_count
+         from taxa.translations t
+         left join taxa.translation_taxa tt on t.translation_id = tt.translation_id
+         group by t.translation_id
+         order by translation_id
+         limit p_limit offset p_offset
+     ) tf on t.translation_id = tf.translation_id;
 $$;
 
 
