@@ -1,20 +1,23 @@
-import pyodbc
+"""Taxonomy related data migration
+
+    Note that taxonomy and attributes are now SQL data files and no longer imported.
+    """
 from lib.logger import Logger
-from lib.progress_bar import ProgressBar
-from utilities import sanitize_string_col, log_record_count, add_metadata, sanitize_string, reset_sequence
-from postgres_lookup_data import lookup_data, insert_row, log_row_count, process_table, process_query
+from utilities import sanitize_string_col, add_metadata, sanitize_string, reset_sequence
+from postgres_lookup_data import lookup_data, process_table, process_query
 
 
 def migrate(mscurs, pgcurs):
 
     existing_taxa = lookup_data(pgcurs, 'taxa.taxonomy', 'taxonomy_id')
 
-    # process_table(mscurs, pgcurs, 'PilotDB.taxa.taxonomy', 'taxa.taxonomy', taxonomy_callback, None)
     process_table(mscurs, pgcurs, 'PilotDB.taxa.synonym', 'taxa.synonyms', synonym_callback, existing_taxa)
-    # process_table(mscurs, pgcurs, 'PilotDB.taxa.type_attribute', 'taxa.attributes', attributes_callback, None)
     process_query(mscurs, pgcurs,
                   'SELECT a.* FROM PilotDB.taxa.attributes a INNER JOIN PilotDB.taxa.taxonomy t ON a.code = t.code',
                   'taxa.taxa_attributes', taxa_attributes_callback, existing_taxa)
+
+    # Delete any HBI (ID = 6) values of '11' (remember attribute values are strings)
+    pgcurs.execute('DELETE FROM taxa.taxa_attributes WHERE ((attribute_id = %s) AND (attribute_value = %s', [6, '11'])
 
     reset_sequence(pgcurs, 'taxa.taxonomy', 'taxonomy_id')
     reset_sequence(pgcurs, 'taxa.attributes', 'attribute_id')
