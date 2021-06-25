@@ -57,9 +57,13 @@ const projectsQuery = 'SELECT * FROM sample.fn_projects($1, $2)'
 export const getProjects = (pool, limit: number, offset: number): DBReturnPromiseType =>
     pgPromise(pool, projectsQuery, [limit, offset])
 
-const taxonomyQuery = 'SELECT * FROM taxa.vw_taxonomy_crosstab ORDER BY taxonomy_id LIMIT $1 OFFSET $2'
+const taxonomyQuery = 'SELECT * FROM taxa.fn_taxonomy($1, $2)'
 export const getTaxonomy = (pool, limit: number, offset: number): DBReturnPromiseType =>
     pgPromise(pool, taxonomyQuery, [limit, offset])
+
+const taxonomyTreeQuery = 'SELECT * FROM taxa.fn_tree($1)'
+export const getTaxonomyTree = (pool, taxonomyId: number): DBReturnPromiseType =>
+    pgPromise(pool, taxonomyTreeQuery, [taxonomyId])
 
 const predictorQuery = 'SELECT * FROM geo.fn_predictors($1, $2, $3)'
 export const getPredictors = (pool, limit: number, offset: number, modelId): DBReturnPromiseType =>

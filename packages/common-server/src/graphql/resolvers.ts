@@ -205,6 +205,14 @@ export default {
             return createPagination<Taxonomy>(data, limit, offset)
         },
 
+        taxonomyTree: async (obj, { taxonomyId }, { user }): Promise<PaginatedRecords<TaxonomyTree>> => {
+            loggedInGate(user)
+
+            const pool = await pg.getPool()
+            const data = await pg.getTaxonomyTree(pool, taxonomyId)
+            return createPagination<TaxonomyTree>(data, taxonomyId)
+        },
+
         predictors: async (obj, { limit, offset, modelId }, { user }): Promise<PaginatedRecords<Predictor>> => {
             loggedInGate(user)
             limitOffsetCheck(limit, graphql.queryLimits.predictors, offset)

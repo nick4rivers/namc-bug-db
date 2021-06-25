@@ -1,3 +1,50 @@
+drop function if exists taxa.fn_taxonomy;
+create or replace function taxa.fn_taxonomy(p_limit int, p_offset int)
+    returns table
+            (
+                taxonomy_id            smallint,
+                scientific_name        varchar,
+                level_id               smallint,
+                level_name             varchar,
+                parent_taxonomy_id     smallint,
+                parent_scientific_name varchar,
+                parent_level_id        smallint,
+                parent_level_name      varchar,
+                notes                  text,
+                metadata               text,
+                created_date           text,
+                updated_date           text
+            )
+    language sql
+    immutable
+as
+$$
+select t.taxonomy_id,
+       t.scientific_name,
+       l.level_id,
+       l.level_name,
+       p.taxonomy_id,
+       p.scientific_name,
+       p.level_id,
+       p.level_name,
+       t.notes,
+       cast(t.metadata as text),
+       to_json(t.created_date) #>> '{}',
+       to_json(t.updated_date) #>> '{}'
+from taxa.taxonomy t
+         inner join taxa.taxa_levels l on t.level_id = l.level_id
+         left join
+     (
+         select taxonomy_id, scientific_name, l.level_id, l.level_name
+         from taxa.taxonomy p
+                  inner join taxa.taxa_levels l on p.level_id = l.level_id
+     ) p on t.parent_id = p.taxonomy_id
+order by l.rank_order, t.scientific_name
+limit p_limit offset p_offset;
+$$;
+
+
+
 drop function if exists taxa.fn_translations;
 create or replace function taxa.fn_translations(p_limit int, p_offset int)
     returns table

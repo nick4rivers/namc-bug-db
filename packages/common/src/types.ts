@@ -142,18 +142,22 @@ export type Taxonomy = {
     scientificName: string
     levelId: number
     levelName: string
-    phylum: string
-    class: string
-    subclass: string
-    order: string
-    suborder: string
-    family: string
-    subfamily: string
-    tribe: string
-    genus: string
-    subgenus: string
-    species: string
-    subspecies: string
+    parentTaxonomyId: number
+    parentScientificName: string
+    parentLevelId: number
+    parentLevelName: string
+    notes: string
+    metadata: string
+    createdDate: string
+    updatedDate: string
+}
+
+export type TaxonomyTree = {
+    taxonomyId: number
+    scientificName: string
+    levelId: number
+    levelName: string
+    parentId: number
 }
 
 export type Predictor = {

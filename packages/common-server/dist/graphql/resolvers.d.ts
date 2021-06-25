@@ -62,6 +62,11 @@ declare const _default: {
         }, { user }: {
             user: any;
         }) => Promise<PaginatedRecords<Taxonomy>>;
+        taxonomyTree: (obj: any, { taxonomyId }: {
+            taxonomyId: any;
+        }, { user }: {
+            user: any;
+        }) => Promise<PaginatedRecords<TaxonomyTree>>;
         predictors: (obj: any, { limit, offset, modelId }: {
             limit: any;
             offset: any;

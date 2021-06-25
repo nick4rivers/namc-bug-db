@@ -8,6 +8,7 @@ export declare const getIndividuals: (pool: any, limit: number, offset: number) 
 export declare const getBoxes: (pool: any, limit: number, offset: number) => DBReturnPromiseType;
 export declare const getProjects: (pool: any, limit: number, offset: number) => DBReturnPromiseType;
 export declare const getTaxonomy: (pool: any, limit: number, offset: number) => DBReturnPromiseType;
+export declare const getTaxonomyTree: (pool: any, taxonomyId: number) => DBReturnPromiseType;
 export declare const getPredictors: (pool: any, limit: number, offset: number, modelId: any) => DBReturnPromiseType;
 export declare const getModels: (pool: any, limit: number, offset: number) => DBReturnPromiseType;
 export declare const getModelInfo: (pool: any, modelId: number) => DBReturnPromiseType;

@@ -82,6 +82,9 @@ const typeDefs = gql`
         "List of all taxa in the system. Includes information about each level of the taxonomic hierarchy above each taxa."
         taxonomy(limit: Int = ${queryLimits.taxonomy}, offset: Int = 0): PaginatedTaxonomies
 
+        "list all parents for a particular taxa"
+        taxonomyTree(taxonomyId: Int!): PaginatedTaxonomyTree
+
         "List of all attributes in the system."
         attributes(limit: Int = ${queryLimits.taxonomy}, offset: Int = 0): PaginatedAttributes
 
@@ -545,18 +548,22 @@ type MassSample {
         scientificName: String
         levelId: Int
         levelName: String
-        phylum: String
-        class: String
-        subclass: String
-        order: String
-        suborder: String
-        family: String
-        subfamily: String
-        tribe: String
-        genus: String
-        subgenus: String
-        species: String
-        subspecies: String
+        parentTaxonomyId: Int
+        parentScientificName: String
+        parentLevelId: Int
+        parentLevelName: String
+        notes: String
+        metadata: String
+        createdDate: String
+        updatedDate: String
+    }
+
+    type TaxonomyTree {
+        taxonomyId: Int
+        scientificName: String
+        levelId: Int
+        levelName: String
+        parentId: Int
     }
 
     type Predictor {
@@ -803,6 +810,12 @@ type MassSample {
         records: [Taxonomy]
         nextOffset: Int
     }
+
+    type PaginatedTaxonomyTree {
+        records: [TaxonomyTree]
+        nextOffset: Int
+    }
+
     type PaginatedPredictors {
         records: [Predictor]
         nextOffset: Int
