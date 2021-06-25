@@ -11,5 +11,5 @@ export declare const queryLimits: {
     translations: number;
     metrics: number;
 };
-declare const typeDefs: import("graphql").DocumentNode;
+declare const typeDefs: import("graphql/language/ast").DocumentNode;
 export default typeDefs;

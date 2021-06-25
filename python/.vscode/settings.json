@@ -32,4 +32,5 @@
   "search.exclude": {
     "**/*.egg-info": true
   },
+  "python.testing.pytestEnabled": true,
 }

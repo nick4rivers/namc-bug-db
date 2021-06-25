@@ -30,6 +30,7 @@ import {
     MassSample,
     MetricResult,
     Attribute,
+    TaxonomyTree,
     AttributeValue,
     TranslationTaxa,
     Metric,
