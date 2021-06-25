@@ -219,6 +219,38 @@ declare const _default: {
         }, { user }: {
             user: any;
         }) => Promise<number>;
+        createTranslation: (obj: any, { translationName, description }: {
+            translationName: any;
+            description: any;
+        }, { user }: {
+            user: any;
+        }) => Promise<number>;
+        setTranslationTaxa: (obj: any, { translationId, taxonomyId, alias, isFinal }: {
+            translationId: any;
+            taxonomyId: any;
+            alias: any;
+            isFinal: any;
+        }, { user }: {
+            user: any;
+        }) => Promise<number>;
+        deleteTranslationTaxa: (obj: any, { translationId, taxonomyId }: {
+            translationId: any;
+            taxonomyId: any;
+        }, { user }: {
+            user: any;
+        }) => Promise<number>;
+        setTaxonomy: (obj: any, { taxonomyId, scientificName, levelId, parentId, author, year, notes, metadata }: {
+            taxonomyId: any;
+            scientificName: any;
+            levelId: any;
+            parentId: any;
+            author: any;
+            year: any;
+            notes: any;
+            metadata: any;
+        }, { user }: {
+            user: any;
+        }) => Promise<number>;
     };
 };
 export default _default;

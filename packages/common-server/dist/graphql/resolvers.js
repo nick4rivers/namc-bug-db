@@ -899,6 +899,90 @@ exports.default = {
                     }
                 });
             });
+        },
+        createTranslation: function (obj, _a, _b) {
+            var translationName = _a.translationName, description = _a.description;
+            var user = _b.user;
+            return __awaiter(void 0, void 0, void 0, function () {
+                var pool, data, returnVal;
+                return __generator(this, function (_c) {
+                    switch (_c.label) {
+                        case 0:
+                            loggedInGate(user);
+                            return [4, pg.getPool()];
+                        case 1:
+                            pool = _c.sent();
+                            return [4, pg.createTranslation(pool, translationName, description)];
+                        case 2:
+                            data = _c.sent();
+                            returnVal = data[0].fn_create_translation;
+                            return [2, returnVal];
+                    }
+                });
+            });
+        },
+        setTranslationTaxa: function (obj, _a, _b) {
+            var translationId = _a.translationId, taxonomyId = _a.taxonomyId, alias = _a.alias, isFinal = _a.isFinal;
+            var user = _b.user;
+            return __awaiter(void 0, void 0, void 0, function () {
+                var pool, data, returnVal;
+                return __generator(this, function (_c) {
+                    switch (_c.label) {
+                        case 0:
+                            loggedInGate(user);
+                            return [4, pg.getPool()];
+                        case 1:
+                            pool = _c.sent();
+                            return [4, pg.setTranslationTaxa(pool, translationId, taxonomyId, alias, isFinal)];
+                        case 2:
+                            data = _c.sent();
+                            returnVal = data[0].fn_set_translation_taxa;
+                            return [2, returnVal];
+                    }
+                });
+            });
+        },
+        deleteTranslationTaxa: function (obj, _a, _b) {
+            var translationId = _a.translationId, taxonomyId = _a.taxonomyId;
+            var user = _b.user;
+            return __awaiter(void 0, void 0, void 0, function () {
+                var pool, data, returnVal;
+                return __generator(this, function (_c) {
+                    switch (_c.label) {
+                        case 0:
+                            loggedInGate(user);
+                            return [4, pg.getPool()];
+                        case 1:
+                            pool = _c.sent();
+                            return [4, pg.deleteTranslationTaxa(pool, translationId, taxonomyId)];
+                        case 2:
+                            data = _c.sent();
+                            returnVal = data[0].fn_delete_translation_taxa;
+                            return [2, returnVal];
+                    }
+                });
+            });
+        },
+        setTaxonomy: function (obj, _a, _b) {
+            var taxonomyId = _a.taxonomyId, scientificName = _a.scientificName, levelId = _a.levelId, parentId = _a.parentId, author = _a.author, year = _a.year, notes = _a.notes, metadata = _a.metadata;
+            var user = _b.user;
+            return __awaiter(void 0, void 0, void 0, function () {
+                var pool, data, returnVal;
+                return __generator(this, function (_c) {
+                    switch (_c.label) {
+                        case 0:
+                            loggedInGate(user);
+                            return [4, pg.getPool()];
+                        case 1:
+                            pool = _c.sent();
+                            return [4, pg.setTaxonomy(pool, taxonomyId, scientificName, levelId, parentId, author, year, notes, metadata)];
+                        case 2:
+                            data = _c.sent();
+                            returnVal = data[0].fn_set_taxonomy;
+                            return [2, returnVal];
+                    }
+                });
+            });
         }
     }
 };

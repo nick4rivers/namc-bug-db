@@ -508,6 +508,55 @@ export default {
             const data = await pg.setSiteCatchment(pool, siteId, catchment)
             const returnVal = data[0].fn_set_site_catchment as number
             return returnVal
+        },
+
+        createTranslation: async (obj, { translationName, description }, { user }): Promise<number> => {
+            loggedInGate(user)
+
+            const pool = await pg.getPool()
+            const data = await pg.createTranslation(pool, translationName, description)
+            const returnVal = data[0].fn_create_translation as number
+            return returnVal
+        },
+        setTranslationTaxa: async (obj, { translationId, taxonomyId, alias, isFinal }, { user }): Promise<number> => {
+            loggedInGate(user)
+
+            const pool = await pg.getPool()
+            const data = await pg.setTranslationTaxa(pool, translationId, taxonomyId, alias, isFinal)
+            const returnVal = data[0].fn_set_translation_taxa as number
+            return returnVal
+        },
+
+        deleteTranslationTaxa: async (obj, { translationId, taxonomyId }, { user }): Promise<number> => {
+            loggedInGate(user)
+
+            const pool = await pg.getPool()
+            const data = await pg.deleteTranslationTaxa(pool, translationId, taxonomyId)
+            const returnVal = data[0].fn_delete_translation_taxa as number
+            return returnVal
+        },
+
+        setTaxonomy: async (
+            obj,
+            { taxonomyId, scientificName, levelId, parentId, author, year, notes, metadata },
+            { user }
+        ): Promise<number> => {
+            loggedInGate(user)
+
+            const pool = await pg.getPool()
+            const data = await pg.setTaxonomy(
+                pool,
+                taxonomyId,
+                scientificName,
+                levelId,
+                parentId,
+                author,
+                year,
+                notes,
+                metadata
+            )
+            const returnVal = data[0].fn_set_taxonomy as number
+            return returnVal
         }
     }
 }

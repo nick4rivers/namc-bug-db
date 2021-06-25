@@ -227,7 +227,12 @@ begin
         metadata        = p_metadata
     where taxonomy_id = p_taxonomy_id;
 
+    -- Get the number of rows affected BEFORE refreshing materialized view
     get diagnostics rows_affected = row_count;
+
+    -- Need to refresh the taxonomy materialized view
+    refresh materialized view taxa.vw_taxonomy_crosstab;
+
     return rows_affected;
 end
 $$;

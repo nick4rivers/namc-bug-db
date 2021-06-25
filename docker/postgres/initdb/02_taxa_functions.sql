@@ -140,7 +140,7 @@ order by level_id, translation_scientific_name
 limit p_limit offset p_offset;
 $$;
 
-drop function if exists taxa.fn_translation_taxa;
+drop function if exists taxa.fn_translation_taxa(int, int);
 create or replace function taxa.fn_translation_taxa(p_translation_id int, p_taxonomy_id int)
     returns table
             (

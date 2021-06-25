@@ -39,7 +39,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getProjectMetrics = exports.getBoxMetrics = exports.getSampleMetrics = exports.getSampleTaxaTranslationRarefied = exports.getSampleTaxaRarefied = exports.getSampleTaxaTranslation = exports.getSampleTaxaGeneralized = exports.getPolygonTaxaRawQuery = exports.getPointTaxaRawQuery = exports.getProjectTaxaRaw = exports.getBoxTaxaRaw = exports.getSampleTaxaRaw = exports.setSiteCatchment = exports.setSamplePredictorValue = exports.setSitePredictorValue = exports.getMetrics = exports.getModelThresholds = exports.getTaxaAttributes = exports.getAttributes = exports.getMassSamples = exports.getFishSamples = exports.getDriftSamples = exports.getPlanktonSamples = exports.getTranslationTaxa = exports.getTranslations = exports.getModelPredictors = exports.getSamplePredictorValues = exports.getBoxInfo = exports.getSampleInfo = exports.getSitePredictorValues = exports.getModelInfo = exports.getModels = exports.getPredictors = exports.getTaxonomy = exports.getProjects = exports.getBoxes = exports.getIndividuals = exports.getSiteInfo = exports.getSites = exports.getSamples = exports.getPool = void 0;
+exports.getProjectMetrics = exports.getBoxMetrics = exports.getSampleMetrics = exports.getSampleTaxaTranslationRarefied = exports.getSampleTaxaRarefied = exports.getSampleTaxaTranslation = exports.getSampleTaxaGeneralized = exports.getPolygonTaxaRawQuery = exports.getPointTaxaRawQuery = exports.getProjectTaxaRaw = exports.getBoxTaxaRaw = exports.getSampleTaxaRaw = exports.setTaxonomy = exports.deleteTranslationTaxa = exports.setTranslationTaxa = exports.createTranslation = exports.setSiteCatchment = exports.setSamplePredictorValue = exports.setSitePredictorValue = exports.getMetrics = exports.getModelThresholds = exports.getTaxaAttributes = exports.getAttributes = exports.getMassSamples = exports.getFishSamples = exports.getDriftSamples = exports.getPlanktonSamples = exports.getTranslationTaxa = exports.getTranslations = exports.getModelPredictors = exports.getSamplePredictorValues = exports.getBoxInfo = exports.getSampleInfo = exports.getSitePredictorValues = exports.getModelInfo = exports.getModels = exports.getPredictors = exports.getTaxonomy = exports.getProjects = exports.getBoxes = exports.getIndividuals = exports.getSiteInfo = exports.getSites = exports.getSamples = exports.getPool = void 0;
 var config_1 = require("../config");
 var pg_1 = require("pg");
 var loglevel_1 = __importDefault(require("loglevel"));
@@ -181,6 +181,20 @@ exports.setSamplePredictorValue = function (pool, sampleId, predictorId, value) 
 var setSiteCatchmentQuery = 'SELECT sample.fn_set_site_catchment($1, $2)';
 exports.setSiteCatchment = function (pool, siteId, catchment) {
     return pgPromise(pool, setSiteCatchmentQuery, [siteId, catchment]);
+};
+var createTranslationQuery = 'SELECT * FROM taxa.fn_create_translation($1, $2)';
+exports.createTranslation = function (pool, translationName, description) {
+    return pgPromise(pool, createTranslationQuery, [translationName, description]);
+};
+var setTranslationTaxaQuery = 'SELECT * FROM taxa.fn_set_translation_taxa($1, $2, $3, $4)';
+exports.setTranslationTaxa = function (pool, translationId, taxonomyId, alias, isFinal) { return pgPromise(pool, setTranslationTaxaQuery, [translationId, taxonomyId, alias, isFinal]); };
+var deleteTranslationTaxaQuery = 'SELECT * FROM taxa.fn_delete_translation_taxa($1, $2)';
+exports.deleteTranslationTaxa = function (pool, translationId, taxonomyId) {
+    return pgPromise(pool, deleteTranslationTaxaQuery, [translationId, taxonomyId]);
+};
+var setTaxonomyQuery = 'SELECT * FROM taxa.fn_set_taxonomy($1, $2, $3, $4, $5, $6, $7, $8)';
+exports.setTaxonomy = function (pool, taxonomyId, scientificName, levelId, parentId, author, year, notes, metadata) {
+    return pgPromise(pool, setTaxonomyQuery, [taxonomyId, scientificName, levelId, parentId, author, year, notes, metadata]);
 };
 var sampleTaxaRawQuery = 'SELECT * FROM sample.fn_sample_taxa_raw($1)';
 exports.getSampleTaxaRaw = function (pool, sampleIds) {

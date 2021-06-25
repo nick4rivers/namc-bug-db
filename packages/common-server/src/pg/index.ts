@@ -149,6 +149,37 @@ const setSiteCatchmentQuery = 'SELECT sample.fn_set_site_catchment($1, $2)'
 export const setSiteCatchment = (pool, siteId: number, catchment: string): DBReturnPromiseType =>
     pgPromise(pool, setSiteCatchmentQuery, [siteId, catchment])
 
+const createTranslationQuery = 'SELECT * FROM taxa.fn_create_translation($1, $2)'
+export const createTranslation = (pool, translationName: string, description: string): DBReturnPromiseType =>
+    pgPromise(pool, createTranslationQuery, [translationName, description])
+
+const setTranslationTaxaQuery = 'SELECT * FROM taxa.fn_set_translation_taxa($1, $2, $3, $4)'
+export const setTranslationTaxa = (
+    pool,
+    translationId: number,
+    taxonomyId: number,
+    alias: string,
+    isFinal: boolean
+): DBReturnPromiseType => pgPromise(pool, setTranslationTaxaQuery, [translationId, taxonomyId, alias, isFinal])
+
+const deleteTranslationTaxaQuery = 'SELECT * FROM taxa.fn_delete_translation_taxa($1, $2)'
+export const deleteTranslationTaxa = (pool, translationId: number, taxonomyId: number): DBReturnPromiseType =>
+    pgPromise(pool, deleteTranslationTaxaQuery, [translationId, taxonomyId])
+
+const setTaxonomyQuery = 'SELECT * FROM taxa.fn_set_taxonomy($1, $2, $3, $4, $5, $6, $7, $8)'
+export const setTaxonomy = (
+    pool,
+    taxonomyId: number,
+    scientificName: string,
+    levelId: number,
+    parentId: number,
+    author: string,
+    year: string,
+    notes: string,
+    metadata: string
+): DBReturnPromiseType =>
+    pgPromise(pool, setTaxonomyQuery, [taxonomyId, scientificName, levelId, parentId, author, year, notes, metadata])
+
 const sampleTaxaRawQuery = 'SELECT * FROM sample.fn_sample_taxa_raw($1)'
 export const getSampleTaxaRaw = (pool, sampleIds: number[]): DBReturnPromiseType =>
     pgPromise(pool, sampleTaxaRawQuery, [sampleIds])

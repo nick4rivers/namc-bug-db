@@ -151,6 +151,18 @@ const typeDefs = gql`
 
         "Store the upstream catchment polygon for a specific site. The catchment polygon must be a valid, non-empty GeoJSON polygon that partially or entirely intersects with the United States."
         setSiteCatchment(siteId: Int!, catchment: String!): Int
+
+        "Create a new translation. The name is mandatory and cannot be an empty string. The description is optional."
+        createTranslation(translationName: String!, description: String): Int
+
+        "Add or update a taxa associated with a translation"
+        setTranslationTaxa(translationId: Int!, taxonomyId: Int!, alias:String, isFinal: Boolean): Int
+
+        "Permanently remove a taxa from a translation"
+        deleteTranslationTaxa(translationId: Int!, taxonomyId: Int!): Int
+  
+        "Update information related to a specific taxa. Change its scientific name, move its level or change its parent"
+        setTaxonomy(taxonomyId: Int!, scientificName: String!, levelId: Int!, parentId: Int!, author: String, year:String, notes: String, metadata:String): Int
     }
 
     type AuthParams {
