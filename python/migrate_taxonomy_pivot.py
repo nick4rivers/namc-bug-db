@@ -17,7 +17,7 @@ def migrate(mscurs, pgcurs):
                   'taxa.taxa_attributes', taxa_attributes_callback, existing_taxa)
 
     # Delete any HBI (ID = 6) values of '11' (remember attribute values are strings)
-    pgcurs.execute('DELETE FROM taxa.taxa_attributes WHERE ((attribute_id = %s) AND (attribute_value = %s', [6, '11'])
+    pgcurs.execute('DELETE FROM taxa.taxa_attributes WHERE ((attribute_id = %s) AND (attribute_value = %s))', [6, '11'])
 
     reset_sequence(pgcurs, 'taxa.taxonomy', 'taxonomy_id')
     reset_sequence(pgcurs, 'taxa.attributes', 'attribute_id')
