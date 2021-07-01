@@ -1300,8 +1300,6 @@ CREATE TABLE sample.fish_guts
     fish_taxonomy_id INT NOT NULL,
     notes TEXT,
     metadata json,
-    technician_id SMALLINT NOT NULL,
-    weight_technician_id SMALLINT NOT NULL,
     organic_weight REAL,
     inorganic_weight REAL,
     other_weight REAL,
@@ -1310,14 +1308,10 @@ CREATE TABLE sample.fish_guts
 
     CONSTRAINT fk_sample_fish_guts FOREIGN KEY (sample_id) references sample.samples(sample_id) on delete cascade,
     CONSTRAINT fk_sample_fish_guts_fish_taxonomy_id FOREIGN KEY (fish_taxonomy_id) references taxa.taxonomy(taxonomy_id),
-    CONSTRAINT fk_sample_fish_guts_technician_id FOREIGN KEY (technician_id) REFERENCES entity.individuals(entity_id),
-    CONSTRAINT fk_sample_fish_guts_weight_technician_id FOREIGN KEY (weight_technician_id) REFERENCES entity.individuals(entity_id),
     CONSTRAINT ck_sample_fish_guts_organic_weight CHECK (organic_weight >= 0),
     CONSTRAINT ck_sample_fish_guts_inorganic_weight CHECK (inorganic_weight >= 0),
     CONSTRAINT ck_sample_fish_guts_other_weight CHECK (other_weight >= 0)
 );
-CREATE INDEX fx_sample_fish_guts_technician_id ON sample.fish_guts(technician_id);
-CREATE INDEX fx_sample_fish_guts_weight_technician_id ON sample.fish_guts(weight_technician_id);
 CREATE TRIGGER tr_fish_guts
     BEFORE UPDATE
     ON sample.fish_guts
