@@ -1297,6 +1297,7 @@ CREATE TABLE sample.fish_guts
     sample_id INT NOT NULL PRIMARY KEY,
     weight REAL NOT NULL,
     length REAL NOT NULL,
+    fish_taxonomy_id INT NOT NULL,
     notes TEXT,
     metadata json,
     technician_id SMALLINT NOT NULL,
@@ -1308,6 +1309,7 @@ CREATE TABLE sample.fish_guts
     updated_date TIMESTAMPTZ        NOT NULL DEFAULT now(),
 
     CONSTRAINT fk_sample_fish_guts FOREIGN KEY (sample_id) references sample.samples(sample_id) on delete cascade,
+    CONSTRAINT fk_sample_fish_guts_fish_taxonomy_id FOREIGN KEY (fish_taxonomy_id) references taxa.taxonomy(taxonomy_id),
     CONSTRAINT fk_sample_fish_guts_technician_id FOREIGN KEY (technician_id) REFERENCES entity.individuals(entity_id),
     CONSTRAINT fk_sample_fish_guts_weight_technician_id FOREIGN KEY (weight_technician_id) REFERENCES entity.individuals(entity_id),
     CONSTRAINT ck_sample_fish_guts_organic_weight CHECK (organic_weight >= 0),
