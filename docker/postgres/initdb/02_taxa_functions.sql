@@ -217,7 +217,7 @@ begin
         limit 1;
 end
 $$;
-comment on function taxa.fn_translation_taxa is
+comment on function taxa.fn_translation_taxa(int, int) is
     'Function to retrieve the taxonomy ID of a taxa according to a specific translation.
     The result could be the same taxonomy ID that was passed in or one higher up in the taxonomic
     hierarchy.';
