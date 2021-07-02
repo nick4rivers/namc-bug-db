@@ -1,7 +1,7 @@
 #! /bin/bash
 
 # On OSX you must have run `brew install gdal` so that the header files are findable 
-python3 -m virtualenv .venv
+python3 -m venv --system-site-packages .venv
 .venv/bin/python -m pip install --upgrade pip
 # .venv/bin/pip --timeout=120 install \
 #   Cython==0.29.7 \
