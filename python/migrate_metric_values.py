@@ -16,15 +16,53 @@ from utilities import sanitize_string, format_values, add_metadata, write_sql_fi
 from postgres_lookup_data import lookup_data, insert_row, log_row_count, insert_many_rows
 from lookup_data import get_db_id
 
-block_size =500
+block_size = 500
 
-columns =  ['sample_id',
-    'model_id',
-    'model_version',
-    'fixed_count',
-    'model_result',
-    'metadata'
-]
+columns = ['sample_id',
+           'model_id',
+           'model_version',
+           'fixed_count',
+           'model_result',
+           'metadata'
+           ]
+
+
+model_aliases = {
+    'NV_MMI': 'NV MMI',
+    'NVMMI': 'NV MMI',
+    'Westwide': 'WestWide2018_OtherEcoregions',
+    'WestWide2017': 'WestWide2018_OtherEcoregions',
+    'CO_EDAS-Biotype1': 'CO EDAS Biotype 1',
+    'CO_EDAS - Biotype1': 'CO EDAS Biotype 1',
+    'CO-EDAS2017 - Biotype 1': 'CO EDAS Biotype 1',
+    'CO_EDAS-Biotype2': 'CO EDAS Biotype 2',
+    'CO_EDAS - Biotype2': 'CO EDAS Biotype 2',
+    'CO-EDAS2017 - Biotype 2': 'CO EDAS Biotype 2',
+    'CO_EDAS-Biotype3': 'CO EDAS Biotype 3',
+    'CO_EDAS - Biotype3': 'CO EDAS Biotype 3',
+    'CO-EDAS2017 - Biotype 3': 'CO EDAS Biotype 3',
+    'ColumbiaRiverBasin_PIBO': 'PIBO',
+    'CA_CSCI': 'CSCI',
+    'OR_WesternCordillera_ColumbiaPlateau': 'OR - WCCP',
+    'OR_MarineWesternCoastalForest': 'OR - MWCF',
+    'OR_Marine Western Coastal Forest': 'OR - MWCF',
+    'OR_Northern Basin and Range': 'OR NBR',
+    'OR_NorthernBasinRange': 'OR NBR',
+    'WCCP': 'OR - WCCP',
+    'MWCF': 'OR - MWCF',
+    'WY2018_WYOMING BASIN': 'WY - Wyoming basin',
+    'WY2018_BIGHORN BASIN FOOTHILLS': 'WY - Bighorn basin foothills',
+    'WY2018_SEDIMENTARY MNTS': 'WY - Sedimentary mountains',
+    'WY2018_HIGH VALLEYS': 'WY - High valleys',
+    'WY2018_SOUTH FH LARAMIE RANGE': 'WY - Southern foothills and Laramie range',
+    'WY2018_NE PLAINS': 'WY - NE Plains',
+    'WY2018_GRANITIC MNTS': 'WY - Granitic mountains',
+    'WY2018_SE PLAINS': 'WY - SE Plains',
+    'Wyoming - SE Plains': 'WY - SE Plains',
+    'WY2018_SOUTHERN ROCKIES': 'WY - Southern rockies',
+
+}
+
 
 # # temporary list of taxa used for abundance metrics related to taxa
 # metric_taxa = {
@@ -56,10 +94,10 @@ def migrate(pgcurs, csv_path):
 
     samples = lookup_data(pgcurs, 'sample.samples', 'sample_id')
     # Simplify the samples down to just the ID and site ID
-    samples = {sample_id: data['site_id'] for sample_id, data in samples}
+    samples = {sample_id: data['site_id'] for sample_id, data in samples.items()}
 
-    sites = lookup_data(pgcurs, 'geo.sites', 'site_name')
-    models = lookup_data(pgcurs, 'geo.models', 'model_')
+    sites = lookup_data(pgcurs, 'geo.sites', 'site_id')
+    models = lookup_data(pgcurs, 'geo.models', 'model_id')
 
     if len(sites) < 1 or len(samples) < 1:
         raise Exception('You need to migrate sites and samples into the database first.')
@@ -67,6 +105,12 @@ def migrate(pgcurs, csv_path):
     counter = 0
     raw_data = csv.DictReader(open(csv_path))
     progbar = ProgressBar(len(list(raw_data)), 50, "metric values")
+
+    # track unique results for the index ux_sample_model_results on
+    # sample_id, model_id, model_version, fixed_count
+    unique_model_results = {}
+
+    raw_data = csv.DictReader(open(csv_path))
     block_data = []
     for row in raw_data:
 
@@ -77,26 +121,62 @@ def migrate(pgcurs, csv_path):
             log.warning('Sample {} not present in database. Skipping'.format(sample_id))
             continue
 
-        model_id = get_db_id(models, 'model_id', ['model_name', 'abbreviation'], row['MODEL'],True)
-
-        if samples[sample_id].lower() != station:
-            log.error('Sample {} has site {} in CSV but is associated with site {} in postgres'.format(sample_id, station, samples[sample_id]))
+        if sites[samples[sample_id]]['site_name'].lower() != station.lower():
+            log.error('Sample {} has site {} in CSV but is associated with site {} in postgres'.format(sample_id, station, sites[samples[sample_id]]['site_name']))
 
         metadata = {}
-        for col in ['UID', 'O', 'E', 'AIM_rtg', 'MODELTEST','INVASIVE_MACRO']:
-            if row[col] is not None:
-                metadata[col] = float(row[col]) if row[col].isnumeric() else row[col]
-        
-        model_result = float(row['OE']) if row['MMI'] is None else row['MMI']
+        for col in ['UID', 'O', 'E', 'AIM_rtg', 'MODELTEST', 'INVASIVE_MACRO']:
+            if row[col] is not None and len(row[col]) > 0:
+                if row[col].isnumeric():
+                    metadata[col] = int(row[col])
+                elif isfloat(row[col]):
+                    metadata[col] = float(row[col])
+                else:
+                    metadata[col] = row[col]
 
-        block_data.append({
+        if row['OE'] == '' and row['MMI'] == '':
+            log.error('Both OE and MMI are None')
+            continue
+
+        if row['COUNT'] == '':
+            log.warning('Fixed count is empty. Skipping sample {}'.format(sample_id))
+            continue
+
+        model_result = float(row['OE']) if row['MMI'] is None or len(row['MMI']) < 1 else float(row['MMI'])
+
+        model_name = row['MODEL']
+        if model_name.lower() == 'aremp':
+            # AREMP has become two models.
+            if row['MMI'] == '':
+                model_name = 'AREMP MMI'
+            else:
+                model_name = 'AREMP OE'
+
+        # Now try to find the correct model ID
+        if model_name in model_aliases:
+            model_name = model_aliases[model_name]
+
+        model_id = get_db_id(models, 'model_id', ['model_name', 'abbreviation'], model_name, True)
+
+        data = {
             'model_id': model_id,
             'sample_id': sample_id,
             'model_version': '0.0.0',
             'fixed_count': int(row['COUNT']),
             'model_result': model_result,
             'metadata': metadata
-        })
+        }
+
+        # Track unique results
+        key = '{}_{}_{}'.format(sample_id, model_id, int(row['COUNT']))
+        if key in unique_model_results:
+            log.warning('Duplicate model result {} for sample {}, model {}, fixed count {}. Other value is {}'.format(model_result, sample_id, model_name, int(row['COUNT']), unique_model_results[key]))
+            continue
+        else:
+            unique_model_results[key] = model_result
+
+        # flatten data ready for database insert
+        block_data.append([data[col] for col in columns])
 
         if len(block_data) == block_size:
             insert_many_rows(pgcurs, 'sample.model_results', columns, block_data, None)
@@ -112,15 +192,13 @@ def migrate(pgcurs, csv_path):
     progbar.finish()
     log_row_count(pgcurs, 'sample.model_results', len(raw_data))
 
-        
 
-    # print('{:,} site predictor values'.format(len(site_data)))
-    # insert_many_rows(pgcurs, 'geo.site_predictors', ['site_id', 'predictor_id', 'metadata'], site_data)
-
-    # print('{:,} sample predictor values'.format(len(samp_data)))
-    # insert_many_rows(pgcurs, 'geo.sample_predictors', ['site_id', 'sample_id', 'predictor_id', 'metadata'], samp_data)
-
-
+def isfloat(value):
+    try:
+        float(value)
+        return True
+    except ValueError:
+        return False
 # def insert_metric_taxa(pgcurs):
 
 #     # First set all the metrics to inactive except the overall sample abundance
