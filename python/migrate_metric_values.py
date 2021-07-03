@@ -16,8 +16,10 @@ from utilities import sanitize_string, format_values, add_metadata, write_sql_fi
 from postgres_lookup_data import lookup_data, insert_row, log_row_count, insert_many_rows
 from lookup_data import get_db_id
 
+# Number of rows to be inserted in one go into the databaes
 block_size = 500
 
+# Columns of the sample.model_results table that will be inserted from this script
 columns = ['sample_id',
            'model_id',
            'model_version',
@@ -26,7 +28,7 @@ columns = ['sample_id',
            'metadata'
            ]
 
-
+# Keys are the model identifiers from the CSV file. Postgres model aliases are on the right
 model_aliases = {
     'NV_MMI': 'NV MMI',
     'NVMMI': 'NV MMI',
@@ -59,8 +61,7 @@ model_aliases = {
     'WY2018_GRANITIC MNTS': 'WY - Granitic mountains',
     'WY2018_SE PLAINS': 'WY - SE Plains',
     'Wyoming - SE Plains': 'WY - SE Plains',
-    'WY2018_SOUTHERN ROCKIES': 'WY - Southern rockies',
-
+    'WY2018_SOUTHERN ROCKIES': 'WY - Southern rockies'
 }
 
 
@@ -92,13 +93,14 @@ def migrate(pgcurs, csv_path):
 
     log = Logger('metric values')
 
+    # Simplify the samples down to just the ID and site ID to save on RAM
     samples = lookup_data(pgcurs, 'sample.samples', 'sample_id')
-    # Simplify the samples down to just the ID and site ID
     samples = {sample_id: data['site_id'] for sample_id, data in samples.items()}
 
     sites = lookup_data(pgcurs, 'geo.sites', 'site_id')
     models = lookup_data(pgcurs, 'geo.models', 'model_id')
 
+    # This script requires both sites and samples to have been imported into the database
     if len(sites) < 1 or len(samples) < 1:
         raise Exception('You need to migrate sites and samples into the database first.')
 
@@ -121,9 +123,11 @@ def migrate(pgcurs, csv_path):
             log.warning('Sample {} not present in database. Skipping'.format(sample_id))
             continue
 
+        # Verify that the site in the database is associated with the same site as that specified in the CSV
         if sites[samples[sample_id]]['site_name'].lower() != station.lower():
             log.error('Sample {} has site {} in CSV but is associated with site {} in postgres'.format(sample_id, station, sites[samples[sample_id]]['site_name']))
 
+        # Store all the miscellaneous CSV columns as JSON metadata in postgres
         metadata = {}
         for col in ['UID', 'O', 'E', 'AIM_rtg', 'MODELTEST', 'INVASIVE_MACRO']:
             if row[col] is not None and len(row[col]) > 0:
@@ -134,10 +138,12 @@ def migrate(pgcurs, csv_path):
                 else:
                     metadata[col] = row[col]
 
+        # Both OE can't be NULL
         if row['OE'] == '' and row['MMI'] == '':
             log.error('Both OE and MMI are None')
             continue
 
+        # Fixed count can't be NULL
         if row['COUNT'] == '':
             log.warning('Fixed count is empty. Skipping sample {}'.format(sample_id))
             continue
@@ -152,12 +158,14 @@ def migrate(pgcurs, csv_path):
             else:
                 model_name = 'AREMP OE'
 
-        # Now try to find the correct model ID
+        # Check the model aliases at the top of this file
         if model_name in model_aliases:
             model_name = model_aliases[model_name]
 
+        # Now try to find the correct model ID
         model_id = get_db_id(models, 'model_id', ['model_name', 'abbreviation'], model_name, True)
 
+        # Build a dictionary of all the relevant values. This will get flattened to a list before inserting into the database
         data = {
             'model_id': model_id,
             'sample_id': sample_id,
@@ -167,7 +175,7 @@ def migrate(pgcurs, csv_path):
             'metadata': metadata
         }
 
-        # Track unique results
+        # Track unique results and skip duplicates
         key = '{}_{}_{}'.format(sample_id, model_id, int(row['COUNT']))
         if key in unique_model_results:
             log.warning('Duplicate model result {} for sample {}, model {}, fixed count {}. Other value is {}'.format(model_result, sample_id, model_name, int(row['COUNT']), unique_model_results[key]))
@@ -190,7 +198,7 @@ def migrate(pgcurs, csv_path):
         insert_many_rows(pgcurs, 'sample.model_results', columns, block_data, None)
 
     progbar.finish()
-    log_row_count(pgcurs, 'sample.model_results', len(raw_data))
+    log_row_count(pgcurs, 'sample.model_results', len(list(raw_data)))
 
 
 def isfloat(value):
