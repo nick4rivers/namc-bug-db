@@ -35,13 +35,13 @@ CREATE TRIGGER tr_sites_catchment
     FOR EACH ROW
 EXECUTE PROCEDURE geo.fn_site_catchment_changed();
 
-drop function if exists geo.fn_model_thresholds;
-create or replace function geo.fn_model_thresholds(p_model_id int)
+drop function if exists geo.fn_model_conditions;
+create or replace function geo.fn_model_conditions(p_model_id int)
     returns table
             (
                 model_id     smallint,
-                threshold_id smallint,
-                threshold    numrange,
+                condition_id smallint,
+                condition    numrange,
                 display_text varchar(50),
                 description  text
             )
@@ -50,10 +50,10 @@ create or replace function geo.fn_model_thresholds(p_model_id int)
 as
 $$
 select model_id,
-       threshold_id,
-       threshold,
+       condition_id,
+       condition,
        display_text,
        description
-from geo.model_thresholds
+from geo.model_conditions
 where model_id = p_model_id;
 $$;

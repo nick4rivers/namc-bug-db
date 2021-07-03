@@ -141,7 +141,7 @@ def test_taxa_attributes(cursor):
 
 def test_model_thresholds(cursor):
 
-    cursor.execute('SELECT * FROM geo.fn_model_thresholds(1)')
+    cursor.execute('SELECT * FROM geo.fn_model_conditions(1)')
     assert True
 
 

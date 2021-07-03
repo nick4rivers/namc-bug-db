@@ -652,3 +652,49 @@ from (
          inner join taxa.taxa_levels l on t.level_id = l.level_id
 group by c.taxonomy_id, t.scientific_name, l.level_id, l.level_name;
 $$;
+
+create or replace function sample.fn_model_results(p_limit int, p_offset int, p_sample_ids int[])
+    returns table
+            (
+                sample_id    int,
+                site_id      int,
+                site_name    varchar,
+                model_id     smallint,
+                model_name   varchar,
+                model_version varchar,
+                model_result real,
+                condition    varchar,
+                fix_count    smallint,
+                notes        text,
+                metadata     text,
+                created_date text,
+                updated_date text
+            )
+    immutable
+    returns null on null input
+    language sql
+as
+$$
+
+select s.sample_id,
+       si.site_id,
+       si.site_name,
+       m.model_id,
+       m.model_name,
+       mr.model_version,
+       mr.model_result,
+       mt.display_text,
+       mr.fixed_count,
+       mr.notes,
+       cast(mr.metadata as text),
+       to_json(s.created_date) #>> '{}',
+       to_json(s.updated_date) #>> '{}'
+from sample.model_results mr
+inner join unnest(p_sample_ids) p(sample_id) on mr.sample_id = p.sample_id
+inner join sample.samples s on p.sample_id = s.sample_id
+inner join geo.sites si on s.site_id = si.site_id
+inner join geo.models m on mr.model_id = m.model_id
+inner join geo.model_conditions mt on m.model_id = mt.model_id and mr.model_result::numeric <@ mt.condition
+order by mr.sample_id, mr.model_id, mr.model_version, mr.fixed_count
+limit p_limit offset p_offset;
+$$;
