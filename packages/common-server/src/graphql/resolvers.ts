@@ -489,6 +489,24 @@ export default {
             const data = await pg.getMassSamples(pool, limit, offset)
             return createPagination<MassSample>(data, limit, offset)
         }
+
+        modelResults: async (obj, { limit, offset, sampleIds }, { user }): Promise<PaginatedRecords<ModelResult>> => {
+            loggedInGate(user)
+            limitOffsetCheck(limit, graphql.queryLimits.samples, offset)
+
+            const pool = await pg.getPool()
+            const data = await pg.getModelResults(pool, limit, offset, sampleIds)
+            return createPagination<ModelResult>(data, limit, offset, sampleIds)
+        }
+
+        fishGuts: async (obj, { limit, offset }, { user }): Promise<PaginatedRecords<FishGuts>> => {
+            loggedInGate(user)
+            limitOffsetCheck(limit, graphql.queryLimits.samples, offset)
+
+            const pool = await pg.getPool()
+            const data = await pg.getFishGuts(pool, limit, offset)
+            return createPagination<FishGuts>(data, limit, offset)
+        }
     },
 
     Mutation: {
