@@ -77,7 +77,7 @@ const typeDefs = gql`
         "List of predictors required by a single model."
         modelPredictors(limit: Int = ${queryLimits.modelPredictors}, offset: Int = 0, modelId: Int!): PaginatedModelPredictors
 
-        modelResults(limit: Int = ${queryLimits.modelResults}, offset: Int = 0, sampleIds: [Int]!): PaginatedModelResults
+        modelResults(limit: Int = ${queryLimits.modelResults}, offset: Int = 0, sampleIds: [Int]!): PaginatedModelResult
 
         ####################################################################################################################################################################################
         # Taxonomy queries
@@ -116,7 +116,7 @@ const typeDefs = gql`
         massSamples(limit: Int = ${queryLimits.samples}, offset: Int = 0): PaginatedMass
 
         "List all fish guts samples in the system"
-        fishGuts(limit: Int = ${queryLimits.samples}, offset: Int = 0): PaginatedFishGuts
+        fishGuts(limit: Int = ${queryLimits.samples}, offset: Int = 0, sampleIds: [Int]): PaginatedFishGuts
 
         ####################################################################################################################################################################################
         # Sample Taxa queries
@@ -508,7 +508,7 @@ type ModelResult {
     modelId:     Int
     modelName: String
     modelVersion: String
-    modelRsult: Float
+    modelResult: Float
     condition: String
     fixCount: Int
     notes: String
@@ -536,6 +536,7 @@ type FishGuts {
     taxonomyId:          Int
     scientificName:      String
     lifeStageId:        Int
+    lifeStage: String
     count:                Float
     weight:               Float
 }
@@ -962,12 +963,12 @@ type FishGuts {
 
     type PaginatedModelResult {
         records: [ModelResult]
-        nextOffset
+        nextOffset: Int
     }
 
     type PaginatedFishGuts {
         records: [FishGuts]
-        nextOffset
+        nextOffset: Int
     }
 `
 

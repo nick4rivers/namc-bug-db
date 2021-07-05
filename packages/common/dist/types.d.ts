@@ -448,7 +448,7 @@ export declare type ModelResult = {
     modelId: number;
     modelName: string;
     modelVersion: string;
-    modelRsult: number;
+    modelResult: number;
     condition: string;
     fixCount: number;
     notes: string;
@@ -475,6 +475,7 @@ export declare type FishGuts = {
     taxonomyId: number;
     scientificName: string;
     lifeStageId: number;
+    lifeStage: string;
     count: number;
     weight: number;
 };
