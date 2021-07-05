@@ -34,7 +34,9 @@ import {
     AttributeValue,
     TranslationTaxa,
     Metric,
-    util
+    util,
+    ModelResult,
+    FishGuts
 } from '@namcbugdb/common'
 import * as pg from '../pg'
 
@@ -488,7 +490,7 @@ export default {
             const pool = await pg.getPool()
             const data = await pg.getMassSamples(pool, limit, offset)
             return createPagination<MassSample>(data, limit, offset)
-        }
+        },
 
         modelResults: async (obj, { limit, offset, sampleIds }, { user }): Promise<PaginatedRecords<ModelResult>> => {
             loggedInGate(user)
@@ -496,8 +498,8 @@ export default {
 
             const pool = await pg.getPool()
             const data = await pg.getModelResults(pool, limit, offset, sampleIds)
-            return createPagination<ModelResult>(data, limit, offset, sampleIds)
-        }
+            return createPagination<ModelResult>(data, limit, offset)
+        },
 
         fishGuts: async (obj, { limit, offset }, { user }): Promise<PaginatedRecords<FishGuts>> => {
             loggedInGate(user)

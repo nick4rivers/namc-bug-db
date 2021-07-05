@@ -477,9 +477,9 @@ export declare type MetricResult = {
 
 export declare type ModelResult = {
     sampleId: number
-    siteId:      number
-    siteName:    string
-    modelId:     number
+    siteId: number
+    siteName: string
+    modelId: number
     modelName: string
     modelVersion: string
     modelRsult: number
@@ -492,24 +492,24 @@ export declare type ModelResult = {
 }
 
 export declare type FishGuts = {
-    sampleId:            number
-    sampleDate:          string
-    siteId:              number
-    siteName:            string
-    fishWeight:          number
-    fishLength:          number
-    fishTaxonomyId:     number
+    sampleId: number
+    sampleDate: string
+    siteId: number
+    siteName: string
+    fishWeight: number
+    fishLength: number
+    fishTaxonomyId: number
     fishScientificName: string
-    notes:                string
-    metadata:             string
-    organicWeight:       number
-    inorganicWeight:     number
-    otherWeight:         number
-    createdDate:         string
-    updatedDate:         string
-    taxonomyId:          number
-    scientificName:      string
-    lifeStageId:        number
-    count:                number
-    weight:               number
+    notes: string
+    metadata: string
+    organicWeight: number
+    inorganicWeight: number
+    otherWeight: number
+    createdDate: string
+    updatedDate: string
+    taxonomyId: number
+    scientificName: string
+    lifeStageId: number
+    count: number
+    weight: number
 }

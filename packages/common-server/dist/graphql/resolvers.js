@@ -871,7 +871,7 @@ exports.default = {
                             return [4, pg.getModelResults(pool, limit, offset, sampleIds)];
                         case 2:
                             data = _c.sent();
-                            return [2, createPagination(data, limit, offset, sampleIds)];
+                            return [2, createPagination(data, limit, offset)];
                     }
                 });
             });
