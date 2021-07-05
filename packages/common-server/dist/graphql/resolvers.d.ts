@@ -202,6 +202,19 @@ declare const _default: {
         }, { user }: {
             user: any;
         }) => Promise<PaginatedRecords<MassSample>>;
+        modelResults: (obj: any, { limit, offset, sampleIds }: {
+            limit: any;
+            offset: any;
+            sampleIds: any;
+        }, { user }: {
+            user: any;
+        }) => Promise<PaginatedRecords<ModelResult>>;
+        fishGuts: (obj: any, { limit, offset }: {
+            limit: any;
+            offset: any;
+        }, { user }: {
+            user: any;
+        }) => Promise<PaginatedRecords<FishGuts>>;
     };
     Mutation: {
         setSitePredictorValue: (obj: any, { siteId, predictorId, value }: {

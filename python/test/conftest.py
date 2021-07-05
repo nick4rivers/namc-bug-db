@@ -153,15 +153,18 @@ def insert_site(cursor, site_name, longitude, latitude):
 @pytest.fixture
 def rarefaction_data(cursor):
 
-    cursor.execute('SELECT taxonomy_id from taxa.taxonomy')
+    cursor.execute('SELECT taxonomy_id from taxa.taxonomy limit 10')
     taxa = [row[0] for row in cursor.fetchall()]
+
+    cursor.execute('SELECT life_stage_id from taxa.life_stages limit 1')
+    life_stage_id = cursor.fetchone()[0]
 
     # Insert an entity, box and sample
     sample_id = insert_test_sample(cursor)
 
-    for n in range(0, 10):
-        taxonomy_id = random.choice(taxa)
-        cursor.execute('insert into sample.organisms (sample_id, taxonomy_id, life_stage_id, split_count) values (%s, %s, 1, %s)', [sample_id, taxonomy_id, random.randint(1, 15)])
+    # insert 10 records, each with 1000 bugs
+    for taxonomy_id in taxa:
+        cursor.execute('insert into sample.organisms (sample_id, taxonomy_id, life_stage_id, split_count) values (%s, %s, %s, 1000)', [sample_id, taxonomy_id, life_stage_id])
 
 
 def get_test_taxa(cursor, level, limit):

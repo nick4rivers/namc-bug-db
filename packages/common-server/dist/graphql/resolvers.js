@@ -854,6 +854,48 @@ exports.default = {
                     }
                 });
             });
+        },
+        modelResults: function (obj, _a, _b) {
+            var limit = _a.limit, offset = _a.offset, sampleIds = _a.sampleIds;
+            var user = _b.user;
+            return __awaiter(void 0, void 0, void 0, function () {
+                var pool, data;
+                return __generator(this, function (_c) {
+                    switch (_c.label) {
+                        case 0:
+                            loggedInGate(user);
+                            limitOffsetCheck(limit, common_1.graphql.queryLimits.samples, offset);
+                            return [4, pg.getPool()];
+                        case 1:
+                            pool = _c.sent();
+                            return [4, pg.getModelResults(pool, limit, offset, sampleIds)];
+                        case 2:
+                            data = _c.sent();
+                            return [2, createPagination(data, limit, offset, sampleIds)];
+                    }
+                });
+            });
+        },
+        fishGuts: function (obj, _a, _b) {
+            var limit = _a.limit, offset = _a.offset;
+            var user = _b.user;
+            return __awaiter(void 0, void 0, void 0, function () {
+                var pool, data;
+                return __generator(this, function (_c) {
+                    switch (_c.label) {
+                        case 0:
+                            loggedInGate(user);
+                            limitOffsetCheck(limit, common_1.graphql.queryLimits.samples, offset);
+                            return [4, pg.getPool()];
+                        case 1:
+                            pool = _c.sent();
+                            return [4, pg.getFishGuts(pool, limit, offset)];
+                        case 2:
+                            data = _c.sent();
+                            return [2, createPagination(data, limit, offset)];
+                    }
+                });
+            });
         }
     },
     Mutation: {
