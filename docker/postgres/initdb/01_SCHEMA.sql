@@ -1313,8 +1313,8 @@ CREATE UNIQUE INDEX ux_sample_model_results ON sample.model_results(sample_id, m
 CREATE TABLE sample.fish_guts
 (
     sample_id INT NOT NULL PRIMARY KEY,
-    weight REAL NOT NULL,
-    length REAL NOT NULL,
+    fish_weight REAL NOT NULL,
+    fish_length REAL NOT NULL,
     fish_taxonomy_id INT NOT NULL,
     notes TEXT,
     metadata json,

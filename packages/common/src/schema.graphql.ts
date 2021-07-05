@@ -12,6 +12,7 @@ export const queryLimits = {
     models: 500,
     sitePredictorValues: 500,
     modelPredictors: 500,
+    modelResults: 500,
     translations: 500,
     metrics: 500
 }
@@ -76,6 +77,8 @@ const typeDefs = gql`
         "List of predictors required by a single model."
         modelPredictors(limit: Int = ${queryLimits.modelPredictors}, offset: Int = 0, modelId: Int!): PaginatedModelPredictors
 
+        modelResults(limit: Int = ${queryLimits.modelResults}, offset: Int = 0, sampleIds: [Int]!): PaginatedModelResults
+
         ####################################################################################################################################################################################
         # Taxonomy queries
 
@@ -111,6 +114,9 @@ const typeDefs = gql`
 
         "List of all mass samples in the system."
         massSamples(limit: Int = ${queryLimits.samples}, offset: Int = 0): PaginatedMass
+
+        "List all fish guts samples in the system"
+        fishGuts(limit: Int = ${queryLimits.samples}, offset: Int = 0): PaginatedFishGuts
 
         ####################################################################################################################################################################################
         # Sample Taxa queries
@@ -493,6 +499,45 @@ type MassSample {
     mass: Float
     updatedDate: String
 
+}
+
+type ModelResult {
+    sampleId: Int
+    siteId:      Int
+    siteName:    String
+    modelId:     Int
+    modelName: String
+    modelVersion: String
+    modelRsult: Float
+    condition: String
+    fixCount: Int
+    notes: String
+    metadata: String
+    createdDate: String
+    updatedDate: String
+}
+
+type FishGuts {
+    sampleId:            Int
+    sampleDate:          String
+    siteId:              Int
+    siteName:            String
+    fishWeight:          Float
+    fishLength:          Float
+    fishTaxonomyId:     Int
+    fishScientificName: String
+    notes:                String
+    metadata:             String
+    organicWeight:       Float
+    inorganicWeight:     Float
+    otherWeight:         Float
+    createdDate:         String
+    updatedDate:         String
+    taxonomyId:          Int
+    scientificName:      String
+    lifeStageId:        Int
+    count:                Float
+    weight:               Float
 }
 
 
@@ -913,6 +958,16 @@ type MassSample {
     type PaginatedMetricResult {
         records: [MetricResult]
         nextOffset: Int
+    }
+
+    type PaginatedModelResult {
+        records: [ModelResult]
+        nextOffset
+    }
+
+    type PaginatedFishGuts {
+        records: [FishGuts]
+        nextOffset
     }
 `
 

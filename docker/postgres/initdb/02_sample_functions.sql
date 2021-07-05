@@ -656,19 +656,19 @@ $$;
 create or replace function sample.fn_model_results(p_limit int, p_offset int, p_sample_ids int[])
     returns table
             (
-                sample_id    int,
-                site_id      int,
-                site_name    varchar,
-                model_id     smallint,
-                model_name   varchar,
+                sample_id     int,
+                site_id       int,
+                site_name     varchar,
+                model_id      smallint,
+                model_name    varchar,
                 model_version varchar,
-                model_result real,
-                condition    varchar,
-                fix_count    smallint,
-                notes        text,
-                metadata     text,
-                created_date text,
-                updated_date text
+                model_result  real,
+                condition     varchar,
+                fix_count     smallint,
+                notes         text,
+                metadata      text,
+                created_date  text,
+                updated_date  text
             )
     immutable
     returns null on null input
@@ -690,11 +690,75 @@ select s.sample_id,
        to_json(s.created_date) #>> '{}',
        to_json(s.updated_date) #>> '{}'
 from sample.model_results mr
-inner join unnest(p_sample_ids) p(sample_id) on mr.sample_id = p.sample_id
-inner join sample.samples s on p.sample_id = s.sample_id
-inner join geo.sites si on s.site_id = si.site_id
-inner join geo.models m on mr.model_id = m.model_id
-inner join geo.model_conditions mt on m.model_id = mt.model_id and mr.model_result::numeric <@ mt.condition
+         inner join unnest(p_sample_ids) p(sample_id) on mr.sample_id = p.sample_id
+         inner join sample.samples s on p.sample_id = s.sample_id
+         inner join geo.sites si on s.site_id = si.site_id
+         inner join geo.models m on mr.model_id = m.model_id
+         inner join geo.model_conditions mt on m.model_id = mt.model_id and mr.model_result::numeric <@ mt.condition
 order by mr.sample_id, mr.model_id, mr.model_version, mr.fixed_count
 limit p_limit offset p_offset;
+$$;
+
+
+create or replace function sample.fn_fish_guts(p_limit int, p_offset int, p_sample_ids int[])
+    returns table
+            (
+                sample_id            int,
+                sample_date          text,
+                site_id              int,
+                site_name            varchar,
+                fish_weight          real,
+                fish_length          real,
+                fish_taxonomy_id     int,
+                fish_scientific_name varchar,
+                notes                text,
+                metadata             text,
+                organic_weight       real,
+                inorganic_weight     real,
+                other_weight         real,
+                created_date         text,
+                updated_date         text,
+                taxonomy_id          int,
+                scientific_name      varchar,
+                life_stage_id        int,
+                count                smallint,
+                weight               real
+            )
+    immutable
+    language sql
+as
+$$
+select s.sample_id,
+       s.sample_date,
+       si.site_id,
+       si.site_name,
+       fg.fish_weight,
+       fg.fish_length,
+       fg.fish_taxonomy_id,
+       fgt.scientific_name,
+       fg.notes,
+       cast(fg.metadata as text),
+       fg.organic_weight,
+       fg.inorganic_weight,
+       fg.other_weight,
+       fg.created_date,
+       fg.updated_date,
+       fgw.taxonomy_id,
+       fgt.scientific_name,
+       fgw.life_stage_id,
+       l.life_stage_name,
+       fgw.count,
+       fgw.weight
+from (
+         select *
+         from sample.fish_gut_weights
+         order by sample_id, taxonomy_id, life_stage_id
+         limit p_limit offset p_offset
+     ) fgw
+         inner join sample.fish_guts fg on fgw.sample_id = fg.sample_id
+         inner join sample.samples s on s.sample_id = fgw.sample_id
+         inner join geo.sites si on s.site_id = si.site_id
+         inner join taxa.taxonomy ft on fg.fish_taxonomy_id = ft.taxonomy_id
+         inner join taxa.taxonomy fgt on fgw.taxonomy_id = fgt.taxonomy_id
+         inner join taxa.life_stages l on fgw.life_stage_id = l.life_stage_id
 $$;
