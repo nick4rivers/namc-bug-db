@@ -6,3 +6,4 @@ id_rsa
 .env
 .env.*
 shared
+.DS_Store
