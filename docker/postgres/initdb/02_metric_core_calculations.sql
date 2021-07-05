@@ -16,7 +16,13 @@ create or replace function metric.fn_calc_richness(p_taxa taxa_info2[])
     returns bigint
     language sql
     immutable
-    returns null on null input
+    -- Do NOT include the "returns null on null input" for this function.
+    -- This function is called by other versions of richness which filter taxa
+    -- and then pass the filtered taxa list to this function. If the filtering
+    -- produces an empty array, we still want this function to return zero.
+    -- Including the "returns null on null input" clause causes those other
+    -- richness functions to return NULL. We always want richness to be 0-1.
+--     returns null on null input
 as
 $$
 select count(*)
