@@ -125,12 +125,6 @@ declare const _default: {
         }, { user }: {
             user: any;
         }) => Promise<PaginatedRecords<TranslationSampleTaxa>>;
-        sampleTaxaRarefied: (obj: any, { sampleId, fixedCount }: {
-            sampleId: any;
-            fixedCount: any;
-        }, { user }: {
-            user: any;
-        }) => Promise<PaginatedRecords<RarefiedSampleTaxa>>;
         sampleTaxaTranslationRarefied: (obj: any, { sampleId, translationId, fixedCount }: {
             sampleId: any;
             translationId: any;

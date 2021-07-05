@@ -586,26 +586,6 @@ exports.default = {
                 });
             });
         },
-        sampleTaxaRarefied: function (obj, _a, _b) {
-            var sampleId = _a.sampleId, fixedCount = _a.fixedCount;
-            var user = _b.user;
-            return __awaiter(void 0, void 0, void 0, function () {
-                var pool, data;
-                return __generator(this, function (_c) {
-                    switch (_c.label) {
-                        case 0:
-                            loggedInGate(user);
-                            return [4, pg.getPool()];
-                        case 1:
-                            pool = _c.sent();
-                            return [4, pg.getSampleTaxaRarefied(pool, sampleId, fixedCount)];
-                        case 2:
-                            data = _c.sent();
-                            return [2, createPagination(data)];
-                    }
-                });
-            });
-        },
         sampleTaxaTranslationRarefied: function (obj, _a, _b) {
             var sampleId = _a.sampleId, translationId = _a.translationId, fixedCount = _a.fixedCount;
             var user = _b.user;

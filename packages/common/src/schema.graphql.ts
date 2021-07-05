@@ -130,8 +130,8 @@ const typeDefs = gql`
         "Sample organisms converted to a translation (OTU). Rolls up counts to those taxa present in the translation and omits any organisms that don't roll up to a taxa in the translation."
         sampleTaxaTranslation(sampleId: Int!, translationId: Int!): PaginatedSampleTranslationTaxa
 
-        "Sample organisms in their original taxonomic designation but rarefied to the specified fixed count."
-        sampleTaxaRarefied(sampleId: Int!, fixedCount: Int!): PaginatedRarefiedSampleTaxa
+        # "Sample organisms in their original taxonomic designation but rarefied to the specified fixed count."
+        # sampleTaxaRarefied(sampleId: Int!, fixedCount: Int!): PaginatedRarefiedSampleTaxa
 
         "Sample organisms converted to the translation (OTU) and then rarefied to the specified fixed count."
         sampleTaxaTranslationRarefied(sampleId: Int!, translationId: Int!, fixedCount:Int!):PaginatedRarefiedSampleTaxa

@@ -344,17 +344,17 @@ export default {
             return createPagination<TranslationSampleTaxa>(data)
         },
 
-        sampleTaxaRarefied: async (
-            obj,
-            { sampleId, fixedCount },
-            { user }
-        ): Promise<PaginatedRecords<RarefiedSampleTaxa>> => {
-            loggedInGate(user)
+        // sampleTaxaRarefied: async (
+        //     obj,
+        //     { sampleId, fixedCount },
+        //     { user }
+        // ): Promise<PaginatedRecords<RarefiedSampleTaxa>> => {
+        //     loggedInGate(user)
 
-            const pool = await pg.getPool()
-            const data = await pg.getSampleTaxaRarefied(pool, sampleId, fixedCount)
-            return createPagination<RarefiedSampleTaxa>(data)
-        },
+        //     const pool = await pg.getPool()
+        //     const data = await pg.getSampleTaxaRarefied(pool, sampleId, fixedCount)
+        //     return createPagination<RarefiedSampleTaxa>(data)
+        // },
 
         sampleTaxaTranslationRarefied: async (
             obj,
