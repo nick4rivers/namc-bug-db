@@ -721,6 +721,7 @@ create or replace function sample.fn_fish_guts(p_limit int, p_offset int, p_samp
                 taxonomy_id          int,
                 scientific_name      varchar,
                 life_stage_id        int,
+                life_stage           varchar,
                 count                smallint,
                 weight               real
             )
