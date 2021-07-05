@@ -501,12 +501,12 @@ export default {
             return createPagination<ModelResult>(data, limit, offset)
         },
 
-        fishGuts: async (obj, { limit, offset }, { user }): Promise<PaginatedRecords<FishGuts>> => {
+        fishGuts: async (obj, { limit, offset, sampleIds }, { user }): Promise<PaginatedRecords<FishGuts>> => {
             loggedInGate(user)
             limitOffsetCheck(limit, graphql.queryLimits.samples, offset)
 
             const pool = await pg.getPool()
-            const data = await pg.getFishGuts(pool, limit, offset)
+            const data = await pg.getFishGuts(pool, limit, offset, sampleIds)
             return createPagination<FishGuts>(data, limit, offset)
         }
     },

@@ -203,9 +203,10 @@ declare const _default: {
         }, { user }: {
             user: any;
         }) => Promise<PaginatedRecords<ModelResult>>;
-        fishGuts: (obj: any, { limit, offset }: {
+        fishGuts: (obj: any, { limit, offset, sampleIds }: {
             limit: any;
             offset: any;
+            sampleIds: any;
         }, { user }: {
             user: any;
         }) => Promise<PaginatedRecords<FishGuts>>;

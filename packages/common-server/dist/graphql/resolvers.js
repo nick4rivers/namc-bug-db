@@ -857,7 +857,7 @@ exports.default = {
             });
         },
         fishGuts: function (obj, _a, _b) {
-            var limit = _a.limit, offset = _a.offset;
+            var limit = _a.limit, offset = _a.offset, sampleIds = _a.sampleIds;
             var user = _b.user;
             return __awaiter(void 0, void 0, void 0, function () {
                 var pool, data;
@@ -869,7 +869,7 @@ exports.default = {
                             return [4, pg.getPool()];
                         case 1:
                             pool = _c.sent();
-                            return [4, pg.getFishGuts(pool, limit, offset)];
+                            return [4, pg.getFishGuts(pool, limit, offset, sampleIds)];
                         case 2:
                             data = _c.sent();
                             return [2, createPagination(data, limit, offset)];
