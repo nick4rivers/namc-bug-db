@@ -578,45 +578,45 @@ comment on function sample.fn_sample_translation_taxa is
     the original taxa used by the lab!';
 
 
-drop function if exists sample.fn_rarefied_taxa;
-create or replace function sample.fn_rarefied_taxa(p_sample_id int, p_fixed_count int)
-    returns setof taxa_info
-    language plpgsql
-    immutable
-as
-$$
-begin
-    return query
-        select p_sample_id,
-               c.taxonomy_id,
-               t.scientific_name,
-               l.level_id,
-               l.level_name,
-               count(*)::double precision
-        from (
-                 select ts.taxonomy_id
-                 from (
-                          select t.taxonomy_id, uuid_generate_v1() uid
-                          from (
-                                   SELECT o.taxonomy_id,
-                                          round(sum(
-                                                  sample.fn_corrected_count(o.split_count, s.lab_split,
-                                                                            s.field_split)))::int corrected_count
-                                   FROM sample.organisms o
-                                            inner join sample.samples s
-                                                       on o.sample_id = s.sample_id
-                                   where s.sample_id = p_sample_id
-                                   group by o.taxonomy_id, field_split, lab_split) t, generate_series(1, t.corrected_count)
-                      ) ts
-                 order by uid
-                 limit p_fixed_count) c
-                 inner join taxa.taxonomy t on c.
-                                                   taxonomy_id = t.taxonomy_id
-                 inner join taxa.taxa_levels l on t.
-                                                      level_id = l.level_id
-        group by c.taxonomy_id, t.scientific_name, c.taxonomy_id, l.level_id, l.level_name;
-end
-$$;
+-- drop function if exists sample.fn_rarefied_taxa;
+-- create or replace function sample.fn_rarefied_taxa(p_sample_id int, p_fixed_count int)
+--     returns setof taxa_info
+--     language plpgsql
+--     immutable
+-- as
+-- $$
+-- begin
+--     return query
+--         select p_sample_id,
+--                c.taxonomy_id,
+--                t.scientific_name,
+--                l.level_id,
+--                l.level_name,
+--                count(*)::double precision
+--         from (
+--                  select ts.taxonomy_id
+--                  from (
+--                           select t.taxonomy_id, uuid_generate_v1() uid
+--                           from (
+--                                    SELECT o.taxonomy_id,
+--                                           round(sum(
+--                                                   sample.fn_corrected_count(o.split_count, s.lab_split,
+--                                                                             s.field_split)))::int corrected_count
+--                                    FROM sample.organisms o
+--                                             inner join sample.samples s
+--                                                        on o.sample_id = s.sample_id
+--                                    where s.sample_id = p_sample_id
+--                                    group by o.taxonomy_id, field_split, lab_split) t, generate_series(1, t.corrected_count)
+--                       ) ts
+--                  order by uid
+--                  limit p_fixed_count) c
+--                  inner join taxa.taxonomy t on c.
+--                                                    taxonomy_id = t.taxonomy_id
+--                  inner join taxa.taxa_levels l on t.
+--                                                       level_id = l.level_id
+--         group by c.taxonomy_id, t.scientific_name, c.taxonomy_id, l.level_id, l.level_name;
+-- end
+-- $$;
 
 drop function if exists sample.fn_translation_rarefied_taxa;
 create or replace function sample.fn_translation_rarefied_taxa(p_sample_id int, p_translation_id int, p_fixed_count int)
