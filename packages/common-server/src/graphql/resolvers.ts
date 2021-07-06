@@ -586,6 +586,51 @@ export default {
             )
             const returnVal = data[0].fn_set_taxonomy as number
             return returnVal
+        },
+
+        createProject: async (obj, { projectName, isPrivate, contactId, description, metadata }, { user }): Promise<number> => {
+            loggedInGate(user)
+
+            const pool = await pg.getPool()
+            const data = await pg.createProject(pool, projectName, isPrivate, contactId, description, metadata)
+            const returnVal = data[0].fn_create_project as number
+            return returnVal
+        },
+
+        addProjectSamples: async (obj, { projectId, sampleIds }, { user }): Promise<number> => {
+            loggedInGate(user)
+
+            const pool = await pg.getPool()
+            const data = await pg.addProjectSamples(pool, projectId, sampleIds)
+            const returnVal = data[0].fn_add_project_samples as number
+            return returnVal
+        },
+
+        addProjectBoxes: async (obj, { projectId, boxIds }, { user }): Promise<number> => {
+            loggedInGate(user)
+
+            const pool = await pg.getPool()
+            const data = await pg.addProjectBoxes(pool, projectId, boxIds)
+            const returnVal = data[0].fn_add_project_boxes as number
+            return returnVal
+        },
+
+        removeProjectSamples: async (obj, { projectId, sampleIds }, { user }): Promise<number> => {
+            loggedInGate(user)
+
+            const pool = await pg.getPool()
+            const data = await pg.removeProjectSamples(pool, projectId, sampleIds)
+            const returnVal = data[0].fn_remove_project_samples as number
+            return returnVal
+        },
+
+        deleteProject: async (obj, { projectId }, { user }): Promise<number> => {
+            loggedInGate(user)
+
+            const pool = await pg.getPool()
+            const data = await pg.deleteProject(pool, projectId)
+            const returnVal = data[0].fn_delete_project as number
+            return returnVal
         }
     }
 }
