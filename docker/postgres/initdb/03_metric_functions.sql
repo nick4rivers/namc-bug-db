@@ -265,7 +265,7 @@ create or replace function metric.fn_taxa_abundance(p_metric_id int, p_raw_taxa 
     returns null on null input
 as
 $$
-select sum(abundance)
+select coalesce(sum(abundance), 0)
 from unnest(p_raw_taxa) t
          join metric.metric_taxa m on true
 where (m.metric_id = p_metric_id)
@@ -282,7 +282,7 @@ create or replace function metric.fn_attribute_abundance(p_metric_id int, p_raw_
     returns null on null input
 as
 $$
-select sum(abundance)
+select coalesce(sum(abundance), 0)
 from unnest(metric.fn_filter_taxa_by_attribute(p_raw_taxa, p_metric_id));
 $$;
 
