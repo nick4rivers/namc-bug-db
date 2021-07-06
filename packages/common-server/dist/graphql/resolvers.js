@@ -1025,6 +1025,111 @@ exports.default = {
                     }
                 });
             });
+        },
+        createProject: function (obj, _a, _b) {
+            var projectName = _a.projectName, isPrivate = _a.isPrivate, contactId = _a.contactId, description = _a.description, metadata = _a.metadata;
+            var user = _b.user;
+            return __awaiter(void 0, void 0, void 0, function () {
+                var pool, data, returnVal;
+                return __generator(this, function (_c) {
+                    switch (_c.label) {
+                        case 0:
+                            loggedInGate(user);
+                            return [4, pg.getPool()];
+                        case 1:
+                            pool = _c.sent();
+                            return [4, pg.createProject(pool, projectName, isPrivate, contactId, description, metadata)];
+                        case 2:
+                            data = _c.sent();
+                            returnVal = data[0].fn_create_project;
+                            return [2, returnVal];
+                    }
+                });
+            });
+        },
+        addProjectSamples: function (obj, _a, _b) {
+            var projectId = _a.projectId, sampleIds = _a.sampleIds;
+            var user = _b.user;
+            return __awaiter(void 0, void 0, void 0, function () {
+                var pool, data, returnVal;
+                return __generator(this, function (_c) {
+                    switch (_c.label) {
+                        case 0:
+                            loggedInGate(user);
+                            return [4, pg.getPool()];
+                        case 1:
+                            pool = _c.sent();
+                            return [4, pg.addProjectSamples(pool, projectId, sampleIds)];
+                        case 2:
+                            data = _c.sent();
+                            returnVal = data[0].fn_add_project_samples;
+                            return [2, returnVal];
+                    }
+                });
+            });
+        },
+        addProjectBoxes: function (obj, _a, _b) {
+            var projectId = _a.projectId, boxIds = _a.boxIds;
+            var user = _b.user;
+            return __awaiter(void 0, void 0, void 0, function () {
+                var pool, data, returnVal;
+                return __generator(this, function (_c) {
+                    switch (_c.label) {
+                        case 0:
+                            loggedInGate(user);
+                            return [4, pg.getPool()];
+                        case 1:
+                            pool = _c.sent();
+                            return [4, pg.addProjectBoxes(pool, projectId, boxIds)];
+                        case 2:
+                            data = _c.sent();
+                            returnVal = data[0].fn_add_project_boxes;
+                            return [2, returnVal];
+                    }
+                });
+            });
+        },
+        removeProjectSamples: function (obj, _a, _b) {
+            var projectId = _a.projectId, sampleIds = _a.sampleIds;
+            var user = _b.user;
+            return __awaiter(void 0, void 0, void 0, function () {
+                var pool, data, returnVal;
+                return __generator(this, function (_c) {
+                    switch (_c.label) {
+                        case 0:
+                            loggedInGate(user);
+                            return [4, pg.getPool()];
+                        case 1:
+                            pool = _c.sent();
+                            return [4, pg.removeProjectSamples(pool, projectId, sampleIds)];
+                        case 2:
+                            data = _c.sent();
+                            returnVal = data[0].fn_remove_project_samples;
+                            return [2, returnVal];
+                    }
+                });
+            });
+        },
+        deleteProject: function (obj, _a, _b) {
+            var projectId = _a.projectId;
+            var user = _b.user;
+            return __awaiter(void 0, void 0, void 0, function () {
+                var pool, data, returnVal;
+                return __generator(this, function (_c) {
+                    switch (_c.label) {
+                        case 0:
+                            loggedInGate(user);
+                            return [4, pg.getPool()];
+                        case 1:
+                            pool = _c.sent();
+                            return [4, pg.deleteProject(pool, projectId)];
+                        case 2:
+                            data = _c.sent();
+                            returnVal = data[0].fn_delete_project;
+                            return [2, returnVal];
+                    }
+                });
+            });
         }
     }
 };

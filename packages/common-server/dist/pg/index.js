@@ -39,7 +39,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getProjectMetrics = exports.getBoxMetrics = exports.getSampleMetrics = exports.getSampleTaxaTranslationRarefied = exports.getSampleTaxaRarefied = exports.getSampleTaxaTranslation = exports.getSampleTaxaGeneralized = exports.getPolygonTaxaRawQuery = exports.getPointTaxaRawQuery = exports.getProjectTaxaRaw = exports.getBoxTaxaRaw = exports.getSampleTaxaRaw = exports.setTaxonomy = exports.deleteTranslationTaxa = exports.setTranslationTaxa = exports.createTranslation = exports.setSiteCatchment = exports.setSamplePredictorValue = exports.setSitePredictorValue = exports.getFishGuts = exports.getModelResults = exports.getMetrics = exports.getModelThresholds = exports.getTaxaAttributes = exports.getAttributes = exports.getMassSamples = exports.getFishSamples = exports.getDriftSamples = exports.getPlanktonSamples = exports.getTranslationTaxa = exports.getTranslations = exports.getModelPredictors = exports.getSamplePredictorValues = exports.getBoxInfo = exports.getSampleInfo = exports.getSitePredictorValues = exports.getModelInfo = exports.getModels = exports.getPredictors = exports.getTaxonomyTree = exports.getTaxonomy = exports.getProjects = exports.getBoxes = exports.getIndividuals = exports.getSiteInfo = exports.getSites = exports.getSamples = exports.getPool = void 0;
+exports.deleteProject = exports.removeProjectSamples = exports.addProjectBoxes = exports.addProjectSamples = exports.createProject = exports.getProjectMetrics = exports.getBoxMetrics = exports.getSampleMetrics = exports.getSampleTaxaTranslationRarefied = exports.getSampleTaxaRarefied = exports.getSampleTaxaTranslation = exports.getSampleTaxaGeneralized = exports.getPolygonTaxaRawQuery = exports.getPointTaxaRawQuery = exports.getProjectTaxaRaw = exports.getBoxTaxaRaw = exports.getSampleTaxaRaw = exports.setTaxonomy = exports.deleteTranslationTaxa = exports.setTranslationTaxa = exports.createTranslation = exports.setSiteCatchment = exports.setSamplePredictorValue = exports.setSitePredictorValue = exports.getFishGuts = exports.getModelResults = exports.getMetrics = exports.getModelThresholds = exports.getTaxaAttributes = exports.getAttributes = exports.getMassSamples = exports.getFishSamples = exports.getDriftSamples = exports.getPlanktonSamples = exports.getTranslationTaxa = exports.getTranslations = exports.getModelPredictors = exports.getSamplePredictorValues = exports.getBoxInfo = exports.getSampleInfo = exports.getSitePredictorValues = exports.getModelInfo = exports.getModels = exports.getPredictors = exports.getTaxonomyTree = exports.getTaxonomy = exports.getProjects = exports.getBoxes = exports.getIndividuals = exports.getSiteInfo = exports.getSites = exports.getSamples = exports.getPool = void 0;
 var config_1 = require("../config");
 var pg_1 = require("pg");
 var loglevel_1 = __importDefault(require("loglevel"));
@@ -248,4 +248,24 @@ exports.getBoxMetrics = function (pool, boxIds, translationId, fixedCount) {
 };
 var projectMetricsQuery = 'SELECT * FROM metric.fn_project_metrics($1, $2, $3)';
 exports.getProjectMetrics = function (pool, projectIds, translationId, fixedCount) { return pgPromise(pool, projectMetricsQuery, [projectIds, translationId, fixedCount]); };
+var createProjectQuery = 'SELECT * FROM sample.fn_create_project($1, $2, $3, $4, $5)';
+exports.createProject = function (pool, projectName, isPrivate, contactId, description, metadata) {
+    return pgPromise(pool, createProjectQuery, [projectName, isPrivate, contactId, description, metadata]);
+};
+var addProjectSamplesQuery = 'SELECT * FROM sample.add_project_samples($1, $2)';
+exports.addProjectSamples = function (pool, projectId, sampleIds) {
+    return pgPromise(pool, addProjectSamplesQuery, [projectId, sampleIds]);
+};
+var addProjectBoxesQuery = 'SELECT * FROM sample.add_project_boxes($1, $2)';
+exports.addProjectBoxes = function (pool, projectId, boxIds) {
+    return pgPromise(pool, addProjectBoxesQuery, [projectId, boxIds]);
+};
+var removeProjectSamplesQuery = 'SELECT * FROM sample.remove_project_samples($1, $2)';
+exports.removeProjectSamples = function (pool, projectId, sampleIds) {
+    return pgPromise(pool, removeProjectSamplesQuery, [projectId, sampleIds]);
+};
+var deleteProjectQuery = 'SELECT * FROM sample.delete_project($1)';
+exports.deleteProject = function (pool, projectId) {
+    return pgPromise(pool, deleteProjectQuery, [projectId]);
+};
 //# sourceMappingURL=index.js.map

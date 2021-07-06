@@ -588,7 +588,11 @@ export default {
             return returnVal
         },
 
-        createProject: async (obj, { projectName, isPrivate, contactId, description, metadata }, { user }): Promise<number> => {
+        createProject: async (
+            obj,
+            { projectName, isPrivate, contactId, description, metadata },
+            { user }
+        ): Promise<number> => {
             loggedInGate(user)
 
             const pool = await pg.getPool()

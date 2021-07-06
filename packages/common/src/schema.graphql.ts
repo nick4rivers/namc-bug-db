@@ -173,7 +173,7 @@ const typeDefs = gql`
         "Update information related to a specific taxa. Change its scientific name, move its level or change its parent"
         setTaxonomy(taxonomyId: Int!, scientificName: String!, levelId: Int!, parentId: Int!, author: String, year:String, notes: String, metadata:String): Int
 
-        createProject(projectName: String!, is_private: Boolean, description: String, metadata: String, contact_id: Int): Int
+        createProject(projectName: String!, isPrivate: Boolean, description: String, metadata: String, contactId: Int): Int
 
         addProjectSamples(projectId: Int!, sampleIds: [Int]): Int
 

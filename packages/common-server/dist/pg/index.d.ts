@@ -48,3 +48,8 @@ export declare const getSampleTaxaTranslationRarefied: (pool: any, sampleId: num
 export declare const getSampleMetrics: (pool: any, sampleIds: number[], translationId: number, fixedCount: number) => DBReturnPromiseType;
 export declare const getBoxMetrics: (pool: any, boxIds: number[], translationId: number, fixedCount: number) => DBReturnPromiseType;
 export declare const getProjectMetrics: (pool: any, projectIds: number[], translationId: number, fixedCount: number) => DBReturnPromiseType;
+export declare const createProject: (pool: any, projectName: string, isPrivate: boolean, contactId: number, description: string, metadata: string) => DBReturnPromiseType;
+export declare const addProjectSamples: (pool: any, projectId: number, sampleIds: number[]) => DBReturnPromiseType;
+export declare const addProjectBoxes: (pool: any, projectId: number, boxIds: number[]) => DBReturnPromiseType;
+export declare const removeProjectSamples: (pool: any, projectId: number, sampleIds: number[]) => DBReturnPromiseType;
+export declare const deleteProject: (pool: any, projectId: number) => DBReturnPromiseType;

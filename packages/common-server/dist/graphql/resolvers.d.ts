@@ -264,6 +264,38 @@ declare const _default: {
         }, { user }: {
             user: any;
         }) => Promise<number>;
+        createProject: (obj: any, { projectName, isPrivate, contactId, description, metadata }: {
+            projectName: any;
+            isPrivate: any;
+            contactId: any;
+            description: any;
+            metadata: any;
+        }, { user }: {
+            user: any;
+        }) => Promise<number>;
+        addProjectSamples: (obj: any, { projectId, sampleIds }: {
+            projectId: any;
+            sampleIds: any;
+        }, { user }: {
+            user: any;
+        }) => Promise<number>;
+        addProjectBoxes: (obj: any, { projectId, boxIds }: {
+            projectId: any;
+            boxIds: any;
+        }, { user }: {
+            user: any;
+        }) => Promise<number>;
+        removeProjectSamples: (obj: any, { projectId, sampleIds }: {
+            projectId: any;
+            sampleIds: any;
+        }, { user }: {
+            user: any;
+        }) => Promise<number>;
+        deleteProject: (obj: any, { projectId }: {
+            projectId: any;
+        }, { user }: {
+            user: any;
+        }) => Promise<number>;
     };
 };
 export default _default;

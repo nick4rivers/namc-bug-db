@@ -252,24 +252,29 @@ export const getProjectMetrics = (
     fixedCount: number
 ): DBReturnPromiseType => pgPromise(pool, projectMetricsQuery, [projectIds, translationId, fixedCount])
 
-const createProjectQuery = 'SELECT * FROM taxa.fn_create_project($1, $2, $3, $4, $5)'
-export const createProject = (pool, projectName: string, isPrivate: boolean, contactId: number, description: string, metadata: string): DBReturnPromiseType =>
+const createProjectQuery = 'SELECT * FROM sample.fn_create_project($1, $2, $3, $4, $5)'
+export const createProject = (
+    pool,
+    projectName: string,
+    isPrivate: boolean,
+    contactId: number,
+    description: string,
+    metadata: string
+): DBReturnPromiseType =>
     pgPromise(pool, createProjectQuery, [projectName, isPrivate, contactId, description, metadata])
 
-const addProjectSamplesQuery = 'SELECT * FROM taxa.fn_add_project_samples($1, $2)'
-export const addProjectSamples = (pool, projectId: number, sampleIds: number []): DBReturnPromiseType =>
+const addProjectSamplesQuery = 'SELECT * FROM sample.add_project_samples($1, $2)'
+export const addProjectSamples = (pool, projectId: number, sampleIds: number[]): DBReturnPromiseType =>
     pgPromise(pool, addProjectSamplesQuery, [projectId, sampleIds])
 
-const addProjectBoxesQuery = 'SELECT * FROM taxa.fn_add_project_boxes($1, $2)'
-export const addProjectBoxes = (pool, projectId: number, boxIds: number []): DBReturnPromiseType =>
+const addProjectBoxesQuery = 'SELECT * FROM sample.add_project_boxes($1, $2)'
+export const addProjectBoxes = (pool, projectId: number, boxIds: number[]): DBReturnPromiseType =>
     pgPromise(pool, addProjectBoxesQuery, [projectId, boxIds])
 
-const removeProjectSamplesQuery = 'SELECT * FROM taxa.fn_remove_project_samples($1, $2)'
-    export const removeProjectSamples = (pool, projectId: number, sampleIds: number []): DBReturnPromiseType =>
-        pgPromise(pool, removeProjectSamplesQuery, [projectId, sampleIds])
+const removeProjectSamplesQuery = 'SELECT * FROM sample.remove_project_samples($1, $2)'
+export const removeProjectSamples = (pool, projectId: number, sampleIds: number[]): DBReturnPromiseType =>
+    pgPromise(pool, removeProjectSamplesQuery, [projectId, sampleIds])
 
-const deleteProjectQuery = 'SELECT * FROM taxa.fn_delete_project($1)'
+const deleteProjectQuery = 'SELECT * FROM sample.delete_project($1)'
 export const deleteProject = (pool, projectId: number): DBReturnPromiseType =>
-        pgPromise(pool, deleteProjectQuery, [projectId])
-    
-        
+    pgPromise(pool, deleteProjectQuery, [projectId])
