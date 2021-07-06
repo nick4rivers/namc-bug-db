@@ -73,7 +73,7 @@
             <div class="content-wrapper">
                 <!-- Content Header (Page header) -->
                 <section class="content-header">
-                    <h1>boxes</h1><p><span id="recordNumber">0</span> rows</p><br />
+                    <h1>boxes</h1><p><span id="recordNumber">2163</span> rows</p><br />
                 </section>
                 <!-- Main content -->
                 <section class="content">
@@ -116,8 +116,16 @@
                                                 <td class="constraint detail">fk_invoice_boxes_box_id<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                             <tr>
-                                                <td title="sample_box_assets.box_id references boxes.box_id via fk_sample_box_assets_box_id"><a href='../../public/tables/sample_box_assets.html'>sample_box_assets</a><span class='relatedKey'>.box_id</span></td>
+                                                <td title="reports.box_id references boxes.box_id via fk_metric_reports_box_id"><a href='../../metric/tables/reports.html'>reports</a><span class='relatedKey'>.box_id</span></td>
+                                                <td class="constraint detail">fk_metric_reports_box_id<span title='Cascade on delete:&#10;Deletion of parent deletes child'>C</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td title="box_assets.box_id references boxes.box_id via fk_sample_box_assets_box_id"><a href='box_assets.html'>box_assets</a><span class='relatedKey'>.box_id</span></td>
                                                 <td class="constraint detail">fk_sample_box_assets_box_id<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td title="box_models.box_id references boxes.box_id via fk_box_models_box_id"><a href='box_models.html'>box_models</a><span class='relatedKey'>.box_id</span></td>
+                                                <td class="constraint detail">fk_box_models_box_id<span title='Cascade on delete:&#10;Deletion of parent deletes child'>C</span></td>
                                             </tr>
                                             <tr>
                                                 <td title="samples.box_id references boxes.box_id via fk_samples_box_id"><a href='samples.html'>samples</a><span class='relatedKey'>.box_id</span></td>
@@ -178,8 +186,8 @@
                                     <td>
                                         <table border='0' cellspacing='0' cellpadding='0'>
                                             <tr>
-                                                <td title="boxes.submitter_id references entity.individuals.entity_id via fk_boxes_creator_id"><a href='../../entity/tables/individuals.html'>individuals</a><span class='relatedKey'>.entity_id</span></td>
-                                                <td class="constraint detail">fk_boxes_creator_id<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                                <td title="boxes.submitter_id references entity.individuals.entity_id via fk_boxes_submitter_id"><a href='../../entity/tables/individuals.html'>individuals</a><span class='relatedKey'>.entity_id</span></td>
+                                                <td class="constraint detail">fk_boxes_submitter_id<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                         </table>
                                     </td>
@@ -207,7 +215,7 @@
                                     <td></td>
                                 </tr>
                                 <tr>
-                                    <td><span id="box_recevied_date">box_recevied_date</span></td>
+                                    <td><span id="box_received_date">box_received_date</span></td>
                                     <td>timestamptz</td>
                                     <td>35,6</td>
                                     <td title='nullable'>√</td>
@@ -287,27 +295,6 @@
                                     </td>
                                     <td>
                                         <table border='0' cellspacing='0' cellpadding='0'>
-                                        </table>
-                                    </td>
-                                    <td></td>
-                                </tr>
-                                <tr>
-                                    <td class='foreignKey' title='Foreign Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="project_id">project_id</span></td>
-                                    <td>int2</td>
-                                    <td>5</td>
-                                    <td title='nullable'>√</td>
-                                    <td title=''></td>
-                                    <td>null</td>
-                                    <td>
-                                        <table border='0' cellspacing='0' cellpadding='0'>
-                                        </table>
-                                    </td>
-                                    <td>
-                                        <table border='0' cellspacing='0' cellpadding='0'>
-                                            <tr>
-                                                <td title="boxes.project_id references projects.project_id via fk_boxes_project_id"><a href='projects.html'>projects</a><span class='relatedKey'>.project_id</span></td>
-                                                <td class="constraint detail">fk_boxes_project_id<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
-                                            </tr>
                                         </table>
                                     </td>
                                     <td></td>
@@ -434,12 +421,6 @@
                                     <td>customer_id</td>
                                 </tr>
                                 <tr>
-                                    <td title='Indexed'>fx_boxes_project_id</td>
-                                    <td>Performance</td>
-                                    <td><span title='Ascending'>Asc</span></td>
-                                    <td>project_id</td>
-                                </tr>
-                                <tr>
                                     <td title='Indexed'>fx_boxes_status_id</td>
                                     <td>Performance</td>
                                     <td><span title='Ascending'>Asc</span></td>
@@ -470,93 +451,105 @@
                                 <div class="tab-content no-padding">
                                     <div class="chart tab-pane active" id="oneDegreeImg-chart" style="position: relative; overflow-x:auto;">
                                         <map id="oneDegreeRelationshipsDiagram" name="oneDegreeRelationshipsDiagram">
-<area shape="rect" id="node1" href="../billing/tables/invoice_boxes.html" target="_top" title="billing.invoice_boxes" alt="" coords="931,228,1159,345">
-<area shape="rect" id="node2" href="boxes.html" target="_top" title="boxes" alt="" coords="485,225,868,735">
-<area shape="rect" id="node4" href="box_states.html" target="_top" title="box_states" alt="" coords="245,316,420,492">
-<area shape="rect" id="node5" href="../entity/tables/entities.html" target="_top" title="entity.entities" alt="" coords="5,424,180,512">
-<area shape="rect" id="node6" href="projects.html" target="_top" title="projects" alt="" coords="224,509,441,744">
-<area shape="rect" id="node7" href="../entity/tables/individuals.html" target="_top" title="entity.individuals" alt="" coords="233,151,433,239">
-<area shape="rect" id="node3" href="../public/tables/sample_box_assets.html" target="_top" title="public.sample_box_assets" alt="" coords="912,363,1177,509">
-<area shape="rect" id="node8" href="samples.html" target="_top" title="samples" alt="" coords="967,527,1122,791">
-<area shape="rect" id="node9" href="submissions.html" target="_top" title="submissions" alt="" coords="957,5,1133,211">
+<area shape="rect" id="node1" href="../billing/tables/invoice_boxes.html" target="_top" title="billing.invoice_boxes" alt="" coords="676,649,904,767">
+<area shape="rect" id="node2" href="boxes.html" target="_top" title="boxes" alt="" coords="249,579,632,1059">
+<area shape="rect" id="node6" href="box_states.html" target="_top" title="box_states" alt="" coords="18,696,193,872">
+<area shape="rect" id="node7" href="../entity/tables/entities.html" target="_top" title="entity.entities" alt="" coords="18,591,193,679">
+<area shape="rect" id="node8" href="../entity/tables/individuals.html" target="_top" title="entity.individuals" alt="" coords="5,952,205,1040">
+<area shape="rect" id="node3" href="../metric/tables/reports.html" target="_top" title="metric.reports" alt="" coords="700,784,880,931">
+<area shape="rect" id="node4" href="box_assets.html" target="_top" title="box_assets" alt="" coords="710,5,870,152">
+<area shape="rect" id="node5" href="box_models.html" target="_top" title="box_models" alt="" coords="707,169,873,292">
+<area shape="rect" id="node9" href="samples.html" target="_top" title="samples" alt="" coords="680,309,900,632">
+<area shape="rect" id="node10" href="submissions.html" target="_top" title="submissions" alt="" coords="702,948,878,1153">
 </map>
                                         <a name='diagram'><img id="oneDegreeImg" src="../diagrams/tables/boxes.1degree.png" usemap="#oneDegreeRelationshipsDiagram" class="diagram" border="0" align="left"></a>
                                     </div>
                                     <div class="chart tab-pane " id="twodegreesDegreeImg-chart" style="position: relative; overflow-x:auto;">
                                         <map id="twoDegreesRelationshipsDiagram" name="twoDegreesRelationshipsDiagram">
-<area shape="rect" id="node1" href="../billing/tables/invoice_boxes.html" target="_top" title="billing.invoice_boxes" alt="" coords="913,652,1141,769">
-<area shape="rect" id="node2" href="boxes.html" target="_top" title="boxes" alt="" coords="487,645,869,1155">
-<area shape="rect" id="node7" href="box_states.html" target="_top" title="box_states" alt="" coords="247,745,421,921">
-<area shape="rect" id="node8" href="../entity/tables/entities.html" target="_top" title="entity.entities" alt="" coords="6,649,181,737">
-<area shape="rect" id="node9" href="projects.html" target="_top" title="projects" alt="" coords="225,457,443,692">
-<area shape="rect" id="node10" href="../entity/tables/individuals.html" target="_top" title="entity.individuals" alt="" coords="234,1155,434,1243">
-<area shape="rect" id="node3" href="../metric/tables/metrics.html" target="_top" title="metric.metrics" alt="" coords="1227,427,1409,515">
-<area shape="rect" id="node4" href="samples.html" target="_top" title="samples" alt="" coords="950,371,1105,635">
-<area shape="rect" id="node19" href="../geo/tables/habitats.html" target="_top" title="geo.habitats" alt="" coords="595,540,761,628">
-<area shape="rect" id="node20" href="sample_methods.html" target="_top" title="sample_methods" alt="" coords="578,435,778,523">
-<area shape="rect" id="node21" href="../geo/tables/sites.html" target="_top" title="geo.sites" alt="" coords="606,224,750,312">
-<area shape="rect" id="node22" href="sample_types.html" target="_top" title="sample_types" alt="" coords="589,329,767,417">
-<area shape="rect" id="node5" href="../public/tables/sample_box_assets.html" target="_top" title="public.sample_box_assets" alt="" coords="1185,1059,1451,1205">
-<area shape="rect" id="node6" href="assets.html" target="_top" title="assets" alt="" coords="961,845,1093,933">
-<area shape="rect" id="node16" href="project_types.html" target="_top" title="project_types" alt="" coords="5,519,181,607">
-<area shape="rect" id="node11" href="fish.html" target="_top" title="fish" alt="" coords="1258,532,1378,620">
-<area shape="rect" id="node12" href="mass.html" target="_top" title="mass" alt="" coords="1258,637,1378,725">
-<area shape="rect" id="node13" href="organisms.html" target="_top" title="organisms" alt="" coords="1241,111,1395,199">
-<area shape="rect" id="node14" href="plankton.html" target="_top" title="plankton" alt="" coords="1247,216,1389,304">
-<area shape="rect" id="node15" href="project_samples.html" target="_top" title="project_samples" alt="" coords="1220,5,1416,93">
-<area shape="rect" id="node17" href="sample_assets.html" target="_top" title="sample_assets" alt="" coords="1226,743,1410,831">
-<area shape="rect" id="node18" href="sample_labs.html" target="_top" title="sample_labs" alt="" coords="1234,321,1402,409">
-<area shape="rect" id="node23" href="sorter_time.html" target="_top" title="sorter_time" alt="" coords="1237,848,1399,936">
-<area shape="rect" id="node24" href="submissions.html" target="_top" title="submissions" alt="" coords="939,981,1115,1187">
-<area shape="rect" id="node25" href="taxa_time.html" target="_top" title="taxa_time" alt="" coords="1244,953,1392,1041">
+<area shape="rect" id="node1" href="../billing/tables/invoice_boxes.html" target="_top" title="billing.invoice_boxes" alt="" coords="676,1289,904,1407">
+<area shape="rect" id="node2" href="boxes.html" target="_top" title="boxes" alt="" coords="249,1063,632,1543">
+<area shape="rect" id="node11" href="box_states.html" target="_top" title="box_states" alt="" coords="18,1153,193,1329">
+<area shape="rect" id="node12" href="../entity/tables/entities.html" target="_top" title="entity.entities" alt="" coords="18,765,193,853">
+<area shape="rect" id="node13" href="../entity/tables/individuals.html" target="_top" title="entity.individuals" alt="" coords="5,1445,205,1533">
+<area shape="rect" id="node3" href="../metric/tables/rarefactions.html" target="_top" title="metric.rarefactions" alt="" coords="948,637,1161,725">
+<area shape="rect" id="node4" href="samples.html" target="_top" title="samples" alt="" coords="680,627,900,949">
+<area shape="rect" id="node24" href="../geo/tables/habitats.html" target="_top" title="geo.habitats" alt="" coords="357,907,524,995">
+<area shape="rect" id="node25" href="sample_methods.html" target="_top" title="sample_methods" alt="" coords="341,801,541,889">
+<area shape="rect" id="node26" href="../geo/tables/sites.html" target="_top" title="geo.sites" alt="" coords="369,591,513,679">
+<area shape="rect" id="node27" href="sample_types.html" target="_top" title="sample_types" alt="" coords="352,696,529,784">
+<area shape="rect" id="node5" href="../metric/tables/reports.html" target="_top" title="metric.reports" alt="" coords="700,457,880,604">
+<area shape="rect" id="node6" href="projects.html" target="_top" title="projects" alt="" coords="371,485,511,573">
+<area shape="rect" id="node7" href="box_assets.html" target="_top" title="box_assets" alt="" coords="975,1409,1135,1556">
+<area shape="rect" id="node8" href="assets.html" target="_top" title="assets" alt="" coords="724,1184,856,1272">
+<area shape="rect" id="node9" href="box_models.html" target="_top" title="box_models" alt="" coords="972,1269,1137,1392">
+<area shape="rect" id="node10" href="../geo/tables/models.html" target="_top" title="geo.models" alt="" coords="709,1079,871,1167">
+<area shape="rect" id="node14" href="fish.html" target="_top" title="fish" alt="" coords="995,743,1115,831">
+<area shape="rect" id="node15" href="fish_guts.html" target="_top" title="fish_guts" alt="" coords="982,848,1127,936">
+<area shape="rect" id="node16" href="mass.html" target="_top" title="mass" alt="" coords="981,111,1129,199">
+<area shape="rect" id="node17" href="model_results.html" target="_top" title="model_results" alt="" coords="965,1059,1145,1147">
+<area shape="rect" id="node18" href="organisms.html" target="_top" title="organisms" alt="" coords="961,216,1149,304">
+<area shape="rect" id="node19" href="plankton.html" target="_top" title="plankton" alt="" coords="984,321,1125,409">
+<area shape="rect" id="node20" href="project_samples.html" target="_top" title="project_samples" alt="" coords="957,5,1153,93">
+<area shape="rect" id="node21" href="sample_assets.html" target="_top" title="sample_assets" alt="" coords="963,1164,1147,1252">
+<area shape="rect" id="node22" href="sample_labs.html" target="_top" title="sample_labs" alt="" coords="971,427,1139,515">
+<area shape="rect" id="node23" href="sample_predictors.html" target="_top" title="sample_predictors" alt="" coords="949,532,1160,620">
+<area shape="rect" id="node28" href="sorter_time.html" target="_top" title="sorter_time" alt="" coords="974,1609,1135,1697">
+<area shape="rect" id="node29" href="submissions.html" target="_top" title="submissions" alt="" coords="702,1460,878,1665">
+<area shape="rect" id="node30" href="taxa_time.html" target="_top" title="taxa_time" alt="" coords="981,953,1129,1041">
 </map>
                                         <a name='diagram'><img id="twodegreesDegreeImg" src="../diagrams/tables/boxes.2degrees.png" usemap="#twoDegreesRelationshipsDiagram" class="diagram" border="0" align="left"></a>
                                     </div>
                                     <div class="chart tab-pane " id="oneimpliedDegreeImg-chart" style="position: relative; overflow-x:auto;">
                                         <map id="oneDegreeRelationshipsDiagramImplied" name="oneDegreeRelationshipsDiagramImplied">
-<area shape="rect" id="node1" href="../billing/tables/invoice_boxes.html" target="_top" title="billing.invoice_boxes" alt="" coords="931,175,1159,292">
-<area shape="rect" id="node2" href="boxes.html" target="_top" title="boxes" alt="" coords="485,307,868,816">
-<area shape="rect" id="node4" href="box_states.html" target="_top" title="box_states" alt="" coords="245,380,420,556">
-<area shape="rect" id="node5" href="../entity/tables/entities.html" target="_top" title="entity.entities" alt="" coords="5,488,180,576">
-<area shape="rect" id="node6" href="projects.html" target="_top" title="projects" alt="" coords="224,573,441,808">
-<area shape="rect" id="node7" href="../entity/tables/individuals.html" target="_top" title="entity.individuals" alt="" coords="233,892,433,980">
-<area shape="rect" id="node3" href="../public/tables/sample_box_assets.html" target="_top" title="public.sample_box_assets" alt="" coords="912,309,1177,456">
-<area shape="rect" id="node8" href="samples.html" target="_top" title="samples" alt="" coords="967,473,1122,737">
-<area shape="rect" id="node9" href="submissions.html" target="_top" title="submissions" alt="" coords="957,865,1133,1071">
-<area shape="rect" id="node10" href="vw_boxes.html" target="_top" title="vw_boxes" alt="" coords="917,5,1172,157">
-<area shape="rect" id="node11" href="vw_samples.html" target="_top" title="vw_samples" alt="" coords="934,755,1155,848">
+<area shape="rect" id="node1" href="../billing/tables/invoice_boxes.html" target="_top" title="billing.invoice_boxes" alt="" coords="689,765,917,883">
+<area shape="rect" id="node2" href="boxes.html" target="_top" title="boxes" alt="" coords="249,608,632,1088">
+<area shape="rect" id="node6" href="box_states.html" target="_top" title="box_states" alt="" coords="18,175,193,351">
+<area shape="rect" id="node7" href="../entity/tables/entities.html" target="_top" title="entity.entities" alt="" coords="18,645,193,733">
+<area shape="rect" id="node8" href="../entity/tables/individuals.html" target="_top" title="entity.individuals" alt="" coords="5,959,205,1047">
+<area shape="rect" id="node3" href="../metric/tables/reports.html" target="_top" title="metric.reports" alt="" coords="713,900,893,1047">
+<area shape="rect" id="node4" href="box_assets.html" target="_top" title="box_assets" alt="" coords="723,1064,883,1211">
+<area shape="rect" id="node5" href="box_models.html" target="_top" title="box_models" alt="" coords="721,285,886,408">
+<area shape="rect" id="node9" href="samples.html" target="_top" title="samples" alt="" coords="693,425,913,748">
+<area shape="rect" id="node10" href="submissions.html" target="_top" title="submissions" alt="" coords="715,1228,891,1433">
+<area shape="rect" id="node11" href="vw_boxes.html" target="_top" title="vw_boxes" alt="" coords="676,5,931,128">
+<area shape="rect" id="node12" href="vw_samples.html" target="_top" title="vw_samples" alt="" coords="707,145,900,268">
 </map>
                                         <a name='diagram'><img id="oneimpliedDegreeImg" src="../diagrams/tables/boxes.implied1degrees.png" usemap="#oneDegreeRelationshipsDiagramImplied" class="diagram" border="0" align="left"></a>
                                     </div>
                                     <div class="chart tab-pane " id="twoimpliedDegreeImg-chart" style="position: relative; overflow-x:auto;">
                                         <map id="twoDegreesRelationshipsDiagramImplied" name="twoDegreesRelationshipsDiagramImplied">
-<area shape="rect" id="node1" href="../billing/tables/invoice_boxes.html" target="_top" title="billing.invoice_boxes" alt="" coords="927,843,1155,960">
-<area shape="rect" id="node2" href="boxes.html" target="_top" title="boxes" alt="" coords="487,784,869,1293">
-<area shape="rect" id="node7" href="box_states.html" target="_top" title="box_states" alt="" coords="247,861,421,1037">
-<area shape="rect" id="node8" href="../entity/tables/entities.html" target="_top" title="entity.entities" alt="" coords="6,897,181,985">
-<area shape="rect" id="node9" href="projects.html" target="_top" title="projects" alt="" coords="225,609,443,844">
-<area shape="rect" id="node10" href="../entity/tables/individuals.html" target="_top" title="entity.individuals" alt="" coords="234,1293,434,1381">
-<area shape="rect" id="node3" href="../metric/tables/metrics.html" target="_top" title="metric.metrics" alt="" coords="1254,321,1435,409">
-<area shape="rect" id="node4" href="samples.html" target="_top" title="samples" alt="" coords="963,356,1118,620">
-<area shape="rect" id="node19" href="../geo/tables/habitats.html" target="_top" title="geo.habitats" alt="" coords="595,532,761,620">
-<area shape="rect" id="node20" href="sample_methods.html" target="_top" title="sample_methods" alt="" coords="578,427,778,515">
-<area shape="rect" id="node21" href="../geo/tables/sites.html" target="_top" title="geo.sites" alt="" coords="606,216,750,304">
-<area shape="rect" id="node22" href="sample_types.html" target="_top" title="sample_types" alt="" coords="589,321,767,409">
-<area shape="rect" id="node5" href="../public/tables/sample_box_assets.html" target="_top" title="public.sample_box_assets" alt="" coords="1212,1315,1477,1461">
-<area shape="rect" id="node6" href="assets.html" target="_top" title="assets" alt="" coords="975,1419,1107,1507">
-<area shape="rect" id="node16" href="project_types.html" target="_top" title="project_types" alt="" coords="5,671,181,759">
-<area shape="rect" id="node11" href="fish.html" target="_top" title="fish" alt="" coords="1285,427,1405,515">
-<area shape="rect" id="node12" href="mass.html" target="_top" title="mass" alt="" coords="1285,532,1405,620">
-<area shape="rect" id="node13" href="organisms.html" target="_top" title="organisms" alt="" coords="1267,5,1422,93">
-<area shape="rect" id="node14" href="plankton.html" target="_top" title="plankton" alt="" coords="1274,111,1415,199">
-<area shape="rect" id="node15" href="project_samples.html" target="_top" title="project_samples" alt="" coords="1247,637,1443,725">
-<area shape="rect" id="node17" href="sample_assets.html" target="_top" title="sample_assets" alt="" coords="1253,1064,1437,1152">
-<area shape="rect" id="node18" href="sample_labs.html" target="_top" title="sample_labs" alt="" coords="1261,216,1429,304">
-<area shape="rect" id="node23" href="sorter_time.html" target="_top" title="sorter_time" alt="" coords="1264,761,1425,849">
-<area shape="rect" id="node24" href="submissions.html" target="_top" title="submissions" alt="" coords="953,1124,1129,1329">
-<area shape="rect" id="node25" href="taxa_time.html" target="_top" title="taxa_time" alt="" coords="1271,903,1419,991">
-<area shape="rect" id="node26" href="vw_boxes.html" target="_top" title="vw_boxes" alt="" coords="913,673,1168,825">
-<area shape="rect" id="node27" href="vw_samples.html" target="_top" title="vw_samples" alt="" coords="930,977,1151,1071">
+<area shape="rect" id="node1" href="../billing/tables/invoice_boxes.html" target="_top" title="billing.invoice_boxes" alt="" coords="689,357,917,475">
+<area shape="rect" id="node2" href="boxes.html" target="_top" title="boxes" alt="" coords="249,305,632,785">
+<area shape="rect" id="node11" href="box_states.html" target="_top" title="box_states" alt="" coords="18,175,193,351">
+<area shape="rect" id="node12" href="../entity/tables/entities.html" target="_top" title="entity.entities" alt="" coords="18,573,193,661">
+<area shape="rect" id="node13" href="../entity/tables/individuals.html" target="_top" title="entity.individuals" alt="" coords="5,1603,205,1691">
+<area shape="rect" id="node3" href="../metric/tables/rarefactions.html" target="_top" title="metric.rarefactions" alt="" coords="975,941,1188,1029">
+<area shape="rect" id="node4" href="samples.html" target="_top" title="samples" alt="" coords="693,1097,913,1420">
+<area shape="rect" id="node24" href="../geo/tables/habitats.html" target="_top" title="geo.habitats" alt="" coords="357,1419,524,1507">
+<area shape="rect" id="node25" href="sample_methods.html" target="_top" title="sample_methods" alt="" coords="341,1313,541,1401">
+<area shape="rect" id="node26" href="../geo/tables/sites.html" target="_top" title="geo.sites" alt="" coords="369,1103,513,1191">
+<area shape="rect" id="node27" href="sample_types.html" target="_top" title="sample_types" alt="" coords="352,1208,529,1296">
+<area shape="rect" id="node5" href="../metric/tables/reports.html" target="_top" title="metric.reports" alt="" coords="713,597,893,744">
+<area shape="rect" id="node6" href="projects.html" target="_top" title="projects" alt="" coords="371,803,511,891">
+<area shape="rect" id="node7" href="box_assets.html" target="_top" title="box_assets" alt="" coords="1001,216,1161,363">
+<area shape="rect" id="node8" href="assets.html" target="_top" title="assets" alt="" coords="737,492,869,580">
+<area shape="rect" id="node9" href="box_models.html" target="_top" title="box_models" alt="" coords="999,380,1164,503">
+<area shape="rect" id="node10" href="../geo/tables/models.html" target="_top" title="geo.models" alt="" coords="723,761,884,849">
+<area shape="rect" id="node14" href="fish.html" target="_top" title="fish" alt="" coords="1021,1047,1141,1135">
+<area shape="rect" id="node15" href="fish_guts.html" target="_top" title="fish_guts" alt="" coords="1009,1152,1154,1240">
+<area shape="rect" id="node16" href="mass.html" target="_top" title="mass" alt="" coords="1007,1257,1155,1345">
+<area shape="rect" id="node17" href="model_results.html" target="_top" title="model_results" alt="" coords="991,625,1171,713">
+<area shape="rect" id="node18" href="organisms.html" target="_top" title="organisms" alt="" coords="987,1363,1175,1451">
+<area shape="rect" id="node19" href="plankton.html" target="_top" title="plankton" alt="" coords="1011,1468,1152,1556">
+<area shape="rect" id="node20" href="project_samples.html" target="_top" title="project_samples" alt="" coords="983,731,1179,819">
+<area shape="rect" id="node21" href="sample_assets.html" target="_top" title="sample_assets" alt="" coords="989,520,1173,608">
+<area shape="rect" id="node22" href="sample_labs.html" target="_top" title="sample_labs" alt="" coords="997,1573,1165,1661">
+<area shape="rect" id="node23" href="sample_predictors.html" target="_top" title="sample_predictors" alt="" coords="976,836,1187,924">
+<area shape="rect" id="node28" href="sorter_time.html" target="_top" title="sorter_time" alt="" coords="1001,1784,1162,1872">
+<area shape="rect" id="node29" href="submissions.html" target="_top" title="submissions" alt="" coords="715,1439,891,1644">
+<area shape="rect" id="node30" href="taxa_time.html" target="_top" title="taxa_time" alt="" coords="1007,1679,1155,1767">
+<area shape="rect" id="node31" href="vw_boxes.html" target="_top" title="vw_boxes" alt="" coords="676,145,931,268">
+<area shape="rect" id="node32" href="vw_samples.html" target="_top" title="vw_samples" alt="" coords="707,5,900,128">
 </map>
                                         <a name='diagram'><img id="twoimpliedDegreeImg" src="../diagrams/tables/boxes.implied2degrees.png" usemap="#twoDegreesRelationshipsDiagramImplied" class="diagram" border="0" align="left"></a>
                                     </div>

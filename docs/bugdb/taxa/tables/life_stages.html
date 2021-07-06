@@ -112,6 +112,10 @@
                                     <td>
                                         <table border='0' cellspacing='0' cellpadding='0'>
                                             <tr>
+                                                <td title="fish_gut_weights.life_stage_id references life_stages.life_stage_id via fk_sample_fish_gut_weights_life_stage_id"><a href='../../sample/tables/fish_gut_weights.html'>fish_gut_weights</a><span class='relatedKey'>.life_stage_id</span></td>
+                                                <td class="constraint detail">fk_sample_fish_gut_weights_life_stage_id<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                            </tr>
+                                            <tr>
                                                 <td title="organisms.life_stage_id references life_stages.life_stage_id via fk_organisms_life_stage_id"><a href='../../sample/tables/organisms.html'>organisms</a><span class='relatedKey'>.life_stage_id</span></td>
                                                 <td class="constraint detail">fk_organisms_life_stage_id<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
@@ -222,6 +226,36 @@
                     </div>
                     <div class="box box-primary">
                         <div class="box-header with-border">
+                            <i class="fa fa-sitemap"></i>
+                            <h3 class="box-title">Check Constraints</h3>
+                            <div class="box-tools pull-right">
+                                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                                <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
+                            </div>
+                        </div>
+                        <div class="box-body">
+                            <table id="check_table" class="table table-bordered table-striped dataTable" role="grid">
+                                <thead align='left'>
+                                <tr>
+                                    <th>Constraint Name</th>
+                                    <th>Constraint</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr>
+                                    <td>ck_life_stage_name</td>
+                                    <td>((length((life_stage_name)::text) &gt; 0))</td>
+                                </tr>
+                                <tr>
+                                    <td>ck_life_stage_abbreviation</td>
+                                    <td>((length(abbreviation) &gt; 0))</td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="box box-primary">
+                        <div class="box-header with-border">
                             <i class="fa fa-code-fork"></i>
                             <h3 id="Relationships" class="box-title">Relationships</h3>
                             <div class="box-tools pull-right">
@@ -239,16 +273,18 @@
                                 <div class="tab-content no-padding">
                                     <div class="chart tab-pane active" id="oneDegreeImg-chart" style="position: relative; overflow-x:auto;">
                                         <map id="oneDegreeRelationshipsDiagram" name="oneDegreeRelationshipsDiagram">
-<area shape="rect" id="node1" href="../sample/tables/organisms.html" target="_top" title="sample.organisms" alt="" coords="309,5,519,152">
-<area shape="rect" id="node2" href="life_stages.html" target="_top" title="life_stages" alt="" coords="5,32,265,219">
+<area shape="rect" id="node1" href="../sample/tables/fish_gut_weights.html" target="_top" title="sample.fish_gut_weights" alt="" coords="309,5,563,152">
+<area shape="rect" id="node2" href="life_stages.html" target="_top" title="life_stages" alt="" coords="5,115,265,301">
+<area shape="rect" id="node3" href="../sample/tables/organisms.html" target="_top" title="sample.organisms" alt="" coords="331,169,541,316">
 </map>
                                         <a name='diagram'><img id="oneDegreeImg" src="../diagrams/tables/life_stages.1degree.png" usemap="#oneDegreeRelationshipsDiagram" class="diagram" border="0" align="left"></a>
                                     </div>
                                     <div class="chart tab-pane " id="twodegreesDegreeImg-chart" style="position: relative; overflow-x:auto;">
                                         <map id="twoDegreesRelationshipsDiagram" name="twoDegreesRelationshipsDiagram">
-<area shape="rect" id="node1" href="../sample/tables/organisms.html" target="_top" title="sample.organisms" alt="" coords="309,44,519,191">
-<area shape="rect" id="node2" href="life_stages.html" target="_top" title="life_stages" alt="" coords="5,111,265,297">
-<area shape="rect" id="node3" href="taxonomy.html" target="_top" title="taxonomy" alt="" coords="61,5,210,93">
+<area shape="rect" id="node1" href="../sample/tables/fish_gut_weights.html" target="_top" title="sample.fish_gut_weights" alt="" coords="309,5,563,152">
+<area shape="rect" id="node2" href="life_stages.html" target="_top" title="life_stages" alt="" coords="5,175,265,361">
+<area shape="rect" id="node3" href="taxonomy.html" target="_top" title="taxonomy" alt="" coords="55,28,215,116">
+<area shape="rect" id="node4" href="../sample/tables/organisms.html" target="_top" title="sample.organisms" alt="" coords="331,169,541,316">
 </map>
                                         <a name='diagram'><img id="twodegreesDegreeImg" src="../diagrams/tables/life_stages.2degrees.png" usemap="#twoDegreesRelationshipsDiagram" class="diagram" border="0" align="left"></a>
                                     </div>

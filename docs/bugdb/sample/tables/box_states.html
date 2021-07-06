@@ -119,6 +119,10 @@
                                                 <td title="vw_boxes.box_state_id&#39;s name implies that it&#39;s a child of box_states.box_state_id, but it doesn&#39;t reference that column."><a href='vw_boxes.html'>vw_boxes</a><span class='relatedKey'>.box_state_id</span></td>
                                                 <td class="constraint detail">Implied Constraint<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
+                                            <tr>
+                                                <td title="vw_samples.box_state_id&#39;s name implies that it&#39;s a child of box_states.box_state_id, but it doesn&#39;t reference that column."><a href='vw_samples.html'>vw_samples</a><span class='relatedKey'>.box_state_id</span></td>
+                                                <td class="constraint detail">Implied Constraint<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                            </tr>
                                         </table>
                                     </td>
                                     <td>
@@ -260,7 +264,11 @@
                                 </thead>
                                 <tbody>
                                 <tr>
-                                    <td>chk_box_states</td>
+                                    <td>ck_box_state_name</td>
+                                    <td>((length((box_state_name)::text) &gt; 0))</td>
+                                </tr>
+                                <tr>
+                                    <td>ck_box_states</td>
                                     <td>((box_state_order &gt; 0))</td>
                                 </tr>
                                 </tbody>
@@ -288,46 +296,49 @@
                                 <div class="tab-content no-padding">
                                     <div class="chart tab-pane active" id="oneDegreeImg-chart" style="position: relative; overflow-x:auto;">
                                         <map id="oneDegreeRelationshipsDiagram" name="oneDegreeRelationshipsDiagram">
-<area shape="rect" id="node1" href="boxes.html" target="_top" title="boxes" alt="" coords="349,5,604,240">
+<area shape="rect" id="node1" href="boxes.html" target="_top" title="boxes" alt="" coords="349,5,604,211">
 <area shape="rect" id="node2" href="box_states.html" target="_top" title="box_states" alt="" coords="5,91,305,307">
 </map>
                                         <a name='diagram'><img id="oneDegreeImg" src="../diagrams/tables/box_states.1degree.png" usemap="#oneDegreeRelationshipsDiagram" class="diagram" border="0" align="left"></a>
                                     </div>
                                     <div class="chart tab-pane " id="twodegreesDegreeImg-chart" style="position: relative; overflow-x:auto;">
                                         <map id="twoDegreesRelationshipsDiagram" name="twoDegreesRelationshipsDiagram">
-<area shape="rect" id="node1" href="../billing/tables/invoice_boxes.html" target="_top" title="billing.invoice_boxes" alt="" coords="885,111,1113,199">
-<area shape="rect" id="node2" href="boxes.html" target="_top" title="boxes" alt="" coords="568,108,823,343">
-<area shape="rect" id="node4" href="box_states.html" target="_top" title="box_states" alt="" coords="224,193,524,409">
-<area shape="rect" id="node5" href="../entity/tables/entities.html" target="_top" title="entity.entities" alt="" coords="5,273,180,361">
-<area shape="rect" id="node6" href="projects.html" target="_top" title="projects" alt="" coords="305,427,443,515">
-<area shape="rect" id="node7" href="../entity/tables/individuals.html" target="_top" title="entity.individuals" alt="" coords="274,36,474,124">
-<area shape="rect" id="node3" href="../public/tables/sample_box_assets.html" target="_top" title="public.sample_box_assets" alt="" coords="867,216,1132,304">
-<area shape="rect" id="node8" href="samples.html" target="_top" title="samples" alt="" coords="929,321,1069,409">
-<area shape="rect" id="node9" href="submissions.html" target="_top" title="submissions" alt="" coords="915,5,1084,93">
+<area shape="rect" id="node1" href="../billing/tables/invoice_boxes.html" target="_top" title="billing.invoice_boxes" alt="" coords="648,321,876,409">
+<area shape="rect" id="node2" href="boxes.html" target="_top" title="boxes" alt="" coords="349,213,604,419">
+<area shape="rect" id="node6" href="box_states.html" target="_top" title="box_states" alt="" coords="5,299,305,515">
+<area shape="rect" id="node7" href="../entity/tables/entities.html" target="_top" title="entity.entities" alt="" coords="68,193,243,281">
+<area shape="rect" id="node8" href="../entity/tables/individuals.html" target="_top" title="entity.individuals" alt="" coords="55,532,255,620">
+<area shape="rect" id="node3" href="../metric/tables/reports.html" target="_top" title="metric.reports" alt="" coords="672,427,852,515">
+<area shape="rect" id="node4" href="box_assets.html" target="_top" title="box_assets" alt="" coords="682,5,842,93">
+<area shape="rect" id="node5" href="box_models.html" target="_top" title="box_models" alt="" coords="679,111,845,199">
+<area shape="rect" id="node9" href="samples.html" target="_top" title="samples" alt="" coords="674,216,850,304">
+<area shape="rect" id="node10" href="submissions.html" target="_top" title="submissions" alt="" coords="677,532,847,620">
 </map>
                                         <a name='diagram'><img id="twodegreesDegreeImg" src="../diagrams/tables/box_states.2degrees.png" usemap="#twoDegreesRelationshipsDiagram" class="diagram" border="0" align="left"></a>
                                     </div>
                                     <div class="chart tab-pane " id="oneimpliedDegreeImg-chart" style="position: relative; overflow-x:auto;">
                                         <map id="oneDegreeRelationshipsDiagramImplied" name="oneDegreeRelationshipsDiagramImplied">
-<area shape="rect" id="node1" href="boxes.html" target="_top" title="boxes" alt="" coords="349,5,604,240">
-<area shape="rect" id="node2" href="box_states.html" target="_top" title="box_states" alt="" coords="5,153,305,369">
-<area shape="rect" id="node3" href="vw_boxes.html" target="_top" title="vw_boxes" alt="" coords="648,97,903,249">
+<area shape="rect" id="node1" href="boxes.html" target="_top" title="boxes" alt="" coords="349,57,604,263">
+<area shape="rect" id="node2" href="box_states.html" target="_top" title="box_states" alt="" coords="5,143,305,359">
+<area shape="rect" id="node3" href="vw_boxes.html" target="_top" title="vw_boxes" alt="" coords="648,5,903,128">
+<area shape="rect" id="node4" href="vw_samples.html" target="_top" title="vw_samples" alt="" coords="679,152,872,275">
 </map>
                                         <a name='diagram'><img id="oneimpliedDegreeImg" src="../diagrams/tables/box_states.implied1degrees.png" usemap="#oneDegreeRelationshipsDiagramImplied" class="diagram" border="0" align="left"></a>
                                     </div>
                                     <div class="chart tab-pane " id="twoimpliedDegreeImg-chart" style="position: relative; overflow-x:auto;">
                                         <map id="twoDegreesRelationshipsDiagramImplied" name="twoDegreesRelationshipsDiagramImplied">
-<area shape="rect" id="node1" href="../billing/tables/invoice_boxes.html" target="_top" title="billing.invoice_boxes" alt="" coords="885,175,1113,263">
-<area shape="rect" id="node2" href="boxes.html" target="_top" title="boxes" alt="" coords="568,277,823,512">
-<area shape="rect" id="node4" href="box_states.html" target="_top" title="box_states" alt="" coords="224,164,524,380">
-<area shape="rect" id="node5" href="../entity/tables/entities.html" target="_top" title="entity.entities" alt="" coords="5,244,180,332">
-<area shape="rect" id="node6" href="projects.html" target="_top" title="projects" alt="" coords="305,397,443,485">
-<area shape="rect" id="node7" href="../entity/tables/individuals.html" target="_top" title="entity.individuals" alt="" coords="274,537,474,625">
-<area shape="rect" id="node3" href="../public/tables/sample_box_assets.html" target="_top" title="public.sample_box_assets" alt="" coords="867,280,1132,368">
-<area shape="rect" id="node8" href="samples.html" target="_top" title="samples" alt="" coords="929,385,1069,473">
-<area shape="rect" id="node9" href="submissions.html" target="_top" title="submissions" alt="" coords="915,572,1084,660">
-<area shape="rect" id="node10" href="vw_boxes.html" target="_top" title="vw_boxes" alt="" coords="872,5,1127,157">
-<area shape="rect" id="node11" href="vw_samples.html" target="_top" title="vw_samples" alt="" coords="918,491,1081,555">
+<area shape="rect" id="node1" href="../billing/tables/invoice_boxes.html" target="_top" title="billing.invoice_boxes" alt="" coords="661,496,889,584">
+<area shape="rect" id="node2" href="boxes.html" target="_top" title="boxes" alt="" coords="349,440,604,645">
+<area shape="rect" id="node6" href="box_states.html" target="_top" title="box_states" alt="" coords="5,172,305,388">
+<area shape="rect" id="node7" href="../entity/tables/entities.html" target="_top" title="entity.entities" alt="" coords="68,472,243,560">
+<area shape="rect" id="node8" href="../entity/tables/individuals.html" target="_top" title="entity.individuals" alt="" coords="55,695,255,783">
+<area shape="rect" id="node3" href="../metric/tables/reports.html" target="_top" title="metric.reports" alt="" coords="685,601,865,689">
+<area shape="rect" id="node4" href="box_assets.html" target="_top" title="box_assets" alt="" coords="695,707,855,795">
+<area shape="rect" id="node5" href="box_models.html" target="_top" title="box_models" alt="" coords="693,285,858,373">
+<area shape="rect" id="node9" href="samples.html" target="_top" title="samples" alt="" coords="687,391,863,479">
+<area shape="rect" id="node10" href="submissions.html" target="_top" title="submissions" alt="" coords="691,812,860,900">
+<area shape="rect" id="node11" href="vw_boxes.html" target="_top" title="vw_boxes" alt="" coords="648,5,903,128">
+<area shape="rect" id="node12" href="vw_samples.html" target="_top" title="vw_samples" alt="" coords="679,145,872,268">
 </map>
                                         <a name='diagram'><img id="twoimpliedDegreeImg" src="../diagrams/tables/box_states.implied2degrees.png" usemap="#twoDegreesRelationshipsDiagramImplied" class="diagram" border="0" align="left"></a>
                                     </div>

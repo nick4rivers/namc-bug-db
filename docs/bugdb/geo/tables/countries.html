@@ -74,6 +74,19 @@
                 <!-- Content Header (Page header) -->
                 <section class="content-header">
                     <h1>countries</h1><p><span id="recordNumber">249</span> rows</p><br />
+                    <div class="box box-primary">
+                        <div class="box-header with-border">
+                            <i class="fa fa-file-text-o"></i>
+                            <h3 id="Description" class="box-title">Description</h3>
+                            <div class="box-tools pull-right">
+                                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                                <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
+                            </div>
+                        </div><!-- /.box-header -->
+                        <div class="box-body clearfix">
+                            <p>Table containing one record for each country in the World.The Geography column is used to store a multi-polygon of the outline of the country for use  when validating sample locations.</p>
+                        </div><!-- /.box-body -->
+                    </div>
                 </section>
                 <!-- Main content -->
                 <section class="content">
@@ -163,7 +176,7 @@
                                 </tr>
                                 <tr>
                                     <td class='indexedColumn' title='Indexed'><i class='fa fa-sitemap fa-rotate-120' style='padding-right: 5px;'></i><span id="geom">geom</span></td>
-                                    <td>geometry</td>
+                                    <td>geography</td>
                                     <td>2147483647</td>
                                     <td title='nullable'>√</td>
                                     <td title=''></td>
@@ -260,6 +273,36 @@
                     </div>
                     <div class="box box-primary">
                         <div class="box-header with-border">
+                            <i class="fa fa-sitemap"></i>
+                            <h3 class="box-title">Check Constraints</h3>
+                            <div class="box-tools pull-right">
+                                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                                <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
+                            </div>
+                        </div>
+                        <div class="box-body">
+                            <table id="check_table" class="table table-bordered table-striped dataTable" role="grid">
+                                <thead align='left'>
+                                <tr>
+                                    <th>Constraint Name</th>
+                                    <th>Constraint</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr>
+                                    <td>abbreviation</td>
+                                    <td>((length((abbreviation)::text) &gt; 0))</td>
+                                </tr>
+                                <tr>
+                                    <td>country_name</td>
+                                    <td>((length((country_name)::text) &gt; 0))</td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="box box-primary">
+                        <div class="box-header with-border">
                             <i class="fa fa-code-fork"></i>
                             <h3 id="Relationships" class="box-title">Relationships</h3>
                             <div class="box-tools pull-right">
@@ -277,18 +320,18 @@
                                 <div class="tab-content no-padding">
                                     <div class="chart tab-pane active" id="oneDegreeImg-chart" style="position: relative; overflow-x:auto;">
                                         <map id="oneDegreeRelationshipsDiagram" name="oneDegreeRelationshipsDiagram">
-<area shape="rect" id="node1" href="../entity/tables/entities.html" target="_top" title="entity.entities" alt="" coords="568,97,743,244">
-<area shape="rect" id="node2" href="countries.html" target="_top" title="countries" alt="" coords="5,124,327,369">
-<area shape="rect" id="node3" href="states.html" target="_top" title="states" alt="" coords="371,5,524,240">
+<area shape="rect" id="node1" href="../entity/tables/entities.html" target="_top" title="entity.entities" alt="" coords="576,97,751,244">
+<area shape="rect" id="node2" href="countries.html" target="_top" title="countries" alt="" coords="5,124,335,369">
+<area shape="rect" id="node3" href="states.html" target="_top" title="states" alt="" coords="379,5,532,240">
 </map>
                                         <a name='diagram'><img id="oneDegreeImg" src="../diagrams/tables/countries.1degree.png" usemap="#oneDegreeRelationshipsDiagram" class="diagram" border="0" align="left"></a>
                                     </div>
                                     <div class="chart tab-pane " id="twodegreesDegreeImg-chart" style="position: relative; overflow-x:auto;">
                                         <map id="twoDegreesRelationshipsDiagram" name="twoDegreesRelationshipsDiagram">
-<area shape="rect" id="node1" href="../entity/tables/entities.html" target="_top" title="entity.entities" alt="" coords="568,151,743,297">
-<area shape="rect" id="node2" href="countries.html" target="_top" title="countries" alt="" coords="5,124,327,369">
-<area shape="rect" id="node3" href="states.html" target="_top" title="states" alt="" coords="371,5,524,240">
-<area shape="rect" id="node4" href="counties.html" target="_top" title="counties" alt="" coords="581,8,729,96">
+<area shape="rect" id="node1" href="../entity/tables/entities.html" target="_top" title="entity.entities" alt="" coords="576,151,751,297">
+<area shape="rect" id="node2" href="countries.html" target="_top" title="countries" alt="" coords="5,124,335,369">
+<area shape="rect" id="node3" href="states.html" target="_top" title="states" alt="" coords="379,5,532,240">
+<area shape="rect" id="node4" href="counties.html" target="_top" title="counties" alt="" coords="593,8,734,96">
 </map>
                                         <a name='diagram'><img id="twodegreesDegreeImg" src="../diagrams/tables/countries.2degrees.png" usemap="#twoDegreesRelationshipsDiagram" class="diagram" border="0" align="left"></a>
                                     </div>

@@ -115,10 +115,6 @@
                                                 <td title="sites.system_id references systems.system_id via fk_sites_system_id"><a href='sites.html'>sites</a><span class='relatedKey'>.system_id</span></td>
                                                 <td class="constraint detail">fk_sites_system_id<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
-                                            <tr>
-                                                <td title="vw_sites.system_id&#39;s name implies that it&#39;s a child of systems.system_id, but it doesn&#39;t reference that column."><a href='vw_sites.html'>vw_sites</a><span class='relatedKey'>.system_id</span></td>
-                                                <td class="constraint detail">Implied Constraint<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
-                                            </tr>
                                         </table>
                                     </td>
                                     <td>
@@ -264,6 +260,32 @@
                     </div>
                     <div class="box box-primary">
                         <div class="box-header with-border">
+                            <i class="fa fa-sitemap"></i>
+                            <h3 class="box-title">Check Constraints</h3>
+                            <div class="box-tools pull-right">
+                                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                                <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
+                            </div>
+                        </div>
+                        <div class="box-body">
+                            <table id="check_table" class="table table-bordered table-striped dataTable" role="grid">
+                                <thead align='left'>
+                                <tr>
+                                    <th>Constraint Name</th>
+                                    <th>Constraint</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr>
+                                    <td>ck_system_name</td>
+                                    <td>((length((system_name)::text) &gt; 0))</td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="box box-primary">
+                        <div class="box-header with-border">
                             <i class="fa fa-code-fork"></i>
                             <h3 id="Relationships" class="box-title">Relationships</h3>
                             <div class="box-tools pull-right">
@@ -283,41 +305,48 @@
                                 <div class="tab-content no-padding">
                                     <div class="chart tab-pane active" id="oneDegreeImg-chart" style="position: relative; overflow-x:auto;">
                                         <map id="oneDegreeRelationshipsDiagram" name="oneDegreeRelationshipsDiagram">
-<area shape="rect" id="node1" href="sites.html" target="_top" title="sites" alt="" coords="557,45,712,309">
-<area shape="rect" id="node2" href="ecosystems.html" target="_top" title="ecosystems" alt="" coords="5,148,188,295">
-<area shape="rect" id="node3" href="systems.html" target="_top" title="systems" alt="" coords="232,5,513,251">
+<area shape="rect" id="node1" href="sites.html" target="_top" title="sites" alt="" coords="557,5,763,269">
+<area shape="rect" id="node2" href="systems.html" target="_top" title="systems" alt="" coords="232,61,513,307">
+<area shape="rect" id="node3" href="ecosystems.html" target="_top" title="ecosystems" alt="" coords="5,123,188,269">
 </map>
                                         <a name='diagram'><img id="oneDegreeImg" src="../diagrams/tables/systems.1degree.png" usemap="#oneDegreeRelationshipsDiagram" class="diagram" border="0" align="left"></a>
                                     </div>
                                     <div class="chart tab-pane " id="twodegreesDegreeImg-chart" style="position: relative; overflow-x:auto;">
                                         <map id="twoDegreesRelationshipsDiagram" name="twoDegreesRelationshipsDiagram">
-<area shape="rect" id="node1" href="habitats.html" target="_top" title="habitats" alt="" coords="303,304,443,392">
-<area shape="rect" id="node2" href="ecosystems.html" target="_top" title="ecosystems" alt="" coords="5,228,188,375">
-<area shape="rect" id="node3" href="site_predictors.html" target="_top" title="site_predictors" alt="" coords="760,63,945,151">
-<area shape="rect" id="node4" href="sites.html" target="_top" title="sites" alt="" coords="557,60,712,324">
-<area shape="rect" id="node5" href="systems.html" target="_top" title="systems" alt="" coords="232,5,513,251">
-<area shape="rect" id="node6" href="../sample/tables/samples.html" target="_top" title="sample.samples" alt="" coords="756,236,949,324">
+<area shape="rect" id="node1" href="habitats.html" target="_top" title="habitats" alt="" coords="590,477,730,565">
+<area shape="rect" id="node2" href="ecosystems.html" target="_top" title="ecosystems" alt="" coords="5,341,188,488">
+<area shape="rect" id="node3" href="model_reference_sites.html" target="_top" title="model_reference_sites" alt="" coords="809,5,1048,93">
+<area shape="rect" id="node4" href="sites.html" target="_top" title="sites" alt="" coords="557,196,763,460">
+<area shape="rect" id="node8" href="systems.html" target="_top" title="systems" alt="" coords="232,147,513,392">
+<area shape="rect" id="node9" href="waterbody_types.html" target="_top" title="waterbody_types" alt="" coords="273,409,473,497">
+<area shape="rect" id="node5" href="site_catchment_history.html" target="_top" title="site_catchment_history" alt="" coords="807,111,1051,199">
+<area shape="rect" id="node6" href="site_location_history.html" target="_top" title="site_location_history" alt="" coords="815,216,1042,304">
+<area shape="rect" id="node7" href="site_predictors.html" target="_top" title="site_predictors" alt="" coords="836,321,1021,409">
+<area shape="rect" id="node10" href="../sample/tables/samples.html" target="_top" title="sample.samples" alt="" coords="832,444,1025,532">
 </map>
                                         <a name='diagram'><img id="twodegreesDegreeImg" src="../diagrams/tables/systems.2degrees.png" usemap="#twoDegreesRelationshipsDiagram" class="diagram" border="0" align="left"></a>
                                     </div>
                                     <div class="chart tab-pane " id="oneimpliedDegreeImg-chart" style="position: relative; overflow-x:auto;">
                                         <map id="oneDegreeRelationshipsDiagramImplied" name="oneDegreeRelationshipsDiagramImplied">
-<area shape="rect" id="node1" href="sites.html" target="_top" title="sites" alt="" coords="557,5,712,269">
-<area shape="rect" id="node2" href="ecosystems.html" target="_top" title="ecosystems" alt="" coords="5,176,188,323">
-<area shape="rect" id="node3" href="systems.html" target="_top" title="systems" alt="" coords="232,115,513,360">
-<area shape="rect" id="node4" href="vw_sites.html" target="_top" title="vw_sites" alt="" coords="756,217,939,369">
+<area shape="rect" id="node1" href="sites.html" target="_top" title="sites" alt="" coords="557,5,763,269">
+<area shape="rect" id="node2" href="systems.html" target="_top" title="systems" alt="" coords="232,61,513,307">
+<area shape="rect" id="node3" href="ecosystems.html" target="_top" title="ecosystems" alt="" coords="5,123,188,269">
 </map>
                                         <a name='diagram'><img id="oneimpliedDegreeImg" src="../diagrams/tables/systems.implied1degrees.png" usemap="#oneDegreeRelationshipsDiagramImplied" class="diagram" border="0" align="left"></a>
                                     </div>
                                     <div class="chart tab-pane " id="twoimpliedDegreeImg-chart" style="position: relative; overflow-x:auto;">
                                         <map id="twoDegreesRelationshipsDiagramImplied" name="twoDegreesRelationshipsDiagramImplied">
-<area shape="rect" id="node1" href="habitats.html" target="_top" title="habitats" alt="" coords="303,5,443,93">
-<area shape="rect" id="node2" href="ecosystems.html" target="_top" title="ecosystems" alt="" coords="5,253,188,400">
-<area shape="rect" id="node3" href="site_predictors.html" target="_top" title="site_predictors" alt="" coords="760,111,945,199">
-<area shape="rect" id="node4" href="sites.html" target="_top" title="sites" alt="" coords="557,85,712,349">
-<area shape="rect" id="node5" href="systems.html" target="_top" title="systems" alt="" coords="232,111,513,356">
-<area shape="rect" id="node6" href="vw_sites.html" target="_top" title="vw_sites" alt="" coords="761,297,944,449">
-<area shape="rect" id="node7" href="../sample/tables/samples.html" target="_top" title="sample.samples" alt="" coords="756,5,949,93">
+<area shape="rect" id="node1" href="habitats.html" target="_top" title="habitats" alt="" coords="590,508,730,596">
+<area shape="rect" id="node2" href="ecosystems.html" target="_top" title="ecosystems" alt="" coords="5,372,188,519">
+<area shape="rect" id="node3" href="model_reference_sites.html" target="_top" title="model_reference_sites" alt="" coords="809,5,1048,93">
+<area shape="rect" id="node4" href="sites.html" target="_top" title="sites" alt="" coords="557,220,763,484">
+<area shape="rect" id="node8" href="systems.html" target="_top" title="systems" alt="" coords="232,177,513,423">
+<area shape="rect" id="node9" href="waterbody_types.html" target="_top" title="waterbody_types" alt="" coords="273,440,473,528">
+<area shape="rect" id="node5" href="site_catchment_history.html" target="_top" title="site_catchment_history" alt="" coords="807,111,1051,199">
+<area shape="rect" id="node6" href="site_location_history.html" target="_top" title="site_location_history" alt="" coords="815,216,1042,304">
+<area shape="rect" id="node7" href="site_predictors.html" target="_top" title="site_predictors" alt="" coords="836,321,1021,409">
+<area shape="rect" id="node10" href="vw_sites.html" target="_top" title="vw_sites" alt="" coords="859,427,998,491">
+<area shape="rect" id="node11" href="../sample/tables/samples.html" target="_top" title="sample.samples" alt="" coords="832,508,1025,596">
 </map>
                                         <a name='diagram'><img id="twoimpliedDegreeImg" src="../diagrams/tables/systems.implied2degrees.png" usemap="#twoDegreesRelationshipsDiagramImplied" class="diagram" border="0" align="left"></a>
                                     </div>

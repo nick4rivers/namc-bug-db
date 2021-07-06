@@ -73,7 +73,7 @@
             <div class="content-wrapper">
                 <!-- Content Header (Page header) -->
                 <section class="content-header">
-                    <h1>drift</h1><p><span id="recordNumber">0</span> rows</p><br />
+                    <h1>drift</h1><p><span id="recordNumber">1364</span> rows</p><br />
                 </section>
                 <!-- Main content -->
                 <section class="content">
@@ -188,26 +188,9 @@
                                     <td></td>
                                 </tr>
                                 <tr>
-                                    <td><span id="net_velo">net_velo</span></td>
+                                    <td><span id="net_velocity">net_velocity</span></td>
                                     <td>float8</td>
                                     <td>17,17</td>
-                                    <td title='nullable'>√</td>
-                                    <td title=''></td>
-                                    <td>null</td>
-                                    <td>
-                                        <table border='0' cellspacing='0' cellpadding='0'>
-                                        </table>
-                                    </td>
-                                    <td>
-                                        <table border='0' cellspacing='0' cellpadding='0'>
-                                        </table>
-                                    </td>
-                                    <td></td>
-                                </tr>
-                                <tr>
-                                    <td><span id="notes">notes</span></td>
-                                    <td>text</td>
-                                    <td>2147483647</td>
                                     <td title='nullable'>√</td>
                                     <td title=''></td>
                                     <td>null</td>
@@ -291,20 +274,20 @@
                                 </thead>
                                 <tbody>
                                 <tr>
-                                    <td>ck_bug_drift_net_velo</td>
-                                    <td>((net_velo &gt;= (0)::double precision))</td>
-                                </tr>
-                                <tr>
-                                    <td>ck_bug_drift_net_depth</td>
-                                    <td>((net_depth &gt; (0)::double precision))</td>
+                                    <td>ck_bug_drift_net_area</td>
+                                    <td>((net_area &gt; (0)::double precision))</td>
                                 </tr>
                                 <tr>
                                     <td>ck_bug_drift_stream_depth</td>
                                     <td>((stream_depth &gt; (0)::double precision))</td>
                                 </tr>
                                 <tr>
-                                    <td>ck_bug_drift_net_area</td>
-                                    <td>((net_area &gt; (0)::double precision))</td>
+                                    <td>ck_bug_drift_net_depth</td>
+                                    <td>((net_depth &gt; (0)::double precision))</td>
+                                </tr>
+                                <tr>
+                                    <td>ck_bug_drift_net_velocity</td>
+                                    <td>((net_velocity &gt;= (0)::double precision))</td>
                                 </tr>
                                 <tr>
                                     <td>ck_bug_drift_net_duration</td>

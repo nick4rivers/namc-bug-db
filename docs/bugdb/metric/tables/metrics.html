@@ -73,7 +73,7 @@
             <div class="content-wrapper">
                 <!-- Content Header (Page header) -->
                 <section class="content-header">
-                    <h1>metrics</h1><p><span id="recordNumber">0</span> rows</p><br />
+                    <h1>metrics</h1><p><span id="recordNumber">74</span> rows</p><br />
                 </section>
                 <!-- Main content -->
                 <section class="content">
@@ -104,13 +104,29 @@
                                 <tbody>
                                 <tr>
                                     <td class='primaryKey' title='Primary Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="metric_id">metric_id</span></td>
-                                    <td>int4</td>
-                                    <td>10</td>
+                                    <td>int2</td>
+                                    <td>5</td>
                                     <td title=''></td>
                                     <td title='Automatically updated by the database'>√</td>
                                     <td>null</td>
                                     <td>
                                         <table border='0' cellspacing='0' cellpadding='0'>
+                                            <tr>
+                                                <td title="analysis_metrics.metric_id references metrics.metric_id via fk_metric_analysis_metrics_metric_id"><a href='analysis_metrics.html'>analysis_metrics</a><span class='relatedKey'>.metric_id</span></td>
+                                                <td class="constraint detail">fk_metric_analysis_metrics_metric_id<span title='Cascade on delete:&#10;Deletion of parent deletes child'>C</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td title="metric_attributes.metric_id references metrics.metric_id via fk_metric_metric_attributes_metric_id"><a href='metric_attributes.html'>metric_attributes</a><span class='relatedKey'>.metric_id</span></td>
+                                                <td class="constraint detail">fk_metric_metric_attributes_metric_id<span title='Cascade on delete:&#10;Deletion of parent deletes child'>C</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td title="metric_taxa.metric_id references metrics.metric_id via fk_metric_metric_taxa_metric_id"><a href='metric_taxa.html'>metric_taxa</a><span class='relatedKey'>.metric_id</span></td>
+                                                <td class="constraint detail">fk_metric_metric_taxa_metric_id<span title='Cascade on delete:&#10;Deletion of parent deletes child'>C</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td title="metric_values.metric_id references metrics.metric_id via fk_metric_sample_metrics_metric_id"><a href='metric_values.html'>metric_values</a><span class='relatedKey'>.metric_id</span></td>
+                                                <td class="constraint detail">fk_metric_sample_metrics_metric_id<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                            </tr>
                                         </table>
                                     </td>
                                     <td>
@@ -120,9 +136,9 @@
                                     <td></td>
                                 </tr>
                                 <tr>
-                                    <td class='foreignKey' title='Foreign Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="sample_id">sample_id</span></td>
-                                    <td>int4</td>
-                                    <td>10</td>
+                                    <td class='indexedColumn' title='Indexed'><i class='fa fa-sitemap fa-rotate-120' style='padding-right: 5px;'></i><span id="metric_name">metric_name</span></td>
+                                    <td>varchar</td>
+                                    <td>255</td>
                                     <td title=''></td>
                                     <td title=''></td>
                                     <td>null</td>
@@ -132,16 +148,12 @@
                                     </td>
                                     <td>
                                         <table border='0' cellspacing='0' cellpadding='0'>
-                                            <tr>
-                                                <td title="metrics.sample_id references sample.samples.sample_id via fk_metrics_sample_id"><a href='../../sample/tables/samples.html'>samples</a><span class='relatedKey'>.sample_id</span></td>
-                                                <td class="constraint detail">fk_metrics_sample_id<span title='Cascade on delete:&#10;Deletion of parent deletes child'>C</span></td>
-                                            </tr>
                                         </table>
                                     </td>
                                     <td></td>
                                 </tr>
                                 <tr>
-                                    <td class='foreignKey' title='Foreign Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="metric_type_id">metric_type_id</span></td>
+                                    <td class='foreignKey' title='Foreign Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="group_id">group_id</span></td>
                                     <td>int2</td>
                                     <td>5</td>
                                     <td title=''></td>
@@ -154,7 +166,7 @@
                                     <td>
                                         <table border='0' cellspacing='0' cellpadding='0'>
                                             <tr>
-                                                <td title="metrics.metric_type_id references metric_types.metric_type_id via fk_metrics_metric_type_id"><a href='metric_types.html'>metric_types</a><span class='relatedKey'>.metric_type_id</span></td>
+                                                <td title="metrics.group_id references metric_groups.group_id via fk_metrics_metric_type_id"><a href='metric_groups.html'>metric_groups</a><span class='relatedKey'>.group_id</span></td>
                                                 <td class="constraint detail">fk_metrics_metric_type_id<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                         </table>
@@ -162,10 +174,10 @@
                                     <td></td>
                                 </tr>
                                 <tr>
-                                    <td class='foreignKey' title='Foreign Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="translation_id">translation_id</span></td>
+                                    <td class='foreignKey' title='Foreign Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="formula_id">formula_id</span></td>
                                     <td>int2</td>
                                     <td>5</td>
-                                    <td title=''></td>
+                                    <td title='nullable'>√</td>
                                     <td title=''></td>
                                     <td>null</td>
                                     <td>
@@ -175,9 +187,162 @@
                                     <td>
                                         <table border='0' cellspacing='0' cellpadding='0'>
                                             <tr>
-                                                <td title="metrics.translation_id references taxa.translations.translation_id via fk_metrics_translation_id"><a href='../../taxa/tables/translations.html'>translations</a><span class='relatedKey'>.translation_id</span></td>
-                                                <td class="constraint detail">fk_metrics_translation_id<span title='Cascade on delete:&#10;Deletion of parent deletes child'>C</span></td>
+                                                <td title="metrics.formula_id references formulae.formula_id via fk_metrics_formula_id"><a href='formulae.html'>formulae</a><span class='relatedKey'>.formula_id</span></td>
+                                                <td class="constraint detail">fk_metrics_formula_id<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
+                                        </table>
+                                    </td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td><span id="display_text">display_text</span></td>
+                                    <td>text</td>
+                                    <td>2147483647</td>
+                                    <td title='nullable'>√</td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td><span id="is_standardized">is_standardized</span></td>
+                                    <td>bool</td>
+                                    <td>1</td>
+                                    <td title='nullable'>√</td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td><span id="is_active">is_active</span></td>
+                                    <td>bool</td>
+                                    <td>1</td>
+                                    <td title=''></td>
+                                    <td title=''></td>
+                                    <td>true</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td><span id="perturb_direction">perturb_direction</span></td>
+                                    <td>perturbation_directions</td>
+                                    <td>2147483647</td>
+                                    <td title='nullable'>√</td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td><span id="code_function">code_function</span></td>
+                                    <td>text</td>
+                                    <td>2147483647</td>
+                                    <td title='nullable'>√</td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td><span id="description">description</span></td>
+                                    <td>text</td>
+                                    <td>2147483647</td>
+                                    <td title='nullable'>√</td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td><span id="metadata">metadata</span></td>
+                                    <td>json</td>
+                                    <td>2147483647</td>
+                                    <td title='nullable'>√</td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td><span id="created_date">created_date</span></td>
+                                    <td>timestamptz</td>
+                                    <td>35,6</td>
+                                    <td title=''></td>
+                                    <td title=''></td>
+                                    <td>now()</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td><span id="updated_date">updated_date</span></td>
+                                    <td>timestamptz</td>
+                                    <td>35,6</td>
+                                    <td title=''></td>
+                                    <td title=''></td>
+                                    <td>now()</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
                                         </table>
                                     </td>
                                     <td></td>
@@ -213,14 +378,52 @@
                                     <td>metric_id</td>
                                 </tr>
                                 <tr>
+                                    <td title='Indexed'>fx_metrics_formula_id</td>
+                                    <td>Performance</td>
+                                    <td><span title='Ascending'>Asc</span></td>
+                                    <td>formula_id</td>
+                                </tr>
+                                <tr>
                                     <td title='Indexed'>fx_metrics_metric_type_id</td>
                                     <td>Performance</td>
                                     <td><span title='Ascending'>Asc</span></td>
-                                    <td>metric_type_id</td>
+                                    <td>group_id</td>
+                                </tr>
+                                <tr>
+                                    <td class='uniqueKey' title='Unique Key'><i class='icon ion-key iconkey'></i> metrics_metric_name_key</td>
+                                    <td>Must be unique</td>
+                                    <td><span title='Ascending'>Asc</span></td>
+                                    <td>metric_name</td>
                                 </tr>
                                 </tbody>
                             </table>
                         </div><!-- /.box-body -->
+                    </div>
+                    <div class="box box-primary">
+                        <div class="box-header with-border">
+                            <i class="fa fa-sitemap"></i>
+                            <h3 class="box-title">Check Constraints</h3>
+                            <div class="box-tools pull-right">
+                                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                                <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
+                            </div>
+                        </div>
+                        <div class="box-body">
+                            <table id="check_table" class="table table-bordered table-striped dataTable" role="grid">
+                                <thead align='left'>
+                                <tr>
+                                    <th>Constraint Name</th>
+                                    <th>Constraint</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr>
+                                    <td>ck_metric_name</td>
+                                    <td>((length((metric_name)::text) &gt; 0))</td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                     <div class="box box-primary">
                         <div class="box-header with-border">
@@ -241,20 +444,29 @@
                                 <div class="tab-content no-padding">
                                     <div class="chart tab-pane active" id="oneDegreeImg-chart" style="position: relative; overflow-x:auto;">
                                         <map id="oneDegreeRelationshipsDiagram" name="oneDegreeRelationshipsDiagram">
-<area shape="rect" id="node1" href="metrics.html" target="_top" title="metrics" alt="" coords="247,49,469,236">
-<area shape="rect" id="node2" href="metric_types.html" target="_top" title="metric_types" alt="" coords="19,111,189,287">
-<area shape="rect" id="node3" href="../sample/tables/samples.html" target="_top" title="sample.samples" alt="" coords="7,5,201,93">
-<area shape="rect" id="node4" href="../taxa/tables/translations.html" target="_top" title="taxa.translations" alt="" coords="5,304,203,392">
+<area shape="rect" id="node1" href="analysis_metrics.html" target="_top" title="analysis_metrics" alt="" coords="707,5,904,128">
+<area shape="rect" id="node2" href="metrics.html" target="_top" title="metrics" alt="" coords="232,228,661,679">
+<area shape="rect" id="node6" href="formulae.html" target="_top" title="formulae" alt="" coords="17,400,176,576">
+<area shape="rect" id="node7" href="metric_groups.html" target="_top" title="metric_groups" alt="" coords="5,207,188,383">
+<area shape="rect" id="node3" href="metric_attributes.html" target="_top" title="metric_attributes" alt="" coords="705,145,905,297">
+<area shape="rect" id="node4" href="metric_taxa.html" target="_top" title="metric_taxa" alt="" coords="725,315,886,437">
+<area shape="rect" id="node5" href="metric_values.html" target="_top" title="metric_values" alt="" coords="717,455,894,601">
 </map>
                                         <a name='diagram'><img id="oneDegreeImg" src="../diagrams/tables/metrics.1degree.png" usemap="#oneDegreeRelationshipsDiagram" class="diagram" border="0" align="left"></a>
                                     </div>
                                     <div class="chart tab-pane " id="twodegreesDegreeImg-chart" style="position: relative; overflow-x:auto;">
                                         <map id="twoDegreesRelationshipsDiagram" name="twoDegreesRelationshipsDiagram">
-<area shape="rect" id="node1" href="metric_types.html" target="_top" title="metric_types" alt="" coords="208,111,379,287">
-<area shape="rect" id="node2" href="../geo/tables/units.html" target="_top" title="geo.units" alt="" coords="5,172,151,260">
-<area shape="rect" id="node3" href="metrics.html" target="_top" title="metrics" alt="" coords="436,49,659,236">
-<area shape="rect" id="node4" href="../sample/tables/samples.html" target="_top" title="sample.samples" alt="" coords="197,5,390,93">
-<area shape="rect" id="node5" href="../taxa/tables/translations.html" target="_top" title="taxa.translations" alt="" coords="195,304,392,392">
+<area shape="rect" id="node1" href="analysis_metrics.html" target="_top" title="analysis_metrics" alt="" coords="707,23,904,145">
+<area shape="rect" id="node2" href="analyses.html" target="_top" title="analyses" alt="" coords="376,5,517,93">
+<area shape="rect" id="node3" href="metrics.html" target="_top" title="metrics" alt="" coords="232,216,661,667">
+<area shape="rect" id="node10" href="formulae.html" target="_top" title="formulae" alt="" coords="17,389,176,565">
+<area shape="rect" id="node11" href="metric_groups.html" target="_top" title="metric_groups" alt="" coords="5,196,188,372">
+<area shape="rect" id="node4" href="metric_attributes.html" target="_top" title="metric_attributes" alt="" coords="705,181,905,333">
+<area shape="rect" id="node5" href="../taxa/tables/attributes.html" target="_top" title="taxa.attributes" alt="" coords="356,111,537,199">
+<area shape="rect" id="node6" href="metric_taxa.html" target="_top" title="metric_taxa" alt="" coords="725,480,886,603">
+<area shape="rect" id="node7" href="../taxa/tables/taxonomy.html" target="_top" title="taxa.taxonomy" alt="" coords="355,684,538,772">
+<area shape="rect" id="node8" href="metric_values.html" target="_top" title="metric_values" alt="" coords="717,704,894,851">
+<area shape="rect" id="node9" href="rarefactions.html" target="_top" title="rarefactions" alt="" coords="364,789,529,877">
 </map>
                                         <a name='diagram'><img id="twodegreesDegreeImg" src="../diagrams/tables/metrics.2degrees.png" usemap="#twoDegreesRelationshipsDiagram" class="diagram" border="0" align="left"></a>
                                     </div>

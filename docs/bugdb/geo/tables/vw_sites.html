@@ -141,28 +141,7 @@
                                     <td></td>
                                 </tr>
                                 <tr>
-                                    <td class='foreignKey' title='Foreign Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="system_id">system_id</span></td>
-                                    <td>int2</td>
-                                    <td>5</td>
-                                    <td title='nullable'>√</td>
-                                    <td title=''></td>
-                                    <td>null</td>
-                                    <td>
-                                        <table border='0' cellspacing='0' cellpadding='0'>
-                                        </table>
-                                    </td>
-                                    <td>
-                                        <table border='0' cellspacing='0' cellpadding='0'>
-                                            <tr>
-                                                <td title="vw_sites.system_id&#39;s name implies that it&#39;s a child of systems.system_id, but it doesn&#39;t reference that column."><a href='systems.html'>systems</a><span class='relatedKey'>.system_id</span></td>
-                                                <td class="constraint detail">Implied Constraint<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
-                                            </tr>
-                                        </table>
-                                    </td>
-                                    <td></td>
-                                </tr>
-                                <tr>
-                                    <td><span id="system_name">system_name</span></td>
+                                    <td><span id="system">system</span></td>
                                     <td>varchar</td>
                                     <td>20</td>
                                     <td title='nullable'>√</td>
@@ -179,47 +158,9 @@
                                     <td></td>
                                 </tr>
                                 <tr>
-                                    <td class='foreignKey' title='Foreign Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="ecosystem_id">ecosystem_id</span></td>
-                                    <td>int2</td>
-                                    <td>5</td>
-                                    <td title='nullable'>√</td>
-                                    <td title=''></td>
-                                    <td>null</td>
-                                    <td>
-                                        <table border='0' cellspacing='0' cellpadding='0'>
-                                        </table>
-                                    </td>
-                                    <td>
-                                        <table border='0' cellspacing='0' cellpadding='0'>
-                                            <tr>
-                                                <td title="vw_sites.ecosystem_id&#39;s name implies that it&#39;s a child of ecosystems.ecosystem_id, but it doesn&#39;t reference that column."><a href='ecosystems.html'>ecosystems</a><span class='relatedKey'>.ecosystem_id</span></td>
-                                                <td class="constraint detail">Implied Constraint<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
-                                            </tr>
-                                        </table>
-                                    </td>
-                                    <td></td>
-                                </tr>
-                                <tr>
-                                    <td><span id="ecosystem_name">ecosystem_name</span></td>
+                                    <td><span id="ecosystem">ecosystem</span></td>
                                     <td>varchar</td>
                                     <td>10</td>
-                                    <td title='nullable'>√</td>
-                                    <td title=''></td>
-                                    <td>null</td>
-                                    <td>
-                                        <table border='0' cellspacing='0' cellpadding='0'>
-                                        </table>
-                                    </td>
-                                    <td>
-                                        <table border='0' cellspacing='0' cellpadding='0'>
-                                        </table>
-                                    </td>
-                                    <td></td>
-                                </tr>
-                                <tr>
-                                    <td><span id="waterbody">waterbody</span></td>
-                                    <td>varchar</td>
-                                    <td>255</td>
                                     <td title='nullable'>√</td>
                                     <td title=''></td>
                                     <td>null</td>
@@ -268,6 +209,74 @@
                                     <td></td>
                                 </tr>
                                 <tr>
+                                    <td><span id="us_state">us_state</span></td>
+                                    <td>varchar</td>
+                                    <td>2</td>
+                                    <td title='nullable'>√</td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td><span id="waterbody_type_name">waterbody_type_name</span></td>
+                                    <td>varchar</td>
+                                    <td>255</td>
+                                    <td title='nullable'>√</td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td><span id="waterbody_code">waterbody_code</span></td>
+                                    <td>varchar</td>
+                                    <td>100</td>
+                                    <td title='nullable'>√</td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td><span id="waterbody_name">waterbody_name</span></td>
+                                    <td>varchar</td>
+                                    <td>255</td>
+                                    <td title='nullable'>√</td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td></td>
+                                </tr>
+                                <tr>
                                     <td><span id="created_date">created_date</span></td>
                                     <td>timestamptz</td>
                                     <td>35,6</td>
@@ -288,6 +297,23 @@
                                     <td><span id="updated_date">updated_date</span></td>
                                     <td>timestamptz</td>
                                     <td>35,6</td>
+                                    <td title='nullable'>√</td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td><span id="has_catchment">has_catchment</span></td>
+                                    <td>bool</td>
+                                    <td>1</td>
                                     <td title='nullable'>√</td>
                                     <td title=''></td>
                                     <td>null</td>
@@ -325,28 +351,28 @@
                                 <div class="tab-content no-padding">
                                     <div class="chart tab-pane active" id="oneDegreeImg-chart" style="position: relative; overflow-x:auto;">
                                         <map id="oneDegreeRelationshipsDiagram" name="oneDegreeRelationshipsDiagram">
-<area shape="rect" id="node1" href="vw_sites.html" target="_top" title="vw_sites" alt="" coords="5,5,315,373">
+<area shape="rect" id="node1" href="vw_sites.html" target="_top" title="vw_sites" alt="" coords="5,5,353,432">
 </map>
                                         <a name='diagram'><img id="oneDegreeImg" src="../diagrams/tables/vw_sites.1degree.png" usemap="#oneDegreeRelationshipsDiagram" class="diagram" border="0" align="left"></a>
                                     </div>
                                     <div class="chart tab-pane " id="oneimpliedDegreeImg-chart" style="position: relative; overflow-x:auto;">
                                         <map id="oneDegreeRelationshipsDiagramImplied" name="oneDegreeRelationshipsDiagramImplied">
-<area shape="rect" id="node1" href="sites.html" target="_top" title="sites" alt="" coords="431,5,585,269">
-<area shape="rect" id="node2" href="ecosystems.html" target="_top" title="ecosystems" alt="" coords="5,219,188,365">
-<area shape="rect" id="node3" href="systems.html" target="_top" title="systems" alt="" coords="232,160,387,336">
-<area shape="rect" id="node4" href="vw_sites.html" target="_top" title="vw_sites" alt="" coords="629,185,939,553">
+<area shape="rect" id="node1" href="vw_sites.html" target="_top" title="vw_sites" alt="" coords="255,5,603,432">
+<area shape="rect" id="node2" href="sites.html" target="_top" title="sites" alt="" coords="5,8,211,272">
 </map>
                                         <a name='diagram'><img id="oneimpliedDegreeImg" src="../diagrams/tables/vw_sites.implied1degrees.png" usemap="#oneDegreeRelationshipsDiagramImplied" class="diagram" border="0" align="left"></a>
                                     </div>
                                     <div class="chart tab-pane " id="twoimpliedDegreeImg-chart" style="position: relative; overflow-x:auto;">
                                         <map id="twoDegreesRelationshipsDiagramImplied" name="twoDegreesRelationshipsDiagramImplied">
-<area shape="rect" id="node1" href="habitats.html" target="_top" title="habitats" alt="" coords="239,19,379,107">
-<area shape="rect" id="node2" href="ecosystems.html" target="_top" title="ecosystems" alt="" coords="5,244,188,391">
-<area shape="rect" id="node3" href="site_predictors.html" target="_top" title="site_predictors" alt="" coords="691,111,877,199">
-<area shape="rect" id="node4" href="sites.html" target="_top" title="sites" alt="" coords="431,79,585,343">
-<area shape="rect" id="node5" href="systems.html" target="_top" title="systems" alt="" coords="232,137,387,313">
-<area shape="rect" id="node6" href="vw_sites.html" target="_top" title="vw_sites" alt="" coords="629,236,939,604">
-<area shape="rect" id="node7" href="../sample/tables/samples.html" target="_top" title="sample.samples" alt="" coords="687,5,881,93">
+<area shape="rect" id="node1" href="model_reference_sites.html" target="_top" title="model_reference_sites" alt="" coords="553,5,792,93">
+<area shape="rect" id="node2" href="sites.html" target="_top" title="sites" alt="" coords="249,267,455,531">
+<area shape="rect" id="node6" href="systems.html" target="_top" title="systems" alt="" coords="35,319,175,407">
+<area shape="rect" id="node7" href="waterbody_types.html" target="_top" title="waterbody_types" alt="" coords="5,424,205,512">
+<area shape="rect" id="node3" href="site_catchment_history.html" target="_top" title="site_catchment_history" alt="" coords="551,111,795,199">
+<area shape="rect" id="node4" href="site_location_history.html" target="_top" title="site_location_history" alt="" coords="559,216,786,304">
+<area shape="rect" id="node5" href="site_predictors.html" target="_top" title="site_predictors" alt="" coords="580,321,765,409">
+<area shape="rect" id="node8" href="vw_sites.html" target="_top" title="vw_sites" alt="" coords="499,427,847,853">
+<area shape="rect" id="node9" href="../sample/tables/samples.html" target="_top" title="sample.samples" alt="" coords="576,871,769,959">
 </map>
                                         <a name='diagram'><img id="twoimpliedDegreeImg" src="../diagrams/tables/vw_sites.implied2degrees.png" usemap="#twoDegreesRelationshipsDiagramImplied" class="diagram" border="0" align="left"></a>
                                     </div>
@@ -364,7 +390,7 @@
                             </div>
                         </div>
                         <div class="box-body">
-                            <textarea id="sql-script-codemirror" name="sql-script-codemirror" rows="" style="display: none;">SELECT s.site_id,&#10;    s.site_name,&#10;    s.system_id,&#10;    sy.system_name,&#10;    s.ecosystem_id,&#10;    e.ecosystem_name,&#10;    s.waterbody,&#10;    st_x(s.location) AS longitude,&#10;    st_y(s.location) AS latitude,&#10;    s.created_date,&#10;    s.updated_date&#10;   FROM ((geo.sites s&#10;     LEFT JOIN geo.systems sy ON ((s.system_id = sy.system_id)))&#10;     LEFT JOIN geo.ecosystems e ON ((s.ecosystem_id = e.ecosystem_id)));</textarea>
+                            <textarea id="sql-script-codemirror" name="sql-script-codemirror" rows="" style="display: none;">SELECT s.site_id,&#10;    s.site_name,&#10;    sy.system_name AS system,&#10;    e.ecosystem_name AS ecosystem,&#10;    st_x((s.location)::geometry) AS longitude,&#10;    st_y((s.location)::geometry) AS latitude,&#10;    st.abbreviation AS us_state,&#10;    w.waterbody_type_name,&#10;    s.waterbody_code,&#10;    s.waterbody_name,&#10;    s.created_date,&#10;    s.updated_date,&#10;    (s.catchment IS NOT NULL) AS has_catchment&#10;   FROM ((((geo.sites s&#10;     LEFT JOIN geo.states st ON (st_covers(st.geom, s.location)))&#10;     LEFT JOIN geo.systems sy ON ((s.system_id = sy.system_id)))&#10;     LEFT JOIN geo.ecosystems e ON ((sy.ecosystem_id = e.ecosystem_id)))&#10;     LEFT JOIN geo.waterbody_types w ON ((s.waterbody_type_id = w.waterbody_type_id)));</textarea>
                             <div style="padding-top: 5px;"><hr></div>
                             <div class="box box-solid">
                                 <div class="box-header with-border">
@@ -375,8 +401,10 @@
                                 <div class="box-body">
                                     <ul class="list-unstyled">
                                         <li><a href="sites.html">sites</a></li>
+                                        <li><a href="states.html">states</a></li>
                                         <li><a href="systems.html">systems</a></li>
                                         <li><a href="ecosystems.html">ecosystems</a></li>
+                                        <li><a href="waterbody_types.html">waterbody_types</a></li>
                                     </ul>
                                 </div><!-- /.box-body -->
                             </div>

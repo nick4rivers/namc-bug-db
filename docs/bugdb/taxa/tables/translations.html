@@ -73,7 +73,7 @@
             <div class="content-wrapper">
                 <!-- Content Header (Page header) -->
                 <section class="content-header">
-                    <h1>translations</h1><p><span id="recordNumber">13</span> rows</p><br />
+                    <h1>translations</h1><p><span id="recordNumber">23</span> rows</p><br />
                 </section>
                 <!-- Main content -->
                 <section class="content">
@@ -112,16 +112,20 @@
                                     <td>
                                         <table border='0' cellspacing='0' cellpadding='0'>
                                             <tr>
-                                                <td title="metrics.translation_id references translations.translation_id via fk_metrics_translation_id"><a href='../../metric/tables/metrics.html'>metrics</a><span class='relatedKey'>.translation_id</span></td>
-                                                <td class="constraint detail">fk_metrics_translation_id<span title='Cascade on delete:&#10;Deletion of parent deletes child'>C</span></td>
+                                                <td title="models.translation_id references translations.translation_id via fk_models_translation_id"><a href='../../geo/tables/models.html'>models</a><span class='relatedKey'>.translation_id</span></td>
+                                                <td class="constraint detail">fk_models_translation_id<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                             <tr>
-                                                <td title="taxa_translations.translation_id references translations.translation_id via fk_taxa_translations_translation_id"><a href='taxa_translations.html'>taxa_translations</a><span class='relatedKey'>.translation_id</span></td>
-                                                <td class="constraint detail">fk_taxa_translations_translation_id<span title='Cascade on delete:&#10;Deletion of parent deletes child'>C</span></td>
+                                                <td title="rarefactions.translation_id references translations.translation_id via fk_metric_rarefactions_translation_id"><a href='../../metric/tables/rarefactions.html'>rarefactions</a><span class='relatedKey'>.translation_id</span></td>
+                                                <td class="constraint detail">fk_metric_rarefactions_translation_id<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                             <tr>
                                                 <td title="translation_predictors.translation_id references translations.translation_id via fk_taxa_translation_predictors_translation_id"><a href='translation_predictors.html'>translation_predictors</a><span class='relatedKey'>.translation_id</span></td>
                                                 <td class="constraint detail">fk_taxa_translation_predictors_translation_id<span title='Cascade on delete:&#10;Deletion of parent deletes child'>C</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td title="translation_taxa.translation_id references translations.translation_id via fk_translation_taxa_translation_id"><a href='translation_taxa.html'>translation_taxa</a><span class='relatedKey'>.translation_id</span></td>
+                                                <td class="constraint detail">fk_translation_taxa_translation_id<span title='Cascade on delete:&#10;Deletion of parent deletes child'>C</span></td>
                                             </tr>
                                         </table>
                                     </td>
@@ -258,6 +262,32 @@
                     </div>
                     <div class="box box-primary">
                         <div class="box-header with-border">
+                            <i class="fa fa-sitemap"></i>
+                            <h3 class="box-title">Check Constraints</h3>
+                            <div class="box-tools pull-right">
+                                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                                <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
+                            </div>
+                        </div>
+                        <div class="box-body">
+                            <table id="check_table" class="table table-bordered table-striped dataTable" role="grid">
+                                <thead align='left'>
+                                <tr>
+                                    <th>Constraint Name</th>
+                                    <th>Constraint</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr>
+                                    <td>ck_translation_name</td>
+                                    <td>((length((translation_name)::text) &gt; 0))</td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="box box-primary">
+                        <div class="box-header with-border">
                             <i class="fa fa-code-fork"></i>
                             <h3 id="Relationships" class="box-title">Relationships</h3>
                             <div class="box-tools pull-right">
@@ -275,21 +305,23 @@
                                 <div class="tab-content no-padding">
                                     <div class="chart tab-pane active" id="oneDegreeImg-chart" style="position: relative; overflow-x:auto;">
                                         <map id="oneDegreeRelationshipsDiagram" name="oneDegreeRelationshipsDiagram">
-<area shape="rect" id="node1" href="../metric/tables/metrics.html" target="_top" title="metric.metrics" alt="" coords="386,5,567,123">
-<area shape="rect" id="node2" href="translations.html" target="_top" title="translations" alt="" coords="5,137,313,383">
-<area shape="rect" id="node3" href="taxa_translations.html" target="_top" title="taxa_translations" alt="" coords="357,140,596,292">
-<area shape="rect" id="node4" href="translation_predictors.html" target="_top" title="translation_predictors" alt="" coords="359,309,595,432">
+<area shape="rect" id="node1" href="../geo/tables/models.html" target="_top" title="geo.models" alt="" coords="380,5,571,123">
+<area shape="rect" id="node2" href="translations.html" target="_top" title="translations" alt="" coords="5,205,313,451">
+<area shape="rect" id="node3" href="../metric/tables/rarefactions.html" target="_top" title="metric.rarefactions" alt="" coords="369,140,582,257">
+<area shape="rect" id="node4" href="translation_predictors.html" target="_top" title="translation_predictors" alt="" coords="357,275,593,397">
+<area shape="rect" id="node5" href="translation_taxa.html" target="_top" title="translation_taxa" alt="" coords="379,415,572,561">
 </map>
                                         <a name='diagram'><img id="oneDegreeImg" src="../diagrams/tables/translations.1degree.png" usemap="#oneDegreeRelationshipsDiagram" class="diagram" border="0" align="left"></a>
                                     </div>
                                     <div class="chart tab-pane " id="twodegreesDegreeImg-chart" style="position: relative; overflow-x:auto;">
                                         <map id="twoDegreesRelationshipsDiagram" name="twoDegreesRelationshipsDiagram">
-<area shape="rect" id="node1" href="../metric/tables/metrics.html" target="_top" title="metric.metrics" alt="" coords="386,8,567,125">
-<area shape="rect" id="node2" href="translations.html" target="_top" title="translations" alt="" coords="5,5,313,251">
-<area shape="rect" id="node3" href="taxa_translations.html" target="_top" title="taxa_translations" alt="" coords="357,189,596,341">
-<area shape="rect" id="node4" href="taxonomy.html" target="_top" title="taxonomy" alt="" coords="85,268,234,356">
-<area shape="rect" id="node5" href="translation_predictors.html" target="_top" title="translation_predictors" alt="" coords="359,359,595,481">
-<area shape="rect" id="node6" href="../geo/tables/predictors.html" target="_top" title="geo.predictors" alt="" coords="68,391,251,479">
+<area shape="rect" id="node1" href="../geo/tables/models.html" target="_top" title="geo.models" alt="" coords="380,5,571,123">
+<area shape="rect" id="node2" href="translations.html" target="_top" title="translations" alt="" coords="5,129,313,375">
+<area shape="rect" id="node3" href="../metric/tables/rarefactions.html" target="_top" title="metric.rarefactions" alt="" coords="369,140,582,257">
+<area shape="rect" id="node4" href="translation_predictors.html" target="_top" title="translation_predictors" alt="" coords="357,281,593,404">
+<area shape="rect" id="node5" href="../geo/tables/predictors.html" target="_top" title="geo.predictors" alt="" coords="68,392,251,480">
+<area shape="rect" id="node6" href="translation_taxa.html" target="_top" title="translation_taxa" alt="" coords="379,436,572,583">
+<area shape="rect" id="node7" href="taxonomy.html" target="_top" title="taxonomy" alt="" coords="79,497,239,585">
 </map>
                                         <a name='diagram'><img id="twodegreesDegreeImg" src="../diagrams/tables/translations.2degrees.png" usemap="#twoDegreesRelationshipsDiagram" class="diagram" border="0" align="left"></a>
                                     </div>

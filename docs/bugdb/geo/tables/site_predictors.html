@@ -73,7 +73,7 @@
             <div class="content-wrapper">
                 <!-- Content Header (Page header) -->
                 <section class="content-header">
-                    <h1>site_predictors</h1><p><span id="recordNumber">0</span> rows</p><br />
+                    <h1>site_predictors</h1><p><span id="recordNumber">11733</span> rows</p><br />
                 </section>
                 <!-- Main content -->
                 <section class="content">
@@ -145,9 +145,9 @@
                                     <td></td>
                                 </tr>
                                 <tr>
-                                    <td><span id="metadata">metadata</span></td>
-                                    <td>jsonb</td>
-                                    <td>2147483647</td>
+                                    <td><span id="predictor_value">predictor_value</span></td>
+                                    <td>varchar</td>
+                                    <td>255</td>
                                     <td title=''></td>
                                     <td title=''></td>
                                     <td>null</td>
@@ -162,7 +162,7 @@
                                     <td></td>
                                 </tr>
                                 <tr>
-                                    <td><span id="created_date">created_date</span></td>
+                                    <td class='primaryKey' title='Primary Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="created_date">created_date</span></td>
                                     <td>timestamptz</td>
                                     <td>35,6</td>
                                     <td title=''></td>
@@ -222,8 +222,14 @@
                                 <tr>
                                     <td class='primaryKey' title='Primary Key'><i class='icon ion-key iconkey'></i> pk_site_predictors</td>
                                     <td>Primary key</td>
-                                    <td><span title='Ascending'>Asc</span>/<span title='Ascending'>Asc</span></td>
-                                    <td>predictor_id + site_id</td>
+                                    <td><span title='Ascending'>Asc</span>/<span title='Ascending'>Asc</span>/<span title='Ascending'>Asc</span></td>
+                                    <td>predictor_id + site_id + created_date</td>
+                                </tr>
+                                <tr>
+                                    <td title='Indexed'>fx_site_predictors_site_id</td>
+                                    <td>Performance</td>
+                                    <td><span title='Ascending'>Asc</span></td>
+                                    <td>site_id</td>
                                 </tr>
                                 </tbody>
                             </table>
@@ -250,46 +256,56 @@
                                 <div class="tab-content no-padding">
                                     <div class="chart tab-pane active" id="oneDegreeImg-chart" style="position: relative; overflow-x:auto;">
                                         <map id="oneDegreeRelationshipsDiagram" name="oneDegreeRelationshipsDiagram">
-<area shape="rect" id="node1" href="site_predictors.html" target="_top" title="site_predictors" alt="" coords="232,115,532,331">
-<area shape="rect" id="node2" href="predictors.html" target="_top" title="predictors" alt="" coords="5,5,188,240">
-<area shape="rect" id="node3" href="sites.html" target="_top" title="sites" alt="" coords="19,257,174,521">
+<area shape="rect" id="node1" href="site_predictors.html" target="_top" title="site_predictors" alt="" coords="255,115,549,331">
+<area shape="rect" id="node2" href="predictors.html" target="_top" title="predictors" alt="" coords="15,5,201,240">
+<area shape="rect" id="node3" href="sites.html" target="_top" title="sites" alt="" coords="5,257,211,521">
 </map>
                                         <a name='diagram'><img id="oneDegreeImg" src="../diagrams/tables/site_predictors.1degree.png" usemap="#oneDegreeRelationshipsDiagram" class="diagram" border="0" align="left"></a>
                                     </div>
                                     <div class="chart tab-pane " id="twodegreesDegreeImg-chart" style="position: relative; overflow-x:auto;">
                                         <map id="twoDegreesRelationshipsDiagram" name="twoDegreesRelationshipsDiagram">
-<area shape="rect" id="node1" href="predictors.html" target="_top" title="predictors" alt="" coords="448,39,631,273">
-<area shape="rect" id="node2" href="predictor_types.html" target="_top" title="predictor_types" alt="" coords="213,193,404,281">
-<area shape="rect" id="node3" href="units.html" target="_top" title="units" alt="" coords="245,88,373,176">
-<area shape="rect" id="node4" href="site_predictors.html" target="_top" title="site_predictors" alt="" coords="675,111,975,327">
-<area shape="rect" id="node5" href="sites.html" target="_top" title="sites" alt="" coords="462,304,617,568">
-<area shape="rect" id="node6" href="ecosystems.html" target="_top" title="ecosystems" alt="" coords="5,368,169,456">
-<area shape="rect" id="node7" href="systems.html" target="_top" title="systems" alt="" coords="239,333,379,421">
-<area shape="rect" id="node8" href="../sample/tables/samples.html" target="_top" title="sample.samples" alt="" coords="728,344,921,432">
-<area shape="rect" id="node9" href="../taxa/tables/translation_predictors.html" target="_top" title="taxa.translation_predictors" alt="" coords="690,5,959,93">
+<area shape="rect" id="node1" href="model_predictors.html" target="_top" title="model_predictors" alt="" coords="544,5,748,93">
+<area shape="rect" id="node2" href="predictors.html" target="_top" title="predictors" alt="" coords="259,161,445,396">
+<area shape="rect" id="node5" href="predictor_types.html" target="_top" title="predictor_types" alt="" coords="10,319,201,407">
+<area shape="rect" id="node6" href="units.html" target="_top" title="units" alt="" coords="41,213,169,301">
+<area shape="rect" id="node3" href="model_reference_sites.html" target="_top" title="model_reference_sites" alt="" coords="527,555,765,643">
+<area shape="rect" id="node4" href="sites.html" target="_top" title="sites" alt="" coords="249,657,455,921">
+<area shape="rect" id="node10" href="systems.html" target="_top" title="systems" alt="" coords="35,709,175,797">
+<area shape="rect" id="node11" href="waterbody_types.html" target="_top" title="waterbody_types" alt="" coords="5,815,205,903">
+<area shape="rect" id="node7" href="site_catchment_history.html" target="_top" title="site_catchment_history" alt="" coords="524,660,768,748">
+<area shape="rect" id="node8" href="site_location_history.html" target="_top" title="site_location_history" alt="" coords="533,765,759,853">
+<area shape="rect" id="node9" href="site_predictors.html" target="_top" title="site_predictors" alt="" coords="499,321,793,537">
+<area shape="rect" id="node12" href="../sample/tables/sample_predictors.html" target="_top" title="sample.sample_predictors" alt="" coords="513,111,779,199">
+<area shape="rect" id="node13" href="../sample/tables/samples.html" target="_top" title="sample.samples" alt="" coords="549,871,743,959">
+<area shape="rect" id="node14" href="../taxa/tables/translation_predictors.html" target="_top" title="taxa.translation_predictors" alt="" coords="511,216,781,304">
 </map>
                                         <a name='diagram'><img id="twodegreesDegreeImg" src="../diagrams/tables/site_predictors.2degrees.png" usemap="#twoDegreesRelationshipsDiagram" class="diagram" border="0" align="left"></a>
                                     </div>
                                     <div class="chart tab-pane " id="oneimpliedDegreeImg-chart" style="position: relative; overflow-x:auto;">
                                         <map id="oneDegreeRelationshipsDiagramImplied" name="oneDegreeRelationshipsDiagramImplied">
-<area shape="rect" id="node1" href="site_predictors.html" target="_top" title="site_predictors" alt="" coords="232,115,532,331">
-<area shape="rect" id="node2" href="predictors.html" target="_top" title="predictors" alt="" coords="5,5,188,240">
-<area shape="rect" id="node3" href="sites.html" target="_top" title="sites" alt="" coords="19,257,174,521">
+<area shape="rect" id="node1" href="site_predictors.html" target="_top" title="site_predictors" alt="" coords="255,115,549,331">
+<area shape="rect" id="node2" href="predictors.html" target="_top" title="predictors" alt="" coords="15,5,201,240">
+<area shape="rect" id="node3" href="sites.html" target="_top" title="sites" alt="" coords="5,257,211,521">
 </map>
                                         <a name='diagram'><img id="oneimpliedDegreeImg" src="../diagrams/tables/site_predictors.implied1degrees.png" usemap="#oneDegreeRelationshipsDiagramImplied" class="diagram" border="0" align="left"></a>
                                     </div>
                                     <div class="chart tab-pane " id="twoimpliedDegreeImg-chart" style="position: relative; overflow-x:auto;">
                                         <map id="twoDegreesRelationshipsDiagramImplied" name="twoDegreesRelationshipsDiagramImplied">
-<area shape="rect" id="node1" href="predictors.html" target="_top" title="predictors" alt="" coords="448,45,631,280">
-<area shape="rect" id="node2" href="predictor_types.html" target="_top" title="predictor_types" alt="" coords="213,204,404,292">
-<area shape="rect" id="node3" href="units.html" target="_top" title="units" alt="" coords="245,99,373,187">
-<area shape="rect" id="node4" href="site_predictors.html" target="_top" title="site_predictors" alt="" coords="675,111,975,327">
-<area shape="rect" id="node5" href="sites.html" target="_top" title="sites" alt="" coords="462,319,617,583">
-<area shape="rect" id="node6" href="ecosystems.html" target="_top" title="ecosystems" alt="" coords="5,505,169,593">
-<area shape="rect" id="node7" href="systems.html" target="_top" title="systems" alt="" coords="239,437,379,525">
-<area shape="rect" id="node8" href="vw_sites.html" target="_top" title="vw_sites" alt="" coords="755,563,894,627">
-<area shape="rect" id="node9" href="../sample/tables/samples.html" target="_top" title="sample.samples" alt="" coords="728,344,921,432">
-<area shape="rect" id="node10" href="../taxa/tables/translation_predictors.html" target="_top" title="taxa.translation_predictors" alt="" coords="690,5,959,93">
+<area shape="rect" id="node1" href="model_predictors.html" target="_top" title="model_predictors" alt="" coords="544,5,748,93">
+<area shape="rect" id="node2" href="predictors.html" target="_top" title="predictors" alt="" coords="259,161,445,396">
+<area shape="rect" id="node5" href="predictor_types.html" target="_top" title="predictor_types" alt="" coords="10,319,201,407">
+<area shape="rect" id="node6" href="units.html" target="_top" title="units" alt="" coords="41,213,169,301">
+<area shape="rect" id="node3" href="model_reference_sites.html" target="_top" title="model_reference_sites" alt="" coords="527,555,765,643">
+<area shape="rect" id="node4" href="sites.html" target="_top" title="sites" alt="" coords="249,709,455,973">
+<area shape="rect" id="node10" href="systems.html" target="_top" title="systems" alt="" coords="35,761,175,849">
+<area shape="rect" id="node11" href="waterbody_types.html" target="_top" title="waterbody_types" alt="" coords="5,867,205,955">
+<area shape="rect" id="node7" href="site_catchment_history.html" target="_top" title="site_catchment_history" alt="" coords="524,660,768,748">
+<area shape="rect" id="node8" href="site_location_history.html" target="_top" title="site_location_history" alt="" coords="533,765,759,853">
+<area shape="rect" id="node9" href="site_predictors.html" target="_top" title="site_predictors" alt="" coords="499,321,793,537">
+<area shape="rect" id="node12" href="vw_sites.html" target="_top" title="vw_sites" alt="" coords="577,871,715,935">
+<area shape="rect" id="node13" href="../sample/tables/sample_predictors.html" target="_top" title="sample.sample_predictors" alt="" coords="513,111,779,199">
+<area shape="rect" id="node14" href="../sample/tables/samples.html" target="_top" title="sample.samples" alt="" coords="549,952,743,1040">
+<area shape="rect" id="node15" href="../taxa/tables/translation_predictors.html" target="_top" title="taxa.translation_predictors" alt="" coords="511,216,781,304">
 </map>
                                         <a name='diagram'><img id="twoimpliedDegreeImg" src="../diagrams/tables/site_predictors.implied2degrees.png" usemap="#twoDegreesRelationshipsDiagramImplied" class="diagram" border="0" align="left"></a>
                                     </div>

@@ -73,7 +73,7 @@
             <div class="content-wrapper">
                 <!-- Content Header (Page header) -->
                 <section class="content-header">
-                    <h1>predictor_types</h1><p><span id="recordNumber">12</span> rows</p><br />
+                    <h1>predictor_types</h1><p><span id="recordNumber">13</span> rows</p><br />
                 </section>
                 <!-- Main content -->
                 <section class="content">
@@ -216,6 +216,32 @@
                     </div>
                     <div class="box box-primary">
                         <div class="box-header with-border">
+                            <i class="fa fa-sitemap"></i>
+                            <h3 class="box-title">Check Constraints</h3>
+                            <div class="box-tools pull-right">
+                                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                                <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
+                            </div>
+                        </div>
+                        <div class="box-body">
+                            <table id="check_table" class="table table-bordered table-striped dataTable" role="grid">
+                                <thead align='left'>
+                                <tr>
+                                    <th>Constraint Name</th>
+                                    <th>Constraint</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr>
+                                    <td>ck_predictor_type_name</td>
+                                    <td>((length((predictor_type_name)::text) &gt; 0))</td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="box box-primary">
+                        <div class="box-header with-border">
                             <i class="fa fa-code-fork"></i>
                             <h3 id="Relationships" class="box-title">Relationships</h3>
                             <div class="box-tools pull-right">
@@ -233,18 +259,20 @@
                                 <div class="tab-content no-padding">
                                     <div class="chart tab-pane active" id="oneDegreeImg-chart" style="position: relative; overflow-x:auto;">
                                         <map id="oneDegreeRelationshipsDiagram" name="oneDegreeRelationshipsDiagram">
-<area shape="rect" id="node1" href="predictors.html" target="_top" title="predictors" alt="" coords="387,5,569,240">
+<area shape="rect" id="node1" href="predictors.html" target="_top" title="predictors" alt="" coords="387,5,572,240">
 <area shape="rect" id="node2" href="predictor_types.html" target="_top" title="predictor_types" alt="" coords="5,120,343,307">
 </map>
                                         <a name='diagram'><img id="oneDegreeImg" src="../diagrams/tables/predictor_types.1degree.png" usemap="#oneDegreeRelationshipsDiagram" class="diagram" border="0" align="left"></a>
                                     </div>
                                     <div class="chart tab-pane " id="twodegreesDegreeImg-chart" style="position: relative; overflow-x:auto;">
                                         <map id="twoDegreesRelationshipsDiagram" name="twoDegreesRelationshipsDiagram">
-<area shape="rect" id="node1" href="predictors.html" target="_top" title="predictors" alt="" coords="387,55,569,289">
-<area shape="rect" id="node2" href="predictor_types.html" target="_top" title="predictor_types" alt="" coords="5,209,343,396">
-<area shape="rect" id="node3" href="units.html" target="_top" title="units" alt="" coords="110,104,238,192">
-<area shape="rect" id="node4" href="site_predictors.html" target="_top" title="site_predictors" alt="" coords="655,5,841,93">
-<area shape="rect" id="node5" href="../taxa/tables/translation_predictors.html" target="_top" title="taxa.translation_predictors" alt="" coords="613,111,883,199">
+<area shape="rect" id="node1" href="model_predictors.html" target="_top" title="model_predictors" alt="" coords="649,5,853,93">
+<area shape="rect" id="node2" href="predictors.html" target="_top" title="predictors" alt="" coords="387,161,572,396">
+<area shape="rect" id="node3" href="predictor_types.html" target="_top" title="predictor_types" alt="" coords="5,316,343,503">
+<area shape="rect" id="node4" href="units.html" target="_top" title="units" alt="" coords="110,211,238,299">
+<area shape="rect" id="node5" href="site_predictors.html" target="_top" title="site_predictors" alt="" coords="658,111,843,199">
+<area shape="rect" id="node6" href="../sample/tables/sample_predictors.html" target="_top" title="sample.sample_predictors" alt="" coords="618,216,883,304">
+<area shape="rect" id="node7" href="../taxa/tables/translation_predictors.html" target="_top" title="taxa.translation_predictors" alt="" coords="616,321,885,409">
 </map>
                                         <a name='diagram'><img id="twodegreesDegreeImg" src="../diagrams/tables/predictor_types.2degrees.png" usemap="#twoDegreesRelationshipsDiagram" class="diagram" border="0" align="left"></a>
                                     </div>

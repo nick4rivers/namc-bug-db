@@ -233,6 +233,32 @@
                     </div>
                     <div class="box box-primary">
                         <div class="box-header with-border">
+                            <i class="fa fa-sitemap"></i>
+                            <h3 class="box-title">Check Constraints</h3>
+                            <div class="box-tools pull-right">
+                                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                                <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
+                            </div>
+                        </div>
+                        <div class="box-body">
+                            <table id="check_table" class="table table-bordered table-striped dataTable" role="grid">
+                                <thead align='left'>
+                                <tr>
+                                    <th>Constraint Name</th>
+                                    <th>Constraint</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr>
+                                    <td>ck_sample_method_name</td>
+                                    <td>((length((sample_method_name)::text) &gt; 0))</td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="box box-primary">
+                        <div class="box-header with-border">
                             <i class="fa fa-code-fork"></i>
                             <h3 id="Relationships" class="box-title">Relationships</h3>
                             <div class="box-tools pull-right">
@@ -250,29 +276,32 @@
                                 <div class="tab-content no-padding">
                                     <div class="chart tab-pane active" id="oneDegreeImg-chart" style="position: relative; overflow-x:auto;">
                                         <map id="oneDegreeRelationshipsDiagram" name="oneDegreeRelationshipsDiagram">
-<area shape="rect" id="node1" href="samples.html" target="_top" title="samples" alt="" coords="397,5,552,269">
-<area shape="rect" id="node2" href="sample_methods.html" target="_top" title="sample_methods" alt="" coords="5,120,353,336">
+<area shape="rect" id="node1" href="samples.html" target="_top" title="samples" alt="" coords="397,5,617,328">
+<area shape="rect" id="node2" href="sample_methods.html" target="_top" title="sample_methods" alt="" coords="5,179,353,395">
 </map>
                                         <a name='diagram'><img id="oneDegreeImg" src="../diagrams/tables/sample_methods.1degree.png" usemap="#oneDegreeRelationshipsDiagram" class="diagram" border="0" align="left"></a>
                                     </div>
                                     <div class="chart tab-pane " id="twodegreesDegreeImg-chart" style="position: relative; overflow-x:auto;">
                                         <map id="twoDegreesRelationshipsDiagram" name="twoDegreesRelationshipsDiagram">
-<area shape="rect" id="node1" href="../metric/tables/metrics.html" target="_top" title="metric.metrics" alt="" coords="603,5,785,93">
-<area shape="rect" id="node2" href="samples.html" target="_top" title="samples" alt="" coords="397,477,552,741">
-<area shape="rect" id="node10" href="boxes.html" target="_top" title="boxes" alt="" coords="113,357,245,445">
-<area shape="rect" id="node11" href="../geo/tables/habitats.html" target="_top" title="geo.habitats" alt="" coords="96,907,263,995">
-<area shape="rect" id="node12" href="sample_methods.html" target="_top" title="sample_methods" alt="" coords="5,673,353,889">
-<area shape="rect" id="node13" href="../geo/tables/sites.html" target="_top" title="geo.sites" alt="" coords="107,463,251,551">
-<area shape="rect" id="node14" href="sample_types.html" target="_top" title="sample_types" alt="" coords="91,568,268,656">
-<area shape="rect" id="node3" href="fish.html" target="_top" title="fish" alt="" coords="634,111,754,199">
-<area shape="rect" id="node4" href="mass.html" target="_top" title="mass" alt="" coords="634,216,754,304">
-<area shape="rect" id="node5" href="organisms.html" target="_top" title="organisms" alt="" coords="617,321,771,409">
-<area shape="rect" id="node6" href="plankton.html" target="_top" title="plankton" alt="" coords="623,427,765,515">
-<area shape="rect" id="node7" href="project_samples.html" target="_top" title="project_samples" alt="" coords="596,532,792,620">
-<area shape="rect" id="node8" href="sample_assets.html" target="_top" title="sample_assets" alt="" coords="602,637,786,725">
-<area shape="rect" id="node9" href="sample_labs.html" target="_top" title="sample_labs" alt="" coords="610,743,778,831">
-<area shape="rect" id="node15" href="sorter_time.html" target="_top" title="sorter_time" alt="" coords="613,848,775,936">
-<area shape="rect" id="node16" href="taxa_time.html" target="_top" title="taxa_time" alt="" coords="620,953,768,1041">
+<area shape="rect" id="node1" href="../metric/tables/rarefactions.html" target="_top" title="metric.rarefactions" alt="" coords="661,5,875,93">
+<area shape="rect" id="node2" href="samples.html" target="_top" title="samples" alt="" coords="397,635,617,957">
+<area shape="rect" id="node13" href="boxes.html" target="_top" title="boxes" alt="" coords="99,573,259,661">
+<area shape="rect" id="node14" href="../geo/tables/habitats.html" target="_top" title="geo.habitats" alt="" coords="96,1123,263,1211">
+<area shape="rect" id="node15" href="sample_methods.html" target="_top" title="sample_methods" alt="" coords="5,889,353,1105">
+<area shape="rect" id="node16" href="../geo/tables/sites.html" target="_top" title="geo.sites" alt="" coords="107,679,251,767">
+<area shape="rect" id="node17" href="sample_types.html" target="_top" title="sample_types" alt="" coords="91,784,268,872">
+<area shape="rect" id="node3" href="fish.html" target="_top" title="fish" alt="" coords="708,111,828,199">
+<area shape="rect" id="node4" href="fish_guts.html" target="_top" title="fish_guts" alt="" coords="695,216,841,304">
+<area shape="rect" id="node5" href="mass.html" target="_top" title="mass" alt="" coords="694,321,842,409">
+<area shape="rect" id="node6" href="model_results.html" target="_top" title="model_results" alt="" coords="678,427,858,515">
+<area shape="rect" id="node7" href="organisms.html" target="_top" title="organisms" alt="" coords="674,532,862,620">
+<area shape="rect" id="node8" href="plankton.html" target="_top" title="plankton" alt="" coords="697,637,839,725">
+<area shape="rect" id="node9" href="project_samples.html" target="_top" title="project_samples" alt="" coords="670,743,866,831">
+<area shape="rect" id="node10" href="sample_assets.html" target="_top" title="sample_assets" alt="" coords="676,848,860,936">
+<area shape="rect" id="node11" href="sample_labs.html" target="_top" title="sample_labs" alt="" coords="684,953,852,1041">
+<area shape="rect" id="node12" href="sample_predictors.html" target="_top" title="sample_predictors" alt="" coords="663,1059,873,1147">
+<area shape="rect" id="node18" href="sorter_time.html" target="_top" title="sorter_time" alt="" coords="687,1164,849,1252">
+<area shape="rect" id="node19" href="taxa_time.html" target="_top" title="taxa_time" alt="" coords="694,1269,842,1357">
 </map>
                                         <a name='diagram'><img id="twodegreesDegreeImg" src="../diagrams/tables/sample_methods.2degrees.png" usemap="#twoDegreesRelationshipsDiagram" class="diagram" border="0" align="left"></a>
                                     </div>

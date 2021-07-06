@@ -80,7 +80,7 @@
                     <div class="box box-primary">
                         <div class="box-header with-border">
                             <i class="ion ion-key"></i>
-                            <h3 class="box-title">36 Foreign Key Constraints</h3>
+                            <h3 class="box-title">49 Foreign Key Constraints</h3>
                             <div class="box-tools pull-right">
                                 <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
                                 <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
@@ -97,6 +97,60 @@
                                     </tr>
                                 </thead>
                                 <tbody>
+                                    <tr>
+                                        <td>fk_sample_fish_gut_weights_life_stage_id</td>
+                                        <td>
+                                            <table border='0' cellspacing='0' cellpadding='0'>
+                                                <tr>
+                                                    <td><a href='tables/fish_gut_weights.html'>fish_gut_weights</a><span>.life_stage_id</span></td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                        <td>
+                                            <table border='0' cellspacing='0' cellpadding='0'>
+                                                <tr>
+                                                    <td><a href='tables/life_stages.html'>life_stages</a><span>.life_stage_id</span></td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                        <td><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>Restrict delete</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td>fk_sample_fish_gut_weights_sample_id</td>
+                                        <td>
+                                            <table border='0' cellspacing='0' cellpadding='0'>
+                                                <tr>
+                                                    <td><a href='tables/fish_gut_weights.html'>fish_gut_weights</a><span>.sample_id</span></td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                        <td>
+                                            <table border='0' cellspacing='0' cellpadding='0'>
+                                                <tr>
+                                                    <td><a href='tables/fish_guts.html'>fish_guts</a><span>.sample_id</span></td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                        <td><span title='Cascade on delete:&#10;Deletion of parent deletes child'>Cascade on delete</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td>fk_sample_fish_gut_weights_taxonomy_id</td>
+                                        <td>
+                                            <table border='0' cellspacing='0' cellpadding='0'>
+                                                <tr>
+                                                    <td><a href='tables/fish_gut_weights.html'>fish_gut_weights</a><span>.taxonomy_id</span></td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                        <td>
+                                            <table border='0' cellspacing='0' cellpadding='0'>
+                                                <tr>
+                                                    <td><a href='tables/taxonomy.html'>taxonomy</a><span>.taxonomy_id</span></td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                        <td><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>Restrict delete</span></td>
+                                    </tr>
                                     <tr>
                                         <td>fk_taxa_time_id_ier</td>
                                         <td>
@@ -314,42 +368,6 @@
                                         <td><span title='Cascade on delete:&#10;Deletion of parent deletes child'>Cascade on delete</span></td>
                                     </tr>
                                     <tr>
-                                        <td>fk_project_samples_project_id</td>
-                                        <td>
-                                            <table border='0' cellspacing='0' cellpadding='0'>
-                                                <tr>
-                                                    <td><a href='tables/project_samples.html'>project_samples</a><span>.project_id</span></td>
-                                                </tr>
-                                            </table>
-                                        </td>
-                                        <td>
-                                            <table border='0' cellspacing='0' cellpadding='0'>
-                                                <tr>
-                                                    <td><a href='tables/projects.html'>projects</a><span>.project_id</span></td>
-                                                </tr>
-                                            </table>
-                                        </td>
-                                        <td><span title='Cascade on delete:&#10;Deletion of parent deletes child'>Cascade on delete</span></td>
-                                    </tr>
-                                    <tr>
-                                        <td>fk_projct_samples_sample_id</td>
-                                        <td>
-                                            <table border='0' cellspacing='0' cellpadding='0'>
-                                                <tr>
-                                                    <td><a href='tables/project_samples.html'>project_samples</a><span>.sample_id</span></td>
-                                                </tr>
-                                            </table>
-                                        </td>
-                                        <td>
-                                            <table border='0' cellspacing='0' cellpadding='0'>
-                                                <tr>
-                                                    <td><a href='tables/samples.html'>samples</a><span>.sample_id</span></td>
-                                                </tr>
-                                            </table>
-                                        </td>
-                                        <td><span title='Cascade on delete:&#10;Deletion of parent deletes child'>Cascade on delete</span></td>
-                                    </tr>
-                                    <tr>
                                         <td>fk_samples_site_id</td>
                                         <td>
                                             <table border='0' cellspacing='0' cellpadding='0'>
@@ -440,6 +458,78 @@
                                         <td><span title='Cascade on delete:&#10;Deletion of parent deletes child'>Cascade on delete</span></td>
                                     </tr>
                                     <tr>
+                                        <td>fk_project_samples_project_id</td>
+                                        <td>
+                                            <table border='0' cellspacing='0' cellpadding='0'>
+                                                <tr>
+                                                    <td><a href='tables/project_samples.html'>project_samples</a><span>.project_id</span></td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                        <td>
+                                            <table border='0' cellspacing='0' cellpadding='0'>
+                                                <tr>
+                                                    <td><a href='tables/projects.html'>projects</a><span>.project_id</span></td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                        <td><span title='Cascade on delete:&#10;Deletion of parent deletes child'>Cascade on delete</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td>fk_projct_samples_sample_id</td>
+                                        <td>
+                                            <table border='0' cellspacing='0' cellpadding='0'>
+                                                <tr>
+                                                    <td><a href='tables/project_samples.html'>project_samples</a><span>.sample_id</span></td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                        <td>
+                                            <table border='0' cellspacing='0' cellpadding='0'>
+                                                <tr>
+                                                    <td><a href='tables/samples.html'>samples</a><span>.sample_id</span></td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                        <td><span title='Cascade on delete:&#10;Deletion of parent deletes child'>Cascade on delete</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td>fk_sample_predictors_sample_id</td>
+                                        <td>
+                                            <table border='0' cellspacing='0' cellpadding='0'>
+                                                <tr>
+                                                    <td><a href='tables/sample_predictors.html'>sample_predictors</a><span>.sample_id</span></td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                        <td>
+                                            <table border='0' cellspacing='0' cellpadding='0'>
+                                                <tr>
+                                                    <td><a href='tables/samples.html'>samples</a><span>.sample_id</span></td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                        <td><span title='Cascade on delete:&#10;Deletion of parent deletes child'>Cascade on delete</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td>fk_sample_predictors_predictor_id</td>
+                                        <td>
+                                            <table border='0' cellspacing='0' cellpadding='0'>
+                                                <tr>
+                                                    <td><a href='tables/sample_predictors.html'>sample_predictors</a><span>.predictor_id</span></td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                        <td>
+                                            <table border='0' cellspacing='0' cellpadding='0'>
+                                                <tr>
+                                                    <td><a href='tables/predictors.html'>predictors</a><span>.predictor_id</span></td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                        <td><span title='Cascade on delete:&#10;Deletion of parent deletes child'>Cascade on delete</span></td>
+                                    </tr>
+                                    <tr>
                                         <td>fk_boxes_customer_id</td>
                                         <td>
                                             <table border='0' cellspacing='0' cellpadding='0'>
@@ -476,25 +566,7 @@
                                         <td><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>Restrict delete</span></td>
                                     </tr>
                                     <tr>
-                                        <td>fk_boxes_project_id</td>
-                                        <td>
-                                            <table border='0' cellspacing='0' cellpadding='0'>
-                                                <tr>
-                                                    <td><a href='tables/boxes.html'>boxes</a><span>.project_id</span></td>
-                                                </tr>
-                                            </table>
-                                        </td>
-                                        <td>
-                                            <table border='0' cellspacing='0' cellpadding='0'>
-                                                <tr>
-                                                    <td><a href='tables/projects.html'>projects</a><span>.project_id</span></td>
-                                                </tr>
-                                            </table>
-                                        </td>
-                                        <td><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>Restrict delete</span></td>
-                                    </tr>
-                                    <tr>
-                                        <td>fk_boxes_creator_id</td>
+                                        <td>fk_boxes_submitter_id</td>
                                         <td>
                                             <table border='0' cellspacing='0' cellpadding='0'>
                                                 <tr>
@@ -506,6 +578,42 @@
                                             <table border='0' cellspacing='0' cellpadding='0'>
                                                 <tr>
                                                     <td><a href='tables/individuals.html'>individuals</a><span>.entity_id</span></td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                        <td><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>Restrict delete</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td>fk_sample_box_assets_box_id</td>
+                                        <td>
+                                            <table border='0' cellspacing='0' cellpadding='0'>
+                                                <tr>
+                                                    <td><a href='tables/box_assets.html'>box_assets</a><span>.box_id</span></td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                        <td>
+                                            <table border='0' cellspacing='0' cellpadding='0'>
+                                                <tr>
+                                                    <td><a href='tables/boxes.html'>boxes</a><span>.box_id</span></td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                        <td><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>Restrict delete</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td>fk_sample_box_assets_asset_id</td>
+                                        <td>
+                                            <table border='0' cellspacing='0' cellpadding='0'>
+                                                <tr>
+                                                    <td><a href='tables/box_assets.html'>box_assets</a><span>.asset_id</span></td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                        <td>
+                                            <table border='0' cellspacing='0' cellpadding='0'>
+                                                <tr>
+                                                    <td><a href='tables/assets.html'>assets</a><span>.asset_id</span></td>
                                                 </tr>
                                             </table>
                                         </td>
@@ -584,24 +692,6 @@
                                         <td><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>Restrict delete</span></td>
                                     </tr>
                                     <tr>
-                                        <td>fk_projects_project_type_id</td>
-                                        <td>
-                                            <table border='0' cellspacing='0' cellpadding='0'>
-                                                <tr>
-                                                    <td><a href='tables/projects.html'>projects</a><span>.project_type_id</span></td>
-                                                </tr>
-                                            </table>
-                                        </td>
-                                        <td>
-                                            <table border='0' cellspacing='0' cellpadding='0'>
-                                                <tr>
-                                                    <td><a href='tables/project_types.html'>project_types</a><span>.project_type_id</span></td>
-                                                </tr>
-                                            </table>
-                                        </td>
-                                        <td><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>Restrict delete</span></td>
-                                    </tr>
-                                    <tr>
                                         <td>fk_projects_contact_id</td>
                                         <td>
                                             <table border='0' cellspacing='0' cellpadding='0'>
@@ -618,6 +708,42 @@
                                             </table>
                                         </td>
                                         <td><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>Restrict delete</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td>fk_sample_project_models_model_id</td>
+                                        <td>
+                                            <table border='0' cellspacing='0' cellpadding='0'>
+                                                <tr>
+                                                    <td><a href='tables/project_models.html'>project_models</a><span>.model_id</span></td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                        <td>
+                                            <table border='0' cellspacing='0' cellpadding='0'>
+                                                <tr>
+                                                    <td><a href='tables/models.html'>models</a><span>.model_id</span></td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                        <td><span title='Cascade on delete:&#10;Deletion of parent deletes child'>Cascade on delete</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td>fk_sample_project_models_project_id</td>
+                                        <td>
+                                            <table border='0' cellspacing='0' cellpadding='0'>
+                                                <tr>
+                                                    <td><a href='tables/project_models.html'>project_models</a><span>.project_id</span></td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                        <td>
+                                            <table border='0' cellspacing='0' cellpadding='0'>
+                                                <tr>
+                                                    <td><a href='tables/projects.html'>projects</a><span>.project_id</span></td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                        <td><span title='Cascade on delete:&#10;Deletion of parent deletes child'>Cascade on delete</span></td>
                                     </tr>
                                     <tr>
                                         <td>fk_organisms_sample_id</td>
@@ -745,6 +871,114 @@
                                         </td>
                                         <td><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>Restrict delete</span></td>
                                     </tr>
+                                    <tr>
+                                        <td>fk_sample_model_results_model_id</td>
+                                        <td>
+                                            <table border='0' cellspacing='0' cellpadding='0'>
+                                                <tr>
+                                                    <td><a href='tables/model_results.html'>model_results</a><span>.model_id</span></td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                        <td>
+                                            <table border='0' cellspacing='0' cellpadding='0'>
+                                                <tr>
+                                                    <td><a href='tables/models.html'>models</a><span>.model_id</span></td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                        <td><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>Restrict delete</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td>fk_sample_model_results_sample_id</td>
+                                        <td>
+                                            <table border='0' cellspacing='0' cellpadding='0'>
+                                                <tr>
+                                                    <td><a href='tables/model_results.html'>model_results</a><span>.sample_id</span></td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                        <td>
+                                            <table border='0' cellspacing='0' cellpadding='0'>
+                                                <tr>
+                                                    <td><a href='tables/samples.html'>samples</a><span>.sample_id</span></td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                        <td><span title='Cascade on delete:&#10;Deletion of parent deletes child'>Cascade on delete</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td>fk_box_models_box_id</td>
+                                        <td>
+                                            <table border='0' cellspacing='0' cellpadding='0'>
+                                                <tr>
+                                                    <td><a href='tables/box_models.html'>box_models</a><span>.box_id</span></td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                        <td>
+                                            <table border='0' cellspacing='0' cellpadding='0'>
+                                                <tr>
+                                                    <td><a href='tables/boxes.html'>boxes</a><span>.box_id</span></td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                        <td><span title='Cascade on delete:&#10;Deletion of parent deletes child'>Cascade on delete</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td>fk_box_models_model_id</td>
+                                        <td>
+                                            <table border='0' cellspacing='0' cellpadding='0'>
+                                                <tr>
+                                                    <td><a href='tables/box_models.html'>box_models</a><span>.model_id</span></td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                        <td>
+                                            <table border='0' cellspacing='0' cellpadding='0'>
+                                                <tr>
+                                                    <td><a href='tables/models.html'>models</a><span>.model_id</span></td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                        <td><span title='Cascade on delete:&#10;Deletion of parent deletes child'>Cascade on delete</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td>fk_sample_fish_guts_fish_taxonomy_id</td>
+                                        <td>
+                                            <table border='0' cellspacing='0' cellpadding='0'>
+                                                <tr>
+                                                    <td><a href='tables/fish_guts.html'>fish_guts</a><span>.fish_taxonomy_id</span></td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                        <td>
+                                            <table border='0' cellspacing='0' cellpadding='0'>
+                                                <tr>
+                                                    <td><a href='tables/taxonomy.html'>taxonomy</a><span>.taxonomy_id</span></td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                        <td><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>Restrict delete</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td>fk_sample_fish_guts</td>
+                                        <td>
+                                            <table border='0' cellspacing='0' cellpadding='0'>
+                                                <tr>
+                                                    <td><a href='tables/fish_guts.html'>fish_guts</a><span>.sample_id</span></td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                        <td>
+                                            <table border='0' cellspacing='0' cellpadding='0'>
+                                                <tr>
+                                                    <td><a href='tables/samples.html'>samples</a><span>.sample_id</span></td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                        <td><span title='Cascade on delete:&#10;Deletion of parent deletes child'>Cascade on delete</span></td>
+                                    </tr>
                                 </tbody>
                             </table>
                         </div>
@@ -769,9 +1003,54 @@
                                 </thead>
                                 <tbody>
                                     <tr>
+                                        <td><a href='tables/fish_gut_weights.html'>fish_gut_weights</a></td>
+                                        <td>ck_sample_fish_gut_weights_count</td>
+                                        <td>((count &gt; 0))</td>
+                                    </tr>
+                                    <tr>
+                                        <td><a href='tables/fish_gut_weights.html'>fish_gut_weights</a></td>
+                                        <td>ck_sample_fish_gut_weights_weight</td>
+                                        <td>((weight &gt; (0)::double precision))</td>
+                                    </tr>
+                                    <tr>
+                                        <td><a href='tables/mass_methods.html'>mass_methods</a></td>
+                                        <td>ck_mass_method_name</td>
+                                        <td>((length((mass_method_name)::text) &gt; 0))</td>
+                                    </tr>
+                                    <tr>
+                                        <td><a href='tables/mass_types.html'>mass_types</a></td>
+                                        <td>ck_abbreviation</td>
+                                        <td>((length(abbreviation) &gt; 0))</td>
+                                    </tr>
+                                    <tr>
+                                        <td><a href='tables/mass_types.html'>mass_types</a></td>
+                                        <td>ck_mass_type_name</td>
+                                        <td>((length((mass_type_name)::text) &gt; 0))</td>
+                                    </tr>
+                                    <tr>
                                         <td><a href='tables/box_states.html'>box_states</a></td>
-                                        <td>chk_box_states</td>
+                                        <td>ck_box_state_name</td>
+                                        <td>((length((box_state_name)::text) &gt; 0))</td>
+                                    </tr>
+                                    <tr>
+                                        <td><a href='tables/box_states.html'>box_states</a></td>
+                                        <td>ck_box_states</td>
                                         <td>((box_state_order &gt; 0))</td>
+                                    </tr>
+                                    <tr>
+                                        <td><a href='tables/asset_types.html'>asset_types</a></td>
+                                        <td>ck_asset_name</td>
+                                        <td>((length((asset_name)::text) &gt; 0))</td>
+                                    </tr>
+                                    <tr>
+                                        <td><a href='tables/note_types.html'>note_types</a></td>
+                                        <td>ck_abbreviation</td>
+                                        <td>((length(abbreviation) &gt; 0))</td>
+                                    </tr>
+                                    <tr>
+                                        <td><a href='tables/note_types.html'>note_types</a></td>
+                                        <td>ck_note_name</td>
+                                        <td>((length((note_name)::text) &gt; 0))</td>
                                     </tr>
                                     <tr>
                                         <td><a href='tables/samples.html'>samples</a></td>
@@ -791,12 +1070,22 @@
                                     <tr>
                                         <td><a href='tables/samples.html'>samples</a></td>
                                         <td>ck_samples_field_split</td>
-                                        <td>((field_split &gt;= (0)::double precision))</td>
+                                        <td>(((field_split &gt;= (0)::double precision) AND (field_split &lt;= (1.0)::double precision)))</td>
                                     </tr>
                                     <tr>
                                         <td><a href='tables/samples.html'>samples</a></td>
                                         <td>ck_samples_lab_split</td>
-                                        <td>((lab_split &gt;= (0)::double precision))</td>
+                                        <td>(((lab_split &gt;= (0)::double precision) AND (lab_split &lt;= (1.0)::double precision)))</td>
+                                    </tr>
+                                    <tr>
+                                        <td><a href='tables/sample_predictors.html'>sample_predictors</a></td>
+                                        <td>ck_predictor_value</td>
+                                        <td>((length((predictor_value)::text) &gt; 0))</td>
+                                    </tr>
+                                    <tr>
+                                        <td><a href='tables/sample_methods.html'>sample_methods</a></td>
+                                        <td>ck_sample_method_name</td>
+                                        <td>((length((sample_method_name)::text) &gt; 0))</td>
                                     </tr>
                                     <tr>
                                         <td><a href='tables/plankton.html'>plankton</a></td>
@@ -824,6 +1113,11 @@
                                         <td>((volume &gt; (0)::double precision))</td>
                                     </tr>
                                     <tr>
+                                        <td><a href='tables/projects.html'>projects</a></td>
+                                        <td>ck_project_name</td>
+                                        <td>((length((project_name)::text) &gt; 0))</td>
+                                    </tr>
+                                    <tr>
                                         <td><a href='tables/drift.html'>drift</a></td>
                                         <td>ck_bug_drift_net_area</td>
                                         <td>((net_area &gt; (0)::double precision))</td>
@@ -840,13 +1134,23 @@
                                     </tr>
                                     <tr>
                                         <td><a href='tables/drift.html'>drift</a></td>
-                                        <td>ck_bug_drift_net_velo</td>
-                                        <td>((net_velo &gt;= (0)::double precision))</td>
+                                        <td>ck_bug_drift_net_velocity</td>
+                                        <td>((net_velocity &gt;= (0)::double precision))</td>
                                     </tr>
                                     <tr>
                                         <td><a href='tables/drift.html'>drift</a></td>
                                         <td>ck_bug_drift_stream_depth</td>
                                         <td>((stream_depth &gt; (0)::double precision))</td>
+                                    </tr>
+                                    <tr>
+                                        <td><a href='tables/organisms.html'>organisms</a></td>
+                                        <td>ck_organisms_bug_size</td>
+                                        <td>((bug_size &gt; (0)::double precision))</td>
+                                    </tr>
+                                    <tr>
+                                        <td><a href='tables/sample_types.html'>sample_types</a></td>
+                                        <td>ck_sample_type_name</td>
+                                        <td>((length((sample_type_name)::text) &gt; 0))</td>
                                     </tr>
                                     <tr>
                                         <td><a href='tables/fish.html'>fish</a></td>
@@ -862,6 +1166,21 @@
                                         <td><a href='tables/sorter_time.html'>sorter_time</a></td>
                                         <td>ck_sorter_sorter_count</td>
                                         <td>((sorter_count &gt;= 0))</td>
+                                    </tr>
+                                    <tr>
+                                        <td><a href='tables/fish_guts.html'>fish_guts</a></td>
+                                        <td>ck_sample_fish_guts_inorganic_weight</td>
+                                        <td>((inorganic_weight &gt;= (0)::double precision))</td>
+                                    </tr>
+                                    <tr>
+                                        <td><a href='tables/fish_guts.html'>fish_guts</a></td>
+                                        <td>ck_sample_fish_guts_organic_weight</td>
+                                        <td>((organic_weight &gt;= (0)::double precision))</td>
+                                    </tr>
+                                    <tr>
+                                        <td><a href='tables/fish_guts.html'>fish_guts</a></td>
+                                        <td>ck_sample_fish_guts_other_weight</td>
+                                        <td>((other_weight &gt;= (0)::double precision))</td>
                                     </tr>
                                 </tbody>
                             </table>

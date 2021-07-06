@@ -73,7 +73,7 @@
             <div class="content-wrapper">
                 <!-- Content Header (Page header) -->
                 <section class="content-header">
-                    <h1>synonyms</h1><p><span id="recordNumber">0</span> rows</p><br />
+                    <h1>synonyms</h1><p><span id="recordNumber">8020</span> rows</p><br />
                 </section>
                 <!-- Main content -->
                 <section class="content">
@@ -157,6 +157,40 @@
                                     </td>
                                     <td></td>
                                 </tr>
+                                <tr>
+                                    <td><span id="created_date">created_date</span></td>
+                                    <td>timestamptz</td>
+                                    <td>35,6</td>
+                                    <td title=''></td>
+                                    <td title=''></td>
+                                    <td>now()</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td><span id="updated_date">updated_date</span></td>
+                                    <td>timestamptz</td>
+                                    <td>35,6</td>
+                                    <td title=''></td>
+                                    <td title=''></td>
+                                    <td>now()</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td></td>
+                                </tr>
                                 </tbody>
                             </table>
                         </div>
@@ -199,6 +233,32 @@
                     </div>
                     <div class="box box-primary">
                         <div class="box-header with-border">
+                            <i class="fa fa-sitemap"></i>
+                            <h3 class="box-title">Check Constraints</h3>
+                            <div class="box-tools pull-right">
+                                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                                <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
+                            </div>
+                        </div>
+                        <div class="box-body">
+                            <table id="check_table" class="table table-bordered table-striped dataTable" role="grid">
+                                <thead align='left'>
+                                <tr>
+                                    <th>Constraint Name</th>
+                                    <th>Constraint</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr>
+                                    <td>ck_synonym</td>
+                                    <td>((length((synonym)::text) &gt; 0))</td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="box box-primary">
+                        <div class="box-header with-border">
                             <i class="fa fa-code-fork"></i>
                             <h3 id="Relationships" class="box-title">Relationships</h3>
                             <div class="box-tools pull-right">
@@ -212,27 +272,56 @@
                                 <ul class="nav nav-tabs pull-left ui-sortable-handle">
                                     <li class="active"><a href="#oneDegreeImg-chart" data-toggle="tab" aria-expanded="true">One</a></li>
                                     <li class=""><a href="#twodegreesDegreeImg-chart" data-toggle="tab" aria-expanded="true">Two degrees</a></li>
+                                    <li class=""><a href="#oneimpliedDegreeImg-chart" data-toggle="tab" aria-expanded="true">One implied</a></li>
+                                    <li class=""><a href="#twoimpliedDegreeImg-chart" data-toggle="tab" aria-expanded="true">Two implied</a></li>
                                 </ul>
                                 <div class="tab-content no-padding">
                                     <div class="chart tab-pane active" id="oneDegreeImg-chart" style="position: relative; overflow-x:auto;">
                                         <map id="oneDegreeRelationshipsDiagram" name="oneDegreeRelationshipsDiagram">
-<area shape="rect" id="node1" href="synonyms.html" target="_top" title="synonyms" alt="" coords="219,5,461,163">
-<area shape="rect" id="node2" href="taxonomy.html" target="_top" title="taxonomy" alt="" coords="5,37,175,184">
+<area shape="rect" id="node1" href="synonyms.html" target="_top" title="synonyms" alt="" coords="219,5,499,221">
+<area shape="rect" id="node2" href="taxonomy.html" target="_top" title="taxonomy" alt="" coords="5,37,175,213">
 </map>
                                         <a name='diagram'><img id="oneDegreeImg" src="../diagrams/tables/synonyms.1degree.png" usemap="#oneDegreeRelationshipsDiagram" class="diagram" border="0" align="left"></a>
                                     </div>
                                     <div class="chart tab-pane " id="twodegreesDegreeImg-chart" style="position: relative; overflow-x:auto;">
                                         <map id="twoDegreesRelationshipsDiagram" name="twoDegreesRelationshipsDiagram">
-<area shape="rect" id="node1" href="../sample/tables/fish.html" target="_top" title="sample.fish" alt="" coords="461,5,622,93">
-<area shape="rect" id="node2" href="taxonomy.html" target="_top" title="taxonomy" alt="" coords="207,353,376,500">
-<area shape="rect" id="node8" href="taxa_levels.html" target="_top" title="taxa_levels" alt="" coords="5,385,163,473">
-<area shape="rect" id="node3" href="../sample/tables/organisms.html" target="_top" title="sample.organisms" alt="" coords="437,111,646,199">
-<area shape="rect" id="node4" href="external_ids.html" target="_top" title="external_ids" alt="" coords="459,216,624,304">
-<area shape="rect" id="node5" href="synonyms.html" target="_top" title="synonyms" alt="" coords="420,321,663,479">
-<area shape="rect" id="node6" href="taxa_attributes.html" target="_top" title="taxa_attributes" alt="" coords="449,496,634,584">
-<area shape="rect" id="node7" href="taxa_translations.html" target="_top" title="taxa_translations" alt="" coords="441,601,642,689">
+<area shape="rect" id="node1" href="../metric/tables/metric_taxa.html" target="_top" title="metric.metric_taxa" alt="" coords="455,5,665,93">
+<area shape="rect" id="node2" href="taxonomy.html" target="_top" title="taxonomy" alt="" coords="207,424,376,600">
+<area shape="rect" id="node10" href="taxa_levels.html" target="_top" title="taxa_levels" alt="" coords="5,456,163,544">
+<area shape="rect" id="node3" href="../sample/tables/fish.html" target="_top" title="sample.fish" alt="" coords="479,111,641,199">
+<area shape="rect" id="node4" href="../sample/tables/fish_gut_weights.html" target="_top" title="sample.fish_gut_weights" alt="" coords="433,216,687,304">
+<area shape="rect" id="node5" href="../sample/tables/fish_guts.html" target="_top" title="sample.fish_guts" alt="" coords="460,321,660,409">
+<area shape="rect" id="node6" href="../sample/tables/organisms.html" target="_top" title="sample.organisms" alt="" coords="455,427,665,515">
+<area shape="rect" id="node7" href="external_ids.html" target="_top" title="external_ids" alt="" coords="477,532,643,620">
+<area shape="rect" id="node8" href="synonyms.html" target="_top" title="synonyms" alt="" coords="420,637,700,853">
+<area shape="rect" id="node9" href="taxa_attributes.html" target="_top" title="taxa_attributes" alt="" coords="467,871,653,959">
+<area shape="rect" id="node11" href="translation_taxa.html" target="_top" title="translation_taxa" alt="" coords="463,976,657,1064">
 </map>
                                         <a name='diagram'><img id="twodegreesDegreeImg" src="../diagrams/tables/synonyms.2degrees.png" usemap="#twoDegreesRelationshipsDiagram" class="diagram" border="0" align="left"></a>
+                                    </div>
+                                    <div class="chart tab-pane " id="oneimpliedDegreeImg-chart" style="position: relative; overflow-x:auto;">
+                                        <map id="oneDegreeRelationshipsDiagramImplied" name="oneDegreeRelationshipsDiagramImplied">
+<area shape="rect" id="node1" href="synonyms.html" target="_top" title="synonyms" alt="" coords="219,5,499,221">
+<area shape="rect" id="node2" href="taxonomy.html" target="_top" title="taxonomy" alt="" coords="5,37,175,213">
+</map>
+                                        <a name='diagram'><img id="oneimpliedDegreeImg" src="../diagrams/tables/synonyms.implied1degrees.png" usemap="#oneDegreeRelationshipsDiagramImplied" class="diagram" border="0" align="left"></a>
+                                    </div>
+                                    <div class="chart tab-pane " id="twoimpliedDegreeImg-chart" style="position: relative; overflow-x:auto;">
+                                        <map id="twoDegreesRelationshipsDiagramImplied" name="twoDegreesRelationshipsDiagramImplied">
+<area shape="rect" id="node1" href="../metric/tables/metric_taxa.html" target="_top" title="metric.metric_taxa" alt="" coords="455,87,665,175">
+<area shape="rect" id="node2" href="taxonomy.html" target="_top" title="taxonomy" alt="" coords="207,400,376,576">
+<area shape="rect" id="node10" href="taxa_levels.html" target="_top" title="taxa_levels" alt="" coords="5,300,163,388">
+<area shape="rect" id="node3" href="../sample/tables/fish.html" target="_top" title="sample.fish" alt="" coords="479,192,641,280">
+<area shape="rect" id="node4" href="../sample/tables/fish_gut_weights.html" target="_top" title="sample.fish_gut_weights" alt="" coords="433,297,687,385">
+<area shape="rect" id="node5" href="../sample/tables/fish_guts.html" target="_top" title="sample.fish_guts" alt="" coords="460,403,660,491">
+<area shape="rect" id="node6" href="../sample/tables/organisms.html" target="_top" title="sample.organisms" alt="" coords="455,508,665,596">
+<area shape="rect" id="node7" href="external_ids.html" target="_top" title="external_ids" alt="" coords="477,613,643,701">
+<area shape="rect" id="node8" href="synonyms.html" target="_top" title="synonyms" alt="" coords="420,719,700,935">
+<area shape="rect" id="node9" href="taxa_attributes.html" target="_top" title="taxa_attributes" alt="" coords="467,952,653,1040">
+<area shape="rect" id="node11" href="translation_taxa.html" target="_top" title="translation_taxa" alt="" coords="463,1057,657,1145">
+<area shape="rect" id="node12" href="vw_taxonomy_crosstab.html" target="_top" title="vw_taxonomy_crosstab" alt="" coords="439,5,681,69">
+</map>
+                                        <a name='diagram'><img id="twoimpliedDegreeImg" src="../diagrams/tables/synonyms.implied2degrees.png" usemap="#twoDegreesRelationshipsDiagramImplied" class="diagram" border="0" align="left"></a>
                                     </div>
                                 </div>
                             </div>

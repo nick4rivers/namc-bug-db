@@ -250,6 +250,32 @@
                     </div>
                     <div class="box box-primary">
                         <div class="box-header with-border">
+                            <i class="fa fa-sitemap"></i>
+                            <h3 class="box-title">Check Constraints</h3>
+                            <div class="box-tools pull-right">
+                                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                                <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
+                            </div>
+                        </div>
+                        <div class="box-body">
+                            <table id="check_table" class="table table-bordered table-striped dataTable" role="grid">
+                                <thead align='left'>
+                                <tr>
+                                    <th>Constraint Name</th>
+                                    <th>Constraint</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr>
+                                    <td>ck_asset_name</td>
+                                    <td>((length((asset_name)::text) &gt; 0))</td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="box box-primary">
+                        <div class="box-header with-border">
                             <i class="fa fa-code-fork"></i>
                             <h3 id="Relationships" class="box-title">Relationships</h3>
                             <div class="box-tools pull-right">
@@ -274,10 +300,10 @@
                                     </div>
                                     <div class="chart tab-pane " id="twodegreesDegreeImg-chart" style="position: relative; overflow-x:auto;">
                                         <map id="twoDegreesRelationshipsDiagram" name="twoDegreesRelationshipsDiagram">
-<area shape="rect" id="node1" href="../public/tables/sample_box_assets.html" target="_top" title="public.sample_box_assets" alt="" coords="529,5,795,93">
-<area shape="rect" id="node2" href="assets.html" target="_top" title="assets" alt="" coords="331,56,485,232">
-<area shape="rect" id="node3" href="asset_types.html" target="_top" title="asset_types" alt="" coords="5,83,287,328">
-<area shape="rect" id="node4" href="sample_assets.html" target="_top" title="sample_assets" alt="" coords="570,111,754,199">
+<area shape="rect" id="node1" href="assets.html" target="_top" title="assets" alt="" coords="331,56,485,232">
+<area shape="rect" id="node2" href="asset_types.html" target="_top" title="asset_types" alt="" coords="5,83,287,328">
+<area shape="rect" id="node3" href="box_assets.html" target="_top" title="box_assets" alt="" coords="541,5,701,93">
+<area shape="rect" id="node4" href="sample_assets.html" target="_top" title="sample_assets" alt="" coords="529,111,713,199">
 </map>
                                         <a name='diagram'><img id="twodegreesDegreeImg" src="../diagrams/tables/asset_types.2degrees.png" usemap="#twoDegreesRelationshipsDiagram" class="diagram" border="0" align="left"></a>
                                     </div>

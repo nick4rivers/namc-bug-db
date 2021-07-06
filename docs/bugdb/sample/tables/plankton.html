@@ -73,7 +73,7 @@
             <div class="content-wrapper">
                 <!-- Content Header (Page header) -->
                 <section class="content-header">
-                    <h1>plankton</h1><p><span id="recordNumber">0</span> rows</p><br />
+                    <h1>plankton</h1><p><span id="recordNumber">842</span> rows</p><br />
                 </section>
                 <!-- Main content -->
                 <section class="content">
@@ -192,7 +192,7 @@
                                     <td></td>
                                 </tr>
                                 <tr>
-                                    <td><span id="all_quot">all_quot</span></td>
+                                    <td><span id="aliquot">aliquot</span></td>
                                     <td>float4</td>
                                     <td>8,8</td>
                                     <td title='nullable'>√</td>
@@ -228,23 +228,6 @@
                                 <tr>
                                     <td><span id="tow_type">tow_type</span></td>
                                     <td>tow_types</td>
-                                    <td>2147483647</td>
-                                    <td title='nullable'>√</td>
-                                    <td title=''></td>
-                                    <td>null</td>
-                                    <td>
-                                        <table border='0' cellspacing='0' cellpadding='0'>
-                                        </table>
-                                    </td>
-                                    <td>
-                                        <table border='0' cellspacing='0' cellpadding='0'>
-                                        </table>
-                                    </td>
-                                    <td></td>
-                                </tr>
-                                <tr>
-                                    <td><span id="notes">notes</span></td>
-                                    <td>text</td>
                                     <td>2147483647</td>
                                     <td title='nullable'>√</td>
                                     <td title=''></td>
@@ -329,6 +312,14 @@
                                 </thead>
                                 <tbody>
                                 <tr>
+                                    <td>ck_plankton_size_interval</td>
+                                    <td>((size_interval &gt; (0)::double precision))</td>
+                                </tr>
+                                <tr>
+                                    <td>ck_plankton_sub_sample_count</td>
+                                    <td>((sub_sample_count &gt;= 0))</td>
+                                </tr>
+                                <tr>
                                     <td>ck_plankton_volume</td>
                                     <td>((volume &gt; (0)::double precision))</td>
                                 </tr>
@@ -337,16 +328,8 @@
                                     <td>((tow_length &gt; (0)::double precision))</td>
                                 </tr>
                                 <tr>
-                                    <td>ck_plankton_size_interval</td>
-                                    <td>((size_interval &gt; (0)::double precision))</td>
-                                </tr>
-                                <tr>
                                     <td>ck_plankton_diameter</td>
                                     <td>((diameter &gt; (0)::double precision))</td>
-                                </tr>
-                                <tr>
-                                    <td>ck_plankton_sub_sample_count</td>
-                                    <td>((sub_sample_count &gt;= 0))</td>
                                 </tr>
                                 </tbody>
                             </table>
@@ -371,29 +354,32 @@
                                 <div class="tab-content no-padding">
                                     <div class="chart tab-pane active" id="oneDegreeImg-chart" style="position: relative; overflow-x:auto;">
                                         <map id="oneDegreeRelationshipsDiagram" name="oneDegreeRelationshipsDiagram">
-<area shape="rect" id="node1" href="plankton.html" target="_top" title="plankton" alt="" coords="204,5,564,368">
-<area shape="rect" id="node2" href="samples.html" target="_top" title="samples" alt="" coords="5,8,160,272">
+<area shape="rect" id="node1" href="plankton.html" target="_top" title="plankton" alt="" coords="269,5,629,339">
+<area shape="rect" id="node2" href="samples.html" target="_top" title="samples" alt="" coords="5,8,225,331">
 </map>
                                         <a name='diagram'><img id="oneDegreeImg" src="../diagrams/tables/plankton.1degree.png" usemap="#oneDegreeRelationshipsDiagram" class="diagram" border="0" align="left"></a>
                                     </div>
                                     <div class="chart tab-pane " id="twodegreesDegreeImg-chart" style="position: relative; overflow-x:auto;">
                                         <map id="twoDegreesRelationshipsDiagram" name="twoDegreesRelationshipsDiagram">
-<area shape="rect" id="node1" href="../metric/tables/metrics.html" target="_top" title="metric.metrics" alt="" coords="537,5,719,93">
-<area shape="rect" id="node2" href="samples.html" target="_top" title="samples" alt="" coords="249,617,404,881">
-<area shape="rect" id="node10" href="boxes.html" target="_top" title="boxes" alt="" coords="39,497,171,585">
-<area shape="rect" id="node11" href="../geo/tables/habitats.html" target="_top" title="geo.habitats" alt="" coords="22,919,189,1007">
-<area shape="rect" id="node12" href="sample_methods.html" target="_top" title="sample_methods" alt="" coords="5,813,205,901">
-<area shape="rect" id="node13" href="../geo/tables/sites.html" target="_top" title="geo.sites" alt="" coords="33,603,177,691">
-<area shape="rect" id="node14" href="sample_types.html" target="_top" title="sample_types" alt="" coords="17,708,194,796">
-<area shape="rect" id="node3" href="fish.html" target="_top" title="fish" alt="" coords="568,111,688,199">
-<area shape="rect" id="node4" href="mass.html" target="_top" title="mass" alt="" coords="568,216,688,304">
-<area shape="rect" id="node5" href="organisms.html" target="_top" title="organisms" alt="" coords="551,321,705,409">
-<area shape="rect" id="node6" href="plankton.html" target="_top" title="plankton" alt="" coords="448,427,808,789">
-<area shape="rect" id="node7" href="project_samples.html" target="_top" title="project_samples" alt="" coords="530,807,726,895">
-<area shape="rect" id="node8" href="sample_assets.html" target="_top" title="sample_assets" alt="" coords="536,912,720,1000">
-<area shape="rect" id="node9" href="sample_labs.html" target="_top" title="sample_labs" alt="" coords="544,1017,712,1105">
-<area shape="rect" id="node15" href="sorter_time.html" target="_top" title="sorter_time" alt="" coords="547,1123,709,1211">
-<area shape="rect" id="node16" href="taxa_time.html" target="_top" title="taxa_time" alt="" coords="554,1228,702,1316">
+<area shape="rect" id="node1" href="../metric/tables/rarefactions.html" target="_top" title="metric.rarefactions" alt="" coords="587,5,800,93">
+<area shape="rect" id="node2" href="samples.html" target="_top" title="samples" alt="" coords="249,640,469,963">
+<area shape="rect" id="node13" href="boxes.html" target="_top" title="boxes" alt="" coords="25,579,185,667">
+<area shape="rect" id="node14" href="../geo/tables/habitats.html" target="_top" title="geo.habitats" alt="" coords="22,1000,189,1088">
+<area shape="rect" id="node15" href="sample_methods.html" target="_top" title="sample_methods" alt="" coords="5,895,205,983">
+<area shape="rect" id="node16" href="../geo/tables/sites.html" target="_top" title="geo.sites" alt="" coords="33,684,177,772">
+<area shape="rect" id="node17" href="sample_types.html" target="_top" title="sample_types" alt="" coords="17,789,194,877">
+<area shape="rect" id="node3" href="fish.html" target="_top" title="fish" alt="" coords="633,111,753,199">
+<area shape="rect" id="node4" href="fish_guts.html" target="_top" title="fish_guts" alt="" coords="621,216,766,304">
+<area shape="rect" id="node5" href="mass.html" target="_top" title="mass" alt="" coords="619,321,767,409">
+<area shape="rect" id="node6" href="model_results.html" target="_top" title="model_results" alt="" coords="603,427,783,515">
+<area shape="rect" id="node7" href="organisms.html" target="_top" title="organisms" alt="" coords="599,532,787,620">
+<area shape="rect" id="node8" href="plankton.html" target="_top" title="plankton" alt="" coords="513,637,873,971">
+<area shape="rect" id="node9" href="project_samples.html" target="_top" title="project_samples" alt="" coords="595,988,791,1076">
+<area shape="rect" id="node10" href="sample_assets.html" target="_top" title="sample_assets" alt="" coords="601,1093,785,1181">
+<area shape="rect" id="node11" href="sample_labs.html" target="_top" title="sample_labs" alt="" coords="609,1199,777,1287">
+<area shape="rect" id="node12" href="sample_predictors.html" target="_top" title="sample_predictors" alt="" coords="588,1304,799,1392">
+<area shape="rect" id="node18" href="sorter_time.html" target="_top" title="sorter_time" alt="" coords="613,1409,774,1497">
+<area shape="rect" id="node19" href="taxa_time.html" target="_top" title="taxa_time" alt="" coords="619,1515,767,1603">
 </map>
                                         <a name='diagram'><img id="twodegreesDegreeImg" src="../diagrams/tables/plankton.2degrees.png" usemap="#twoDegreesRelationshipsDiagram" class="diagram" border="0" align="left"></a>
                                     </div>

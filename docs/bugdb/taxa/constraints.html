@@ -80,7 +80,7 @@
                     <div class="box box-primary">
                         <div class="box-header with-border">
                             <i class="ion ion-key"></i>
-                            <h3 class="box-title">12 Foreign Key Constraints</h3>
+                            <h3 class="box-title">11 Foreign Key Constraints</h3>
                             <div class="box-tools pull-right">
                                 <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
                                 <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
@@ -139,6 +139,42 @@
                                             <table border='0' cellspacing='0' cellpadding='0'>
                                                 <tr>
                                                     <td><a href='tables/external_ids.html'>external_ids</a><span>.taxonomy_id</span></td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                        <td>
+                                            <table border='0' cellspacing='0' cellpadding='0'>
+                                                <tr>
+                                                    <td><a href='tables/taxonomy.html'>taxonomy</a><span>.taxonomy_id</span></td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                        <td><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>Restrict delete</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td>fk_translation_taxa_translation_id</td>
+                                        <td>
+                                            <table border='0' cellspacing='0' cellpadding='0'>
+                                                <tr>
+                                                    <td><a href='tables/translation_taxa.html'>translation_taxa</a><span>.translation_id</span></td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                        <td>
+                                            <table border='0' cellspacing='0' cellpadding='0'>
+                                                <tr>
+                                                    <td><a href='tables/translations.html'>translations</a><span>.translation_id</span></td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                        <td><span title='Cascade on delete:&#10;Deletion of parent deletes child'>Cascade on delete</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td>fk_translation_taxa_taxonomy_id</td>
+                                        <td>
+                                            <table border='0' cellspacing='0' cellpadding='0'>
+                                                <tr>
+                                                    <td><a href='tables/translation_taxa.html'>translation_taxa</a><span>.taxonomy_id</span></td>
                                                 </tr>
                                             </table>
                                         </td>
@@ -242,60 +278,6 @@
                                         <td><span title='Cascade on delete:&#10;Deletion of parent deletes child'>Cascade on delete</span></td>
                                     </tr>
                                     <tr>
-                                        <td>fk_taxa_translations_translation_id</td>
-                                        <td>
-                                            <table border='0' cellspacing='0' cellpadding='0'>
-                                                <tr>
-                                                    <td><a href='tables/taxa_translations.html'>taxa_translations</a><span>.translation_id</span></td>
-                                                </tr>
-                                            </table>
-                                        </td>
-                                        <td>
-                                            <table border='0' cellspacing='0' cellpadding='0'>
-                                                <tr>
-                                                    <td><a href='tables/translations.html'>translations</a><span>.translation_id</span></td>
-                                                </tr>
-                                            </table>
-                                        </td>
-                                        <td><span title='Cascade on delete:&#10;Deletion of parent deletes child'>Cascade on delete</span></td>
-                                    </tr>
-                                    <tr>
-                                        <td>fk_taxa_translations_taxonomy_id</td>
-                                        <td>
-                                            <table border='0' cellspacing='0' cellpadding='0'>
-                                                <tr>
-                                                    <td><a href='tables/taxa_translations.html'>taxa_translations</a><span>.taxonomy_id</span></td>
-                                                </tr>
-                                            </table>
-                                        </td>
-                                        <td>
-                                            <table border='0' cellspacing='0' cellpadding='0'>
-                                                <tr>
-                                                    <td><a href='tables/taxonomy.html'>taxonomy</a><span>.taxonomy_id</span></td>
-                                                </tr>
-                                            </table>
-                                        </td>
-                                        <td><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>Restrict delete</span></td>
-                                    </tr>
-                                    <tr>
-                                        <td>fk_taxa_translation_translation_taxonomy_id</td>
-                                        <td>
-                                            <table border='0' cellspacing='0' cellpadding='0'>
-                                                <tr>
-                                                    <td><a href='tables/taxa_translations.html'>taxa_translations</a><span>.translation_taxonomy_id</span></td>
-                                                </tr>
-                                            </table>
-                                        </td>
-                                        <td>
-                                            <table border='0' cellspacing='0' cellpadding='0'>
-                                                <tr>
-                                                    <td><a href='tables/taxonomy.html'>taxonomy</a><span>.taxonomy_id</span></td>
-                                                </tr>
-                                            </table>
-                                        </td>
-                                        <td><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>Restrict delete</span></td>
-                                    </tr>
-                                    <tr>
                                         <td>fk_taxa_levels_parent_level_id</td>
                                         <td>
                                             <table border='0' cellspacing='0' cellpadding='0'>
@@ -336,6 +318,71 @@
                                     </tr>
                                 </thead>
                                 <tbody>
+                                    <tr>
+                                        <td><a href='tables/attributes.html'>attributes</a></td>
+                                        <td>ck_attribute_name</td>
+                                        <td>((length((attribute_name)::text) &gt; 0))</td>
+                                    </tr>
+                                    <tr>
+                                        <td><a href='tables/translations.html'>translations</a></td>
+                                        <td>ck_translation_name</td>
+                                        <td>((length((translation_name)::text) &gt; 0))</td>
+                                    </tr>
+                                    <tr>
+                                        <td><a href='tables/taxonomy.html'>taxonomy</a></td>
+                                        <td>ck_parent_id</td>
+                                        <td>(((parent_id IS NULL) OR (parent_id &lt;&gt; taxonomy_id)))</td>
+                                    </tr>
+                                    <tr>
+                                        <td><a href='tables/taxonomy.html'>taxonomy</a></td>
+                                        <td>ck_scientific_name</td>
+                                        <td>((length((scientific_name)::text) &gt; 0))</td>
+                                    </tr>
+                                    <tr>
+                                        <td><a href='tables/external_ids.html'>external_ids</a></td>
+                                        <td>ck_external_source_id</td>
+                                        <td>((length((external_source_id)::text) &gt; 0))</td>
+                                    </tr>
+                                    <tr>
+                                        <td><a href='tables/translation_taxa.html'>translation_taxa</a></td>
+                                        <td>ck_translation_taxonomy_name</td>
+                                        <td>(((alias IS NULL) OR (length((alias)::text) &gt; 0)))</td>
+                                    </tr>
+                                    <tr>
+                                        <td><a href='tables/life_stages.html'>life_stages</a></td>
+                                        <td>ck_life_stage_abbreviation</td>
+                                        <td>((length(abbreviation) &gt; 0))</td>
+                                    </tr>
+                                    <tr>
+                                        <td><a href='tables/life_stages.html'>life_stages</a></td>
+                                        <td>ck_life_stage_name</td>
+                                        <td>((length((life_stage_name)::text) &gt; 0))</td>
+                                    </tr>
+                                    <tr>
+                                        <td><a href='tables/synonyms.html'>synonyms</a></td>
+                                        <td>ck_synonym</td>
+                                        <td>((length((synonym)::text) &gt; 0))</td>
+                                    </tr>
+                                    <tr>
+                                        <td><a href='tables/external_sources.html'>external_sources</a></td>
+                                        <td>ck_abbreviation</td>
+                                        <td>((length((abbreviation)::text) &gt; 0))</td>
+                                    </tr>
+                                    <tr>
+                                        <td><a href='tables/external_sources.html'>external_sources</a></td>
+                                        <td>ck_source_name</td>
+                                        <td>((length((source_name)::text) &gt; 0))</td>
+                                    </tr>
+                                    <tr>
+                                        <td><a href='tables/references.html'>references</a></td>
+                                        <td>ck_authors</td>
+                                        <td>((length((authors)::text) &gt; 0))</td>
+                                    </tr>
+                                    <tr>
+                                        <td><a href='tables/taxa_levels.html'>taxa_levels</a></td>
+                                        <td>ck_level_name</td>
+                                        <td>((length((level_name)::text) &gt; 0))</td>
+                                    </tr>
                                 </tbody>
                             </table>
                         </div>

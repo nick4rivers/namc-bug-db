@@ -73,7 +73,7 @@
             <div class="content-wrapper">
                 <!-- Content Header (Page header) -->
                 <section class="content-header">
-                    <h1>sites</h1><p><span id="recordNumber">0</span> rows</p><br />
+                    <h1>sites</h1><p><span id="recordNumber">30889</span> rows</p><br />
                 </section>
                 <!-- Main content -->
                 <section class="content">
@@ -111,6 +111,18 @@
                                     <td>null</td>
                                     <td>
                                         <table border='0' cellspacing='0' cellpadding='0'>
+                                            <tr>
+                                                <td title="model_reference_sites.site_id references sites.site_id via fk_model_reference_sites_site_id"><a href='model_reference_sites.html'>model_reference_sites</a><span class='relatedKey'>.site_id</span></td>
+                                                <td class="constraint detail">fk_model_reference_sites_site_id<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td title="site_catchment_history.site_id references sites.site_id via fk_site_catchment_history_site_id"><a href='site_catchment_history.html'>site_catchment_history</a><span class='relatedKey'>.site_id</span></td>
+                                                <td class="constraint detail">fk_site_catchment_history_site_id<span title='Cascade on delete:&#10;Deletion of parent deletes child'>C</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td title="site_location_history.site_id references sites.site_id via fk_site_location_history_site_id"><a href='site_location_history.html'>site_location_history</a><span class='relatedKey'>.site_id</span></td>
+                                                <td class="constraint detail">fk_site_location_history_site_id<span title='Cascade on delete:&#10;Deletion of parent deletes child'>C</span></td>
+                                            </tr>
                                             <tr>
                                                 <td title="site_predictors.site_id references sites.site_id via fk_site_site_id"><a href='site_predictors.html'>site_predictors</a><span class='relatedKey'>.site_id</span></td>
                                                 <td class="constraint detail">fk_site_site_id<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
@@ -170,27 +182,6 @@
                                     <td></td>
                                 </tr>
                                 <tr>
-                                    <td class='foreignKey' title='Foreign Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="ecosystem_id">ecosystem_id</span></td>
-                                    <td>int2</td>
-                                    <td>5</td>
-                                    <td title='nullable'>√</td>
-                                    <td title=''></td>
-                                    <td>null</td>
-                                    <td>
-                                        <table border='0' cellspacing='0' cellpadding='0'>
-                                        </table>
-                                    </td>
-                                    <td>
-                                        <table border='0' cellspacing='0' cellpadding='0'>
-                                            <tr>
-                                                <td title="sites.ecosystem_id references ecosystems.ecosystem_id via fk_sites_ecosystem_id"><a href='ecosystems.html'>ecosystems</a><span class='relatedKey'>.ecosystem_id</span></td>
-                                                <td class="constraint detail">fk_sites_ecosystem_id<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
-                                            </tr>
-                                        </table>
-                                    </td>
-                                    <td></td>
-                                </tr>
-                                <tr>
                                     <td><span id="description">description</span></td>
                                     <td>text</td>
                                     <td>2147483647</td>
@@ -208,25 +199,8 @@
                                     <td></td>
                                 </tr>
                                 <tr>
-                                    <td><span id="waterbody">waterbody</span></td>
-                                    <td>varchar</td>
-                                    <td>255</td>
-                                    <td title='nullable'>√</td>
-                                    <td title=''></td>
-                                    <td>null</td>
-                                    <td>
-                                        <table border='0' cellspacing='0' cellpadding='0'>
-                                        </table>
-                                    </td>
-                                    <td>
-                                        <table border='0' cellspacing='0' cellpadding='0'>
-                                        </table>
-                                    </td>
-                                    <td></td>
-                                </tr>
-                                <tr>
                                     <td class='indexedColumn' title='Indexed'><i class='fa fa-sitemap fa-rotate-120' style='padding-right: 5px;'></i><span id="location">location</span></td>
-                                    <td>geometry</td>
+                                    <td>geography</td>
                                     <td>2147483647</td>
                                     <td title=''></td>
                                     <td title=''></td>
@@ -243,7 +217,7 @@
                                 </tr>
                                 <tr>
                                     <td class='indexedColumn' title='Indexed'><i class='fa fa-sitemap fa-rotate-120' style='padding-right: 5px;'></i><span id="catchment">catchment</span></td>
-                                    <td>geometry</td>
+                                    <td>geography</td>
                                     <td>2147483647</td>
                                     <td title='nullable'>√</td>
                                     <td title=''></td>
@@ -259,9 +233,30 @@
                                     <td></td>
                                 </tr>
                                 <tr>
-                                    <td><span id="nhdplusid">nhdplusid</span></td>
-                                    <td>int8</td>
-                                    <td>19</td>
+                                    <td class='foreignKey' title='Foreign Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="waterbody_type_id">waterbody_type_id</span></td>
+                                    <td>int2</td>
+                                    <td>5</td>
+                                    <td title='nullable'>√</td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                            <tr>
+                                                <td title="sites.waterbody_type_id references waterbody_types.waterbody_type_id via fk_sites_waterbody_type_id"><a href='waterbody_types.html'>waterbody_types</a><span class='relatedKey'>.waterbody_type_id</span></td>
+                                                <td class="constraint detail">fk_sites_waterbody_type_id<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td><span id="waterbody_code">waterbody_code</span></td>
+                                    <td>varchar</td>
+                                    <td>100</td>
                                     <td title='nullable'>√</td>
                                     <td title=''></td>
                                     <td>null</td>
@@ -276,9 +271,9 @@
                                     <td></td>
                                 </tr>
                                 <tr>
-                                    <td><span id="comid">comid</span></td>
-                                    <td>int8</td>
-                                    <td>19</td>
+                                    <td><span id="waterbody_name">waterbody_name</span></td>
+                                    <td>varchar</td>
+                                    <td>255</td>
                                     <td title='nullable'>√</td>
                                     <td title=''></td>
                                     <td>null</td>
@@ -299,6 +294,23 @@
                                     <td title='nullable'>√</td>
                                     <td title=''></td>
                                     <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td><span id="geography_changed">geography_changed</span></td>
+                                    <td>timestamptz</td>
+                                    <td>35,6</td>
+                                    <td title=''></td>
+                                    <td title=''></td>
+                                    <td>now()</td>
                                     <td>
                                         <table border='0' cellspacing='0' cellpadding='0'>
                                         </table>
@@ -374,16 +386,16 @@
                                     <td>site_id</td>
                                 </tr>
                                 <tr>
-                                    <td title='Indexed'>fx_sites_ecosystems</td>
-                                    <td>Performance</td>
-                                    <td><span title='Ascending'>Asc</span></td>
-                                    <td>ecosystem_id</td>
-                                </tr>
-                                <tr>
-                                    <td title='Indexed'>fx_sites_systems</td>
+                                    <td title='Indexed'>fx_sites_system_id</td>
                                     <td>Performance</td>
                                     <td><span title='Ascending'>Asc</span></td>
                                     <td>system_id</td>
+                                </tr>
+                                <tr>
+                                    <td title='Indexed'>fx_sites_waterbody_type_id</td>
+                                    <td>Performance</td>
+                                    <td><span title='Ascending'>Asc</span></td>
+                                    <td>waterbody_type_id</td>
                                 </tr>
                                 <tr>
                                     <td title='Indexed'>gx_sites_catchment</td>
@@ -409,6 +421,40 @@
                     </div>
                     <div class="box box-primary">
                         <div class="box-header with-border">
+                            <i class="fa fa-sitemap"></i>
+                            <h3 class="box-title">Check Constraints</h3>
+                            <div class="box-tools pull-right">
+                                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                                <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
+                            </div>
+                        </div>
+                        <div class="box-body">
+                            <table id="check_table" class="table table-bordered table-striped dataTable" role="grid">
+                                <thead align='left'>
+                                <tr>
+                                    <th>Constraint Name</th>
+                                    <th>Constraint</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr>
+                                    <td>ck_waterbody_name</td>
+                                    <td>((length((waterbody_name)::text) &gt; 0))</td>
+                                </tr>
+                                <tr>
+                                    <td>ck_waterbody_code</td>
+                                    <td>((length((waterbody_code)::text) &gt; 0))</td>
+                                </tr>
+                                <tr>
+                                    <td>ck_site_name</td>
+                                    <td>((length((site_name)::text) &gt; 0))</td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="box box-primary">
+                        <div class="box-header with-border">
                             <i class="fa fa-code-fork"></i>
                             <h3 id="Relationships" class="box-title">Relationships</h3>
                             <div class="box-tools pull-right">
@@ -428,47 +474,63 @@
                                 <div class="tab-content no-padding">
                                     <div class="chart tab-pane active" id="oneDegreeImg-chart" style="position: relative; overflow-x:auto;">
                                         <map id="oneDegreeRelationshipsDiagram" name="oneDegreeRelationshipsDiagram">
-<area shape="rect" id="node1" href="site_predictors.html" target="_top" title="site_predictors" alt="" coords="796,5,981,152">
-<area shape="rect" id="node2" href="sites.html" target="_top" title="sites" alt="" coords="431,99,748,549">
-<area shape="rect" id="node3" href="ecosystems.html" target="_top" title="ecosystems" alt="" coords="5,205,188,352">
-<area shape="rect" id="node4" href="systems.html" target="_top" title="systems" alt="" coords="232,99,387,275">
-<area shape="rect" id="node5" href="../sample/tables/samples.html" target="_top" title="sample.samples" alt="" coords="792,169,985,316">
+<area shape="rect" id="node1" href="model_reference_sites.html" target="_top" title="model_reference_sites" alt="" coords="693,5,932,152">
+<area shape="rect" id="node2" href="sites.html" target="_top" title="sites" alt="" coords="271,389,647,840">
+<area shape="rect" id="node6" href="systems.html" target="_top" title="systems" alt="" coords="39,412,193,588">
+<area shape="rect" id="node7" href="waterbody_types.html" target="_top" title="waterbody_types" alt="" coords="5,605,227,752">
+<area shape="rect" id="node3" href="site_catchment_history.html" target="_top" title="site_catchment_history" alt="" coords="691,169,935,345">
+<area shape="rect" id="node4" href="site_location_history.html" target="_top" title="site_location_history" alt="" coords="699,363,926,539">
+<area shape="rect" id="node5" href="site_predictors.html" target="_top" title="site_predictors" alt="" coords="720,556,905,732">
+<area shape="rect" id="node8" href="../sample/tables/samples.html" target="_top" title="sample.samples" alt="" coords="703,749,923,896">
 </map>
                                         <a name='diagram'><img id="oneDegreeImg" src="../diagrams/tables/sites.1degree.png" usemap="#oneDegreeRelationshipsDiagram" class="diagram" border="0" align="left"></a>
                                     </div>
                                     <div class="chart tab-pane " id="twodegreesDegreeImg-chart" style="position: relative; overflow-x:auto;">
                                         <map id="twoDegreesRelationshipsDiagram" name="twoDegreesRelationshipsDiagram">
-<area shape="rect" id="node1" href="habitats.html" target="_top" title="habitats" alt="" coords="239,471,379,559">
-<area shape="rect" id="node2" href="ecosystems.html" target="_top" title="ecosystems" alt="" coords="5,325,188,472">
-<area shape="rect" id="node3" href="site_predictors.html" target="_top" title="site_predictors" alt="" coords="796,44,981,191">
-<area shape="rect" id="node4" href="predictors.html" target="_top" title="predictors" alt="" coords="513,5,666,93">
-<area shape="rect" id="node5" href="sites.html" target="_top" title="sites" alt="" coords="431,111,748,561">
-<area shape="rect" id="node6" href="systems.html" target="_top" title="systems" alt="" coords="232,172,387,348">
-<area shape="rect" id="node7" href="../sample/tables/samples.html" target="_top" title="sample.samples" alt="" coords="792,339,985,485">
+<area shape="rect" id="node1" href="habitats.html" target="_top" title="habitats" alt="" coords="254,631,394,719">
+<area shape="rect" id="node2" href="ecosystems.html" target="_top" title="ecosystems" alt="" coords="5,483,169,571">
+<area shape="rect" id="node3" href="model_reference_sites.html" target="_top" title="model_reference_sites" alt="" coords="901,5,1140,152">
+<area shape="rect" id="node4" href="models.html" target="_top" title="models" alt="" coords="597,8,737,96">
+<area shape="rect" id="node5" href="sites.html" target="_top" title="sites" alt="" coords="479,207,855,657">
+<area shape="rect" id="node10" href="systems.html" target="_top" title="systems" alt="" coords="247,268,401,444">
+<area shape="rect" id="node11" href="waterbody_types.html" target="_top" title="waterbody_types" alt="" coords="213,461,435,608">
+<area shape="rect" id="node6" href="site_catchment_history.html" target="_top" title="site_catchment_history" alt="" coords="899,169,1143,345">
+<area shape="rect" id="node7" href="site_location_history.html" target="_top" title="site_location_history" alt="" coords="907,363,1134,539">
+<area shape="rect" id="node8" href="site_predictors.html" target="_top" title="site_predictors" alt="" coords="928,720,1113,896">
+<area shape="rect" id="node9" href="predictors.html" target="_top" title="predictors" alt="" coords="590,723,743,811">
+<area shape="rect" id="node12" href="../sample/tables/samples.html" target="_top" title="sample.samples" alt="" coords="911,556,1131,703">
 </map>
                                         <a name='diagram'><img id="twodegreesDegreeImg" src="../diagrams/tables/sites.2degrees.png" usemap="#twoDegreesRelationshipsDiagram" class="diagram" border="0" align="left"></a>
                                     </div>
                                     <div class="chart tab-pane " id="oneimpliedDegreeImg-chart" style="position: relative; overflow-x:auto;">
                                         <map id="oneDegreeRelationshipsDiagramImplied" name="oneDegreeRelationshipsDiagramImplied">
-<area shape="rect" id="node1" href="site_predictors.html" target="_top" title="site_predictors" alt="" coords="796,5,981,152">
-<area shape="rect" id="node2" href="sites.html" target="_top" title="sites" alt="" coords="431,99,748,549">
-<area shape="rect" id="node3" href="ecosystems.html" target="_top" title="ecosystems" alt="" coords="5,420,188,567">
-<area shape="rect" id="node4" href="systems.html" target="_top" title="systems" alt="" coords="232,267,387,443">
-<area shape="rect" id="node5" href="vw_sites.html" target="_top" title="vw_sites" alt="" coords="797,497,980,649">
-<area shape="rect" id="node6" href="../sample/tables/samples.html" target="_top" title="sample.samples" alt="" coords="792,169,985,316">
+<area shape="rect" id="node1" href="model_reference_sites.html" target="_top" title="model_reference_sites" alt="" coords="693,5,932,152">
+<area shape="rect" id="node2" href="sites.html" target="_top" title="sites" alt="" coords="271,487,647,937">
+<area shape="rect" id="node6" href="systems.html" target="_top" title="systems" alt="" coords="39,509,193,685">
+<area shape="rect" id="node7" href="waterbody_types.html" target="_top" title="waterbody_types" alt="" coords="5,703,227,849">
+<area shape="rect" id="node3" href="site_catchment_history.html" target="_top" title="site_catchment_history" alt="" coords="691,169,935,345">
+<area shape="rect" id="node4" href="site_location_history.html" target="_top" title="site_location_history" alt="" coords="699,363,926,539">
+<area shape="rect" id="node5" href="site_predictors.html" target="_top" title="site_predictors" alt="" coords="720,556,905,732">
+<area shape="rect" id="node8" href="vw_sites.html" target="_top" title="vw_sites" alt="" coords="702,749,923,843">
+<area shape="rect" id="node9" href="../sample/tables/samples.html" target="_top" title="sample.samples" alt="" coords="703,860,923,1007">
 </map>
                                         <a name='diagram'><img id="oneimpliedDegreeImg" src="../diagrams/tables/sites.implied1degrees.png" usemap="#oneDegreeRelationshipsDiagramImplied" class="diagram" border="0" align="left"></a>
                                     </div>
                                     <div class="chart tab-pane " id="twoimpliedDegreeImg-chart" style="position: relative; overflow-x:auto;">
                                         <map id="twoDegreesRelationshipsDiagramImplied" name="twoDegreesRelationshipsDiagramImplied">
-<area shape="rect" id="node1" href="habitats.html" target="_top" title="habitats" alt="" coords="239,520,379,608">
-<area shape="rect" id="node2" href="ecosystems.html" target="_top" title="ecosystems" alt="" coords="5,207,188,353">
-<area shape="rect" id="node3" href="site_predictors.html" target="_top" title="site_predictors" alt="" coords="796,261,981,408">
-<area shape="rect" id="node4" href="predictors.html" target="_top" title="predictors" alt="" coords="513,205,666,293">
-<area shape="rect" id="node5" href="sites.html" target="_top" title="sites" alt="" coords="431,311,748,761">
-<area shape="rect" id="node6" href="systems.html" target="_top" title="systems" alt="" coords="232,5,387,181">
-<area shape="rect" id="node7" href="vw_sites.html" target="_top" title="vw_sites" alt="" coords="797,71,980,223">
-<area shape="rect" id="node8" href="../sample/tables/samples.html" target="_top" title="sample.samples" alt="" coords="792,577,985,724">
+<area shape="rect" id="node1" href="habitats.html" target="_top" title="habitats" alt="" coords="254,780,394,868">
+<area shape="rect" id="node2" href="ecosystems.html" target="_top" title="ecosystems" alt="" coords="5,632,169,720">
+<area shape="rect" id="node3" href="model_reference_sites.html" target="_top" title="model_reference_sites" alt="" coords="901,5,1140,152">
+<area shape="rect" id="node4" href="models.html" target="_top" title="models" alt="" coords="597,8,737,96">
+<area shape="rect" id="node5" href="sites.html" target="_top" title="sites" alt="" coords="479,356,855,807">
+<area shape="rect" id="node10" href="systems.html" target="_top" title="systems" alt="" coords="247,417,401,593">
+<area shape="rect" id="node11" href="waterbody_types.html" target="_top" title="waterbody_types" alt="" coords="213,611,435,757">
+<area shape="rect" id="node6" href="site_catchment_history.html" target="_top" title="site_catchment_history" alt="" coords="899,473,1143,649">
+<area shape="rect" id="node7" href="site_location_history.html" target="_top" title="site_location_history" alt="" coords="907,169,1134,345">
+<area shape="rect" id="node8" href="site_predictors.html" target="_top" title="site_predictors" alt="" coords="928,853,1113,1029">
+<area shape="rect" id="node9" href="predictors.html" target="_top" title="predictors" alt="" coords="590,860,743,948">
+<area shape="rect" id="node12" href="vw_sites.html" target="_top" title="vw_sites" alt="" coords="910,363,1131,456">
+<area shape="rect" id="node13" href="../sample/tables/samples.html" target="_top" title="sample.samples" alt="" coords="911,675,1131,821">
 </map>
                                         <a name='diagram'><img id="twoimpliedDegreeImg" src="../diagrams/tables/sites.implied2degrees.png" usemap="#twoDegreesRelationshipsDiagramImplied" class="diagram" border="0" align="left"></a>
                                     </div>

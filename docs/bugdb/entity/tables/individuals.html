@@ -73,7 +73,7 @@
             <div class="content-wrapper">
                 <!-- Content Header (Page header) -->
                 <section class="content-header">
-                    <h1>individuals</h1><p><span id="recordNumber">0</span> rows</p><br />
+                    <h1>individuals</h1><p><span id="recordNumber">583</span> rows</p><br />
                 </section>
                 <!-- Main content -->
                 <section class="content">
@@ -120,8 +120,8 @@
                                                 <td class="constraint detail">fk_individual_roles_entity_id<span title='Cascade on delete:&#10;Deletion of parent deletes child'>C</span></td>
                                             </tr>
                                             <tr>
-                                                <td title="boxes.submitter_id references individuals.entity_id via fk_boxes_creator_id"><a href='../../sample/tables/boxes.html'>boxes</a><span class='relatedKey'>.submitter_id</span></td>
-                                                <td class="constraint detail">fk_boxes_creator_id<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                                <td title="boxes.submitter_id references individuals.entity_id via fk_boxes_submitter_id"><a href='../../sample/tables/boxes.html'>boxes</a><span class='relatedKey'>.submitter_id</span></td>
+                                                <td class="constraint detail">fk_boxes_submitter_id<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                             <tr>
                                                 <td title="sorter_time.sorter_id references individuals.entity_id via fk_sorter_sorter_id"><a href='../../sample/tables/sorter_time.html'>sorter_time</a><span class='relatedKey'>.sorter_id</span></td>
@@ -150,7 +150,7 @@
                                 <tr>
                                     <td><span id="first_name">first_name</span></td>
                                     <td>varchar</td>
-                                    <td>50</td>
+                                    <td>255</td>
                                     <td title=''></td>
                                     <td title=''></td>
                                     <td>null</td>
@@ -167,7 +167,7 @@
                                 <tr>
                                     <td><span id="last_name">last_name</span></td>
                                     <td>varchar</td>
-                                    <td>50</td>
+                                    <td>255</td>
                                     <td title=''></td>
                                     <td title=''></td>
                                     <td>null</td>
@@ -318,6 +318,36 @@
                     </div>
                     <div class="box box-primary">
                         <div class="box-header with-border">
+                            <i class="fa fa-sitemap"></i>
+                            <h3 class="box-title">Check Constraints</h3>
+                            <div class="box-tools pull-right">
+                                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                                <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
+                            </div>
+                        </div>
+                        <div class="box-body">
+                            <table id="check_table" class="table table-bordered table-striped dataTable" role="grid">
+                                <thead align='left'>
+                                <tr>
+                                    <th>Constraint Name</th>
+                                    <th>Constraint</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr>
+                                    <td>ck_last_name</td>
+                                    <td>((length((last_name)::text) &gt; 0))</td>
+                                </tr>
+                                <tr>
+                                    <td>ck_first_name</td>
+                                    <td>((length((first_name)::text) &gt; 0))</td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="box box-primary">
+                        <div class="box-header with-border">
                             <i class="fa fa-code-fork"></i>
                             <h3 id="Relationships" class="box-title">Relationships</h3>
                             <div class="box-tools pull-right">
@@ -335,37 +365,39 @@
                                 <div class="tab-content no-padding">
                                     <div class="chart tab-pane active" id="oneDegreeImg-chart" style="position: relative; overflow-x:auto;">
                                         <map id="oneDegreeRelationshipsDiagram" name="oneDegreeRelationshipsDiagram">
-<area shape="rect" id="node1" href="communications.html" target="_top" title="communications" alt="" coords="767,5,965,181">
-<area shape="rect" id="node2" href="individuals.html" target="_top" title="individuals" alt="" coords="456,364,695,668">
-<area shape="rect" id="node3" href="entities.html" target="_top" title="entities" alt="" coords="5,421,159,627">
-<area shape="rect" id="node5" href="organizations.html" target="_top" title="organizations" alt="" coords="203,464,412,611">
-<area shape="rect" id="node4" href="individual_roles.html" target="_top" title="individual_roles" alt="" coords="770,468,962,591">
-<area shape="rect" id="node6" href="../sample/tables/boxes.html" target="_top" title="sample.boxes" alt="" coords="739,743,993,889">
-<area shape="rect" id="node7" href="../sample/tables/sorter_time.html" target="_top" title="sample.sorter_time" alt="" coords="759,608,973,725">
-<area shape="rect" id="node8" href="../sample/tables/submissions.html" target="_top" title="sample.submissions" alt="" coords="754,199,978,316">
-<area shape="rect" id="node9" href="../sample/tables/taxa_time.html" target="_top" title="sample.taxa_time" alt="" coords="765,333,967,451">
+<area shape="rect" id="node1" href="communications.html" target="_top" title="communications" alt="" coords="782,5,979,181">
+<area shape="rect" id="node2" href="individuals.html" target="_top" title="individuals" alt="" coords="471,364,709,668">
+<area shape="rect" id="node3" href="entities.html" target="_top" title="entities" alt="" coords="5,421,173,627">
+<area shape="rect" id="node5" href="organizations.html" target="_top" title="organizations" alt="" coords="217,464,427,611">
+<area shape="rect" id="node4" href="individual_roles.html" target="_top" title="individual_roles" alt="" coords="785,468,977,591">
+<area shape="rect" id="node6" href="../sample/tables/boxes.html" target="_top" title="sample.boxes" alt="" coords="753,743,1008,889">
+<area shape="rect" id="node7" href="../sample/tables/sorter_time.html" target="_top" title="sample.sorter_time" alt="" coords="773,608,988,725">
+<area shape="rect" id="node8" href="../sample/tables/submissions.html" target="_top" title="sample.submissions" alt="" coords="769,199,993,316">
+<area shape="rect" id="node9" href="../sample/tables/taxa_time.html" target="_top" title="sample.taxa_time" alt="" coords="780,333,981,451">
 </map>
                                         <a name='diagram'><img id="oneDegreeImg" src="../diagrams/tables/individuals.1degree.png" usemap="#oneDegreeRelationshipsDiagram" class="diagram" border="0" align="left"></a>
                                     </div>
                                     <div class="chart tab-pane " id="twodegreesDegreeImg-chart" style="position: relative; overflow-x:auto;">
                                         <map id="twoDegreesRelationshipsDiagram" name="twoDegreesRelationshipsDiagram">
-<area shape="rect" id="node1" href="../billing/tables/agreements.html" target="_top" title="billing.agreements" alt="" coords="484,416,693,504">
-<area shape="rect" id="node2" href="entities.html" target="_top" title="entities" alt="" coords="257,308,410,513">
-<area shape="rect" id="node6" href="../geo/tables/countries.html" target="_top" title="geo.countries" alt="" coords="5,437,183,525">
-<area shape="rect" id="node7" href="../geo/tables/states.html" target="_top" title="geo.states" alt="" coords="17,332,171,420">
-<area shape="rect" id="node3" href="../billing/tables/invoices.html" target="_top" title="billing.invoices" alt="" coords="496,521,681,609">
-<area shape="rect" id="node4" href="communications.html" target="_top" title="communications" alt="" coords="1049,5,1246,181">
-<area shape="rect" id="node5" href="individuals.html" target="_top" title="individuals" alt="" coords="737,419,976,723">
-<area shape="rect" id="node10" href="organizations.html" target="_top" title="organizations" alt="" coords="484,627,693,773">
-<area shape="rect" id="node8" href="individual_roles.html" target="_top" title="individual_roles" alt="" coords="1051,767,1243,889">
-<area shape="rect" id="node9" href="roles.html" target="_top" title="roles" alt="" coords="797,769,917,857">
-<area shape="rect" id="node11" href="organization_types.html" target="_top" title="organization_types" alt="" coords="227,659,440,747">
-<area shape="rect" id="node12" href="../sample/tables/boxes.html" target="_top" title="sample.boxes" alt="" coords="1020,199,1275,345">
-<area shape="rect" id="node13" href="../sample/tables/projects.html" target="_top" title="sample.projects" alt="" coords="493,311,685,399">
-<area shape="rect" id="node14" href="../sample/tables/sample_labs.html" target="_top" title="sample.sample_labs" alt="" coords="746,875,967,963">
-<area shape="rect" id="node15" href="../sample/tables/sorter_time.html" target="_top" title="sample.sorter_time" alt="" coords="1040,497,1255,615">
-<area shape="rect" id="node16" href="../sample/tables/submissions.html" target="_top" title="sample.submissions" alt="" coords="1035,632,1259,749">
-<area shape="rect" id="node17" href="../sample/tables/taxa_time.html" target="_top" title="sample.taxa_time" alt="" coords="1047,363,1248,480">
+<area shape="rect" id="node1" href="../billing/tables/agreements.html" target="_top" title="billing.agreements" alt="" coords="484,321,693,409">
+<area shape="rect" id="node2" href="entities.html" target="_top" title="entities" alt="" coords="249,424,417,629">
+<area shape="rect" id="node6" href="../geo/tables/countries.html" target="_top" title="geo.countries" alt="" coords="5,553,183,641">
+<area shape="rect" id="node7" href="../geo/tables/states.html" target="_top" title="geo.states" alt="" coords="17,448,171,536">
+<area shape="rect" id="node3" href="../billing/tables/invoices.html" target="_top" title="billing.invoices" alt="" coords="496,427,681,515">
+<area shape="rect" id="node4" href="communications.html" target="_top" title="communications" alt="" coords="1049,292,1246,468">
+<area shape="rect" id="node5" href="individuals.html" target="_top" title="individuals" alt="" coords="737,647,976,951">
+<area shape="rect" id="node11" href="organizations.html" target="_top" title="organizations" alt="" coords="484,767,693,913">
+<area shape="rect" id="node8" href="entity_models.html" target="_top" title="entity_models" alt="" coords="499,5,678,93">
+<area shape="rect" id="node9" href="individual_roles.html" target="_top" title="individual_roles" alt="" coords="1051,1053,1243,1176">
+<area shape="rect" id="node10" href="roles.html" target="_top" title="roles" alt="" coords="797,1027,917,1115">
+<area shape="rect" id="node12" href="organization_types.html" target="_top" title="organization_types" alt="" coords="227,799,440,887">
+<area shape="rect" id="node13" href="../metric/tables/reports.html" target="_top" title="metric.reports" alt="" coords="499,111,679,199">
+<area shape="rect" id="node14" href="../sample/tables/boxes.html" target="_top" title="sample.boxes" alt="" coords="1020,485,1275,632">
+<area shape="rect" id="node15" href="../sample/tables/projects.html" target="_top" title="sample.projects" alt="" coords="493,216,685,304">
+<area shape="rect" id="node16" href="../sample/tables/sample_labs.html" target="_top" title="sample.sample_labs" alt="" coords="746,1132,967,1220">
+<area shape="rect" id="node17" href="../sample/tables/sorter_time.html" target="_top" title="sample.sorter_time" alt="" coords="1040,919,1255,1036">
+<area shape="rect" id="node18" href="../sample/tables/submissions.html" target="_top" title="sample.submissions" alt="" coords="1035,649,1259,767">
+<area shape="rect" id="node19" href="../sample/tables/taxa_time.html" target="_top" title="sample.taxa_time" alt="" coords="1047,784,1248,901">
 </map>
                                         <a name='diagram'><img id="twodegreesDegreeImg" src="../diagrams/tables/individuals.2degrees.png" usemap="#twoDegreesRelationshipsDiagram" class="diagram" border="0" align="left"></a>
                                     </div>

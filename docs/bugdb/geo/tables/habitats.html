@@ -260,6 +260,32 @@
                     </div>
                     <div class="box box-primary">
                         <div class="box-header with-border">
+                            <i class="fa fa-sitemap"></i>
+                            <h3 class="box-title">Check Constraints</h3>
+                            <div class="box-tools pull-right">
+                                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                                <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
+                            </div>
+                        </div>
+                        <div class="box-body">
+                            <table id="check_table" class="table table-bordered table-striped dataTable" role="grid">
+                                <thead align='left'>
+                                <tr>
+                                    <th>Constraint Name</th>
+                                    <th>Constraint</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr>
+                                    <td>ck_habitat_name</td>
+                                    <td>((length((habitat_name)::text) &gt; 0))</td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="box box-primary">
+                        <div class="box-header with-border">
                             <i class="fa fa-code-fork"></i>
                             <h3 id="Relationships" class="box-title">Relationships</h3>
                             <div class="box-tools pull-right">
@@ -273,46 +299,25 @@
                                 <ul class="nav nav-tabs pull-left ui-sortable-handle">
                                     <li class="active"><a href="#oneDegreeImg-chart" data-toggle="tab" aria-expanded="true">One</a></li>
                                     <li class=""><a href="#twodegreesDegreeImg-chart" data-toggle="tab" aria-expanded="true">Two degrees</a></li>
-                                    <li class=""><a href="#oneimpliedDegreeImg-chart" data-toggle="tab" aria-expanded="true">One implied</a></li>
-                                    <li class=""><a href="#twoimpliedDegreeImg-chart" data-toggle="tab" aria-expanded="true">Two implied</a></li>
                                 </ul>
                                 <div class="tab-content no-padding">
                                     <div class="chart tab-pane active" id="oneDegreeImg-chart" style="position: relative; overflow-x:auto;">
                                         <map id="oneDegreeRelationshipsDiagram" name="oneDegreeRelationshipsDiagram">
 <area shape="rect" id="node1" href="habitats.html" target="_top" title="habitats" alt="" coords="232,32,513,277">
 <area shape="rect" id="node2" href="ecosystems.html" target="_top" title="ecosystems" alt="" coords="5,93,188,240">
-<area shape="rect" id="node3" href="../sample/tables/samples.html" target="_top" title="sample.samples" alt="" coords="557,5,751,152">
+<area shape="rect" id="node3" href="../sample/tables/samples.html" target="_top" title="sample.samples" alt="" coords="557,5,777,152">
 </map>
                                         <a name='diagram'><img id="oneDegreeImg" src="../diagrams/tables/habitats.1degree.png" usemap="#oneDegreeRelationshipsDiagram" class="diagram" border="0" align="left"></a>
                                     </div>
                                     <div class="chart tab-pane " id="twodegreesDegreeImg-chart" style="position: relative; overflow-x:auto;">
                                         <map id="twoDegreesRelationshipsDiagram" name="twoDegreesRelationshipsDiagram">
-<area shape="rect" id="node1" href="habitats.html" target="_top" title="habitats" alt="" coords="232,147,513,392">
-<area shape="rect" id="node2" href="ecosystems.html" target="_top" title="ecosystems" alt="" coords="5,71,188,217">
-<area shape="rect" id="node3" href="sites.html" target="_top" title="sites" alt="" coords="557,73,689,161">
+<area shape="rect" id="node1" href="habitats.html" target="_top" title="habitats" alt="" coords="232,111,513,356">
+<area shape="rect" id="node2" href="ecosystems.html" target="_top" title="ecosystems" alt="" coords="5,88,188,235">
+<area shape="rect" id="node3" href="sites.html" target="_top" title="sites" alt="" coords="557,16,725,104">
 <area shape="rect" id="node4" href="systems.html" target="_top" title="systems" alt="" coords="303,5,443,93">
-<area shape="rect" id="node5" href="../sample/tables/samples.html" target="_top" title="sample.samples" alt="" coords="733,93,927,240">
+<area shape="rect" id="node5" href="../sample/tables/samples.html" target="_top" title="sample.samples" alt="" coords="769,39,989,185">
 </map>
                                         <a name='diagram'><img id="twodegreesDegreeImg" src="../diagrams/tables/habitats.2degrees.png" usemap="#twoDegreesRelationshipsDiagram" class="diagram" border="0" align="left"></a>
-                                    </div>
-                                    <div class="chart tab-pane " id="oneimpliedDegreeImg-chart" style="position: relative; overflow-x:auto;">
-                                        <map id="oneDegreeRelationshipsDiagramImplied" name="oneDegreeRelationshipsDiagramImplied">
-<area shape="rect" id="node1" href="habitats.html" target="_top" title="habitats" alt="" coords="232,32,513,277">
-<area shape="rect" id="node2" href="ecosystems.html" target="_top" title="ecosystems" alt="" coords="5,93,188,240">
-<area shape="rect" id="node3" href="../sample/tables/samples.html" target="_top" title="sample.samples" alt="" coords="557,5,751,152">
-</map>
-                                        <a name='diagram'><img id="oneimpliedDegreeImg" src="../diagrams/tables/habitats.implied1degrees.png" usemap="#oneDegreeRelationshipsDiagramImplied" class="diagram" border="0" align="left"></a>
-                                    </div>
-                                    <div class="chart tab-pane " id="twoimpliedDegreeImg-chart" style="position: relative; overflow-x:auto;">
-                                        <map id="twoDegreesRelationshipsDiagramImplied" name="twoDegreesRelationshipsDiagramImplied">
-<area shape="rect" id="node1" href="habitats.html" target="_top" title="habitats" alt="" coords="232,187,513,432">
-<area shape="rect" id="node2" href="ecosystems.html" target="_top" title="ecosystems" alt="" coords="5,77,188,224">
-<area shape="rect" id="node3" href="sites.html" target="_top" title="sites" alt="" coords="557,113,689,201">
-<area shape="rect" id="node4" href="systems.html" target="_top" title="systems" alt="" coords="303,45,443,133">
-<area shape="rect" id="node5" href="vw_sites.html" target="_top" title="vw_sites" alt="" coords="761,40,899,104">
-<area shape="rect" id="node6" href="../sample/tables/samples.html" target="_top" title="sample.samples" alt="" coords="733,137,927,284">
-</map>
-                                        <a name='diagram'><img id="twoimpliedDegreeImg" src="../diagrams/tables/habitats.implied2degrees.png" usemap="#twoDegreesRelationshipsDiagramImplied" class="diagram" border="0" align="left"></a>
                                     </div>
                                 </div>
                             </div>

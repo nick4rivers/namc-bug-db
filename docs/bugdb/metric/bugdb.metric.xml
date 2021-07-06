@@ -1,99 +1,278 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<database name="bugdb" schema="metric" type="PostgreSQL - 12.4 (Debian 12.4-1.pgdg100+1)">
+<database name="bugdb" schema="metric" type="PostgreSQL - 13.1 (Debian 13.1-1.pgdg100+1)">
    <tables>
-      <table name="analyses" numRows="0" remarks="" schema="metric" type="TABLE">
-         <column autoUpdated="true" defaultValue="null" digits="0" id="0" name="analysis_id" nullable="false" remarks="" size="10" type="int4" typeCode="4">
-            <parent column="analysis_type_id" foreignKey="fk_analyses_analysis_type_id" implied="false" onDeleteCascade="false" schema="metric" table="analysis_types"/>
+      <table name="analyses" numRows="6" remarks="" schema="metric" type="TABLE">
+         <column autoUpdated="true" defaultValue="null" digits="0" id="0" name="analysis_id" nullable="false" remarks="" size="5" type="int2" typeCode="5">
+            <child column="analysis_id" foreignKey="fk_metric_analysis_metrics_analysis_id" implied="false" onDeleteCascade="true" schema="metric" table="analysis_metrics"/>
          </column>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="analysis_type_id" nullable="false" remarks="" size="5" type="int2" typeCode="5">
-            <parent column="analysis_type_id" foreignKey="Implied Constraint" implied="true" onDeleteCascade="false" schema="metric" table="analysis_types"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="analysis_name" nullable="false" remarks="" size="255" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="2" name="display_text" nullable="true" remarks="" size="2147483647" type="text" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="3" name="sort_order" nullable="false" remarks="" size="5" type="int2" typeCode="5"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="4" name="report_type_id" nullable="false" remarks="" size="5" type="int2" typeCode="5">
+            <parent column="report_type_id" foreignKey="fk_analyses_report_id" implied="false" onDeleteCascade="false" schema="metric" table="report_types"/>
          </column>
-         <column autoUpdated="false" defaultValue="now()" digits="6" id="2" name="created_date" nullable="false" remarks="" size="35" type="timestamptz" typeCode="93"/>
-         <column autoUpdated="false" defaultValue="now()" digits="6" id="3" name="updated_date" nullable="false" remarks="" size="35" type="timestamptz" typeCode="93"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="5" name="description" nullable="true" remarks="" size="2147483647" type="text" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="6" name="metadata" nullable="true" remarks="" size="2147483647" type="json" typeCode="1111"/>
+         <column autoUpdated="false" defaultValue="now()" digits="6" id="7" name="created_date" nullable="false" remarks="" size="35" type="timestamptz" typeCode="93"/>
+         <column autoUpdated="false" defaultValue="now()" digits="6" id="8" name="updated_date" nullable="false" remarks="" size="35" type="timestamptz" typeCode="93"/>
          <primaryKey column="analysis_id" sequenceNumberInPK="1"/>
          <index name="analyses_pkey" unique="true">
             <column ascending="true" name="analysis_id"/>
          </index>
+         <index name="analyses_analysis_name_key" unique="true">
+            <column ascending="true" name="analysis_name"/>
+         </index>
+         <index name="ux_metric_analyses_report_id" unique="true">
+            <column ascending="true" name="report_type_id"/>
+            <column ascending="true" name="sort_order"/>
+         </index>
+         <checkConstraint constraint="((sort_order &gt; 0))" name="ck_analyses_sort_order"/>
+         <checkConstraint constraint="((length((analysis_name)::text) &gt; 0))" name="ck_analysis_name"/>
       </table>
-      <table name="analysis_types" numRows="0" remarks="" schema="metric" type="TABLE">
-         <column autoUpdated="true" defaultValue="null" digits="0" id="0" name="analysis_type_id" nullable="false" remarks="" size="5" type="int2" typeCode="5">
-            <child column="analysis_id" foreignKey="fk_analyses_analysis_type_id" implied="false" onDeleteCascade="false" schema="metric" table="analyses"/>
-            <child column="analysis_type_id" foreignKey="Implied Constraint" implied="true" onDeleteCascade="false" schema="metric" table="analyses"/>
+      <table name="analysis_metrics" numRows="0" remarks="" schema="metric" type="TABLE">
+         <column autoUpdated="false" defaultValue="null" digits="0" id="0" name="analysis_id" nullable="false" remarks="" size="5" type="int2" typeCode="5">
+            <parent column="analysis_id" foreignKey="fk_metric_analysis_metrics_analysis_id" implied="false" onDeleteCascade="true" schema="metric" table="analyses"/>
          </column>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="analysis_type_name" nullable="false" remarks="" size="255" type="varchar" typeCode="12"/>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="2" name="report_id" nullable="false" remarks="" size="5" type="int2" typeCode="5">
-            <parent column="report_id" foreignKey="fk_analysis_types_report_id" implied="false" onDeleteCascade="true" schema="metric" table="reports"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="metric_id" nullable="false" remarks="" size="5" type="int2" typeCode="5">
+            <parent column="metric_id" foreignKey="fk_metric_analysis_metrics_metric_id" implied="false" onDeleteCascade="true" schema="metric" table="metrics"/>
          </column>
-         <column autoUpdated="false" defaultValue="now()" digits="6" id="3" name="created_date" nullable="false" remarks="" size="35" type="timestamptz" typeCode="93"/>
-         <column autoUpdated="false" defaultValue="now()" digits="6" id="4" name="updated_date" nullable="false" remarks="" size="35" type="timestamptz" typeCode="93"/>
-         <primaryKey column="analysis_type_id" sequenceNumberInPK="1"/>
-         <index name="analysis_types_pkey" unique="true">
-            <column ascending="true" name="analysis_type_id"/>
-         </index>
-         <index name="analysis_types_analysis_type_name_key" unique="true">
-            <column ascending="true" name="analysis_type_name"/>
-         </index>
-         <index name="fx_analysis_types_report_id" unique="false">
-            <column ascending="true" name="report_id"/>
+         <primaryKey column="analysis_id" sequenceNumberInPK="1"/>
+         <primaryKey column="metric_id" sequenceNumberInPK="2"/>
+         <index name="pk_metric_analysis_metrics" unique="true">
+            <column ascending="true" name="analysis_id"/>
+            <column ascending="true" name="metric_id"/>
          </index>
       </table>
-      <table name="metric_types" numRows="0" remarks="" schema="metric" type="TABLE">
-         <column autoUpdated="true" defaultValue="null" digits="0" id="0" name="metric_type_id" nullable="false" remarks="" size="5" type="int2" typeCode="5">
-            <child column="metric_type_id" foreignKey="fk_metrics_metric_type_id" implied="false" onDeleteCascade="false" schema="metric" table="metrics"/>
+      <table name="formulae" numRows="0" remarks="" schema="metric" type="TABLE">
+         <column autoUpdated="true" defaultValue="null" digits="0" id="0" name="formula_id" nullable="false" remarks="" size="5" type="int2" typeCode="5">
+            <child column="formula_id" foreignKey="fk_metrics_formula_id" implied="false" onDeleteCascade="false" schema="metric" table="metrics"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="formula_name" nullable="false" remarks="" size="255" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="2" name="code_function" nullable="false" remarks="" size="100" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="3" name="display_text" nullable="true" remarks="" size="2147483647" type="text" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="4" name="description" nullable="true" remarks="" size="2147483647" type="text" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="5" name="metadata" nullable="true" remarks="" size="2147483647" type="json" typeCode="1111"/>
+         <column autoUpdated="false" defaultValue="now()" digits="6" id="6" name="created_date" nullable="false" remarks="" size="35" type="timestamptz" typeCode="93"/>
+         <column autoUpdated="false" defaultValue="now()" digits="6" id="7" name="updated_date" nullable="false" remarks="" size="35" type="timestamptz" typeCode="93"/>
+         <primaryKey column="formula_id" sequenceNumberInPK="1"/>
+         <index name="formulae_pkey" unique="true">
+            <column ascending="true" name="formula_id"/>
+         </index>
+         <index name="formulae_code_function_key" unique="true">
+            <column ascending="true" name="code_function"/>
+         </index>
+         <index name="formulae_formula_name_key" unique="true">
+            <column ascending="true" name="formula_name"/>
+         </index>
+         <checkConstraint constraint="((length((code_function)::text) &gt; 0))" name="ck_code_function"/>
+         <checkConstraint constraint="((length((formula_name)::text) &gt; 0))" name="ck_formula_name"/>
+      </table>
+      <table name="metric_attributes" numRows="32" remarks="" schema="metric" type="TABLE">
+         <column autoUpdated="false" defaultValue="null" digits="0" id="0" name="metric_id" nullable="false" remarks="" size="5" type="int2" typeCode="5">
+            <parent column="metric_id" foreignKey="fk_metric_metric_attributes_metric_id" implied="false" onDeleteCascade="true" schema="metric" table="metrics"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="attribute_id" nullable="false" remarks="" size="10" type="int4" typeCode="4">
+            <parent column="attribute_id" foreignKey="fk_metric_metric_attributes_attribute_id" implied="false" onDeleteCascade="true" schema="taxa" table="attributes"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="2" name="where_clause" nullable="false" remarks="" size="2147483647" type="text" typeCode="12"/>
+         <primaryKey column="metric_id" sequenceNumberInPK="1"/>
+         <primaryKey column="attribute_id" sequenceNumberInPK="2"/>
+         <primaryKey column="where_clause" sequenceNumberInPK="3"/>
+         <index name="pk_metric_metric_attributes" unique="true">
+            <column ascending="true" name="metric_id"/>
+            <column ascending="true" name="attribute_id"/>
+            <column ascending="true" name="where_clause"/>
+         </index>
+      </table>
+      <table name="metric_groups" numRows="8" remarks="" schema="metric" type="TABLE">
+         <column autoUpdated="true" defaultValue="null" digits="0" id="0" name="group_id" nullable="false" remarks="" size="5" type="int2" typeCode="5">
+            <child column="group_id" foreignKey="fk_metrics_metric_type_id" implied="false" onDeleteCascade="false" schema="metric" table="metrics"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="group_name" nullable="false" remarks="" size="255" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="2" name="display_text" nullable="true" remarks="" size="2147483647" type="text" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="3" name="description" nullable="true" remarks="" size="2147483647" type="text" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="4" name="sort_order" nullable="false" remarks="" size="5" type="int2" typeCode="5"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="5" name="metadata" nullable="true" remarks="" size="2147483647" type="json" typeCode="1111"/>
+         <primaryKey column="group_id" sequenceNumberInPK="1"/>
+         <index name="metric_groups_pkey" unique="true">
+            <column ascending="true" name="group_id"/>
+         </index>
+         <index name="metric_groups_group_name_key" unique="true">
+            <column ascending="true" name="group_name"/>
+         </index>
+         <index name="metric_groups_sort_order_key" unique="true">
+            <column ascending="true" name="sort_order"/>
+         </index>
+         <checkConstraint constraint="((length((group_name)::text) &gt; 0))" name="ck_group_name"/>
+         <checkConstraint constraint="((sort_order &gt; 0))" name="ck_metric_groups"/>
+      </table>
+      <table name="metric_taxa" numRows="32" remarks="" schema="metric" type="TABLE">
+         <column autoUpdated="false" defaultValue="null" digits="0" id="0" name="metric_id" nullable="false" remarks="" size="5" type="int2" typeCode="5">
+            <parent column="metric_id" foreignKey="fk_metric_metric_taxa_metric_id" implied="false" onDeleteCascade="true" schema="metric" table="metrics"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="taxonomy_id" nullable="false" remarks="" size="5" type="int2" typeCode="5">
+            <parent column="taxonomy_id" foreignKey="fk_metric_metric_taxa_taxonomy_id" implied="false" onDeleteCascade="true" schema="taxa" table="taxonomy"/>
+         </column>
+         <primaryKey column="metric_id" sequenceNumberInPK="1"/>
+         <primaryKey column="taxonomy_id" sequenceNumberInPK="2"/>
+         <index name="pk_metric_metric_taxa" unique="true">
+            <column ascending="true" name="metric_id"/>
+            <column ascending="true" name="taxonomy_id"/>
+         </index>
+      </table>
+      <table name="metric_values" numRows="0" remarks="" schema="metric" type="TABLE">
+         <column autoUpdated="false" defaultValue="null" digits="0" id="0" name="rarefaction_id" nullable="false" remarks="" size="10" type="int4" typeCode="4">
+            <parent column="rarefaction_id" foreignKey="fk_metric_sample_metrics_rarefaction_id" implied="false" onDeleteCascade="true" schema="metric" table="rarefactions"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="metric_id" nullable="false" remarks="" size="10" type="int4" typeCode="4">
+            <parent column="metric_id" foreignKey="fk_metric_sample_metrics_metric_id" implied="false" onDeleteCascade="false" schema="metric" table="metrics"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="8" id="2" name="metric_value" nullable="true" remarks="" size="8" type="float4" typeCode="7"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="3" name="metadata" nullable="true" remarks="" size="2147483647" type="json" typeCode="1111"/>
+         <primaryKey column="rarefaction_id" sequenceNumberInPK="1"/>
+         <primaryKey column="metric_id" sequenceNumberInPK="2"/>
+         <index name="pk_metric_sample_metrics" unique="true">
+            <column ascending="true" name="rarefaction_id"/>
+            <column ascending="true" name="metric_id"/>
+         </index>
+         <index name="fx_metric_sample_metrics_metric_id" unique="false">
+            <column ascending="true" name="metric_id"/>
+         </index>
+      </table>
+      <table name="metrics" numRows="74" remarks="" schema="metric" type="TABLE">
+         <column autoUpdated="true" defaultValue="null" digits="0" id="0" name="metric_id" nullable="false" remarks="" size="5" type="int2" typeCode="5">
+            <child column="metric_id" foreignKey="fk_metric_analysis_metrics_metric_id" implied="false" onDeleteCascade="true" schema="metric" table="analysis_metrics"/>
+            <child column="metric_id" foreignKey="fk_metric_metric_attributes_metric_id" implied="false" onDeleteCascade="true" schema="metric" table="metric_attributes"/>
+            <child column="metric_id" foreignKey="fk_metric_metric_taxa_metric_id" implied="false" onDeleteCascade="true" schema="metric" table="metric_taxa"/>
+            <child column="metric_id" foreignKey="fk_metric_sample_metrics_metric_id" implied="false" onDeleteCascade="false" schema="metric" table="metric_values"/>
          </column>
          <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="metric_name" nullable="false" remarks="" size="255" type="varchar" typeCode="12"/>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="2" name="description" nullable="true" remarks="" size="2147483647" type="text" typeCode="12"/>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="3" name="unit_id" nullable="false" remarks="" size="5" type="int2" typeCode="5">
-            <parent column="unit_id" foreignKey="fk_metric_types_unit_id" implied="false" onDeleteCascade="false" schema="geo" table="units"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="2" name="group_id" nullable="false" remarks="" size="5" type="int2" typeCode="5">
+            <parent column="group_id" foreignKey="fk_metrics_metric_type_id" implied="false" onDeleteCascade="false" schema="metric" table="metric_groups"/>
          </column>
-         <column autoUpdated="false" defaultValue="now()" digits="6" id="4" name="created_date" nullable="false" remarks="" size="35" type="timestamptz" typeCode="93"/>
-         <column autoUpdated="false" defaultValue="now()" digits="6" id="5" name="updated_date" nullable="false" remarks="" size="35" type="timestamptz" typeCode="93"/>
-         <primaryKey column="metric_type_id" sequenceNumberInPK="1"/>
-         <index name="metric_types_pkey" unique="true">
-            <column ascending="true" name="metric_type_id"/>
-         </index>
-         <index name="fx_metric_types_unit_id" unique="false">
-            <column ascending="true" name="unit_id"/>
-         </index>
-         <index name="metric_types_metric_name_key" unique="true">
-            <column ascending="true" name="metric_name"/>
-         </index>
-      </table>
-      <table name="metrics" numRows="0" remarks="" schema="metric" type="TABLE">
-         <column autoUpdated="true" defaultValue="null" digits="0" id="0" name="metric_id" nullable="false" remarks="" size="10" type="int4" typeCode="4"/>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="sample_id" nullable="false" remarks="" size="10" type="int4" typeCode="4">
-            <parent column="sample_id" foreignKey="fk_metrics_sample_id" implied="false" onDeleteCascade="true" schema="sample" table="samples"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="3" name="formula_id" nullable="true" remarks="" size="5" type="int2" typeCode="5">
+            <parent column="formula_id" foreignKey="fk_metrics_formula_id" implied="false" onDeleteCascade="false" schema="metric" table="formulae"/>
          </column>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="2" name="metric_type_id" nullable="false" remarks="" size="5" type="int2" typeCode="5">
-            <parent column="metric_type_id" foreignKey="fk_metrics_metric_type_id" implied="false" onDeleteCascade="false" schema="metric" table="metric_types"/>
-         </column>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="3" name="translation_id" nullable="false" remarks="" size="5" type="int2" typeCode="5">
-            <parent column="translation_id" foreignKey="fk_metrics_translation_id" implied="false" onDeleteCascade="true" schema="taxa" table="translations"/>
-         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="4" name="display_text" nullable="true" remarks="" size="2147483647" type="text" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="5" name="is_standardized" nullable="true" remarks="" size="1" type="bool" typeCode="-7"/>
+         <column autoUpdated="false" defaultValue="true" digits="0" id="6" name="is_active" nullable="false" remarks="" size="1" type="bool" typeCode="-7"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="7" name="perturb_direction" nullable="true" remarks="" size="2147483647" type="perturbation_directions" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="8" name="code_function" nullable="true" remarks="" size="2147483647" type="text" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="9" name="description" nullable="true" remarks="" size="2147483647" type="text" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="10" name="metadata" nullable="true" remarks="" size="2147483647" type="json" typeCode="1111"/>
+         <column autoUpdated="false" defaultValue="now()" digits="6" id="11" name="created_date" nullable="false" remarks="" size="35" type="timestamptz" typeCode="93"/>
+         <column autoUpdated="false" defaultValue="now()" digits="6" id="12" name="updated_date" nullable="false" remarks="" size="35" type="timestamptz" typeCode="93"/>
          <primaryKey column="metric_id" sequenceNumberInPK="1"/>
          <index name="metrics_pkey" unique="true">
             <column ascending="true" name="metric_id"/>
          </index>
+         <index name="fx_metrics_formula_id" unique="false">
+            <column ascending="true" name="formula_id"/>
+         </index>
          <index name="fx_metrics_metric_type_id" unique="false">
-            <column ascending="true" name="metric_type_id"/>
+            <column ascending="true" name="group_id"/>
+         </index>
+         <index name="metrics_metric_name_key" unique="true">
+            <column ascending="true" name="metric_name"/>
+         </index>
+         <checkConstraint constraint="((length((metric_name)::text) &gt; 0))" name="ck_metric_name"/>
+      </table>
+      <table name="rarefactions" numRows="0" remarks="" schema="metric" type="TABLE">
+         <column autoUpdated="true" defaultValue="null" digits="0" id="0" name="rarefaction_id" nullable="false" remarks="" size="10" type="int4" typeCode="4">
+            <child column="rarefaction_id" foreignKey="fk_metric_sample_metrics_rarefaction_id" implied="false" onDeleteCascade="true" schema="metric" table="metric_values"/>
+            <child column="rarefaction_id" foreignKey="fk_metric_report_samples_rarefaction_id" implied="false" onDeleteCascade="false" schema="metric" table="report_samples"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="sample_id" nullable="false" remarks="" size="10" type="int4" typeCode="4">
+            <parent column="sample_id" foreignKey="fk_metric_runs_sample_id" implied="false" onDeleteCascade="true" schema="sample" table="samples"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="2" name="translation_id" nullable="false" remarks="" size="5" type="int2" typeCode="5">
+            <parent column="translation_id" foreignKey="fk_metric_rarefactions_translation_id" implied="false" onDeleteCascade="false" schema="taxa" table="translations"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="3" name="fixed_count" nullable="false" remarks="" size="5" type="int2" typeCode="5"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="4" name="code_version" nullable="false" remarks="" size="50" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="5" name="rarefied_taxa" nullable="true" remarks="" size="2147483647" type="jsonb" typeCode="1111"/>
+         <column autoUpdated="false" defaultValue="now()" digits="6" id="6" name="created_date" nullable="false" remarks="" size="35" type="timestamptz" typeCode="93"/>
+         <primaryKey column="rarefaction_id" sequenceNumberInPK="1"/>
+         <index name="rarefactions_pkey" unique="true">
+            <column ascending="true" name="rarefaction_id"/>
+         </index>
+         <index name="ux_metric_runs_sample_id" unique="true">
+            <column ascending="true" name="sample_id"/>
+            <column ascending="true" name="translation_id"/>
+            <column ascending="true" name="fixed_count"/>
+            <column ascending="true" name="code_version"/>
          </index>
       </table>
-      <table name="reports" numRows="0" remarks="" schema="metric" type="TABLE">
-         <column autoUpdated="true" defaultValue="null" digits="0" id="0" name="report_id" nullable="false" remarks="" size="5" type="int2" typeCode="5">
-            <child column="report_id" foreignKey="fk_analysis_types_report_id" implied="false" onDeleteCascade="true" schema="metric" table="analysis_types"/>
+      <table name="report_samples" numRows="0" remarks="" schema="metric" type="TABLE">
+         <column autoUpdated="false" defaultValue="null" digits="0" id="0" name="report_id" nullable="false" remarks="" size="10" type="int4" typeCode="4">
+            <parent column="report_id" foreignKey="fk_metric_report_samples_report_id" implied="false" onDeleteCascade="true" schema="metric" table="reports"/>
          </column>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="report_name" nullable="false" remarks="" size="255" type="varchar" typeCode="12"/>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="2" name="description" nullable="true" remarks="" size="2147483647" type="text" typeCode="12"/>
-         <column autoUpdated="false" defaultValue="true" digits="0" id="3" name="is_active" nullable="false" remarks="" size="1" type="bool" typeCode="-7"/>
-         <column autoUpdated="false" defaultValue="now()" digits="6" id="4" name="created_date" nullable="false" remarks="" size="35" type="timestamptz" typeCode="93"/>
-         <column autoUpdated="false" defaultValue="now()" digits="6" id="5" name="updated_date" nullable="false" remarks="" size="35" type="timestamptz" typeCode="93"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="rarefaction_id" nullable="false" remarks="" size="10" type="int4" typeCode="4">
+            <parent column="rarefaction_id" foreignKey="fk_metric_report_samples_rarefaction_id" implied="false" onDeleteCascade="false" schema="metric" table="rarefactions"/>
+         </column>
+         <primaryKey column="report_id" sequenceNumberInPK="1"/>
+         <primaryKey column="rarefaction_id" sequenceNumberInPK="2"/>
+         <index name="pk_metric_report_samples" unique="true">
+            <column ascending="true" name="report_id"/>
+            <column ascending="true" name="rarefaction_id"/>
+         </index>
+      </table>
+      <table name="report_types" numRows="1" remarks="" schema="metric" type="TABLE">
+         <column autoUpdated="true" defaultValue="null" digits="0" id="0" name="report_type_id" nullable="false" remarks="" size="5" type="int2" typeCode="5">
+            <child column="report_type_id" foreignKey="fk_analyses_report_id" implied="false" onDeleteCascade="false" schema="metric" table="analyses"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="report_type_name" nullable="false" remarks="" size="255" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="2" name="display_text" nullable="true" remarks="" size="2147483647" type="text" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="3" name="description" nullable="true" remarks="" size="2147483647" type="text" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="4" name="metadata" nullable="true" remarks="" size="2147483647" type="json" typeCode="1111"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="5" name="code_function" nullable="true" remarks="" size="255" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="true" digits="0" id="6" name="is_active" nullable="false" remarks="" size="1" type="bool" typeCode="-7"/>
+         <column autoUpdated="false" defaultValue="now()" digits="6" id="7" name="created_date" nullable="false" remarks="" size="35" type="timestamptz" typeCode="93"/>
+         <column autoUpdated="false" defaultValue="now()" digits="6" id="8" name="updated_date" nullable="false" remarks="" size="35" type="timestamptz" typeCode="93"/>
+         <primaryKey column="report_type_id" sequenceNumberInPK="1"/>
+         <index name="report_types_pkey" unique="true">
+            <column ascending="true" name="report_type_id"/>
+         </index>
+         <index name="report_types_report_type_name_key" unique="true">
+            <column ascending="true" name="report_type_name"/>
+         </index>
+         <checkConstraint constraint="((length((report_type_name)::text) &gt; 0))" name="ck_report_type_name"/>
+      </table>
+      <table name="reports" numRows="0" remarks="" schema="metric" type="TABLE">
+         <column autoUpdated="true" defaultValue="null" digits="0" id="0" name="report_id" nullable="false" remarks="" size="10" type="int4" typeCode="4">
+            <child column="report_id" foreignKey="fk_metric_report_samples_report_id" implied="false" onDeleteCascade="true" schema="metric" table="report_samples"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="box_id" nullable="true" remarks="" size="10" type="int4" typeCode="4">
+            <parent column="box_id" foreignKey="fk_metric_reports_box_id" implied="false" onDeleteCascade="true" schema="sample" table="boxes"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="2" name="project_id" nullable="true" remarks="" size="5" type="int2" typeCode="5">
+            <parent column="project_id" foreignKey="fk_metric_reports_project_id" implied="false" onDeleteCascade="true" schema="sample" table="projects"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="3" name="customer_id" nullable="true" remarks="" size="5" type="int2" typeCode="5">
+            <parent column="entity_id" foreignKey="fk_metric_reports_customer_id" implied="false" onDeleteCascade="true" schema="entity" table="entities"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="4" name="model_id" nullable="true" remarks="" size="5" type="int2" typeCode="5">
+            <parent column="model_id" foreignKey="fk_metric_reports_model_id" implied="false" onDeleteCascade="false" schema="geo" table="models"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="5" name="metadata" nullable="true" remarks="" size="2147483647" type="json" typeCode="1111"/>
+         <column autoUpdated="false" defaultValue="now()" digits="6" id="6" name="created_date" nullable="false" remarks="" size="35" type="timestamptz" typeCode="93"/>
          <primaryKey column="report_id" sequenceNumberInPK="1"/>
          <index name="reports_pkey" unique="true">
             <column ascending="true" name="report_id"/>
          </index>
-         <index name="reports_report_name_key" unique="true">
-            <column ascending="true" name="report_name"/>
+         <index name="fx_metric_reports_box_id" unique="false">
+            <column ascending="true" name="box_id"/>
          </index>
+         <index name="fx_metric_reports_customer_id" unique="false">
+            <column ascending="true" name="customer_id"/>
+         </index>
+         <index name="fx_metric_reports_model_id" unique="false">
+            <column ascending="true" name="model_id"/>
+         </index>
+         <index name="fx_metric_reports_project_id" unique="false">
+            <column ascending="true" name="project_id"/>
+         </index>
+         <checkConstraint constraint="(((box_id IS NOT NULL) OR (project_id IS NOT NULL) OR (customer_id IS NOT NULL)))" name="ck_metric_reports"/>
       </table>
    </tables>
 </database>

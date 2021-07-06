@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<database name="bugdb" schema="geo" type="PostgreSQL - 12.4 (Debian 12.4-1.pgdg100+1)">
+<database name="bugdb" schema="geo" type="PostgreSQL - 13.1 (Debian 13.1-1.pgdg100+1)">
    <tables>
-      <table name="counties" numRows="1022" remarks="" schema="geo" type="TABLE">
+      <table name="counties" numRows="0" remarks="Legacy table that stores all counties within the United States. This table is not used by the new system, but is retained in case it is required in the future. The table is currently empty." schema="geo" type="TABLE">
          <column autoUpdated="true" defaultValue="null" digits="0" id="0" name="county_id" nullable="false" remarks="" size="5" type="int2" typeCode="5"/>
          <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="state_id" nullable="false" remarks="" size="5" type="int2" typeCode="5">
             <parent column="state_id" foreignKey="fk_counties_state_id" implied="false" onDeleteCascade="false" schema="geo" table="states"/>
          </column>
          <column autoUpdated="false" defaultValue="null" digits="0" id="2" name="county_name" nullable="false" remarks="" size="255" type="varchar" typeCode="12"/>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="3" name="geom" nullable="true" remarks="" size="2147483647" type="geometry" typeCode="1111"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="3" name="geom" nullable="true" remarks="" size="2147483647" type="geography" typeCode="1111"/>
          <column autoUpdated="false" defaultValue="now()" digits="6" id="4" name="created_date" nullable="false" remarks="" size="35" type="timestamptz" typeCode="93"/>
          <column autoUpdated="false" defaultValue="now()" digits="6" id="5" name="updated_date" nullable="false" remarks="" size="35" type="timestamptz" typeCode="93"/>
          <primaryKey column="county_id" sequenceNumberInPK="1"/>
@@ -24,15 +24,16 @@
             <column ascending="true" name="state_id"/>
             <column ascending="true" name="county_name"/>
          </index>
+         <checkConstraint constraint="((length((county_name)::text) &gt; 0))" name="ck_county_name"/>
       </table>
-      <table name="countries" numRows="249" remarks="" schema="geo" type="TABLE">
+      <table name="countries" numRows="249" remarks="Table containing one record for each country in the World.The Geography column is used to store a multi-polygon of the outline of the country for use  when validating sample locations." schema="geo" type="TABLE">
          <column autoUpdated="true" defaultValue="null" digits="0" id="0" name="country_id" nullable="false" remarks="" size="5" type="int2" typeCode="5">
             <child column="country_id" foreignKey="fk_entities_country_id" implied="false" onDeleteCascade="false" schema="entity" table="entities"/>
             <child column="country_id" foreignKey="fk_states_country_id" implied="false" onDeleteCascade="false" schema="geo" table="states"/>
          </column>
          <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="country_name" nullable="false" remarks="" size="50" type="varchar" typeCode="12"/>
          <column autoUpdated="false" defaultValue="null" digits="0" id="2" name="abbreviation" nullable="false" remarks="" size="5" type="varchar" typeCode="12"/>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="3" name="geom" nullable="true" remarks="" size="2147483647" type="geometry" typeCode="1111"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="3" name="geom" nullable="true" remarks="" size="2147483647" type="geography" typeCode="1111"/>
          <column autoUpdated="false" defaultValue="now()" digits="6" id="4" name="created_date" nullable="false" remarks="" size="35" type="timestamptz" typeCode="93"/>
          <column autoUpdated="false" defaultValue="now()" digits="6" id="5" name="updated_date" nullable="false" remarks="" size="35" type="timestamptz" typeCode="93"/>
          <primaryKey column="country_id" sequenceNumberInPK="1"/>
@@ -45,13 +46,13 @@
          <index name="gx_countries_geom" unique="false">
             <column ascending="true" name="geom"/>
          </index>
+         <checkConstraint constraint="((length((abbreviation)::text) &gt; 0))" name="abbreviation"/>
+         <checkConstraint constraint="((length((country_name)::text) &gt; 0))" name="country_name"/>
       </table>
       <table name="ecosystems" numRows="3" remarks="" schema="geo" type="TABLE">
          <column autoUpdated="true" defaultValue="null" digits="0" id="0" name="ecosystem_id" nullable="false" remarks="" size="5" type="int2" typeCode="5">
             <child column="ecosystem_id" foreignKey="fk_habitats_ecosystem_id" implied="false" onDeleteCascade="false" schema="geo" table="habitats"/>
-            <child column="ecosystem_id" foreignKey="fk_sites_ecosystem_id" implied="false" onDeleteCascade="false" schema="geo" table="sites"/>
             <child column="ecosystem_id" foreignKey="fk_systems_ecosystem_id" implied="false" onDeleteCascade="false" schema="geo" table="systems"/>
-            <child column="ecosystem_id" foreignKey="Implied Constraint" implied="true" onDeleteCascade="false" schema="geo" table="vw_sites"/>
          </column>
          <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="ecosystem_name" nullable="false" remarks="" size="10" type="varchar" typeCode="12"/>
          <column autoUpdated="false" defaultValue="true" digits="0" id="2" name="is_active" nullable="false" remarks="" size="1" type="bool" typeCode="-7"/>
@@ -65,6 +66,7 @@
          <index name="ecosystems_ecosystem_name_key" unique="true">
             <column ascending="true" name="ecosystem_name"/>
          </index>
+         <checkConstraint constraint="((length((ecosystem_name)::text) &gt; 0))" name="ck_ecosystem_name"/>
       </table>
       <table name="habitats" numRows="12" remarks="" schema="geo" type="TABLE">
          <column autoUpdated="true" defaultValue="null" digits="0" id="0" name="habitat_id" nullable="false" remarks="" size="5" type="int2" typeCode="5">
@@ -87,6 +89,7 @@
          <index name="ix_habitats_ecosystem_id" unique="false">
             <column ascending="true" name="ecosystem_id"/>
          </index>
+         <checkConstraint constraint="((length((habitat_name)::text) &gt; 0))" name="ck_habitat_name"/>
       </table>
       <table name="land_uses" numRows="7" remarks="" schema="geo" type="TABLE">
          <column autoUpdated="true" defaultValue="null" digits="0" id="0" name="land_use_id" nullable="false" remarks="" size="5" type="int2" typeCode="5"/>
@@ -101,8 +104,152 @@
          <index name="land_uses_land_use_name_key" unique="true">
             <column ascending="true" name="land_use_name"/>
          </index>
+         <checkConstraint constraint="((length((land_use_name)::text) &gt; 0))" name="ck_land_use_name"/>
       </table>
-      <table name="predictor_types" numRows="12" remarks="" schema="geo" type="TABLE">
+      <table name="model_conditions" numRows="75" remarks="" schema="geo" type="TABLE">
+         <column autoUpdated="true" defaultValue="null" digits="0" id="0" name="condition_id" nullable="false" remarks="" size="5" type="int2" typeCode="5"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="model_id" nullable="false" remarks="" size="5" type="int2" typeCode="5">
+            <parent column="model_id" foreignKey="fk_model_conditions_model_id" implied="false" onDeleteCascade="true" schema="geo" table="models"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="2" name="display_text" nullable="false" remarks="" size="50" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="3" name="description" nullable="true" remarks="" size="2147483647" type="text" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="4" name="condition" nullable="false" remarks="" size="2147483647" type="numrange" typeCode="1111"/>
+         <primaryKey column="condition_id" sequenceNumberInPK="1"/>
+         <index name="model_conditions_pkey" unique="true">
+            <column ascending="true" name="condition_id"/>
+         </index>
+         <index name="ix_model_conditions_condition" unique="false">
+            <column ascending="true" name="condition"/>
+         </index>
+         <index name="ux_model_conditions_model_condition" unique="true">
+            <column ascending="true" name="model_id"/>
+            <column ascending="true" name="condition"/>
+         </index>
+         <index name="ux_model_conditions_model_id" unique="true">
+            <column ascending="true" name="model_id"/>
+            <column ascending="true" name="display_text"/>
+         </index>
+         <checkConstraint constraint="((length((display_text)::text) &gt; 0))" name="ck_display_text"/>
+      </table>
+      <table name="model_predictors" numRows="196" remarks="" schema="geo" type="TABLE">
+         <column autoUpdated="false" defaultValue="null" digits="0" id="0" name="model_id" nullable="false" remarks="" size="5" type="int2" typeCode="5">
+            <parent column="model_id" foreignKey="fk_model_predictors_model_id" implied="false" onDeleteCascade="true" schema="geo" table="models"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="predictor_id" nullable="false" remarks="" size="5" type="int2" typeCode="5">
+            <parent column="predictor_id" foreignKey="fk_model_predictors_predictor_id" implied="false" onDeleteCascade="false" schema="geo" table="predictors"/>
+         </column>
+         <primaryKey column="model_id" sequenceNumberInPK="1"/>
+         <primaryKey column="predictor_id" sequenceNumberInPK="2"/>
+         <index name="pk_model_predictors" unique="true">
+            <column ascending="true" name="model_id"/>
+            <column ascending="true" name="predictor_id"/>
+         </index>
+      </table>
+      <table name="model_reference_sites" numRows="3121" remarks="" schema="geo" type="TABLE">
+         <column autoUpdated="false" defaultValue="null" digits="0" id="0" name="model_id" nullable="false" remarks="" size="5" type="int2" typeCode="5">
+            <parent column="model_id" foreignKey="fk_model_reference_sites_model_id" implied="false" onDeleteCascade="true" schema="geo" table="models"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="site_id" nullable="false" remarks="" size="10" type="int4" typeCode="4">
+            <parent column="site_id" foreignKey="fk_model_reference_sites_site_id" implied="false" onDeleteCascade="false" schema="geo" table="sites"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="2" name="description" nullable="true" remarks="" size="2147483647" type="text" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="3" name="metadata" nullable="true" remarks="" size="2147483647" type="json" typeCode="1111"/>
+         <primaryKey column="model_id" sequenceNumberInPK="1"/>
+         <primaryKey column="site_id" sequenceNumberInPK="2"/>
+         <index name="pk_model_reference_sites" unique="true">
+            <column ascending="true" name="model_id"/>
+            <column ascending="true" name="site_id"/>
+         </index>
+         <index name="fx_model_reference_sites_site_id" unique="false">
+            <column ascending="true" name="site_id"/>
+         </index>
+      </table>
+      <table name="model_types" numRows="4" remarks="" schema="geo" type="TABLE">
+         <column autoUpdated="true" defaultValue="null" digits="0" id="0" name="model_type_id" nullable="false" remarks="" size="5" type="int2" typeCode="5">
+            <child column="model_type_id" foreignKey="fk_models_model_type_id" implied="false" onDeleteCascade="false" schema="geo" table="models"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="abbreviation" nullable="false" remarks="" size="20" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="2" name="model_type_name" nullable="false" remarks="" size="255" type="varchar" typeCode="12"/>
+         <primaryKey column="model_type_id" sequenceNumberInPK="1"/>
+         <index name="model_types_pkey" unique="true">
+            <column ascending="true" name="model_type_id"/>
+         </index>
+         <index name="model_types_abbreviation_key" unique="true">
+            <column ascending="true" name="abbreviation"/>
+         </index>
+         <index name="model_types_model_type_name_key" unique="true">
+            <column ascending="true" name="model_type_name"/>
+         </index>
+         <checkConstraint constraint="((length((abbreviation)::text) &gt; 0))" name="ck_model_abbreviation"/>
+         <checkConstraint constraint="((length((model_type_name)::text) &gt; 0))" name="ck_model_type_name"/>
+      </table>
+      <table name="models" numRows="30" remarks="" schema="geo" type="TABLE">
+         <column autoUpdated="true" defaultValue="null" digits="0" id="0" name="model_id" nullable="false" remarks="" size="5" type="int2" typeCode="5">
+            <child column="model_id" foreignKey="fk_entity_models_model_id" implied="false" onDeleteCascade="true" schema="entity" table="entity_models"/>
+            <child column="model_id" foreignKey="fk_model_conditions_model_id" implied="false" onDeleteCascade="true" schema="geo" table="model_conditions"/>
+            <child column="model_id" foreignKey="fk_model_predictors_model_id" implied="false" onDeleteCascade="true" schema="geo" table="model_predictors"/>
+            <child column="model_id" foreignKey="fk_model_reference_sites_model_id" implied="false" onDeleteCascade="true" schema="geo" table="model_reference_sites"/>
+            <child column="model_id" foreignKey="fk_metric_reports_model_id" implied="false" onDeleteCascade="false" schema="metric" table="reports"/>
+            <child column="model_id" foreignKey="fk_box_models_model_id" implied="false" onDeleteCascade="true" schema="sample" table="box_models"/>
+            <child column="model_id" foreignKey="fk_sample_model_results_model_id" implied="false" onDeleteCascade="false" schema="sample" table="model_results"/>
+            <child column="model_id" foreignKey="fk_sample_project_models_model_id" implied="false" onDeleteCascade="true" schema="sample" table="project_models"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="model_name" nullable="false" remarks="" size="255" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="2" name="abbreviation" nullable="false" remarks="" size="50" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="3" name="model_type_id" nullable="false" remarks="" size="5" type="int2" typeCode="5">
+            <parent column="model_type_id" foreignKey="fk_models_model_type_id" implied="false" onDeleteCascade="false" schema="geo" table="model_types"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="4" name="translation_id" nullable="true" remarks="" size="5" type="int2" typeCode="5">
+            <parent column="translation_id" foreignKey="fk_models_translation_id" implied="false" onDeleteCascade="false" schema="taxa" table="translations"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="5" name="extent" nullable="true" remarks="" size="2147483647" type="geography" typeCode="1111"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="6" name="extent_description" nullable="true" remarks="" size="2147483647" type="text" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="7" name="platform" nullable="true" remarks="" size="255" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="8" name="reference_sites" nullable="true" remarks="" size="5" type="int2" typeCode="5"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="9" name="group_count" nullable="true" remarks="" size="5" type="int2" typeCode="5"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="10" name="minimum_count" nullable="true" remarks="" size="5" type="int2" typeCode="5"/>
+         <column autoUpdated="false" defaultValue="null" digits="8" id="11" name="oe_mean" nullable="true" remarks="" size="8" type="float4" typeCode="7"/>
+         <column autoUpdated="false" defaultValue="null" digits="8" id="12" name="oe_stdev" nullable="true" remarks="" size="8" type="float4" typeCode="7"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="13" name="taxonomic_effort" nullable="true" remarks="" size="2147483647" type="taxonomic_effort" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="true" digits="0" id="14" name="is_active" nullable="false" remarks="" size="1" type="bool" typeCode="-7"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="15" name="fixed_count" nullable="true" remarks="" size="5" type="int2" typeCode="5"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="16" name="unit_id" nullable="false" remarks="" size="5" type="int2" typeCode="5">
+            <parent column="unit_id" foreignKey="fk_models_units_id" implied="false" onDeleteCascade="false" schema="geo" table="units"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="17" name="description" nullable="true" remarks="" size="2147483647" type="text" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="18" name="metadata" nullable="true" remarks="" size="2147483647" type="json" typeCode="1111"/>
+         <column autoUpdated="false" defaultValue="now()" digits="6" id="19" name="created_date" nullable="false" remarks="" size="35" type="timestamptz" typeCode="93"/>
+         <column autoUpdated="false" defaultValue="now()" digits="6" id="20" name="updated_date" nullable="false" remarks="" size="35" type="timestamptz" typeCode="93"/>
+         <primaryKey column="model_id" sequenceNumberInPK="1"/>
+         <index name="models_pkey" unique="true">
+            <column ascending="true" name="model_id"/>
+         </index>
+         <index name="fx_models_model_type_id" unique="false">
+            <column ascending="true" name="model_type_id"/>
+         </index>
+         <index name="fx_models_translation_id" unique="false">
+            <column ascending="true" name="translation_id"/>
+         </index>
+         <index name="fx_models_unit_id" unique="false">
+            <column ascending="true" name="unit_id"/>
+         </index>
+         <index name="gx_models_extent" unique="false">
+            <column ascending="true" name="extent"/>
+         </index>
+         <index name="models_abbreviation_key" unique="true">
+            <column ascending="true" name="abbreviation"/>
+         </index>
+         <index name="models_model_name_key" unique="true">
+            <column ascending="true" name="model_name"/>
+         </index>
+         <checkConstraint constraint="((length((abbreviation)::text) &gt; 0))" name="ck_abbreviation"/>
+         <checkConstraint constraint="((length((model_name)::text) &gt; 0))" name="ck_model_name"/>
+         <checkConstraint constraint="((fixed_count &gt; 0))" name="ck_models_fixed_count"/>
+         <checkConstraint constraint="((group_count &gt; 0))" name="ck_models_group_count"/>
+         <checkConstraint constraint="((minimum_count &gt; 0))" name="ck_models_minimum_count"/>
+         <checkConstraint constraint="((reference_sites &gt; 0))" name="ck_models_reference_sites"/>
+      </table>
+      <table name="predictor_types" numRows="13" remarks="" schema="geo" type="TABLE">
          <column autoUpdated="true" defaultValue="null" digits="0" id="0" name="predictor_type_id" nullable="false" remarks="" size="5" type="int2" typeCode="5">
             <child column="predictor_type_id" foreignKey="fk_predictors_predictor_type_id" implied="false" onDeleteCascade="false" schema="geo" table="predictors"/>
          </column>
@@ -116,10 +263,13 @@
          <index name="predictor_types_predictor_type_name_key" unique="true">
             <column ascending="true" name="predictor_type_name"/>
          </index>
+         <checkConstraint constraint="((length((predictor_type_name)::text) &gt; 0))" name="ck_predictor_type_name"/>
       </table>
-      <table name="predictors" numRows="0" remarks="" schema="geo" type="TABLE">
+      <table name="predictors" numRows="169" remarks="" schema="geo" type="TABLE">
          <column autoUpdated="true" defaultValue="null" digits="0" id="0" name="predictor_id" nullable="false" remarks="" size="5" type="int2" typeCode="5">
+            <child column="predictor_id" foreignKey="fk_model_predictors_predictor_id" implied="false" onDeleteCascade="false" schema="geo" table="model_predictors"/>
             <child column="predictor_id" foreignKey="fk_site_predictors" implied="false" onDeleteCascade="false" schema="geo" table="site_predictors"/>
+            <child column="predictor_id" foreignKey="fk_sample_predictors_predictor_id" implied="false" onDeleteCascade="true" schema="sample" table="sample_predictors"/>
             <child column="predictor_id" foreignKey="fk_taxa_translation_predictors_predictor_id" implied="false" onDeleteCascade="false" schema="taxa" table="translation_predictors"/>
          </column>
          <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="predictor_name" nullable="false" remarks="" size="255" type="varchar" typeCode="12"/>
@@ -130,10 +280,12 @@
          <column autoUpdated="false" defaultValue="null" digits="0" id="4" name="predictor_type_id" nullable="false" remarks="" size="5" type="int2" typeCode="5">
             <parent column="predictor_type_id" foreignKey="fk_predictors_predictor_type_id" implied="false" onDeleteCascade="false" schema="geo" table="predictor_types"/>
          </column>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="5" name="description" nullable="true" remarks="" size="2147483647" type="text" typeCode="12"/>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="6" name="metadata" nullable="true" remarks="" size="2147483647" type="json" typeCode="1111"/>
-         <column autoUpdated="false" defaultValue="now()" digits="6" id="7" name="created_date" nullable="false" remarks="" size="35" type="timestamptz" typeCode="93"/>
-         <column autoUpdated="false" defaultValue="now()" digits="6" id="8" name="updated_date" nullable="false" remarks="" size="35" type="timestamptz" typeCode="93"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="5" name="is_temporal" nullable="false" remarks="" size="1" type="bool" typeCode="-7"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="6" name="description" nullable="true" remarks="" size="2147483647" type="text" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="7" name="metadata" nullable="true" remarks="" size="2147483647" type="json" typeCode="1111"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="8" name="calculation_script" nullable="true" remarks="" size="255" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="now()" digits="6" id="9" name="created_date" nullable="false" remarks="" size="35" type="timestamptz" typeCode="93"/>
+         <column autoUpdated="false" defaultValue="now()" digits="6" id="10" name="updated_date" nullable="false" remarks="" size="35" type="timestamptz" typeCode="93"/>
          <primaryKey column="predictor_id" sequenceNumberInPK="1"/>
          <index name="predictors_pkey" unique="true">
             <column ascending="true" name="predictor_id"/>
@@ -150,26 +302,74 @@
          <index name="predictors_predictor_name_key" unique="true">
             <column ascending="true" name="predictor_name"/>
          </index>
+         <checkConstraint constraint="((length((abbreviation)::text) &gt; 0))" name="ck_abbreviation"/>
+         <checkConstraint constraint="((length((predictor_name)::text) &gt; 0))" name="ck_predictor_name"/>
       </table>
-      <table name="site_predictors" numRows="0" remarks="" schema="geo" type="TABLE">
+      <table name="site_catchment_history" numRows="61" remarks="" schema="geo" type="TABLE">
+         <column autoUpdated="true" defaultValue="null" digits="0" id="0" name="catchment_id" nullable="false" remarks="" size="10" type="int4" typeCode="4"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="site_id" nullable="false" remarks="" size="10" type="int4" typeCode="4">
+            <parent column="site_id" foreignKey="fk_site_catchment_history_site_id" implied="false" onDeleteCascade="true" schema="geo" table="sites"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="2" name="catchment" nullable="false" remarks="" size="2147483647" type="geography" typeCode="1111"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="3" name="description" nullable="true" remarks="" size="2147483647" type="text" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="now()" digits="6" id="4" name="created_date" nullable="false" remarks="" size="35" type="timestamptz" typeCode="93"/>
+         <primaryKey column="catchment_id" sequenceNumberInPK="1"/>
+         <index name="site_catchment_history_pkey" unique="true">
+            <column ascending="true" name="catchment_id"/>
+         </index>
+         <index name="fx_site_catchment_history_site_id" unique="false">
+            <column ascending="true" name="site_id"/>
+         </index>
+         <index name="gx_site_catchment_history_site_id" unique="false">
+            <column ascending="true" name="catchment"/>
+         </index>
+      </table>
+      <table name="site_location_history" numRows="0" remarks="" schema="geo" type="TABLE">
+         <column autoUpdated="true" defaultValue="null" digits="0" id="0" name="location_id" nullable="false" remarks="" size="10" type="int4" typeCode="4"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="site_id" nullable="false" remarks="" size="10" type="int4" typeCode="4">
+            <parent column="site_id" foreignKey="fk_site_location_history_site_id" implied="false" onDeleteCascade="true" schema="geo" table="sites"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="2" name="location" nullable="false" remarks="" size="2147483647" type="geography" typeCode="1111"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="3" name="description" nullable="true" remarks="" size="2147483647" type="text" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="now()" digits="6" id="4" name="created_date" nullable="false" remarks="" size="35" type="timestamptz" typeCode="93"/>
+         <primaryKey column="location_id" sequenceNumberInPK="1"/>
+         <index name="site_location_history_pkey" unique="true">
+            <column ascending="true" name="location_id"/>
+         </index>
+         <index name="fx_site_location_history_site_id" unique="false">
+            <column ascending="true" name="site_id"/>
+         </index>
+         <index name="gx_site_location_history_site_id" unique="false">
+            <column ascending="true" name="location"/>
+         </index>
+      </table>
+      <table name="site_predictors" numRows="11733" remarks="" schema="geo" type="TABLE">
          <column autoUpdated="false" defaultValue="null" digits="0" id="0" name="predictor_id" nullable="false" remarks="" size="5" type="int2" typeCode="5">
             <parent column="predictor_id" foreignKey="fk_site_predictors" implied="false" onDeleteCascade="false" schema="geo" table="predictors"/>
          </column>
          <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="site_id" nullable="false" remarks="" size="10" type="int4" typeCode="4">
             <parent column="site_id" foreignKey="fk_site_site_id" implied="false" onDeleteCascade="false" schema="geo" table="sites"/>
          </column>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="2" name="metadata" nullable="false" remarks="" size="2147483647" type="jsonb" typeCode="1111"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="2" name="predictor_value" nullable="false" remarks="" size="255" type="varchar" typeCode="12"/>
          <column autoUpdated="false" defaultValue="now()" digits="6" id="3" name="created_date" nullable="false" remarks="" size="35" type="timestamptz" typeCode="93"/>
          <column autoUpdated="false" defaultValue="now()" digits="6" id="4" name="updated_date" nullable="false" remarks="" size="35" type="timestamptz" typeCode="93"/>
          <primaryKey column="predictor_id" sequenceNumberInPK="1"/>
          <primaryKey column="site_id" sequenceNumberInPK="2"/>
+         <primaryKey column="created_date" sequenceNumberInPK="3"/>
          <index name="pk_site_predictors" unique="true">
             <column ascending="true" name="predictor_id"/>
             <column ascending="true" name="site_id"/>
+            <column ascending="true" name="created_date"/>
+         </index>
+         <index name="fx_site_predictors_site_id" unique="false">
+            <column ascending="true" name="site_id"/>
          </index>
       </table>
-      <table name="sites" numRows="0" remarks="" schema="geo" type="TABLE">
+      <table name="sites" numRows="30889" remarks="" schema="geo" type="TABLE">
          <column autoUpdated="true" defaultValue="null" digits="0" id="0" name="site_id" nullable="false" remarks="" size="10" type="int4" typeCode="4">
+            <child column="site_id" foreignKey="fk_model_reference_sites_site_id" implied="false" onDeleteCascade="false" schema="geo" table="model_reference_sites"/>
+            <child column="site_id" foreignKey="fk_site_catchment_history_site_id" implied="false" onDeleteCascade="true" schema="geo" table="site_catchment_history"/>
+            <child column="site_id" foreignKey="fk_site_location_history_site_id" implied="false" onDeleteCascade="true" schema="geo" table="site_location_history"/>
             <child column="site_id" foreignKey="fk_site_site_id" implied="false" onDeleteCascade="false" schema="geo" table="site_predictors"/>
             <child column="site_id" foreignKey="Implied Constraint" implied="true" onDeleteCascade="false" schema="geo" table="vw_sites"/>
             <child column="site_id" foreignKey="fk_samples_site_id" implied="false" onDeleteCascade="false" schema="sample" table="samples"/>
@@ -178,27 +378,27 @@
          <column autoUpdated="false" defaultValue="null" digits="0" id="2" name="system_id" nullable="true" remarks="" size="5" type="int2" typeCode="5">
             <parent column="system_id" foreignKey="fk_sites_system_id" implied="false" onDeleteCascade="false" schema="geo" table="systems"/>
          </column>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="3" name="ecosystem_id" nullable="true" remarks="" size="5" type="int2" typeCode="5">
-            <parent column="ecosystem_id" foreignKey="fk_sites_ecosystem_id" implied="false" onDeleteCascade="false" schema="geo" table="ecosystems"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="3" name="description" nullable="true" remarks="" size="2147483647" type="text" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="4" name="location" nullable="false" remarks="" size="2147483647" type="geography" typeCode="1111"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="5" name="catchment" nullable="true" remarks="" size="2147483647" type="geography" typeCode="1111"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="6" name="waterbody_type_id" nullable="true" remarks="" size="5" type="int2" typeCode="5">
+            <parent column="waterbody_type_id" foreignKey="fk_sites_waterbody_type_id" implied="false" onDeleteCascade="false" schema="geo" table="waterbody_types"/>
          </column>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="4" name="description" nullable="true" remarks="" size="2147483647" type="text" typeCode="12"/>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="5" name="waterbody" nullable="true" remarks="" size="255" type="varchar" typeCode="12"/>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="6" name="location" nullable="false" remarks="" size="2147483647" type="geometry" typeCode="1111"/>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="7" name="catchment" nullable="true" remarks="" size="2147483647" type="geometry" typeCode="1111"/>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="8" name="nhdplusid" nullable="true" remarks="" size="19" type="int8" typeCode="-5"/>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="9" name="comid" nullable="true" remarks="" size="19" type="int8" typeCode="-5"/>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="10" name="metadata" nullable="true" remarks="" size="2147483647" type="json" typeCode="1111"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="7" name="waterbody_code" nullable="true" remarks="" size="100" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="8" name="waterbody_name" nullable="true" remarks="" size="255" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="9" name="metadata" nullable="true" remarks="" size="2147483647" type="json" typeCode="1111"/>
+         <column autoUpdated="false" defaultValue="now()" digits="6" id="10" name="geography_changed" nullable="false" remarks="" size="35" type="timestamptz" typeCode="93"/>
          <column autoUpdated="false" defaultValue="now()" digits="6" id="11" name="created_date" nullable="false" remarks="" size="35" type="timestamptz" typeCode="93"/>
          <column autoUpdated="false" defaultValue="now()" digits="6" id="12" name="updated_date" nullable="false" remarks="" size="35" type="timestamptz" typeCode="93"/>
          <primaryKey column="site_id" sequenceNumberInPK="1"/>
          <index name="sites_pkey" unique="true">
             <column ascending="true" name="site_id"/>
          </index>
-         <index name="fx_sites_ecosystems" unique="false">
-            <column ascending="true" name="ecosystem_id"/>
-         </index>
-         <index name="fx_sites_systems" unique="false">
+         <index name="fx_sites_system_id" unique="false">
             <column ascending="true" name="system_id"/>
+         </index>
+         <index name="fx_sites_waterbody_type_id" unique="false">
+            <column ascending="true" name="waterbody_type_id"/>
          </index>
          <index name="gx_sites_catchment" unique="false">
             <column ascending="true" name="catchment"/>
@@ -209,8 +409,11 @@
          <index name="sites_site_name_key" unique="true">
             <column ascending="true" name="site_name"/>
          </index>
+         <checkConstraint constraint="((length((site_name)::text) &gt; 0))" name="ck_site_name"/>
+         <checkConstraint constraint="((length((waterbody_code)::text) &gt; 0))" name="ck_waterbody_code"/>
+         <checkConstraint constraint="((length((waterbody_name)::text) &gt; 0))" name="ck_waterbody_name"/>
       </table>
-      <table name="states" numRows="51" remarks="" schema="geo" type="TABLE">
+      <table name="states" numRows="51" remarks="table containing the 50 states of America. The Geography column contains a multi-polygon of the outline of each state. These polygons are copied or unioned together and stored in geo.models when a model pertains to a single or collection of US states. Note that this table does NOT currently store any sub-national states for countries other than the United States of America." schema="geo" type="TABLE">
          <column autoUpdated="true" defaultValue="null" digits="0" id="0" name="state_id" nullable="false" remarks="" size="5" type="int2" typeCode="5">
             <child column="state_id" foreignKey="fk_entities_state_id" implied="false" onDeleteCascade="false" schema="entity" table="entities"/>
             <child column="state_id" foreignKey="fk_counties_state_id" implied="false" onDeleteCascade="false" schema="geo" table="counties"/>
@@ -220,7 +423,7 @@
          </column>
          <column autoUpdated="false" defaultValue="null" digits="0" id="2" name="state_name" nullable="false" remarks="" size="50" type="varchar" typeCode="12"/>
          <column autoUpdated="false" defaultValue="null" digits="0" id="3" name="abbreviation" nullable="false" remarks="" size="2" type="varchar" typeCode="12"/>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="4" name="geom" nullable="true" remarks="" size="2147483647" type="geometry" typeCode="1111"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="4" name="geom" nullable="true" remarks="" size="2147483647" type="geography" typeCode="1111"/>
          <column autoUpdated="false" defaultValue="now()" digits="6" id="5" name="created_date" nullable="false" remarks="" size="35" type="timestamptz" typeCode="93"/>
          <column autoUpdated="false" defaultValue="now()" digits="6" id="6" name="updated_date" nullable="false" remarks="" size="35" type="timestamptz" typeCode="93"/>
          <primaryKey column="state_id" sequenceNumberInPK="1"/>
@@ -241,11 +444,12 @@
             <column ascending="true" name="country_id"/>
             <column ascending="true" name="state_name"/>
          </index>
+         <checkConstraint constraint="((length((abbreviation)::text) &gt; 0))" name="ck_abbreviation"/>
+         <checkConstraint constraint="((length((state_name)::text) &gt; 0))" name="ck_state_name"/>
       </table>
       <table name="systems" numRows="13" remarks="" schema="geo" type="TABLE">
          <column autoUpdated="true" defaultValue="null" digits="0" id="0" name="system_id" nullable="false" remarks="" size="5" type="int2" typeCode="5">
             <child column="system_id" foreignKey="fk_sites_system_id" implied="false" onDeleteCascade="false" schema="geo" table="sites"/>
-            <child column="system_id" foreignKey="Implied Constraint" implied="true" onDeleteCascade="false" schema="geo" table="vw_sites"/>
          </column>
          <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="system_name" nullable="false" remarks="" size="20" type="varchar" typeCode="12"/>
          <column autoUpdated="false" defaultValue="null" digits="0" id="2" name="ecosystem_id" nullable="false" remarks="" size="5" type="int2" typeCode="5">
@@ -264,14 +468,15 @@
          <index name="systems_system_name_key" unique="true">
             <column ascending="true" name="system_name"/>
          </index>
+         <checkConstraint constraint="((length((system_name)::text) &gt; 0))" name="ck_system_name"/>
       </table>
-      <table name="units" numRows="14" remarks="" schema="geo" type="TABLE">
+      <table name="units" numRows="23" remarks="" schema="geo" type="TABLE">
          <column autoUpdated="true" defaultValue="null" digits="0" id="0" name="unit_id" nullable="false" remarks="" size="5" type="int2" typeCode="5">
+            <child column="unit_id" foreignKey="fk_models_units_id" implied="false" onDeleteCascade="false" schema="geo" table="models"/>
             <child column="unit_id" foreignKey="fk_predictors_unit_id" implied="false" onDeleteCascade="false" schema="geo" table="predictors"/>
-            <child column="unit_id" foreignKey="fk_metric_types_unit_id" implied="false" onDeleteCascade="false" schema="metric" table="metric_types"/>
          </column>
          <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="unit_name" nullable="false" remarks="" size="50" type="varchar" typeCode="12"/>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="2" name="abbreviation" nullable="false" remarks="" size="10" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="2" name="abbreviation" nullable="false" remarks="" size="20" type="varchar" typeCode="12"/>
          <column autoUpdated="false" defaultValue="null" digits="0" id="3" name="description" nullable="true" remarks="" size="2147483647" type="text" typeCode="12"/>
          <column autoUpdated="false" defaultValue="now()" digits="6" id="4" name="created_date" nullable="false" remarks="" size="35" type="timestamptz" typeCode="93"/>
          <column autoUpdated="false" defaultValue="now()" digits="6" id="5" name="updated_date" nullable="false" remarks="" size="35" type="timestamptz" typeCode="93"/>
@@ -285,25 +490,40 @@
          <index name="units_unit_name_key" unique="true">
             <column ascending="true" name="unit_name"/>
          </index>
+         <checkConstraint constraint="((length((abbreviation)::text) &gt; 0))" name="ck_abbreviation"/>
+         <checkConstraint constraint="((length((unit_name)::text) &gt; 0))" name="ck_unit_name"/>
       </table>
-      <table name="vw_sites" numRows="0" remarks="" schema="geo" type="VIEW" viewSql=" SELECT s.site_id,&#10;    s.site_name,&#10;    s.system_id,&#10;    sy.system_name,&#10;    s.ecosystem_id,&#10;    e.ecosystem_name,&#10;    s.waterbody,&#10;    st_x(s.location) AS longitude,&#10;    st_y(s.location) AS latitude,&#10;    s.created_date,&#10;    s.updated_date&#10;   FROM ((geo.sites s&#10;     LEFT JOIN geo.systems sy ON ((s.system_id = sy.system_id)))&#10;     LEFT JOIN geo.ecosystems e ON ((s.ecosystem_id = e.ecosystem_id)));">
+      <table name="vw_sites" numRows="0" remarks="" schema="geo" type="VIEW" viewSql=" SELECT s.site_id,&#10;    s.site_name,&#10;    sy.system_name AS system,&#10;    e.ecosystem_name AS ecosystem,&#10;    st_x((s.location)::geometry) AS longitude,&#10;    st_y((s.location)::geometry) AS latitude,&#10;    st.abbreviation AS us_state,&#10;    w.waterbody_type_name,&#10;    s.waterbody_code,&#10;    s.waterbody_name,&#10;    s.created_date,&#10;    s.updated_date,&#10;    (s.catchment IS NOT NULL) AS has_catchment&#10;   FROM ((((geo.sites s&#10;     LEFT JOIN geo.states st ON (st_covers(st.geom, s.location)))&#10;     LEFT JOIN geo.systems sy ON ((s.system_id = sy.system_id)))&#10;     LEFT JOIN geo.ecosystems e ON ((sy.ecosystem_id = e.ecosystem_id)))&#10;     LEFT JOIN geo.waterbody_types w ON ((s.waterbody_type_id = w.waterbody_type_id)));">
          <column autoUpdated="false" defaultValue="null" digits="0" id="0" name="site_id" nullable="true" remarks="" size="10" type="int4" typeCode="4">
             <parent column="site_id" foreignKey="Implied Constraint" implied="true" onDeleteCascade="false" schema="geo" table="sites"/>
          </column>
          <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="site_name" nullable="true" remarks="" size="50" type="varchar" typeCode="12"/>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="2" name="system_id" nullable="true" remarks="" size="5" type="int2" typeCode="5">
-            <parent column="system_id" foreignKey="Implied Constraint" implied="true" onDeleteCascade="false" schema="geo" table="systems"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="2" name="system" nullable="true" remarks="" size="20" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="3" name="ecosystem" nullable="true" remarks="" size="10" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="17" id="4" name="longitude" nullable="true" remarks="" size="17" type="float8" typeCode="8"/>
+         <column autoUpdated="false" defaultValue="null" digits="17" id="5" name="latitude" nullable="true" remarks="" size="17" type="float8" typeCode="8"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="6" name="us_state" nullable="true" remarks="" size="2" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="7" name="waterbody_type_name" nullable="true" remarks="" size="255" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="8" name="waterbody_code" nullable="true" remarks="" size="100" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="9" name="waterbody_name" nullable="true" remarks="" size="255" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="6" id="10" name="created_date" nullable="true" remarks="" size="35" type="timestamptz" typeCode="93"/>
+         <column autoUpdated="false" defaultValue="null" digits="6" id="11" name="updated_date" nullable="true" remarks="" size="35" type="timestamptz" typeCode="93"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="12" name="has_catchment" nullable="true" remarks="" size="1" type="bool" typeCode="-7"/>
+      </table>
+      <table name="waterbody_types" numRows="2" remarks="" schema="geo" type="TABLE">
+         <column autoUpdated="true" defaultValue="null" digits="0" id="0" name="waterbody_type_id" nullable="false" remarks="" size="5" type="int2" typeCode="5">
+            <child column="waterbody_type_id" foreignKey="fk_sites_waterbody_type_id" implied="false" onDeleteCascade="false" schema="geo" table="sites"/>
          </column>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="3" name="system_name" nullable="true" remarks="" size="20" type="varchar" typeCode="12"/>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="4" name="ecosystem_id" nullable="true" remarks="" size="5" type="int2" typeCode="5">
-            <parent column="ecosystem_id" foreignKey="Implied Constraint" implied="true" onDeleteCascade="false" schema="geo" table="ecosystems"/>
-         </column>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="5" name="ecosystem_name" nullable="true" remarks="" size="10" type="varchar" typeCode="12"/>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="6" name="waterbody" nullable="true" remarks="" size="255" type="varchar" typeCode="12"/>
-         <column autoUpdated="false" defaultValue="null" digits="17" id="7" name="longitude" nullable="true" remarks="" size="17" type="float8" typeCode="8"/>
-         <column autoUpdated="false" defaultValue="null" digits="17" id="8" name="latitude" nullable="true" remarks="" size="17" type="float8" typeCode="8"/>
-         <column autoUpdated="false" defaultValue="null" digits="6" id="9" name="created_date" nullable="true" remarks="" size="35" type="timestamptz" typeCode="93"/>
-         <column autoUpdated="false" defaultValue="null" digits="6" id="10" name="updated_date" nullable="true" remarks="" size="35" type="timestamptz" typeCode="93"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="waterbody_type_name" nullable="false" remarks="" size="255" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="2" name="metadata" nullable="true" remarks="" size="2147483647" type="json" typeCode="1111"/>
+         <primaryKey column="waterbody_type_id" sequenceNumberInPK="1"/>
+         <index name="waterbody_types_pkey" unique="true">
+            <column ascending="true" name="waterbody_type_id"/>
+         </index>
+         <index name="waterbody_types_waterbody_type_name_key" unique="true">
+            <column ascending="true" name="waterbody_type_name"/>
+         </index>
+         <checkConstraint constraint="((length((waterbody_type_name)::text) &gt; 0))" name="ck_waterbody_type_name"/>
       </table>
    </tables>
 </database>

@@ -141,6 +141,95 @@
                                     <td></td>
                                 </tr>
                                 <tr>
+                                    <td><span id="customer_id">customer_id</span></td>
+                                    <td>int2</td>
+                                    <td>5</td>
+                                    <td title='nullable'>√</td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td><span id="customer_name">customer_name</span></td>
+                                    <td>varchar</td>
+                                    <td>255</td>
+                                    <td title='nullable'>√</td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td><span id="box_state_name">box_state_name</span></td>
+                                    <td>varchar</td>
+                                    <td>50</td>
+                                    <td title='nullable'>√</td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td class='foreignKey' title='Foreign Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="box_state_id">box_state_id</span></td>
+                                    <td>int2</td>
+                                    <td>5</td>
+                                    <td title='nullable'>√</td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                            <tr>
+                                                <td title="vw_samples.box_state_id&#39;s name implies that it&#39;s a child of box_states.box_state_id, but it doesn&#39;t reference that column."><a href='box_states.html'>box_states</a><span class='relatedKey'>.box_state_id</span></td>
+                                                <td class="constraint detail">Implied Constraint<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td><span id="submitter_name">submitter_name</span></td>
+                                    <td>text</td>
+                                    <td>2147483647</td>
+                                    <td title='nullable'>√</td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td></td>
+                                </tr>
+                                <tr>
                                     <td><span id="site_id">site_id</span></td>
                                     <td>int4</td>
                                     <td>10</td>
@@ -175,9 +264,111 @@
                                     <td></td>
                                 </tr>
                                 <tr>
+                                    <td><span id="site_latitude">site_latitude</span></td>
+                                    <td>float8</td>
+                                    <td>17,17</td>
+                                    <td title='nullable'>√</td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td><span id="site_longitude">site_longitude</span></td>
+                                    <td>float8</td>
+                                    <td>17,17</td>
+                                    <td title='nullable'>√</td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td><span id="site_state">site_state</span></td>
+                                    <td>varchar</td>
+                                    <td>2</td>
+                                    <td title='nullable'>√</td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td></td>
+                                </tr>
+                                <tr>
                                     <td><span id="sample_date">sample_date</span></td>
                                     <td>date</td>
                                     <td>13</td>
+                                    <td title='nullable'>√</td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td><span id="sample_year">sample_year</span></td>
+                                    <td>float8</td>
+                                    <td>17,17</td>
+                                    <td title='nullable'>√</td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td><span id="sample_latitude">sample_latitude</span></td>
+                                    <td>float8</td>
+                                    <td>17,17</td>
+                                    <td title='nullable'>√</td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td><span id="sample_longitude">sample_longitude</span></td>
+                                    <td>float8</td>
+                                    <td>17,17</td>
                                     <td title='nullable'>√</td>
                                     <td title=''></td>
                                     <td>null</td>
@@ -226,7 +417,7 @@
                                     <td></td>
                                 </tr>
                                 <tr>
-                                    <td><span id="sample_type_name">sample_type_name</span></td>
+                                    <td><span id="sample_type">sample_type</span></td>
                                     <td>varchar</td>
                                     <td>50</td>
                                     <td title='nullable'>√</td>
@@ -260,7 +451,7 @@
                                     <td></td>
                                 </tr>
                                 <tr>
-                                    <td><span id="sample_method_name">sample_method_name</span></td>
+                                    <td><span id="sample_method">sample_method</span></td>
                                     <td>varchar</td>
                                     <td>50</td>
                                     <td title='nullable'>√</td>
@@ -448,8 +639,416 @@
                                 </tr>
                                 <tr>
                                     <td><span id="qa_sample_id">qa_sample_id</span></td>
+                                    <td>int4</td>
+                                    <td>10</td>
+                                    <td title='nullable'>√</td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td><span id="diameter">diameter</span></td>
+                                    <td>float4</td>
+                                    <td>8,8</td>
+                                    <td title='nullable'>√</td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td><span id="sub_sample_count">sub_sample_count</span></td>
                                     <td>int2</td>
                                     <td>5</td>
+                                    <td title='nullable'>√</td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td><span id="tow_length">tow_length</span></td>
+                                    <td>float4</td>
+                                    <td>8,8</td>
+                                    <td title='nullable'>√</td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td><span id="volume">volume</span></td>
+                                    <td>float4</td>
+                                    <td>8,8</td>
+                                    <td title='nullable'>√</td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td><span id="aliquot">aliquot</span></td>
+                                    <td>float4</td>
+                                    <td>8,8</td>
+                                    <td title='nullable'>√</td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td><span id="size_interval">size_interval</span></td>
+                                    <td>float4</td>
+                                    <td>8,8</td>
+                                    <td title='nullable'>√</td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td><span id="tow_type">tow_type</span></td>
+                                    <td>tow_types</td>
+                                    <td>2147483647</td>
+                                    <td title='nullable'>√</td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td><span id="net_area">net_area</span></td>
+                                    <td>float8</td>
+                                    <td>17,17</td>
+                                    <td title='nullable'>√</td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td><span id="net_duration">net_duration</span></td>
+                                    <td>float8</td>
+                                    <td>17,17</td>
+                                    <td title='nullable'>√</td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td><span id="stream_depth">stream_depth</span></td>
+                                    <td>float8</td>
+                                    <td>17,17</td>
+                                    <td title='nullable'>√</td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td><span id="net_depth">net_depth</span></td>
+                                    <td>float8</td>
+                                    <td>17,17</td>
+                                    <td title='nullable'>√</td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td><span id="net_velocity">net_velocity</span></td>
+                                    <td>float8</td>
+                                    <td>17,17</td>
+                                    <td title='nullable'>√</td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td><span id="taxonomy_id">taxonomy_id</span></td>
+                                    <td>int2</td>
+                                    <td>5</td>
+                                    <td title='nullable'>√</td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td><span id="life_stage">life_stage</span></td>
+                                    <td>bpchar</td>
+                                    <td>1</td>
+                                    <td title='nullable'>√</td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td><span id="bug_size">bug_size</span></td>
+                                    <td>float4</td>
+                                    <td>8,8</td>
+                                    <td title='nullable'>√</td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td><span id="split_count">split_count</span></td>
+                                    <td>float4</td>
+                                    <td>8,8</td>
+                                    <td title='nullable'>√</td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td><span id="big_rare_count">big_rare_count</span></td>
+                                    <td>int2</td>
+                                    <td>5</td>
+                                    <td title='nullable'>√</td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td><span id="phylum">phylum</span></td>
+                                    <td>varchar</td>
+                                    <td>255</td>
+                                    <td title='nullable'>√</td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td><span id="class">class</span></td>
+                                    <td>varchar</td>
+                                    <td>255</td>
+                                    <td title='nullable'>√</td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td><span id="subclass">subclass</span></td>
+                                    <td>varchar</td>
+                                    <td>255</td>
+                                    <td title='nullable'>√</td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td><span id="Order">Order</span></td>
+                                    <td>varchar</td>
+                                    <td>255</td>
+                                    <td title='nullable'>√</td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td><span id="family">family</span></td>
+                                    <td>varchar</td>
+                                    <td>255</td>
+                                    <td title='nullable'>√</td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td><span id="genus">genus</span></td>
+                                    <td>varchar</td>
+                                    <td>255</td>
+                                    <td title='nullable'>√</td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td><span id="is_private">is_private</span></td>
+                                    <td>bool</td>
+                                    <td>1</td>
                                     <td title='nullable'>√</td>
                                     <td title=''></td>
                                     <td>null</td>
@@ -487,30 +1086,32 @@
                                 <div class="tab-content no-padding">
                                     <div class="chart tab-pane active" id="oneDegreeImg-chart" style="position: relative; overflow-x:auto;">
                                         <map id="oneDegreeRelationshipsDiagram" name="oneDegreeRelationshipsDiagram">
-<area shape="rect" id="node1" href="vw_samples.html" target="_top" title="vw_samples" alt="" coords="5,5,353,667">
+<area shape="rect" id="node1" href="vw_samples.html" target="_top" title="vw_samples" alt="" coords="5,5,365,1693">
 </map>
                                         <a name='diagram'><img id="oneDegreeImg" src="../diagrams/tables/vw_samples.1degree.png" usemap="#oneDegreeRelationshipsDiagram" class="diagram" border="0" align="left"></a>
                                     </div>
                                     <div class="chart tab-pane " id="oneimpliedDegreeImg-chart" style="position: relative; overflow-x:auto;">
                                         <map id="oneDegreeRelationshipsDiagramImplied" name="oneDegreeRelationshipsDiagramImplied">
-<area shape="rect" id="node1" href="vw_samples.html" target="_top" title="vw_samples" alt="" coords="304,5,652,667">
-<area shape="rect" id="node2" href="boxes.html" target="_top" title="boxes" alt="" coords="5,37,260,272">
+<area shape="rect" id="node1" href="boxes.html" target="_top" title="boxes" alt="" coords="224,5,479,211">
+<area shape="rect" id="node2" href="box_states.html" target="_top" title="box_states" alt="" coords="5,141,180,317">
+<area shape="rect" id="node3" href="vw_samples.html" target="_top" title="vw_samples" alt="" coords="523,5,883,1693">
 </map>
                                         <a name='diagram'><img id="oneimpliedDegreeImg" src="../diagrams/tables/vw_samples.implied1degrees.png" usemap="#oneDegreeRelationshipsDiagramImplied" class="diagram" border="0" align="left"></a>
                                     </div>
                                     <div class="chart tab-pane " id="twoimpliedDegreeImg-chart" style="position: relative; overflow-x:auto;">
                                         <map id="twoDegreesRelationshipsDiagramImplied" name="twoDegreesRelationshipsDiagramImplied">
-<area shape="rect" id="node1" href="../billing/tables/invoice_boxes.html" target="_top" title="billing.invoice_boxes" alt="" coords="827,87,1055,175">
-<area shape="rect" id="node2" href="boxes.html" target="_top" title="boxes" alt="" coords="468,189,723,424">
-<area shape="rect" id="node4" href="box_states.html" target="_top" title="box_states" alt="" coords="245,204,403,292">
-<area shape="rect" id="node5" href="../entity/tables/entities.html" target="_top" title="entity.entities" alt="" coords="5,220,180,308">
-<area shape="rect" id="node6" href="projects.html" target="_top" title="projects" alt="" coords="255,309,393,397">
-<area shape="rect" id="node7" href="../entity/tables/individuals.html" target="_top" title="entity.individuals" alt="" coords="224,748,424,836">
-<area shape="rect" id="node3" href="../public/tables/sample_box_assets.html" target="_top" title="public.sample_box_assets" alt="" coords="808,192,1073,280">
-<area shape="rect" id="node8" href="samples.html" target="_top" title="samples" alt="" coords="871,297,1011,385">
-<area shape="rect" id="node9" href="submissions.html" target="_top" title="submissions" alt="" coords="856,1081,1025,1169">
-<area shape="rect" id="node10" href="vw_boxes.html" target="_top" title="vw_boxes" alt="" coords="867,5,1014,69">
-<area shape="rect" id="node11" href="vw_samples.html" target="_top" title="vw_samples" alt="" coords="767,403,1115,1064">
+<area shape="rect" id="node1" href="../billing/tables/invoice_boxes.html" target="_top" title="billing.invoice_boxes" alt="" coords="614,2108,842,2196">
+<area shape="rect" id="node2" href="boxes.html" target="_top" title="boxes" alt="" coords="249,1947,504,2152">
+<area shape="rect" id="node6" href="box_states.html" target="_top" title="box_states" alt="" coords="18,1708,193,1884">
+<area shape="rect" id="node7" href="../entity/tables/entities.html" target="_top" title="entity.entities" alt="" coords="18,1979,193,2067">
+<area shape="rect" id="node8" href="../entity/tables/individuals.html" target="_top" title="entity.individuals" alt="" coords="5,2201,205,2289">
+<area shape="rect" id="node3" href="../metric/tables/reports.html" target="_top" title="metric.reports" alt="" coords="638,2213,818,2301">
+<area shape="rect" id="node4" href="box_assets.html" target="_top" title="box_assets" alt="" coords="648,1792,808,1880">
+<area shape="rect" id="node5" href="box_models.html" target="_top" title="box_models" alt="" coords="645,1897,811,1985">
+<area shape="rect" id="node9" href="samples.html" target="_top" title="samples" alt="" coords="640,2003,816,2091">
+<area shape="rect" id="node10" href="submissions.html" target="_top" title="submissions" alt="" coords="643,2319,813,2407">
+<area shape="rect" id="node11" href="vw_boxes.html" target="_top" title="vw_boxes" alt="" coords="655,1711,801,1775">
+<area shape="rect" id="node12" href="vw_samples.html" target="_top" title="vw_samples" alt="" coords="548,5,908,1693">
 </map>
                                         <a name='diagram'><img id="twoimpliedDegreeImg" src="../diagrams/tables/vw_samples.implied2degrees.png" usemap="#twoDegreesRelationshipsDiagramImplied" class="diagram" border="0" align="left"></a>
                                     </div>
@@ -528,7 +1129,7 @@
                             </div>
                         </div>
                         <div class="box-body">
-                            <textarea id="sql-script-codemirror" name="sql-script-codemirror" rows="" style="display: none;">SELECT s.sample_id,&#10;    s.box_id,&#10;    s.site_id,&#10;    si.site_name,&#10;    s.sample_date,&#10;    s.sample_time,&#10;    s.type_id,&#10;    t.sample_type_name,&#10;    s.method_id,&#10;    m.sample_method_name,&#10;    s.habitat_id,&#10;    h.habitat_name,&#10;    s.area,&#10;    s.field_split,&#10;    s.lab_split,&#10;    s.jar_count,&#10;    s.qualitative,&#10;    s.mesh,&#10;    s.created_date,&#10;    s.updated_date,&#10;    s.qa_sample_id&#10;   FROM ((((sample.samples s&#10;     JOIN sample.sample_types t ON ((s.type_id = t.sample_type_id)))&#10;     JOIN sample.sample_methods m ON ((s.method_id = m.sample_method_id)))&#10;     JOIN geo.habitats h ON ((s.habitat_id = h.habitat_id)))&#10;     LEFT JOIN geo.sites si ON ((s.site_id = si.site_id)));</textarea>
+                            <textarea id="sql-script-codemirror" name="sql-script-codemirror" rows="" style="display: none;">SELECT s.sample_id,&#10;    s.box_id,&#10;    b.customer_id,&#10;    b.customer_name,&#10;    b.box_state_name,&#10;    b.box_state_id,&#10;    b.submitter_name,&#10;    s.site_id,&#10;    si.site_name,&#10;    si.latitude AS site_latitude,&#10;    si.longitude AS site_longitude,&#10;    si.us_state AS site_state,&#10;    s.sample_date,&#10;    date_part(&#39;year&#39;::text, s.sample_date) AS sample_year,&#10;    st_y((s.location)::geometry) AS sample_latitude,&#10;    st_x((s.location)::geometry) AS sample_longitude,&#10;    s.sample_time,&#10;    s.type_id,&#10;    st.sample_type_name AS sample_type,&#10;    s.method_id,&#10;    m.sample_method_name AS sample_method,&#10;    s.habitat_id,&#10;    h.habitat_name,&#10;    s.area,&#10;    s.field_split,&#10;    s.lab_split,&#10;    s.jar_count,&#10;    s.qualitative,&#10;    s.mesh,&#10;    s.created_date,&#10;    s.updated_date,&#10;    s.qa_sample_id,&#10;    p.diameter,&#10;    p.sub_sample_count,&#10;    p.tow_length,&#10;    p.volume,&#10;    p.aliquot,&#10;    p.size_interval,&#10;    p.tow_type,&#10;    d.net_area,&#10;    d.net_duration,&#10;    d.stream_depth,&#10;    d.net_depth,&#10;    d.net_velocity,&#10;    o.taxonomy_id,&#10;    l.abbreviation AS life_stage,&#10;    o.bug_size,&#10;    o.split_count,&#10;    o.big_rare_count,&#10;    t.phylum,&#10;    t.class,&#10;    t.subclass,&#10;    t.&quot;Order&quot;,&#10;    t.family,&#10;    t.genus,&#10;    (pr.sample_id IS NOT NULL) AS is_private&#10;   FROM (((((((((((sample.samples s&#10;     JOIN sample.vw_boxes b ON ((s.box_id = b.box_id)))&#10;     JOIN sample.sample_types st ON ((s.type_id = st.sample_type_id)))&#10;     JOIN sample.sample_methods m ON ((s.method_id = m.sample_method_id)))&#10;     JOIN geo.habitats h ON ((s.habitat_id = h.habitat_id)))&#10;     LEFT JOIN geo.vw_sites si ON ((s.site_id = si.site_id)))&#10;     LEFT JOIN sample.plankton p ON ((s.sample_id = p.sample_id)))&#10;     LEFT JOIN sample.drift d ON ((s.sample_id = d.sample_id)))&#10;     LEFT JOIN sample.organisms o ON ((s.sample_id = o.sample_id)))&#10;     LEFT JOIN taxa.vw_taxonomy_crosstab t ON ((o.taxonomy_id = t.taxonomy_id)))&#10;     LEFT JOIN sample.vw_private_samples pr ON ((s.sample_id = pr.sample_id)))&#10;     LEFT JOIN taxa.life_stages l ON ((o.life_stage_id = l.life_stage_id)));</textarea>
                             <div style="padding-top: 5px;"><hr></div>
                             <div class="box box-solid">
                                 <div class="box-header with-border">
@@ -539,8 +1140,13 @@
                                 <div class="box-body">
                                     <ul class="list-unstyled">
                                         <li><a href="samples.html">samples</a></li>
+                                        <li><a href="vw_boxes.html">vw_boxes</a></li>
                                         <li><a href="sample_types.html">sample_types</a></li>
                                         <li><a href="sample_methods.html">sample_methods</a></li>
+                                        <li><a href="plankton.html">plankton</a></li>
+                                        <li><a href="drift.html">drift</a></li>
+                                        <li><a href="organisms.html">organisms</a></li>
+                                        <li><a href="vw_private_samples.html">vw_private_samples</a></li>
                                     </ul>
                                 </div><!-- /.box-body -->
                             </div>

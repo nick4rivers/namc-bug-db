@@ -73,7 +73,7 @@
             <div class="content-wrapper">
                 <!-- Content Header (Page header) -->
                 <section class="content-header">
-                    <h1>analyses</h1><p><span id="recordNumber">0</span> rows</p><br />
+                    <h1>analyses</h1><p><span id="recordNumber">6</span> rows</p><br />
                 </section>
                 <!-- Main content -->
                 <section class="content">
@@ -104,10 +104,31 @@
                                 <tbody>
                                 <tr>
                                     <td class='primaryKey' title='Primary Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="analysis_id">analysis_id</span></td>
-                                    <td>int4</td>
-                                    <td>10</td>
+                                    <td>int2</td>
+                                    <td>5</td>
                                     <td title=''></td>
                                     <td title='Automatically updated by the database'>√</td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                            <tr>
+                                                <td title="analysis_metrics.analysis_id references analyses.analysis_id via fk_metric_analysis_metrics_analysis_id"><a href='analysis_metrics.html'>analysis_metrics</a><span class='relatedKey'>.analysis_id</span></td>
+                                                <td class="constraint detail">fk_metric_analysis_metrics_analysis_id<span title='Cascade on delete:&#10;Deletion of parent deletes child'>C</span></td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td class='indexedColumn' title='Indexed'><i class='fa fa-sitemap fa-rotate-120' style='padding-right: 5px;'></i><span id="analysis_name">analysis_name</span></td>
+                                    <td>varchar</td>
+                                    <td>255</td>
+                                    <td title=''></td>
+                                    <td title=''></td>
                                     <td>null</td>
                                     <td>
                                         <table border='0' cellspacing='0' cellpadding='0'>
@@ -115,16 +136,46 @@
                                     </td>
                                     <td>
                                         <table border='0' cellspacing='0' cellpadding='0'>
-                                            <tr>
-                                                <td title="analyses.analysis_id references analysis_types.analysis_type_id via fk_analyses_analysis_type_id"><a href='analysis_types.html'>analysis_types</a><span class='relatedKey'>.analysis_type_id</span></td>
-                                                <td class="constraint detail">fk_analyses_analysis_type_id<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
-                                            </tr>
                                         </table>
                                     </td>
                                     <td></td>
                                 </tr>
                                 <tr>
-                                    <td class='foreignKey' title='Foreign Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="analysis_type_id">analysis_type_id</span></td>
+                                    <td><span id="display_text">display_text</span></td>
+                                    <td>text</td>
+                                    <td>2147483647</td>
+                                    <td title='nullable'>√</td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td class='indexedColumn' title='Indexed'><i class='fa fa-sitemap fa-rotate-120' style='padding-right: 5px;'></i><span id="sort_order">sort_order</span></td>
+                                    <td>int2</td>
+                                    <td>5</td>
+                                    <td title=''></td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td class='foreignKey' title='Foreign Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="report_type_id">report_type_id</span></td>
                                     <td>int2</td>
                                     <td>5</td>
                                     <td title=''></td>
@@ -137,9 +188,43 @@
                                     <td>
                                         <table border='0' cellspacing='0' cellpadding='0'>
                                             <tr>
-                                                <td title="analyses.analysis_type_id&#39;s name implies that it&#39;s a child of analysis_types.analysis_type_id, but it doesn&#39;t reference that column."><a href='analysis_types.html'>analysis_types</a><span class='relatedKey'>.analysis_type_id</span></td>
-                                                <td class="constraint detail">Implied Constraint<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                                <td title="analyses.report_type_id references report_types.report_type_id via fk_analyses_report_id"><a href='report_types.html'>report_types</a><span class='relatedKey'>.report_type_id</span></td>
+                                                <td class="constraint detail">fk_analyses_report_id<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
+                                        </table>
+                                    </td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td><span id="description">description</span></td>
+                                    <td>text</td>
+                                    <td>2147483647</td>
+                                    <td title='nullable'>√</td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td><span id="metadata">metadata</span></td>
+                                    <td>json</td>
+                                    <td>2147483647</td>
+                                    <td title='nullable'>√</td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
                                         </table>
                                     </td>
                                     <td></td>
@@ -208,9 +293,51 @@
                                     <td><span title='Ascending'>Asc</span></td>
                                     <td>analysis_id</td>
                                 </tr>
+                                <tr>
+                                    <td class='uniqueKey' title='Unique Key'><i class='icon ion-key iconkey'></i> analyses_analysis_name_key</td>
+                                    <td>Must be unique</td>
+                                    <td><span title='Ascending'>Asc</span></td>
+                                    <td>analysis_name</td>
+                                </tr>
+                                <tr>
+                                    <td class='uniqueKey' title='Unique Key'><i class='icon ion-key iconkey'></i> ux_metric_analyses_report_id</td>
+                                    <td>Must be unique</td>
+                                    <td><span title='Ascending'>Asc</span>/<span title='Ascending'>Asc</span></td>
+                                    <td>report_type_id + sort_order</td>
+                                </tr>
                                 </tbody>
                             </table>
                         </div><!-- /.box-body -->
+                    </div>
+                    <div class="box box-primary">
+                        <div class="box-header with-border">
+                            <i class="fa fa-sitemap"></i>
+                            <h3 class="box-title">Check Constraints</h3>
+                            <div class="box-tools pull-right">
+                                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                                <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
+                            </div>
+                        </div>
+                        <div class="box-body">
+                            <table id="check_table" class="table table-bordered table-striped dataTable" role="grid">
+                                <thead align='left'>
+                                <tr>
+                                    <th>Constraint Name</th>
+                                    <th>Constraint</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr>
+                                    <td>ck_analysis_name</td>
+                                    <td>((length((analysis_name)::text) &gt; 0))</td>
+                                </tr>
+                                <tr>
+                                    <td>ck_analyses_sort_order</td>
+                                    <td>((sort_order &gt; 0))</td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                     <div class="box box-primary">
                         <div class="box-header with-border">
@@ -227,39 +354,24 @@
                                 <ul class="nav nav-tabs pull-left ui-sortable-handle">
                                     <li class="active"><a href="#oneDegreeImg-chart" data-toggle="tab" aria-expanded="true">One</a></li>
                                     <li class=""><a href="#twodegreesDegreeImg-chart" data-toggle="tab" aria-expanded="true">Two degrees</a></li>
-                                    <li class=""><a href="#oneimpliedDegreeImg-chart" data-toggle="tab" aria-expanded="true">One implied</a></li>
-                                    <li class=""><a href="#twoimpliedDegreeImg-chart" data-toggle="tab" aria-expanded="true">Two implied</a></li>
                                 </ul>
                                 <div class="tab-content no-padding">
                                     <div class="chart tab-pane active" id="oneDegreeImg-chart" style="position: relative; overflow-x:auto;">
                                         <map id="oneDegreeRelationshipsDiagram" name="oneDegreeRelationshipsDiagram">
-<area shape="rect" id="node1" href="analyses.html" target="_top" title="analyses" alt="" coords="253,5,557,192">
-<area shape="rect" id="node2" href="analysis_types.html" target="_top" title="analysis_types" alt="" coords="5,8,209,184">
+<area shape="rect" id="node1" href="analyses.html" target="_top" title="analyses" alt="" coords="237,5,528,339">
+<area shape="rect" id="node2" href="report_types.html" target="_top" title="report_types" alt="" coords="5,125,193,272">
+<area shape="rect" id="node3" href="analysis_metrics.html" target="_top" title="analysis_metrics" alt="" coords="572,8,769,131">
 </map>
                                         <a name='diagram'><img id="oneDegreeImg" src="../diagrams/tables/analyses.1degree.png" usemap="#oneDegreeRelationshipsDiagram" class="diagram" border="0" align="left"></a>
                                     </div>
                                     <div class="chart tab-pane " id="twodegreesDegreeImg-chart" style="position: relative; overflow-x:auto;">
                                         <map id="twoDegreesRelationshipsDiagram" name="twoDegreesRelationshipsDiagram">
-<area shape="rect" id="node1" href="analyses.html" target="_top" title="analyses" alt="" coords="429,5,733,192">
-<area shape="rect" id="node2" href="analysis_types.html" target="_top" title="analysis_types" alt="" coords="181,8,385,184">
-<area shape="rect" id="node3" href="reports.html" target="_top" title="reports" alt="" coords="5,69,137,157">
+<area shape="rect" id="node1" href="analyses.html" target="_top" title="analyses" alt="" coords="237,5,528,339">
+<area shape="rect" id="node2" href="report_types.html" target="_top" title="report_types" alt="" coords="5,125,193,272">
+<area shape="rect" id="node3" href="analysis_metrics.html" target="_top" title="analysis_metrics" alt="" coords="572,167,769,289">
+<area shape="rect" id="node4" href="metrics.html" target="_top" title="metrics" alt="" coords="313,356,453,444">
 </map>
                                         <a name='diagram'><img id="twodegreesDegreeImg" src="../diagrams/tables/analyses.2degrees.png" usemap="#twoDegreesRelationshipsDiagram" class="diagram" border="0" align="left"></a>
-                                    </div>
-                                    <div class="chart tab-pane " id="oneimpliedDegreeImg-chart" style="position: relative; overflow-x:auto;">
-                                        <map id="oneDegreeRelationshipsDiagramImplied" name="oneDegreeRelationshipsDiagramImplied">
-<area shape="rect" id="node1" href="analyses.html" target="_top" title="analyses" alt="" coords="253,5,557,192">
-<area shape="rect" id="node2" href="analysis_types.html" target="_top" title="analysis_types" alt="" coords="5,23,209,199">
-</map>
-                                        <a name='diagram'><img id="oneimpliedDegreeImg" src="../diagrams/tables/analyses.implied1degrees.png" usemap="#oneDegreeRelationshipsDiagramImplied" class="diagram" border="0" align="left"></a>
-                                    </div>
-                                    <div class="chart tab-pane " id="twoimpliedDegreeImg-chart" style="position: relative; overflow-x:auto;">
-                                        <map id="twoDegreesRelationshipsDiagramImplied" name="twoDegreesRelationshipsDiagramImplied">
-<area shape="rect" id="node1" href="analyses.html" target="_top" title="analyses" alt="" coords="429,5,733,192">
-<area shape="rect" id="node2" href="analysis_types.html" target="_top" title="analysis_types" alt="" coords="181,23,385,199">
-<area shape="rect" id="node3" href="reports.html" target="_top" title="reports" alt="" coords="5,84,137,172">
-</map>
-                                        <a name='diagram'><img id="twoimpliedDegreeImg" src="../diagrams/tables/analyses.implied2degrees.png" usemap="#twoDegreesRelationshipsDiagramImplied" class="diagram" border="0" align="left"></a>
                                     </div>
                                 </div>
                             </div>

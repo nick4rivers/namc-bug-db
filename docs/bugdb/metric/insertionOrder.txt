@@ -1,5 +1,12 @@
-reports
-analysis_types
-metric_types
-analyses
+formulae
+metric_groups
+report_types
 metrics
+rarefactions
+analyses
+reports
+analysis_metrics
+metric_attributes
+metric_taxa
+metric_values
+report_samples

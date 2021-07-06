@@ -73,7 +73,7 @@
             <div class="content-wrapper">
                 <!-- Content Header (Page header) -->
                 <section class="content-header">
-                    <h1>predictors</h1><p><span id="recordNumber">0</span> rows</p><br />
+                    <h1>predictors</h1><p><span id="recordNumber">169</span> rows</p><br />
                 </section>
                 <!-- Main content -->
                 <section class="content">
@@ -112,8 +112,16 @@
                                     <td>
                                         <table border='0' cellspacing='0' cellpadding='0'>
                                             <tr>
+                                                <td title="model_predictors.predictor_id references predictors.predictor_id via fk_model_predictors_predictor_id"><a href='model_predictors.html'>model_predictors</a><span class='relatedKey'>.predictor_id</span></td>
+                                                <td class="constraint detail">fk_model_predictors_predictor_id<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                            </tr>
+                                            <tr>
                                                 <td title="site_predictors.predictor_id references predictors.predictor_id via fk_site_predictors"><a href='site_predictors.html'>site_predictors</a><span class='relatedKey'>.predictor_id</span></td>
                                                 <td class="constraint detail">fk_site_predictors<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td title="sample_predictors.predictor_id references predictors.predictor_id via fk_sample_predictors_predictor_id"><a href='../../sample/tables/sample_predictors.html'>sample_predictors</a><span class='relatedKey'>.predictor_id</span></td>
+                                                <td class="constraint detail">fk_sample_predictors_predictor_id<span title='Cascade on delete:&#10;Deletion of parent deletes child'>C</span></td>
                                             </tr>
                                             <tr>
                                                 <td title="translation_predictors.predictor_id references predictors.predictor_id via fk_taxa_translation_predictors_predictor_id"><a href='../../taxa/tables/translation_predictors.html'>translation_predictors</a><span class='relatedKey'>.predictor_id</span></td>
@@ -204,6 +212,23 @@
                                     <td></td>
                                 </tr>
                                 <tr>
+                                    <td><span id="is_temporal">is_temporal</span></td>
+                                    <td>bool</td>
+                                    <td>1</td>
+                                    <td title=''></td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td></td>
+                                </tr>
+                                <tr>
                                     <td><span id="description">description</span></td>
                                     <td>text</td>
                                     <td>2147483647</td>
@@ -224,6 +249,23 @@
                                     <td><span id="metadata">metadata</span></td>
                                     <td>json</td>
                                     <td>2147483647</td>
+                                    <td title='nullable'>√</td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td><span id="calculation_script">calculation_script</span></td>
+                                    <td>varchar</td>
+                                    <td>255</td>
                                     <td title='nullable'>√</td>
                                     <td title=''></td>
                                     <td>null</td>
@@ -331,6 +373,36 @@
                     </div>
                     <div class="box box-primary">
                         <div class="box-header with-border">
+                            <i class="fa fa-sitemap"></i>
+                            <h3 class="box-title">Check Constraints</h3>
+                            <div class="box-tools pull-right">
+                                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                                <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
+                            </div>
+                        </div>
+                        <div class="box-body">
+                            <table id="check_table" class="table table-bordered table-striped dataTable" role="grid">
+                                <thead align='left'>
+                                <tr>
+                                    <th>Constraint Name</th>
+                                    <th>Constraint</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr>
+                                    <td>ck_abbreviation</td>
+                                    <td>((length((abbreviation)::text) &gt; 0))</td>
+                                </tr>
+                                <tr>
+                                    <td>ck_predictor_name</td>
+                                    <td>((length((predictor_name)::text) &gt; 0))</td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="box box-primary">
+                        <div class="box-header with-border">
                             <i class="fa fa-code-fork"></i>
                             <h3 id="Relationships" class="box-title">Relationships</h3>
                             <div class="box-tools pull-right">
@@ -348,23 +420,27 @@
                                 <div class="tab-content no-padding">
                                     <div class="chart tab-pane active" id="oneDegreeImg-chart" style="position: relative; overflow-x:auto;">
                                         <map id="oneDegreeRelationshipsDiagram" name="oneDegreeRelationshipsDiagram">
-<area shape="rect" id="node1" href="predictors.html" target="_top" title="predictors" alt="" coords="260,84,571,417">
-<area shape="rect" id="node2" href="predictor_types.html" target="_top" title="predictor_types" alt="" coords="5,285,216,432">
-<area shape="rect" id="node3" href="units.html" target="_top" title="units" alt="" coords="34,92,187,268">
-<area shape="rect" id="node4" href="site_predictors.html" target="_top" title="site_predictors" alt="" coords="657,5,842,152">
-<area shape="rect" id="node5" href="../taxa/tables/translation_predictors.html" target="_top" title="taxa.translation_predictors" alt="" coords="615,169,884,287">
+<area shape="rect" id="node1" href="model_predictors.html" target="_top" title="model_predictors" alt="" coords="650,5,854,128">
+<area shape="rect" id="node2" href="predictors.html" target="_top" title="predictors" alt="" coords="260,240,573,632">
+<area shape="rect" id="node3" href="predictor_types.html" target="_top" title="predictor_types" alt="" coords="5,441,216,588">
+<area shape="rect" id="node4" href="units.html" target="_top" title="units" alt="" coords="34,248,187,424">
+<area shape="rect" id="node5" href="site_predictors.html" target="_top" title="site_predictors" alt="" coords="659,145,845,321">
+<area shape="rect" id="node6" href="../sample/tables/sample_predictors.html" target="_top" title="sample.sample_predictors" alt="" coords="619,339,885,456">
+<area shape="rect" id="node7" href="../taxa/tables/translation_predictors.html" target="_top" title="taxa.translation_predictors" alt="" coords="617,473,887,591">
 </map>
                                         <a name='diagram'><img id="oneDegreeImg" src="../diagrams/tables/predictors.1degree.png" usemap="#oneDegreeRelationshipsDiagram" class="diagram" border="0" align="left"></a>
                                     </div>
                                     <div class="chart tab-pane " id="twodegreesDegreeImg-chart" style="position: relative; overflow-x:auto;">
                                         <map id="twoDegreesRelationshipsDiagram" name="twoDegreesRelationshipsDiagram">
-<area shape="rect" id="node1" href="predictors.html" target="_top" title="predictors" alt="" coords="260,111,571,444">
-<area shape="rect" id="node2" href="predictor_types.html" target="_top" title="predictor_types" alt="" coords="5,231,216,377">
-<area shape="rect" id="node3" href="units.html" target="_top" title="units" alt="" coords="34,20,187,196">
-<area shape="rect" id="node4" href="site_predictors.html" target="_top" title="site_predictors" alt="" coords="657,339,842,485">
-<area shape="rect" id="node5" href="sites.html" target="_top" title="sites" alt="" coords="349,461,481,549">
-<area shape="rect" id="node6" href="../metric/tables/metric_types.html" target="_top" title="metric.metric_types" alt="" coords="306,5,525,93">
-<area shape="rect" id="node7" href="../taxa/tables/translation_predictors.html" target="_top" title="taxa.translation_predictors" alt="" coords="615,113,884,231">
+<area shape="rect" id="node1" href="model_predictors.html" target="_top" title="model_predictors" alt="" coords="650,5,854,128">
+<area shape="rect" id="node2" href="models.html" target="_top" title="models" alt="" coords="347,23,487,111">
+<area shape="rect" id="node3" href="predictors.html" target="_top" title="predictors" alt="" coords="260,135,573,527">
+<area shape="rect" id="node4" href="units.html" target="_top" title="units" alt="" coords="34,41,187,217">
+<area shape="rect" id="node5" href="predictor_types.html" target="_top" title="predictor_types" alt="" coords="5,255,216,401">
+<area shape="rect" id="node6" href="site_predictors.html" target="_top" title="site_predictors" alt="" coords="659,464,845,640">
+<area shape="rect" id="node7" href="sites.html" target="_top" title="sites" alt="" coords="333,544,501,632">
+<area shape="rect" id="node8" href="../sample/tables/sample_predictors.html" target="_top" title="sample.sample_predictors" alt="" coords="619,145,885,263">
+<area shape="rect" id="node9" href="../taxa/tables/translation_predictors.html" target="_top" title="taxa.translation_predictors" alt="" coords="617,280,887,397">
 </map>
                                         <a name='diagram'><img id="twodegreesDegreeImg" src="../diagrams/tables/predictors.2degrees.png" usemap="#twoDegreesRelationshipsDiagram" class="diagram" border="0" align="left"></a>
                                     </div>

@@ -5,4 +5,5 @@ entities
 organizations
 individuals
 communications
+entity_models
 individual_roles

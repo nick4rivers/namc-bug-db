@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<database name="bugdb" schema="sample" type="PostgreSQL - 12.4 (Debian 12.4-1.pgdg100+1)">
+<database name="bugdb" schema="sample" type="PostgreSQL - 13.1 (Debian 13.1-1.pgdg100+1)">
    <tables>
       <table name="asset_types" numRows="5" remarks="" schema="sample" type="TABLE">
          <column autoUpdated="true" defaultValue="null" digits="0" id="0" name="asset_type_id" nullable="false" remarks="" size="5" type="int2" typeCode="5">
@@ -17,10 +17,11 @@
          <index name="asset_types_asset_name_key" unique="true">
             <column ascending="true" name="asset_name"/>
          </index>
+         <checkConstraint constraint="((length((asset_name)::text) &gt; 0))" name="ck_asset_name"/>
       </table>
       <table name="assets" numRows="0" remarks="" schema="sample" type="TABLE">
          <column autoUpdated="true" defaultValue="null" digits="0" id="0" name="asset_id" nullable="false" remarks="" size="10" type="int4" typeCode="4">
-            <child column="asset_id" foreignKey="fk_sample_box_assets_asset_id" implied="false" onDeleteCascade="false" schema="public" table="sample_box_assets"/>
+            <child column="asset_id" foreignKey="fk_sample_box_assets_asset_id" implied="false" onDeleteCascade="false" schema="sample" table="box_assets"/>
             <child column="asset_id" foreignKey="fk_sample_assets_asset_id" implied="false" onDeleteCascade="false" schema="sample" table="sample_assets"/>
          </column>
          <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="asset_type_id" nullable="false" remarks="" size="5" type="int2" typeCode="5">
@@ -43,10 +44,44 @@
             <column ascending="true" name="uuid"/>
          </index>
       </table>
+      <table name="box_assets" numRows="0" remarks="" schema="sample" type="TABLE">
+         <column autoUpdated="false" defaultValue="null" digits="0" id="0" name="box_id" nullable="false" remarks="" size="10" type="int4" typeCode="4">
+            <parent column="box_id" foreignKey="fk_sample_box_assets_box_id" implied="false" onDeleteCascade="false" schema="sample" table="boxes"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="asset_id" nullable="false" remarks="" size="10" type="int4" typeCode="4">
+            <parent column="asset_id" foreignKey="fk_sample_box_assets_asset_id" implied="false" onDeleteCascade="false" schema="sample" table="assets"/>
+         </column>
+         <column autoUpdated="false" defaultValue="now()" digits="6" id="2" name="created_date" nullable="false" remarks="" size="35" type="timestamptz" typeCode="93"/>
+         <column autoUpdated="false" defaultValue="now()" digits="6" id="3" name="updated_date" nullable="false" remarks="" size="35" type="timestamptz" typeCode="93"/>
+         <primaryKey column="box_id" sequenceNumberInPK="1"/>
+         <primaryKey column="asset_id" sequenceNumberInPK="2"/>
+         <index name="pk_sample_box_assets" unique="true">
+            <column ascending="true" name="box_id"/>
+            <column ascending="true" name="asset_id"/>
+         </index>
+      </table>
+      <table name="box_models" numRows="47" remarks="Associates boxes with models. This determines which models are required for each box once sample processing is complete." schema="sample" type="TABLE">
+         <column autoUpdated="false" defaultValue="null" digits="0" id="0" name="box_id" nullable="false" remarks="" size="10" type="int4" typeCode="4">
+            <parent column="box_id" foreignKey="fk_box_models_box_id" implied="false" onDeleteCascade="true" schema="sample" table="boxes"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="model_id" nullable="false" remarks="" size="10" type="int4" typeCode="4">
+            <parent column="model_id" foreignKey="fk_box_models_model_id" implied="false" onDeleteCascade="true" schema="geo" table="models"/>
+         </column>
+         <primaryKey column="box_id" sequenceNumberInPK="1"/>
+         <primaryKey column="model_id" sequenceNumberInPK="2"/>
+         <index name="pk_box_models" unique="true">
+            <column ascending="true" name="box_id"/>
+            <column ascending="true" name="model_id"/>
+         </index>
+         <index name="fx_box_models" unique="false">
+            <column ascending="true" name="model_id"/>
+         </index>
+      </table>
       <table name="box_states" numRows="7" remarks="" schema="sample" type="TABLE">
          <column autoUpdated="true" defaultValue="null" digits="0" id="0" name="box_state_id" nullable="false" remarks="" size="5" type="int2" typeCode="5">
             <child column="box_state_id" foreignKey="fk_boxes_state_id" implied="false" onDeleteCascade="false" schema="sample" table="boxes"/>
             <child column="box_state_id" foreignKey="Implied Constraint" implied="true" onDeleteCascade="false" schema="sample" table="vw_boxes"/>
+            <child column="box_state_id" foreignKey="Implied Constraint" implied="true" onDeleteCascade="false" schema="sample" table="vw_samples"/>
          </column>
          <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="box_state_name" nullable="false" remarks="" size="50" type="varchar" typeCode="12"/>
          <column autoUpdated="false" defaultValue="null" digits="0" id="2" name="box_state_order" nullable="false" remarks="" size="5" type="int2" typeCode="5"/>
@@ -62,12 +97,15 @@
          <index name="box_states_box_state_order_key" unique="true">
             <column ascending="true" name="box_state_order"/>
          </index>
-         <checkConstraint constraint="((box_state_order &gt; 0))" name="chk_box_states"/>
+         <checkConstraint constraint="((length((box_state_name)::text) &gt; 0))" name="ck_box_state_name"/>
+         <checkConstraint constraint="((box_state_order &gt; 0))" name="ck_box_states"/>
       </table>
-      <table name="boxes" numRows="0" remarks="" schema="sample" type="TABLE">
+      <table name="boxes" numRows="2163" remarks="" schema="sample" type="TABLE">
          <column autoUpdated="true" defaultValue="null" digits="0" id="0" name="box_id" nullable="false" remarks="" size="10" type="int4" typeCode="4">
             <child column="box_id" foreignKey="fk_invoice_boxes_box_id" implied="false" onDeleteCascade="false" schema="billing" table="invoice_boxes"/>
-            <child column="box_id" foreignKey="fk_sample_box_assets_box_id" implied="false" onDeleteCascade="false" schema="public" table="sample_box_assets"/>
+            <child column="box_id" foreignKey="fk_metric_reports_box_id" implied="false" onDeleteCascade="true" schema="metric" table="reports"/>
+            <child column="box_id" foreignKey="fk_sample_box_assets_box_id" implied="false" onDeleteCascade="false" schema="sample" table="box_assets"/>
+            <child column="box_id" foreignKey="fk_box_models_box_id" implied="false" onDeleteCascade="true" schema="sample" table="box_models"/>
             <child column="box_id" foreignKey="fk_samples_box_id" implied="false" onDeleteCascade="true" schema="sample" table="samples"/>
             <child column="box_id" foreignKey="fk_submissions_box_id" implied="false" onDeleteCascade="true" schema="sample" table="submissions"/>
             <child column="box_id" foreignKey="Implied Constraint" implied="true" onDeleteCascade="false" schema="sample" table="vw_boxes"/>
@@ -77,24 +115,21 @@
             <parent column="entity_id" foreignKey="fk_boxes_customer_id" implied="false" onDeleteCascade="false" schema="entity" table="entities"/>
          </column>
          <column autoUpdated="false" defaultValue="null" digits="0" id="2" name="submitter_id" nullable="false" remarks="" size="5" type="int2" typeCode="5">
-            <parent column="entity_id" foreignKey="fk_boxes_creator_id" implied="false" onDeleteCascade="false" schema="entity" table="individuals"/>
+            <parent column="entity_id" foreignKey="fk_boxes_submitter_id" implied="false" onDeleteCascade="false" schema="entity" table="individuals"/>
          </column>
          <column autoUpdated="false" defaultValue="null" digits="0" id="3" name="box_state_id" nullable="false" remarks="" size="5" type="int2" typeCode="5">
             <parent column="box_state_id" foreignKey="fk_boxes_state_id" implied="false" onDeleteCascade="false" schema="sample" table="box_states"/>
          </column>
-         <column autoUpdated="false" defaultValue="null" digits="6" id="4" name="box_recevied_date" nullable="true" remarks="" size="35" type="timestamptz" typeCode="93"/>
+         <column autoUpdated="false" defaultValue="null" digits="6" id="4" name="box_received_date" nullable="true" remarks="" size="35" type="timestamptz" typeCode="93"/>
          <column autoUpdated="false" defaultValue="null" digits="6" id="5" name="processing_complete_date" nullable="true" remarks="" size="35" type="timestamptz" typeCode="93"/>
          <column autoUpdated="false" defaultValue="null" digits="6" id="6" name="projected_complete_date" nullable="true" remarks="" size="35" type="timestamptz" typeCode="93"/>
          <column autoUpdated="false" defaultValue="null" digits="0" id="7" name="description" nullable="true" remarks="" size="2147483647" type="text" typeCode="12"/>
          <column autoUpdated="false" defaultValue="null" digits="0" id="8" name="metadata" nullable="true" remarks="" size="2147483647" type="json" typeCode="1111"/>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="9" name="project_id" nullable="true" remarks="" size="5" type="int2" typeCode="5">
-            <parent column="project_id" foreignKey="fk_boxes_project_id" implied="false" onDeleteCascade="false" schema="sample" table="projects"/>
-         </column>
-         <column autoUpdated="false" defaultValue="false" digits="0" id="10" name="measurements" nullable="false" remarks="" size="1" type="bool" typeCode="-7"/>
-         <column autoUpdated="false" defaultValue="false" digits="0" id="11" name="sorter_qa" nullable="false" remarks="" size="1" type="bool" typeCode="-7"/>
-         <column autoUpdated="false" defaultValue="false" digits="0" id="12" name="taxa_qa" nullable="false" remarks="" size="1" type="bool" typeCode="-7"/>
-         <column autoUpdated="false" defaultValue="now()" digits="6" id="13" name="created_date" nullable="false" remarks="" size="35" type="timestamptz" typeCode="93"/>
-         <column autoUpdated="false" defaultValue="now()" digits="6" id="14" name="updated_date" nullable="false" remarks="" size="35" type="timestamptz" typeCode="93"/>
+         <column autoUpdated="false" defaultValue="false" digits="0" id="9" name="measurements" nullable="false" remarks="" size="1" type="bool" typeCode="-7"/>
+         <column autoUpdated="false" defaultValue="false" digits="0" id="10" name="sorter_qa" nullable="false" remarks="" size="1" type="bool" typeCode="-7"/>
+         <column autoUpdated="false" defaultValue="false" digits="0" id="11" name="taxa_qa" nullable="false" remarks="" size="1" type="bool" typeCode="-7"/>
+         <column autoUpdated="false" defaultValue="now()" digits="6" id="12" name="created_date" nullable="false" remarks="" size="35" type="timestamptz" typeCode="93"/>
+         <column autoUpdated="false" defaultValue="now()" digits="6" id="13" name="updated_date" nullable="false" remarks="" size="35" type="timestamptz" typeCode="93"/>
          <primaryKey column="box_id" sequenceNumberInPK="1"/>
          <index name="boxes_pkey" unique="true">
             <column ascending="true" name="box_id"/>
@@ -102,22 +137,18 @@
          <index name="fx_boxes_customer_id" unique="false">
             <column ascending="true" name="customer_id"/>
          </index>
-         <index name="fx_boxes_project_id" unique="false">
-            <column ascending="true" name="project_id"/>
-         </index>
          <index name="fx_boxes_status_id" unique="false">
             <column ascending="true" name="box_state_id"/>
          </index>
       </table>
-      <table name="drift" numRows="0" remarks="" schema="sample" type="TABLE">
+      <table name="drift" numRows="1364" remarks="" schema="sample" type="TABLE">
          <column autoUpdated="false" defaultValue="null" digits="0" id="0" name="sample_id" nullable="false" remarks="" size="10" type="int4" typeCode="4"/>
          <column autoUpdated="false" defaultValue="null" digits="17" id="1" name="net_area" nullable="true" remarks="" size="17" type="float8" typeCode="8"/>
          <column autoUpdated="false" defaultValue="null" digits="17" id="2" name="net_duration" nullable="true" remarks="" size="17" type="float8" typeCode="8"/>
          <column autoUpdated="false" defaultValue="null" digits="17" id="3" name="stream_depth" nullable="true" remarks="" size="17" type="float8" typeCode="8"/>
          <column autoUpdated="false" defaultValue="null" digits="17" id="4" name="net_depth" nullable="true" remarks="" size="17" type="float8" typeCode="8"/>
-         <column autoUpdated="false" defaultValue="null" digits="17" id="5" name="net_velo" nullable="true" remarks="" size="17" type="float8" typeCode="8"/>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="6" name="notes" nullable="true" remarks="" size="2147483647" type="text" typeCode="12"/>
-         <column autoUpdated="false" defaultValue="now()" digits="6" id="7" name="updated_date" nullable="false" remarks="" size="35" type="timestamptz" typeCode="93"/>
+         <column autoUpdated="false" defaultValue="null" digits="17" id="5" name="net_velocity" nullable="true" remarks="" size="17" type="float8" typeCode="8"/>
+         <column autoUpdated="false" defaultValue="now()" digits="6" id="6" name="updated_date" nullable="false" remarks="" size="35" type="timestamptz" typeCode="93"/>
          <primaryKey column="sample_id" sequenceNumberInPK="1"/>
          <index name="drift_pkey" unique="true">
             <column ascending="true" name="sample_id"/>
@@ -125,7 +156,7 @@
          <checkConstraint constraint="((net_area &gt; (0)::double precision))" name="ck_bug_drift_net_area"/>
          <checkConstraint constraint="((net_depth &gt; (0)::double precision))" name="ck_bug_drift_net_depth"/>
          <checkConstraint constraint="((net_duration &gt; (0)::double precision))" name="ck_bug_drift_net_duration"/>
-         <checkConstraint constraint="((net_velo &gt;= (0)::double precision))" name="ck_bug_drift_net_velo"/>
+         <checkConstraint constraint="((net_velocity &gt;= (0)::double precision))" name="ck_bug_drift_net_velocity"/>
          <checkConstraint constraint="((stream_depth &gt; (0)::double precision))" name="ck_bug_drift_stream_depth"/>
       </table>
       <table name="fish" numRows="0" remarks="" schema="sample" type="TABLE">
@@ -137,8 +168,7 @@
          </column>
          <column autoUpdated="false" defaultValue="null" digits="8" id="2" name="fish_length" nullable="true" remarks="" size="8" type="float4" typeCode="7"/>
          <column autoUpdated="false" defaultValue="null" digits="8" id="3" name="fish_mass" nullable="true" remarks="" size="8" type="float4" typeCode="7"/>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="4" name="notes" nullable="true" remarks="" size="2147483647" type="text" typeCode="12"/>
-         <column autoUpdated="false" defaultValue="now()" digits="6" id="5" name="updated_date" nullable="false" remarks="" size="35" type="timestamptz" typeCode="93"/>
+         <column autoUpdated="false" defaultValue="now()" digits="6" id="4" name="updated_date" nullable="false" remarks="" size="35" type="timestamptz" typeCode="93"/>
          <primaryKey column="sample_id" sequenceNumberInPK="1"/>
          <index name="fish_pkey" unique="true">
             <column ascending="true" name="sample_id"/>
@@ -149,7 +179,61 @@
          <checkConstraint constraint="((fish_length &gt;= (0)::double precision))" name="ck_fish_fish_length"/>
          <checkConstraint constraint="((fish_mass &gt;= (0)::double precision))" name="ck_fish_fish_mass"/>
       </table>
-      <table name="mass" numRows="0" remarks="" schema="sample" type="TABLE">
+      <table name="fish_gut_weights" numRows="0" remarks="" schema="sample" type="TABLE">
+         <column autoUpdated="false" defaultValue="null" digits="0" id="0" name="sample_id" nullable="false" remarks="" size="10" type="int4" typeCode="4">
+            <parent column="sample_id" foreignKey="fk_sample_fish_gut_weights_sample_id" implied="false" onDeleteCascade="true" schema="sample" table="fish_guts"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="taxonomy_id" nullable="false" remarks="" size="10" type="int4" typeCode="4">
+            <parent column="taxonomy_id" foreignKey="fk_sample_fish_gut_weights_taxonomy_id" implied="false" onDeleteCascade="false" schema="taxa" table="taxonomy"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="2" name="life_stage_id" nullable="false" remarks="" size="10" type="int4" typeCode="4">
+            <parent column="life_stage_id" foreignKey="fk_sample_fish_gut_weights_life_stage_id" implied="false" onDeleteCascade="false" schema="taxa" table="life_stages"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="3" name="count" nullable="true" remarks="" size="5" type="int2" typeCode="5"/>
+         <column autoUpdated="false" defaultValue="null" digits="8" id="4" name="weight" nullable="false" remarks="" size="8" type="float4" typeCode="7"/>
+         <primaryKey column="sample_id" sequenceNumberInPK="1"/>
+         <primaryKey column="taxonomy_id" sequenceNumberInPK="2"/>
+         <primaryKey column="life_stage_id" sequenceNumberInPK="3"/>
+         <index name="pk_sample_fish_gut_weights" unique="true">
+            <column ascending="true" name="sample_id"/>
+            <column ascending="true" name="taxonomy_id"/>
+            <column ascending="true" name="life_stage_id"/>
+         </index>
+         <index name="fx_sample_fish_gut_weights_life_stage_id" unique="false">
+            <column ascending="true" name="life_stage_id"/>
+         </index>
+         <index name="fx_sample_fish_gut_weights_taxonomy_id" unique="false">
+            <column ascending="true" name="taxonomy_id"/>
+         </index>
+         <checkConstraint constraint="((count &gt; 0))" name="ck_sample_fish_gut_weights_count"/>
+         <checkConstraint constraint="((weight &gt; (0)::double precision))" name="ck_sample_fish_gut_weights_weight"/>
+      </table>
+      <table name="fish_guts" numRows="0" remarks="" schema="sample" type="TABLE">
+         <column autoUpdated="false" defaultValue="null" digits="0" id="0" name="sample_id" nullable="false" remarks="" size="10" type="int4" typeCode="4">
+            <child column="sample_id" foreignKey="fk_sample_fish_gut_weights_sample_id" implied="false" onDeleteCascade="true" schema="sample" table="fish_gut_weights"/>
+            <parent column="sample_id" foreignKey="fk_sample_fish_guts" implied="false" onDeleteCascade="true" schema="sample" table="samples"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="8" id="1" name="fish_weight" nullable="false" remarks="" size="8" type="float4" typeCode="7"/>
+         <column autoUpdated="false" defaultValue="null" digits="8" id="2" name="fish_length" nullable="false" remarks="" size="8" type="float4" typeCode="7"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="3" name="fish_taxonomy_id" nullable="false" remarks="" size="10" type="int4" typeCode="4">
+            <parent column="taxonomy_id" foreignKey="fk_sample_fish_guts_fish_taxonomy_id" implied="false" onDeleteCascade="false" schema="taxa" table="taxonomy"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="4" name="notes" nullable="true" remarks="" size="2147483647" type="text" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="5" name="metadata" nullable="true" remarks="" size="2147483647" type="json" typeCode="1111"/>
+         <column autoUpdated="false" defaultValue="null" digits="8" id="6" name="organic_weight" nullable="true" remarks="" size="8" type="float4" typeCode="7"/>
+         <column autoUpdated="false" defaultValue="null" digits="8" id="7" name="inorganic_weight" nullable="true" remarks="" size="8" type="float4" typeCode="7"/>
+         <column autoUpdated="false" defaultValue="null" digits="8" id="8" name="other_weight" nullable="true" remarks="" size="8" type="float4" typeCode="7"/>
+         <column autoUpdated="false" defaultValue="now()" digits="6" id="9" name="created_date" nullable="false" remarks="" size="35" type="timestamptz" typeCode="93"/>
+         <column autoUpdated="false" defaultValue="now()" digits="6" id="10" name="updated_date" nullable="false" remarks="" size="35" type="timestamptz" typeCode="93"/>
+         <primaryKey column="sample_id" sequenceNumberInPK="1"/>
+         <index name="fish_guts_pkey" unique="true">
+            <column ascending="true" name="sample_id"/>
+         </index>
+         <checkConstraint constraint="((inorganic_weight &gt;= (0)::double precision))" name="ck_sample_fish_guts_inorganic_weight"/>
+         <checkConstraint constraint="((organic_weight &gt;= (0)::double precision))" name="ck_sample_fish_guts_organic_weight"/>
+         <checkConstraint constraint="((other_weight &gt;= (0)::double precision))" name="ck_sample_fish_guts_other_weight"/>
+      </table>
+      <table name="mass" numRows="5032" remarks="" schema="sample" type="TABLE">
          <column autoUpdated="false" defaultValue="null" digits="0" id="0" name="sample_id" nullable="false" remarks="" size="10" type="int4" typeCode="4">
             <parent column="sample_id" foreignKey="fk_mass_sample_id" implied="false" onDeleteCascade="true" schema="sample" table="samples"/>
          </column>
@@ -160,8 +244,7 @@
             <parent column="mass_method_id" foreignKey="fk_mass_method_id" implied="false" onDeleteCascade="false" schema="sample" table="mass_methods"/>
          </column>
          <column autoUpdated="false" defaultValue="null" digits="8" id="3" name="mass" nullable="false" remarks="" size="8" type="float4" typeCode="7"/>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="4" name="notes" nullable="true" remarks="" size="2147483647" type="text" typeCode="12"/>
-         <column autoUpdated="false" defaultValue="now()" digits="6" id="5" name="updated_date" nullable="false" remarks="" size="35" type="timestamptz" typeCode="93"/>
+         <column autoUpdated="false" defaultValue="now()" digits="6" id="4" name="updated_date" nullable="false" remarks="" size="35" type="timestamptz" typeCode="93"/>
          <primaryKey column="sample_id" sequenceNumberInPK="1"/>
          <primaryKey column="mass_type_id" sequenceNumberInPK="2"/>
          <index name="pk_mass" unique="true">
@@ -193,6 +276,7 @@
          <index name="mass_methods_mass_method_name_key" unique="true">
             <column ascending="true" name="mass_method_name"/>
          </index>
+         <checkConstraint constraint="((length((mass_method_name)::text) &gt; 0))" name="ck_mass_method_name"/>
       </table>
       <table name="mass_types" numRows="7" remarks="" schema="sample" type="TABLE">
          <column autoUpdated="true" defaultValue="null" digits="0" id="0" name="mass_type_id" nullable="false" remarks="" size="5" type="int2" typeCode="5">
@@ -211,6 +295,34 @@
          </index>
          <index name="mass_types_mass_type_name_key" unique="true">
             <column ascending="true" name="mass_type_name"/>
+         </index>
+         <checkConstraint constraint="((length(abbreviation) &gt; 0))" name="ck_abbreviation"/>
+         <checkConstraint constraint="((length((mass_type_name)::text) &gt; 0))" name="ck_mass_type_name"/>
+      </table>
+      <table name="model_results" numRows="3607" remarks="" schema="sample" type="TABLE">
+         <column autoUpdated="true" defaultValue="null" digits="0" id="0" name="model_result_id" nullable="false" remarks="" size="10" type="int4" typeCode="4"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="sample_id" nullable="false" remarks="" size="10" type="int4" typeCode="4">
+            <parent column="sample_id" foreignKey="fk_sample_model_results_sample_id" implied="false" onDeleteCascade="true" schema="sample" table="samples"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="2" name="model_id" nullable="false" remarks="" size="5" type="int2" typeCode="5">
+            <parent column="model_id" foreignKey="fk_sample_model_results_model_id" implied="false" onDeleteCascade="false" schema="geo" table="models"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="3" name="model_version" nullable="false" remarks="" size="50" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="4" name="fixed_count" nullable="true" remarks="" size="5" type="int2" typeCode="5"/>
+         <column autoUpdated="false" defaultValue="null" digits="8" id="5" name="model_result" nullable="true" remarks="" size="8" type="float4" typeCode="7"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="6" name="notes" nullable="true" remarks="" size="2147483647" type="text" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="7" name="metadata" nullable="true" remarks="" size="2147483647" type="json" typeCode="1111"/>
+         <column autoUpdated="false" defaultValue="now()" digits="6" id="8" name="created_date" nullable="false" remarks="" size="35" type="timestamptz" typeCode="93"/>
+         <column autoUpdated="false" defaultValue="now()" digits="6" id="9" name="updated_date" nullable="false" remarks="" size="35" type="timestamptz" typeCode="93"/>
+         <primaryKey column="model_result_id" sequenceNumberInPK="1"/>
+         <index name="model_results_pkey" unique="true">
+            <column ascending="true" name="model_result_id"/>
+         </index>
+         <index name="ux_sample_model_results" unique="true">
+            <column ascending="true" name="sample_id"/>
+            <column ascending="true" name="model_id"/>
+            <column ascending="true" name="model_version"/>
+            <column ascending="true" name="fixed_count"/>
          </index>
       </table>
       <table name="note_types" numRows="7" remarks="" schema="sample" type="TABLE">
@@ -233,6 +345,8 @@
          <index name="note_types_note_name_key" unique="true">
             <column ascending="true" name="note_name"/>
          </index>
+         <checkConstraint constraint="((length(abbreviation) &gt; 0))" name="ck_abbreviation"/>
+         <checkConstraint constraint="((length((note_name)::text) &gt; 0))" name="ck_note_name"/>
       </table>
       <table name="organism_notes" numRows="0" remarks="" schema="sample" type="TABLE">
          <column autoUpdated="false" defaultValue="null" digits="0" id="0" name="organism_id" nullable="false" remarks="" size="10" type="int4" typeCode="4">
@@ -248,7 +362,7 @@
             <column ascending="true" name="note_id"/>
          </index>
       </table>
-      <table name="organisms" numRows="0" remarks="" schema="sample" type="TABLE">
+      <table name="organisms" numRows="2039683" remarks="" schema="sample" type="TABLE">
          <column autoUpdated="true" defaultValue="null" digits="0" id="0" name="organism_id" nullable="false" remarks="" size="10" type="int4" typeCode="4">
             <child column="organism_id" foreignKey="fk_organism_types_organism_id" implied="false" onDeleteCascade="true" schema="sample" table="organism_notes"/>
          </column>
@@ -262,9 +376,9 @@
             <parent column="life_stage_id" foreignKey="fk_organisms_life_stage_id" implied="false" onDeleteCascade="false" schema="taxa" table="life_stages"/>
          </column>
          <column autoUpdated="false" defaultValue="null" digits="8" id="4" name="bug_size" nullable="true" remarks="" size="8" type="float4" typeCode="7"/>
-         <column autoUpdated="false" defaultValue="null" digits="8" id="5" name="split_count" nullable="true" remarks="" size="8" type="float4" typeCode="7"/>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="6" name="big_rare_count" nullable="true" remarks="" size="5" type="int2" typeCode="5"/>
-         <column autoUpdated="false" defaultValue="null" digits="6" id="7" name="invalidated_date" nullable="true" remarks="" size="35" type="timestamptz" typeCode="93"/>
+         <column autoUpdated="false" defaultValue="null" digits="8" id="5" name="split_count" nullable="false" remarks="" size="8" type="float4" typeCode="7"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="6" name="big_rare_count" nullable="false" remarks="" size="5" type="int2" typeCode="5"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="7" name="metadata" nullable="true" remarks="" size="2147483647" type="json" typeCode="1111"/>
          <column autoUpdated="false" defaultValue="null" digits="0" id="8" name="notes" nullable="true" remarks="" size="2147483647" type="text" typeCode="12"/>
          <column autoUpdated="false" defaultValue="now()" digits="6" id="9" name="created_date" nullable="false" remarks="" size="35" type="timestamptz" typeCode="93"/>
          <column autoUpdated="false" defaultValue="now()" digits="6" id="10" name="updated_date" nullable="false" remarks="" size="35" type="timestamptz" typeCode="93"/>
@@ -272,8 +386,21 @@
          <index name="organisms_pkey" unique="true">
             <column ascending="true" name="organism_id"/>
          </index>
+         <index name="fx_organisms_life_stage_id" unique="false">
+            <column ascending="true" name="life_stage_id"/>
+         </index>
+         <index name="fx_organisms_taxonomy_id" unique="false">
+            <column ascending="true" name="taxonomy_id"/>
+         </index>
+         <index name="ux_organism_organisms" unique="true">
+            <column ascending="true" name="sample_id"/>
+            <column ascending="true" name="taxonomy_id"/>
+            <column ascending="true" name="life_stage_id"/>
+            <column ascending="true" name="bug_size"/>
+         </index>
+         <checkConstraint constraint="((bug_size &gt; (0)::double precision))" name="ck_organisms_bug_size"/>
       </table>
-      <table name="plankton" numRows="0" remarks="" schema="sample" type="TABLE">
+      <table name="plankton" numRows="842" remarks="" schema="sample" type="TABLE">
          <column autoUpdated="false" defaultValue="null" digits="0" id="0" name="sample_id" nullable="false" remarks="" size="10" type="int4" typeCode="4">
             <parent column="sample_id" foreignKey="fk_plankton_sample_id" implied="false" onDeleteCascade="true" schema="sample" table="samples"/>
          </column>
@@ -281,11 +408,10 @@
          <column autoUpdated="false" defaultValue="null" digits="0" id="2" name="sub_sample_count" nullable="true" remarks="" size="5" type="int2" typeCode="5"/>
          <column autoUpdated="false" defaultValue="null" digits="8" id="3" name="tow_length" nullable="true" remarks="" size="8" type="float4" typeCode="7"/>
          <column autoUpdated="false" defaultValue="null" digits="8" id="4" name="volume" nullable="true" remarks="" size="8" type="float4" typeCode="7"/>
-         <column autoUpdated="false" defaultValue="null" digits="8" id="5" name="all_quot" nullable="true" remarks="" size="8" type="float4" typeCode="7"/>
+         <column autoUpdated="false" defaultValue="null" digits="8" id="5" name="aliquot" nullable="true" remarks="" size="8" type="float4" typeCode="7"/>
          <column autoUpdated="false" defaultValue="null" digits="8" id="6" name="size_interval" nullable="true" remarks="" size="8" type="float4" typeCode="7"/>
          <column autoUpdated="false" defaultValue="null" digits="0" id="7" name="tow_type" nullable="true" remarks="" size="2147483647" type="tow_types" typeCode="12"/>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="8" name="notes" nullable="true" remarks="" size="2147483647" type="text" typeCode="12"/>
-         <column autoUpdated="false" defaultValue="now()" digits="6" id="9" name="updated_date" nullable="false" remarks="" size="35" type="timestamptz" typeCode="93"/>
+         <column autoUpdated="false" defaultValue="now()" digits="6" id="8" name="updated_date" nullable="false" remarks="" size="35" type="timestamptz" typeCode="93"/>
          <primaryKey column="sample_id" sequenceNumberInPK="1"/>
          <index name="plankton_pkey" unique="true">
             <column ascending="true" name="sample_id"/>
@@ -296,7 +422,24 @@
          <checkConstraint constraint="((tow_length &gt; (0)::double precision))" name="ck_plankton_tow_length"/>
          <checkConstraint constraint="((volume &gt; (0)::double precision))" name="ck_plankton_volume"/>
       </table>
-      <table name="project_samples" numRows="0" remarks="" schema="sample" type="TABLE">
+      <table name="project_models" numRows="0" remarks="Associates projects with models." schema="sample" type="TABLE">
+         <column autoUpdated="false" defaultValue="null" digits="0" id="0" name="project_id" nullable="false" remarks="" size="5" type="int2" typeCode="5">
+            <parent column="project_id" foreignKey="fk_sample_project_models_project_id" implied="false" onDeleteCascade="true" schema="sample" table="projects"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="model_id" nullable="false" remarks="" size="5" type="int2" typeCode="5">
+            <parent column="model_id" foreignKey="fk_sample_project_models_model_id" implied="false" onDeleteCascade="true" schema="geo" table="models"/>
+         </column>
+         <primaryKey column="project_id" sequenceNumberInPK="1"/>
+         <primaryKey column="model_id" sequenceNumberInPK="2"/>
+         <index name="pk_sample_project_models" unique="true">
+            <column ascending="true" name="project_id"/>
+            <column ascending="true" name="model_id"/>
+         </index>
+         <index name="fx_project_models_model_id" unique="false">
+            <column ascending="true" name="model_id"/>
+         </index>
+      </table>
+      <table name="project_samples" numRows="97535" remarks="" schema="sample" type="TABLE">
          <column autoUpdated="false" defaultValue="null" digits="0" id="0" name="project_id" nullable="false" remarks="" size="5" type="int2" typeCode="5">
             <parent column="project_id" foreignKey="fk_project_samples_project_id" implied="false" onDeleteCascade="true" schema="sample" table="projects"/>
          </column>
@@ -310,41 +453,22 @@
             <column ascending="true" name="sample_id"/>
          </index>
       </table>
-      <table name="project_types" numRows="2" remarks="" schema="sample" type="TABLE">
-         <column autoUpdated="true" defaultValue="null" digits="0" id="0" name="project_type_id" nullable="false" remarks="" size="5" type="int2" typeCode="5">
-            <child column="project_type_id" foreignKey="fk_projects_project_type_id" implied="false" onDeleteCascade="false" schema="sample" table="projects"/>
-         </column>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="project_type_name" nullable="false" remarks="" size="255" type="varchar" typeCode="12"/>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="2" name="description" nullable="true" remarks="" size="2147483647" type="text" typeCode="12"/>
-         <column autoUpdated="false" defaultValue="true" digits="0" id="3" name="is_active" nullable="false" remarks="" size="1" type="bool" typeCode="-7"/>
-         <primaryKey column="project_type_id" sequenceNumberInPK="1"/>
-         <index name="project_types_pkey" unique="true">
-            <column ascending="true" name="project_type_id"/>
-         </index>
-         <index name="project_types_project_type_name_key" unique="true">
-            <column ascending="true" name="project_type_name"/>
-         </index>
-      </table>
-      <table name="projects" numRows="0" remarks="" schema="sample" type="TABLE">
+      <table name="projects" numRows="53" remarks="" schema="sample" type="TABLE">
          <column autoUpdated="true" defaultValue="null" digits="0" id="0" name="project_id" nullable="false" remarks="" size="5" type="int2" typeCode="5">
-            <child column="project_id" foreignKey="fk_boxes_project_id" implied="false" onDeleteCascade="false" schema="sample" table="boxes"/>
+            <child column="project_id" foreignKey="fk_metric_reports_project_id" implied="false" onDeleteCascade="true" schema="metric" table="reports"/>
+            <child column="project_id" foreignKey="fk_sample_project_models_project_id" implied="false" onDeleteCascade="true" schema="sample" table="project_models"/>
             <child column="project_id" foreignKey="fk_project_samples_project_id" implied="false" onDeleteCascade="true" schema="sample" table="project_samples"/>
-            <child column="project_id" foreignKey="Implied Constraint" implied="true" onDeleteCascade="false" schema="sample" table="vw_boxes"/>
          </column>
          <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="project_name" nullable="false" remarks="" size="255" type="varchar" typeCode="12"/>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="2" name="project_type_id" nullable="false" remarks="" size="5" type="int2" typeCode="5">
-            <parent column="project_type_id" foreignKey="fk_projects_project_type_id" implied="false" onDeleteCascade="false" schema="sample" table="project_types"/>
-         </column>
-         <column autoUpdated="false" defaultValue="true" digits="0" id="3" name="is_private" nullable="true" remarks="" size="1" type="bool" typeCode="-7"/>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="4" name="contact_id" nullable="true" remarks="" size="5" type="int2" typeCode="5">
+         <column autoUpdated="false" defaultValue="true" digits="0" id="2" name="is_private" nullable="true" remarks="" size="1" type="bool" typeCode="-7"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="3" name="contact_id" nullable="true" remarks="" size="5" type="int2" typeCode="5">
             <parent column="entity_id" foreignKey="fk_projects_contact_id" implied="false" onDeleteCascade="false" schema="entity" table="entities"/>
          </column>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="5" name="extent" nullable="true" remarks="" size="2147483647" type="geometry" typeCode="1111"/>
-         <column autoUpdated="false" defaultValue="false" digits="0" id="6" name="auto_update_samples" nullable="false" remarks="" size="1" type="bool" typeCode="-7"/>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="7" name="description" nullable="true" remarks="" size="2147483647" type="text" typeCode="12"/>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="8" name="metadata" nullable="true" remarks="" size="2147483647" type="json" typeCode="1111"/>
-         <column autoUpdated="false" defaultValue="now()" digits="6" id="9" name="created_date" nullable="false" remarks="" size="35" type="timestamptz" typeCode="93"/>
-         <column autoUpdated="false" defaultValue="now()" digits="6" id="10" name="updated_date" nullable="false" remarks="" size="35" type="timestamptz" typeCode="93"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="4" name="description" nullable="true" remarks="" size="2147483647" type="text" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="5" name="metadata" nullable="true" remarks="" size="2147483647" type="json" typeCode="1111"/>
+         <column autoUpdated="false" defaultValue="null" digits="6" id="6" name="deleted_date" nullable="true" remarks="" size="35" type="timestamptz" typeCode="93"/>
+         <column autoUpdated="false" defaultValue="now()" digits="6" id="7" name="created_date" nullable="false" remarks="" size="35" type="timestamptz" typeCode="93"/>
+         <column autoUpdated="false" defaultValue="now()" digits="6" id="8" name="updated_date" nullable="false" remarks="" size="35" type="timestamptz" typeCode="93"/>
          <primaryKey column="project_id" sequenceNumberInPK="1"/>
          <index name="projects_pkey" unique="true">
             <column ascending="true" name="project_id"/>
@@ -352,15 +476,10 @@
          <index name="fx_projects_contact_id" unique="false">
             <column ascending="true" name="contact_id"/>
          </index>
-         <index name="fx_projects_project_type_id" unique="false">
-            <column ascending="true" name="project_type_id"/>
-         </index>
-         <index name="gx_projects_extent" unique="false">
-            <column ascending="true" name="extent"/>
-         </index>
          <index name="projects_project_name_key" unique="true">
             <column ascending="true" name="project_name"/>
          </index>
+         <checkConstraint constraint="((length((project_name)::text) &gt; 0))" name="ck_project_name"/>
       </table>
       <table name="sample_assets" numRows="0" remarks="" schema="sample" type="TABLE">
          <column autoUpdated="false" defaultValue="null" digits="0" id="0" name="sample_id" nullable="false" remarks="" size="10" type="int4" typeCode="4">
@@ -412,21 +531,30 @@
          <index name="sample_methods_sample_method_name_key" unique="true">
             <column ascending="true" name="sample_method_name"/>
          </index>
+         <checkConstraint constraint="((length((sample_method_name)::text) &gt; 0))" name="ck_sample_method_name"/>
       </table>
       <table name="sample_predictors" numRows="0" remarks="" schema="sample" type="TABLE">
-         <column autoUpdated="false" defaultValue="null" digits="0" id="0" name="sample_id" nullable="false" remarks="" size="10" type="int4" typeCode="4"/>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="predictor_id" nullable="false" remarks="" size="5" type="int2" typeCode="5"/>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="2" name="location" nullable="false" remarks="" size="2147483647" type="geometry" typeCode="1111"/>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="3" name="catchment" nullable="false" remarks="" size="2147483647" type="geometry" typeCode="1111"/>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="4" name="metadata" nullable="true" remarks="" size="2147483647" type="jsonb" typeCode="1111"/>
-         <column autoUpdated="false" defaultValue="now()" digits="6" id="5" name="created_date" nullable="false" remarks="" size="35" type="timestamptz" typeCode="93"/>
-         <column autoUpdated="false" defaultValue="now()" digits="6" id="6" name="updated_date" nullable="false" remarks="" size="35" type="timestamptz" typeCode="93"/>
-         <index name="gx_sites_catchment" unique="false">
-            <column ascending="true" name="catchment"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="0" name="sample_id" nullable="false" remarks="" size="10" type="int4" typeCode="4">
+            <parent column="sample_id" foreignKey="fk_sample_predictors_sample_id" implied="false" onDeleteCascade="true" schema="sample" table="samples"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="predictor_id" nullable="false" remarks="" size="5" type="int2" typeCode="5">
+            <parent column="predictor_id" foreignKey="fk_sample_predictors_predictor_id" implied="false" onDeleteCascade="true" schema="geo" table="predictors"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="2" name="predictor_value" nullable="false" remarks="" size="255" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="now()" digits="6" id="3" name="created_date" nullable="false" remarks="" size="35" type="timestamptz" typeCode="93"/>
+         <column autoUpdated="false" defaultValue="now()" digits="6" id="4" name="updated_date" nullable="false" remarks="" size="35" type="timestamptz" typeCode="93"/>
+         <primaryKey column="sample_id" sequenceNumberInPK="1"/>
+         <primaryKey column="predictor_id" sequenceNumberInPK="2"/>
+         <primaryKey column="created_date" sequenceNumberInPK="3"/>
+         <index name="pk_sample_predictors" unique="true">
+            <column ascending="true" name="sample_id"/>
+            <column ascending="true" name="predictor_id"/>
+            <column ascending="true" name="created_date"/>
          </index>
-         <index name="gx_sites_location" unique="false">
-            <column ascending="true" name="location"/>
+         <index name="fx_sample_predictors_sample_id" unique="false">
+            <column ascending="true" name="predictor_id"/>
          </index>
+         <checkConstraint constraint="((length((predictor_value)::text) &gt; 0))" name="ck_predictor_value"/>
       </table>
       <table name="sample_types" numRows="4" remarks="" schema="sample" type="TABLE">
          <column autoUpdated="true" defaultValue="null" digits="0" id="0" name="sample_type_id" nullable="false" remarks="" size="5" type="int2" typeCode="5">
@@ -443,17 +571,21 @@
          <index name="sample_types_sample_type_name_key" unique="true">
             <column ascending="true" name="sample_type_name"/>
          </index>
+         <checkConstraint constraint="((length((sample_type_name)::text) &gt; 0))" name="ck_sample_type_name"/>
       </table>
-      <table name="samples" numRows="0" remarks="" schema="sample" type="TABLE">
+      <table name="samples" numRows="72609" remarks="" schema="sample" type="TABLE">
          <column autoUpdated="true" defaultValue="null" digits="0" id="0" name="sample_id" nullable="false" remarks="" size="10" type="int4" typeCode="4">
-            <child column="sample_id" foreignKey="fk_metrics_sample_id" implied="false" onDeleteCascade="true" schema="metric" table="metrics"/>
+            <child column="sample_id" foreignKey="fk_metric_runs_sample_id" implied="false" onDeleteCascade="true" schema="metric" table="rarefactions"/>
             <child column="sample_id" foreignKey="fk_fish_sample_id" implied="false" onDeleteCascade="true" schema="sample" table="fish"/>
+            <child column="sample_id" foreignKey="fk_sample_fish_guts" implied="false" onDeleteCascade="true" schema="sample" table="fish_guts"/>
             <child column="sample_id" foreignKey="fk_mass_sample_id" implied="false" onDeleteCascade="true" schema="sample" table="mass"/>
+            <child column="sample_id" foreignKey="fk_sample_model_results_sample_id" implied="false" onDeleteCascade="true" schema="sample" table="model_results"/>
             <child column="sample_id" foreignKey="fk_organisms_sample_id" implied="false" onDeleteCascade="true" schema="sample" table="organisms"/>
             <child column="sample_id" foreignKey="fk_plankton_sample_id" implied="false" onDeleteCascade="true" schema="sample" table="plankton"/>
             <child column="sample_id" foreignKey="fk_projct_samples_sample_id" implied="false" onDeleteCascade="true" schema="sample" table="project_samples"/>
             <child column="sample_id" foreignKey="fk_sample_assets_sample_id" implied="false" onDeleteCascade="true" schema="sample" table="sample_assets"/>
             <child column="sample_id" foreignKey="fk_sample_labs_sample_id" implied="false" onDeleteCascade="true" schema="sample" table="sample_labs"/>
+            <child column="sample_id" foreignKey="fk_sample_predictors_sample_id" implied="false" onDeleteCascade="true" schema="sample" table="sample_predictors"/>
             <child column="sample_id" foreignKey="fk_sorter_sample_id" implied="false" onDeleteCascade="false" schema="sample" table="sorter_time"/>
             <child column="sample_id" foreignKey="fk_taxa_time_sample_id" implied="false" onDeleteCascade="false" schema="sample" table="taxa_time"/>
          </column>
@@ -463,29 +595,32 @@
          <column autoUpdated="false" defaultValue="null" digits="0" id="2" name="site_id" nullable="true" remarks="" size="10" type="int4" typeCode="4">
             <parent column="site_id" foreignKey="fk_samples_site_id" implied="false" onDeleteCascade="false" schema="geo" table="sites"/>
          </column>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="3" name="sample_date" nullable="true" remarks="" size="13" type="date" typeCode="91"/>
-         <column autoUpdated="false" defaultValue="null" digits="6" id="4" name="sample_time" nullable="true" remarks="" size="15" type="time" typeCode="92"/>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="5" name="type_id" nullable="false" remarks="" size="5" type="int2" typeCode="5">
+         <column autoUpdated="false" defaultValue="null" digits="0" id="3" name="visit_id" nullable="true" remarks="" size="100" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="4" name="location" nullable="true" remarks="" size="2147483647" type="geography" typeCode="1111"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="5" name="sample_date" nullable="true" remarks="" size="13" type="date" typeCode="91"/>
+         <column autoUpdated="false" defaultValue="null" digits="6" id="6" name="sample_time" nullable="true" remarks="" size="15" type="time" typeCode="92"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="7" name="type_id" nullable="false" remarks="" size="5" type="int2" typeCode="5">
             <parent column="sample_type_id" foreignKey="fk_samples_type_id" implied="false" onDeleteCascade="false" schema="sample" table="sample_types"/>
          </column>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="6" name="method_id" nullable="false" remarks="" size="5" type="int2" typeCode="5">
+         <column autoUpdated="false" defaultValue="null" digits="0" id="8" name="method_id" nullable="false" remarks="" size="5" type="int2" typeCode="5">
             <parent column="sample_method_id" foreignKey="fk_samples_method_id" implied="false" onDeleteCascade="false" schema="sample" table="sample_methods"/>
          </column>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="7" name="habitat_id" nullable="false" remarks="" size="5" type="int2" typeCode="5">
+         <column autoUpdated="false" defaultValue="null" digits="0" id="9" name="habitat_id" nullable="false" remarks="" size="5" type="int2" typeCode="5">
             <parent column="habitat_id" foreignKey="fk_samples_habitat_id" implied="false" onDeleteCascade="false" schema="geo" table="habitats"/>
          </column>
-         <column autoUpdated="false" defaultValue="null" digits="8" id="8" name="area" nullable="true" remarks="" size="8" type="float4" typeCode="7"/>
-         <column autoUpdated="false" defaultValue="null" digits="8" id="9" name="field_split" nullable="true" remarks="" size="8" type="float4" typeCode="7"/>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="10" name="field_notes" nullable="true" remarks="" size="2147483647" type="text" typeCode="12"/>
-         <column autoUpdated="false" defaultValue="null" digits="8" id="11" name="lab_split" nullable="true" remarks="" size="8" type="float4" typeCode="7"/>
-         <column autoUpdated="false" defaultValue="1" digits="0" id="12" name="jar_count" nullable="false" remarks="" size="5" type="int2" typeCode="5"/>
-         <column autoUpdated="false" defaultValue="false" digits="0" id="13" name="qualitative" nullable="true" remarks="" size="1" type="bool" typeCode="-7"/>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="14" name="lab_notes" nullable="true" remarks="" size="2147483647" type="text" typeCode="12"/>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="15" name="mesh" nullable="true" remarks="" size="5" type="int2" typeCode="5"/>
-         <column autoUpdated="false" defaultValue="now()" digits="6" id="16" name="created_date" nullable="false" remarks="" size="35" type="timestamptz" typeCode="93"/>
-         <column autoUpdated="false" defaultValue="now()" digits="6" id="17" name="updated_date" nullable="false" remarks="" size="35" type="timestamptz" typeCode="93"/>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="18" name="qa_sample_id" nullable="true" remarks="" size="5" type="int2" typeCode="5"/>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="19" name="metadata" nullable="true" remarks="" size="2147483647" type="json" typeCode="1111"/>
+         <column autoUpdated="false" defaultValue="null" digits="8" id="10" name="area" nullable="true" remarks="" size="8" type="float4" typeCode="7"/>
+         <column autoUpdated="false" defaultValue="null" digits="8" id="11" name="field_split" nullable="false" remarks="" size="8" type="float4" typeCode="7"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="12" name="field_notes" nullable="true" remarks="" size="2147483647" type="text" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="8" id="13" name="lab_split" nullable="false" remarks="" size="8" type="float4" typeCode="7"/>
+         <column autoUpdated="false" defaultValue="1" digits="0" id="14" name="jar_count" nullable="false" remarks="" size="5" type="int2" typeCode="5"/>
+         <column autoUpdated="false" defaultValue="false" digits="0" id="15" name="qualitative" nullable="true" remarks="" size="1" type="bool" typeCode="-7"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="16" name="lab_notes" nullable="true" remarks="" size="2147483647" type="text" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="17" name="mesh" nullable="true" remarks="" size="5" type="int2" typeCode="5"/>
+         <column autoUpdated="false" defaultValue="now()" digits="6" id="18" name="created_date" nullable="false" remarks="" size="35" type="timestamptz" typeCode="93"/>
+         <column autoUpdated="false" defaultValue="now()" digits="6" id="19" name="updated_date" nullable="false" remarks="" size="35" type="timestamptz" typeCode="93"/>
+         <column autoUpdated="false" defaultValue="now()" digits="6" id="20" name="sample_date_changed" nullable="false" remarks="" size="35" type="timestamptz" typeCode="93"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="21" name="qa_sample_id" nullable="true" remarks="" size="10" type="int4" typeCode="4"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="22" name="metadata" nullable="true" remarks="" size="2147483647" type="json" typeCode="1111"/>
          <primaryKey column="sample_id" sequenceNumberInPK="1"/>
          <index name="pk_samples" unique="true">
             <column ascending="true" name="sample_id"/>
@@ -505,11 +640,17 @@
          <index name="fx_samples_type_id" unique="false">
             <column ascending="true" name="type_id"/>
          </index>
+         <index name="fx_samples_visit_id" unique="false">
+            <column ascending="true" name="visit_id"/>
+         </index>
+         <index name="gx_samples_location" unique="false">
+            <column ascending="true" name="location"/>
+         </index>
          <checkConstraint constraint="((jar_count &gt; 0))" name="chk_samples_jar_count"/>
          <checkConstraint constraint="((mesh &gt; 0))" name="chk_samples_mesh"/>
          <checkConstraint constraint="((area &gt;= (0)::double precision))" name="ck_samples_area"/>
-         <checkConstraint constraint="((field_split &gt;= (0)::double precision))" name="ck_samples_field_split"/>
-         <checkConstraint constraint="((lab_split &gt;= (0)::double precision))" name="ck_samples_lab_split"/>
+         <checkConstraint constraint="(((field_split &gt;= (0)::double precision) AND (field_split &lt;= (1.0)::double precision)))" name="ck_samples_field_split"/>
+         <checkConstraint constraint="(((lab_split &gt;= (0)::double precision) AND (lab_split &lt;= (1.0)::double precision)))" name="ck_samples_lab_split"/>
       </table>
       <table name="sorter_time" numRows="0" remarks="" schema="sample" type="TABLE">
          <column autoUpdated="true" defaultValue="null" digits="0" id="0" name="sorter_time_id" nullable="false" remarks="" size="10" type="int4" typeCode="4"/>
@@ -595,49 +736,87 @@
             <column ascending="true" name="sample_id"/>
          </index>
       </table>
-      <table name="vw_boxes" numRows="0" remarks="" schema="sample" type="VIEW" viewSql=" SELECT b.box_id,&#10;    b.customer_id,&#10;    count(s.sample_id) AS samples,&#10;    b.submitter_id,&#10;    b.box_state_id,&#10;    t.box_state_name,&#10;    b.box_recevied_date,&#10;    b.processing_complete_date,&#10;    b.projected_complete_date,&#10;    b.project_id,&#10;    p.project_name&#10;   FROM (((sample.boxes b&#10;     JOIN sample.box_states t ON ((b.box_state_id = t.box_state_id)))&#10;     LEFT JOIN sample.samples s ON ((b.box_id = s.box_id)))&#10;     LEFT JOIN sample.projects p ON ((b.project_id = p.project_id)))&#10;  GROUP BY b.box_id, b.customer_id, b.submitter_id, b.box_state_id, t.box_state_name, b.box_recevied_date, b.processing_complete_date, b.projected_complete_date, b.project_id, p.project_name;">
+      <table name="vw_boxes" numRows="0" remarks="" schema="sample" type="VIEW" viewSql=" SELECT b.box_id,&#10;    b.customer_id,&#10;    o.organization_name AS customer_name,&#10;    count(s.sample_id) AS samples,&#10;    b.submitter_id,&#10;    (((i.first_name)::text || ' '::text) || (i.last_name)::text) AS submitter_name,&#10;    b.box_state_id,&#10;    t.box_state_name,&#10;    b.box_received_date,&#10;    b.processing_complete_date,&#10;    b.projected_complete_date&#10;   FROM ((((sample.boxes b&#10;     JOIN sample.box_states t ON ((b.box_state_id = t.box_state_id)))&#10;     JOIN entity.individuals i ON ((b.submitter_id = i.entity_id)))&#10;     JOIN entity.organizations o ON ((b.customer_id = o.entity_id)))&#10;     LEFT JOIN sample.samples s ON ((b.box_id = s.box_id)))&#10;  GROUP BY b.box_id, b.customer_id, o.organization_name, b.submitter_id, (((i.first_name)::text || ' '::text) || (i.last_name)::text), b.box_state_id, t.box_state_name, b.box_received_date, b.processing_complete_date, b.projected_complete_date;">
          <column autoUpdated="false" defaultValue="null" digits="0" id="0" name="box_id" nullable="true" remarks="" size="10" type="int4" typeCode="4">
             <parent column="box_id" foreignKey="Implied Constraint" implied="true" onDeleteCascade="false" schema="sample" table="boxes"/>
          </column>
          <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="customer_id" nullable="true" remarks="" size="5" type="int2" typeCode="5"/>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="2" name="samples" nullable="true" remarks="" size="19" type="int8" typeCode="-5"/>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="3" name="submitter_id" nullable="true" remarks="" size="5" type="int2" typeCode="5"/>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="4" name="box_state_id" nullable="true" remarks="" size="5" type="int2" typeCode="5">
+         <column autoUpdated="false" defaultValue="null" digits="0" id="2" name="customer_name" nullable="true" remarks="" size="255" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="3" name="samples" nullable="true" remarks="" size="19" type="int8" typeCode="-5"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="4" name="submitter_id" nullable="true" remarks="" size="5" type="int2" typeCode="5"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="5" name="submitter_name" nullable="true" remarks="" size="2147483647" type="text" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="6" name="box_state_id" nullable="true" remarks="" size="5" type="int2" typeCode="5">
             <parent column="box_state_id" foreignKey="Implied Constraint" implied="true" onDeleteCascade="false" schema="sample" table="box_states"/>
          </column>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="5" name="box_state_name" nullable="true" remarks="" size="50" type="varchar" typeCode="12"/>
-         <column autoUpdated="false" defaultValue="null" digits="6" id="6" name="box_recevied_date" nullable="true" remarks="" size="35" type="timestamptz" typeCode="93"/>
-         <column autoUpdated="false" defaultValue="null" digits="6" id="7" name="processing_complete_date" nullable="true" remarks="" size="35" type="timestamptz" typeCode="93"/>
-         <column autoUpdated="false" defaultValue="null" digits="6" id="8" name="projected_complete_date" nullable="true" remarks="" size="35" type="timestamptz" typeCode="93"/>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="9" name="project_id" nullable="true" remarks="" size="5" type="int2" typeCode="5">
-            <parent column="project_id" foreignKey="Implied Constraint" implied="true" onDeleteCascade="false" schema="sample" table="projects"/>
-         </column>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="10" name="project_name" nullable="true" remarks="" size="255" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="7" name="box_state_name" nullable="true" remarks="" size="50" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="6" id="8" name="box_received_date" nullable="true" remarks="" size="35" type="timestamptz" typeCode="93"/>
+         <column autoUpdated="false" defaultValue="null" digits="6" id="9" name="processing_complete_date" nullable="true" remarks="" size="35" type="timestamptz" typeCode="93"/>
+         <column autoUpdated="false" defaultValue="null" digits="6" id="10" name="projected_complete_date" nullable="true" remarks="" size="35" type="timestamptz" typeCode="93"/>
       </table>
-      <table name="vw_samples" numRows="0" remarks="" schema="sample" type="VIEW" viewSql=" SELECT s.sample_id,&#10;    s.box_id,&#10;    s.site_id,&#10;    si.site_name,&#10;    s.sample_date,&#10;    s.sample_time,&#10;    s.type_id,&#10;    t.sample_type_name,&#10;    s.method_id,&#10;    m.sample_method_name,&#10;    s.habitat_id,&#10;    h.habitat_name,&#10;    s.area,&#10;    s.field_split,&#10;    s.lab_split,&#10;    s.jar_count,&#10;    s.qualitative,&#10;    s.mesh,&#10;    s.created_date,&#10;    s.updated_date,&#10;    s.qa_sample_id&#10;   FROM ((((sample.samples s&#10;     JOIN sample.sample_types t ON ((s.type_id = t.sample_type_id)))&#10;     JOIN sample.sample_methods m ON ((s.method_id = m.sample_method_id)))&#10;     JOIN geo.habitats h ON ((s.habitat_id = h.habitat_id)))&#10;     LEFT JOIN geo.sites si ON ((s.site_id = si.site_id)));">
+      <table name="vw_private_samples" numRows="0" remarks="" schema="sample" type="VIEW" viewSql=" SELECT s.sample_id&#10;   FROM ((sample.samples s&#10;     LEFT JOIN sample.project_samples ps ON ((s.sample_id = ps.sample_id)))&#10;     LEFT JOIN sample.projects p ON ((ps.project_id = p.project_id)))&#10;  WHERE (p.is_private = true)&#10;  GROUP BY s.sample_id&#10; HAVING (count(p.project_id) &gt; 0);">
+         <column autoUpdated="false" defaultValue="null" digits="0" id="0" name="sample_id" nullable="true" remarks="" size="10" type="int4" typeCode="4"/>
+      </table>
+      <table name="vw_samples" numRows="0" remarks="" schema="sample" type="VIEW" viewSql=" SELECT s.sample_id,&#10;    s.box_id,&#10;    b.customer_id,&#10;    b.customer_name,&#10;    b.box_state_name,&#10;    b.box_state_id,&#10;    b.submitter_name,&#10;    s.site_id,&#10;    si.site_name,&#10;    si.latitude AS site_latitude,&#10;    si.longitude AS site_longitude,&#10;    si.us_state AS site_state,&#10;    s.sample_date,&#10;    date_part('year'::text, s.sample_date) AS sample_year,&#10;    st_y((s.location)::geometry) AS sample_latitude,&#10;    st_x((s.location)::geometry) AS sample_longitude,&#10;    s.sample_time,&#10;    s.type_id,&#10;    st.sample_type_name AS sample_type,&#10;    s.method_id,&#10;    m.sample_method_name AS sample_method,&#10;    s.habitat_id,&#10;    h.habitat_name,&#10;    s.area,&#10;    s.field_split,&#10;    s.lab_split,&#10;    s.jar_count,&#10;    s.qualitative,&#10;    s.mesh,&#10;    s.created_date,&#10;    s.updated_date,&#10;    s.qa_sample_id,&#10;    p.diameter,&#10;    p.sub_sample_count,&#10;    p.tow_length,&#10;    p.volume,&#10;    p.aliquot,&#10;    p.size_interval,&#10;    p.tow_type,&#10;    d.net_area,&#10;    d.net_duration,&#10;    d.stream_depth,&#10;    d.net_depth,&#10;    d.net_velocity,&#10;    o.taxonomy_id,&#10;    l.abbreviation AS life_stage,&#10;    o.bug_size,&#10;    o.split_count,&#10;    o.big_rare_count,&#10;    t.phylum,&#10;    t.class,&#10;    t.subclass,&#10;    t.&quot;Order&quot;,&#10;    t.family,&#10;    t.genus,&#10;    (pr.sample_id IS NOT NULL) AS is_private&#10;   FROM (((((((((((sample.samples s&#10;     JOIN sample.vw_boxes b ON ((s.box_id = b.box_id)))&#10;     JOIN sample.sample_types st ON ((s.type_id = st.sample_type_id)))&#10;     JOIN sample.sample_methods m ON ((s.method_id = m.sample_method_id)))&#10;     JOIN geo.habitats h ON ((s.habitat_id = h.habitat_id)))&#10;     LEFT JOIN geo.vw_sites si ON ((s.site_id = si.site_id)))&#10;     LEFT JOIN sample.plankton p ON ((s.sample_id = p.sample_id)))&#10;     LEFT JOIN sample.drift d ON ((s.sample_id = d.sample_id)))&#10;     LEFT JOIN sample.organisms o ON ((s.sample_id = o.sample_id)))&#10;     LEFT JOIN taxa.vw_taxonomy_crosstab t ON ((o.taxonomy_id = t.taxonomy_id)))&#10;     LEFT JOIN sample.vw_private_samples pr ON ((s.sample_id = pr.sample_id)))&#10;     LEFT JOIN taxa.life_stages l ON ((o.life_stage_id = l.life_stage_id)));">
          <column autoUpdated="false" defaultValue="null" digits="0" id="0" name="sample_id" nullable="true" remarks="" size="10" type="int4" typeCode="4"/>
          <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="box_id" nullable="true" remarks="" size="10" type="int4" typeCode="4">
             <parent column="box_id" foreignKey="Implied Constraint" implied="true" onDeleteCascade="false" schema="sample" table="boxes"/>
          </column>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="2" name="site_id" nullable="true" remarks="" size="10" type="int4" typeCode="4"/>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="3" name="site_name" nullable="true" remarks="" size="50" type="varchar" typeCode="12"/>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="4" name="sample_date" nullable="true" remarks="" size="13" type="date" typeCode="91"/>
-         <column autoUpdated="false" defaultValue="null" digits="6" id="5" name="sample_time" nullable="true" remarks="" size="15" type="time" typeCode="92"/>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="6" name="type_id" nullable="true" remarks="" size="5" type="int2" typeCode="5"/>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="7" name="sample_type_name" nullable="true" remarks="" size="50" type="varchar" typeCode="12"/>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="8" name="method_id" nullable="true" remarks="" size="5" type="int2" typeCode="5"/>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="9" name="sample_method_name" nullable="true" remarks="" size="50" type="varchar" typeCode="12"/>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="10" name="habitat_id" nullable="true" remarks="" size="5" type="int2" typeCode="5"/>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="11" name="habitat_name" nullable="true" remarks="" size="50" type="varchar" typeCode="12"/>
-         <column autoUpdated="false" defaultValue="null" digits="8" id="12" name="area" nullable="true" remarks="" size="8" type="float4" typeCode="7"/>
-         <column autoUpdated="false" defaultValue="null" digits="8" id="13" name="field_split" nullable="true" remarks="" size="8" type="float4" typeCode="7"/>
-         <column autoUpdated="false" defaultValue="null" digits="8" id="14" name="lab_split" nullable="true" remarks="" size="8" type="float4" typeCode="7"/>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="15" name="jar_count" nullable="true" remarks="" size="5" type="int2" typeCode="5"/>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="16" name="qualitative" nullable="true" remarks="" size="1" type="bool" typeCode="-7"/>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="17" name="mesh" nullable="true" remarks="" size="5" type="int2" typeCode="5"/>
-         <column autoUpdated="false" defaultValue="null" digits="6" id="18" name="created_date" nullable="true" remarks="" size="35" type="timestamptz" typeCode="93"/>
-         <column autoUpdated="false" defaultValue="null" digits="6" id="19" name="updated_date" nullable="true" remarks="" size="35" type="timestamptz" typeCode="93"/>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="20" name="qa_sample_id" nullable="true" remarks="" size="5" type="int2" typeCode="5"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="2" name="customer_id" nullable="true" remarks="" size="5" type="int2" typeCode="5"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="3" name="customer_name" nullable="true" remarks="" size="255" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="4" name="box_state_name" nullable="true" remarks="" size="50" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="5" name="box_state_id" nullable="true" remarks="" size="5" type="int2" typeCode="5">
+            <parent column="box_state_id" foreignKey="Implied Constraint" implied="true" onDeleteCascade="false" schema="sample" table="box_states"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="6" name="submitter_name" nullable="true" remarks="" size="2147483647" type="text" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="7" name="site_id" nullable="true" remarks="" size="10" type="int4" typeCode="4"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="8" name="site_name" nullable="true" remarks="" size="50" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="17" id="9" name="site_latitude" nullable="true" remarks="" size="17" type="float8" typeCode="8"/>
+         <column autoUpdated="false" defaultValue="null" digits="17" id="10" name="site_longitude" nullable="true" remarks="" size="17" type="float8" typeCode="8"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="11" name="site_state" nullable="true" remarks="" size="2" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="12" name="sample_date" nullable="true" remarks="" size="13" type="date" typeCode="91"/>
+         <column autoUpdated="false" defaultValue="null" digits="17" id="13" name="sample_year" nullable="true" remarks="" size="17" type="float8" typeCode="8"/>
+         <column autoUpdated="false" defaultValue="null" digits="17" id="14" name="sample_latitude" nullable="true" remarks="" size="17" type="float8" typeCode="8"/>
+         <column autoUpdated="false" defaultValue="null" digits="17" id="15" name="sample_longitude" nullable="true" remarks="" size="17" type="float8" typeCode="8"/>
+         <column autoUpdated="false" defaultValue="null" digits="6" id="16" name="sample_time" nullable="true" remarks="" size="15" type="time" typeCode="92"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="17" name="type_id" nullable="true" remarks="" size="5" type="int2" typeCode="5"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="18" name="sample_type" nullable="true" remarks="" size="50" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="19" name="method_id" nullable="true" remarks="" size="5" type="int2" typeCode="5"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="20" name="sample_method" nullable="true" remarks="" size="50" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="21" name="habitat_id" nullable="true" remarks="" size="5" type="int2" typeCode="5"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="22" name="habitat_name" nullable="true" remarks="" size="50" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="8" id="23" name="area" nullable="true" remarks="" size="8" type="float4" typeCode="7"/>
+         <column autoUpdated="false" defaultValue="null" digits="8" id="24" name="field_split" nullable="true" remarks="" size="8" type="float4" typeCode="7"/>
+         <column autoUpdated="false" defaultValue="null" digits="8" id="25" name="lab_split" nullable="true" remarks="" size="8" type="float4" typeCode="7"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="26" name="jar_count" nullable="true" remarks="" size="5" type="int2" typeCode="5"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="27" name="qualitative" nullable="true" remarks="" size="1" type="bool" typeCode="-7"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="28" name="mesh" nullable="true" remarks="" size="5" type="int2" typeCode="5"/>
+         <column autoUpdated="false" defaultValue="null" digits="6" id="29" name="created_date" nullable="true" remarks="" size="35" type="timestamptz" typeCode="93"/>
+         <column autoUpdated="false" defaultValue="null" digits="6" id="30" name="updated_date" nullable="true" remarks="" size="35" type="timestamptz" typeCode="93"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="31" name="qa_sample_id" nullable="true" remarks="" size="10" type="int4" typeCode="4"/>
+         <column autoUpdated="false" defaultValue="null" digits="8" id="32" name="diameter" nullable="true" remarks="" size="8" type="float4" typeCode="7"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="33" name="sub_sample_count" nullable="true" remarks="" size="5" type="int2" typeCode="5"/>
+         <column autoUpdated="false" defaultValue="null" digits="8" id="34" name="tow_length" nullable="true" remarks="" size="8" type="float4" typeCode="7"/>
+         <column autoUpdated="false" defaultValue="null" digits="8" id="35" name="volume" nullable="true" remarks="" size="8" type="float4" typeCode="7"/>
+         <column autoUpdated="false" defaultValue="null" digits="8" id="36" name="aliquot" nullable="true" remarks="" size="8" type="float4" typeCode="7"/>
+         <column autoUpdated="false" defaultValue="null" digits="8" id="37" name="size_interval" nullable="true" remarks="" size="8" type="float4" typeCode="7"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="38" name="tow_type" nullable="true" remarks="" size="2147483647" type="tow_types" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="17" id="39" name="net_area" nullable="true" remarks="" size="17" type="float8" typeCode="8"/>
+         <column autoUpdated="false" defaultValue="null" digits="17" id="40" name="net_duration" nullable="true" remarks="" size="17" type="float8" typeCode="8"/>
+         <column autoUpdated="false" defaultValue="null" digits="17" id="41" name="stream_depth" nullable="true" remarks="" size="17" type="float8" typeCode="8"/>
+         <column autoUpdated="false" defaultValue="null" digits="17" id="42" name="net_depth" nullable="true" remarks="" size="17" type="float8" typeCode="8"/>
+         <column autoUpdated="false" defaultValue="null" digits="17" id="43" name="net_velocity" nullable="true" remarks="" size="17" type="float8" typeCode="8"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="44" name="taxonomy_id" nullable="true" remarks="" size="5" type="int2" typeCode="5"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="45" name="life_stage" nullable="true" remarks="" size="1" type="bpchar" typeCode="1"/>
+         <column autoUpdated="false" defaultValue="null" digits="8" id="46" name="bug_size" nullable="true" remarks="" size="8" type="float4" typeCode="7"/>
+         <column autoUpdated="false" defaultValue="null" digits="8" id="47" name="split_count" nullable="true" remarks="" size="8" type="float4" typeCode="7"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="48" name="big_rare_count" nullable="true" remarks="" size="5" type="int2" typeCode="5"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="49" name="phylum" nullable="true" remarks="" size="255" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="50" name="class" nullable="true" remarks="" size="255" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="51" name="subclass" nullable="true" remarks="" size="255" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="52" name="Order" nullable="true" remarks="" size="255" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="53" name="family" nullable="true" remarks="" size="255" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="54" name="genus" nullable="true" remarks="" size="255" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="55" name="is_private" nullable="true" remarks="" size="1" type="bool" typeCode="-7"/>
       </table>
    </tables>
 </database>

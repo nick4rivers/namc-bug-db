@@ -119,6 +119,10 @@
                                                 <td title="taxonomy.level_id references taxa_levels.level_id via fk_organism_taxonomy_taxa_level_id"><a href='taxonomy.html'>taxonomy</a><span class='relatedKey'>.level_id</span></td>
                                                 <td class="constraint detail">fk_organism_taxonomy_taxa_level_id<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
+                                            <tr>
+                                                <td title="vw_taxonomy_crosstab.level_id&#39;s name implies that it&#39;s a child of taxa_levels.level_id, but it doesn&#39;t reference that column."><a href='vw_taxonomy_crosstab.html'>vw_taxonomy_crosstab</a><span class='relatedKey'>.level_id</span></td>
+                                                <td class="constraint detail">Implied Constraint<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                            </tr>
                                         </table>
                                     </td>
                                     <td>
@@ -161,6 +165,23 @@
                                                 <td title="taxa_levels.parent_level_id references taxa_levels.level_id via fk_taxa_levels_parent_level_id"><a href='taxa_levels.html'>taxa_levels</a><span class='relatedKey'>.level_id</span></td>
                                                 <td class="constraint detail">fk_taxa_levels_parent_level_id<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
+                                        </table>
+                                    </td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td><span id="rank_order">rank_order</span></td>
+                                    <td>int2</td>
+                                    <td>5</td>
+                                    <td title=''></td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
                                         </table>
                                     </td>
                                     <td></td>
@@ -247,6 +268,32 @@
                     </div>
                     <div class="box box-primary">
                         <div class="box-header with-border">
+                            <i class="fa fa-sitemap"></i>
+                            <h3 class="box-title">Check Constraints</h3>
+                            <div class="box-tools pull-right">
+                                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                                <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
+                            </div>
+                        </div>
+                        <div class="box-body">
+                            <table id="check_table" class="table table-bordered table-striped dataTable" role="grid">
+                                <thead align='left'>
+                                <tr>
+                                    <th>Constraint Name</th>
+                                    <th>Constraint</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr>
+                                    <td>ck_level_name</td>
+                                    <td>((length((level_name)::text) &gt; 0))</td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="box box-primary">
+                        <div class="box-header with-border">
                             <i class="fa fa-code-fork"></i>
                             <h3 id="Relationships" class="box-title">Relationships</h3>
                             <div class="box-tools pull-right">
@@ -260,27 +307,57 @@
                                 <ul class="nav nav-tabs pull-left ui-sortable-handle">
                                     <li class="active"><a href="#oneDegreeImg-chart" data-toggle="tab" aria-expanded="true">One</a></li>
                                     <li class=""><a href="#twodegreesDegreeImg-chart" data-toggle="tab" aria-expanded="true">Two degrees</a></li>
+                                    <li class=""><a href="#oneimpliedDegreeImg-chart" data-toggle="tab" aria-expanded="true">One implied</a></li>
+                                    <li class=""><a href="#twoimpliedDegreeImg-chart" data-toggle="tab" aria-expanded="true">Two implied</a></li>
                                 </ul>
                                 <div class="tab-content no-padding">
                                     <div class="chart tab-pane active" id="oneDegreeImg-chart" style="position: relative; overflow-x:auto;">
                                         <map id="oneDegreeRelationshipsDiagram" name="oneDegreeRelationshipsDiagram">
-<area shape="rect" id="node1" href="taxa_levels.html" target="_top" title="taxa_levels" alt="" coords="33,32,324,248">
-<area shape="rect" id="node2" href="taxonomy.html" target="_top" title="taxonomy" alt="" coords="368,5,537,152">
+<area shape="rect" id="node1" href="taxa_levels.html" target="_top" title="taxa_levels" alt="" coords="33,32,324,277">
+<area shape="rect" id="node2" href="taxonomy.html" target="_top" title="taxonomy" alt="" coords="368,5,537,181">
 </map>
                                         <a name='diagram'><img id="oneDegreeImg" src="../diagrams/tables/taxa_levels.1degree.png" usemap="#oneDegreeRelationshipsDiagram" class="diagram" border="0" align="left"></a>
                                     </div>
                                     <div class="chart tab-pane " id="twodegreesDegreeImg-chart" style="position: relative; overflow-x:auto;">
                                         <map id="twoDegreesRelationshipsDiagram" name="twoDegreesRelationshipsDiagram">
-<area shape="rect" id="node1" href="../sample/tables/fish.html" target="_top" title="sample.fish" alt="" coords="605,5,767,93">
-<area shape="rect" id="node2" href="taxonomy.html" target="_top" title="taxonomy" alt="" coords="368,319,537,465">
-<area shape="rect" id="node7" href="taxa_levels.html" target="_top" title="taxa_levels" alt="" coords="33,345,324,561">
-<area shape="rect" id="node3" href="../sample/tables/organisms.html" target="_top" title="sample.organisms" alt="" coords="581,111,791,199">
-<area shape="rect" id="node4" href="external_ids.html" target="_top" title="external_ids" alt="" coords="603,216,769,304">
-<area shape="rect" id="node5" href="synonyms.html" target="_top" title="synonyms" alt="" coords="609,321,763,409">
-<area shape="rect" id="node6" href="taxa_attributes.html" target="_top" title="taxa_attributes" alt="" coords="593,427,779,515">
-<area shape="rect" id="node8" href="taxa_translations.html" target="_top" title="taxa_translations" alt="" coords="585,532,787,620">
+<area shape="rect" id="node1" href="../metric/tables/metric_taxa.html" target="_top" title="metric.metric_taxa" alt="" coords="603,5,813,93">
+<area shape="rect" id="node2" href="taxonomy.html" target="_top" title="taxonomy" alt="" coords="368,424,537,600">
+<area shape="rect" id="node10" href="taxa_levels.html" target="_top" title="taxa_levels" alt="" coords="33,451,324,696">
+<area shape="rect" id="node3" href="../sample/tables/fish.html" target="_top" title="sample.fish" alt="" coords="627,111,789,199">
+<area shape="rect" id="node4" href="../sample/tables/fish_gut_weights.html" target="_top" title="sample.fish_gut_weights" alt="" coords="581,216,835,304">
+<area shape="rect" id="node5" href="../sample/tables/fish_guts.html" target="_top" title="sample.fish_guts" alt="" coords="608,321,808,409">
+<area shape="rect" id="node6" href="../sample/tables/organisms.html" target="_top" title="sample.organisms" alt="" coords="603,427,813,515">
+<area shape="rect" id="node7" href="external_ids.html" target="_top" title="external_ids" alt="" coords="625,532,791,620">
+<area shape="rect" id="node8" href="synonyms.html" target="_top" title="synonyms" alt="" coords="631,637,785,725">
+<area shape="rect" id="node9" href="taxa_attributes.html" target="_top" title="taxa_attributes" alt="" coords="615,743,801,831">
+<area shape="rect" id="node11" href="translation_taxa.html" target="_top" title="translation_taxa" alt="" coords="611,848,805,936">
 </map>
                                         <a name='diagram'><img id="twodegreesDegreeImg" src="../diagrams/tables/taxa_levels.2degrees.png" usemap="#twoDegreesRelationshipsDiagram" class="diagram" border="0" align="left"></a>
+                                    </div>
+                                    <div class="chart tab-pane " id="oneimpliedDegreeImg-chart" style="position: relative; overflow-x:auto;">
+                                        <map id="oneDegreeRelationshipsDiagramImplied" name="oneDegreeRelationshipsDiagramImplied">
+<area shape="rect" id="node1" href="taxa_levels.html" target="_top" title="taxa_levels" alt="" coords="33,93,324,339">
+<area shape="rect" id="node2" href="taxonomy.html" target="_top" title="taxonomy" alt="" coords="368,5,537,181">
+<area shape="rect" id="node3" href="vw_taxonomy_crosstab.html" target="_top" title="vw_taxonomy_crosstab" alt="" coords="581,68,824,191">
+</map>
+                                        <a name='diagram'><img id="oneimpliedDegreeImg" src="../diagrams/tables/taxa_levels.implied1degrees.png" usemap="#oneDegreeRelationshipsDiagramImplied" class="diagram" border="0" align="left"></a>
+                                    </div>
+                                    <div class="chart tab-pane " id="twoimpliedDegreeImg-chart" style="position: relative; overflow-x:auto;">
+                                        <map id="twoDegreesRelationshipsDiagramImplied" name="twoDegreesRelationshipsDiagramImplied">
+<area shape="rect" id="node1" href="../metric/tables/metric_taxa.html" target="_top" title="metric.metric_taxa" alt="" coords="603,5,813,93">
+<area shape="rect" id="node2" href="taxonomy.html" target="_top" title="taxonomy" alt="" coords="368,529,537,705">
+<area shape="rect" id="node10" href="taxa_levels.html" target="_top" title="taxa_levels" alt="" coords="33,768,324,1013">
+<area shape="rect" id="node3" href="../sample/tables/fish.html" target="_top" title="sample.fish" alt="" coords="627,111,789,199">
+<area shape="rect" id="node4" href="../sample/tables/fish_gut_weights.html" target="_top" title="sample.fish_gut_weights" alt="" coords="581,216,835,304">
+<area shape="rect" id="node5" href="../sample/tables/fish_guts.html" target="_top" title="sample.fish_guts" alt="" coords="608,321,808,409">
+<area shape="rect" id="node6" href="../sample/tables/organisms.html" target="_top" title="sample.organisms" alt="" coords="603,427,813,515">
+<area shape="rect" id="node7" href="external_ids.html" target="_top" title="external_ids" alt="" coords="625,532,791,620">
+<area shape="rect" id="node8" href="synonyms.html" target="_top" title="synonyms" alt="" coords="631,637,785,725">
+<area shape="rect" id="node9" href="taxa_attributes.html" target="_top" title="taxa_attributes" alt="" coords="615,743,801,831">
+<area shape="rect" id="node11" href="translation_taxa.html" target="_top" title="translation_taxa" alt="" coords="611,848,805,936">
+<area shape="rect" id="node12" href="vw_taxonomy_crosstab.html" target="_top" title="vw_taxonomy_crosstab" alt="" coords="587,953,829,1076">
+</map>
+                                        <a name='diagram'><img id="twoimpliedDegreeImg" src="../diagrams/tables/taxa_levels.implied2degrees.png" usemap="#twoDegreesRelationshipsDiagramImplied" class="diagram" border="0" align="left"></a>
                                     </div>
                                 </div>
                             </div>
