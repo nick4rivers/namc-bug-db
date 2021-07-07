@@ -14,6 +14,8 @@ pg_dump --file="<backup_file>.tar" \
 
 ## Restore
 
+The database needs to exist in a clean state before running this command.
+
 
 ```bash
 pg_restore ./<backup_file.tar> \
