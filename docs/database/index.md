@@ -2,8 +2,11 @@
 title: Database Schema
 ---
 
-* [Entity Schema](schema_entity.html)
-* [Geo Schema](schema_geo.html)
-* [Taxa Schema](schema_taxa.html)
-* [Sample Schema](schema_sample.html)
-* [Metric Schema](schema_metric.html)
+Database schema documentation:
+
+* [Entity Schema]({{ site.baseurl }}/bugdb/entity/index.html)
+* [Geo Schema]({{ site.baseurl }}/bugdb/geo/index.html)
+* [Taxa Schema]({{ site.baseurl }}/bugdb/taxa/index.html)
+* [Sample Schema]({{ site.baseurl }}/bugdb/sample/index.html)
+* [Metric Schema]({{ site.baseurl }}/bugdb/metric/index.html)
+* [Billing Schema]({{ site.baseurl }}/bugdb/billing/index.html)
