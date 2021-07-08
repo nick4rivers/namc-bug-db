@@ -16,7 +16,7 @@ Models can be run on a collection of samples that are associated with either
 a box or project. If you don't already have a project defined, you can use
 R to create one and then associate one or more samples with the project before attempting to run a model.
 
-# Step 2
+# Step 2 Run the Model
 
 The following steps are described as individual processes, when in reality
 they are best performed in a single R script. Cut, paste and tweak the following R statements to build the script in question.
@@ -75,7 +75,7 @@ The model result, along with the rarefaction are then stored in the database.
 NAMCr::save('setModelResult', rarefiedTaxa=taxa, modelResult=results::value, modelVersion=model::verison)
 ```
 
-## Verify the Results
+# Step 3 Verify the Results
 
 You should verify that the model results were successfully store in the database.
 
