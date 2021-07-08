@@ -456,7 +456,7 @@ export declare type ModelResult = {
     createdDate: string;
     updatedDate: string;
 };
-export declare type FishGuts = {
+export declare type FishDiet = {
     sampleId: number;
     sampleDate: string;
     siteId: number;

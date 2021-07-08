@@ -139,9 +139,9 @@ const modelResultsQuery = 'SELECT * FROM sample.fn_model_results($1, $2, $3)'
 export const getModelResults = (pool, limit: number, offset: number, sampleIds): DBReturnPromiseType =>
     pgPromise(pool, modelResultsQuery, [limit, offset, sampleIds])
 
-const fishGutsQuery = 'SELECT * FROM sample.fn_fish_guts($1, $2, $3)'
-export const getFishGuts = (pool, limit: number, offset: number, sampleIds): DBReturnPromiseType =>
-    pgPromise(pool, fishGutsQuery, [limit, offset, sampleIds])
+const fishDietQuery = 'SELECT * FROM sample.fn_fish_diet($1, $2, $3)'
+export const getFishDiet = (pool, limit: number, offset: number, sampleIds): DBReturnPromiseType =>
+    pgPromise(pool, fishDietQuery, [limit, offset, sampleIds])
 
 /**
  * Mutations

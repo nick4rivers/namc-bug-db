@@ -1,4 +1,4 @@
-import { AuthResponse, Box, BoxInfo, Model, ModelInfo, ModelPredictor, ModelThreshold, PaginatedRecords, Predictor, Project, Sample, SampleInfo, SamplePredictorValue, Site, SiteInfo, SitePredictorValue, Taxonomy, Translation, RawSampleTaxa, GeneralizedSampleTaxa, TranslationSampleTaxa, RarefiedSampleTaxa, PlanktonSample, DriftSample, FishSample, MassSample, MetricResult, Attribute, TaxonomyTree, AttributeValue, TranslationTaxa, Metric, ModelResult, FishGuts } from '@namcbugdb/common';
+import { AuthResponse, Box, BoxInfo, Model, ModelInfo, ModelPredictor, ModelThreshold, PaginatedRecords, Predictor, Project, Sample, SampleInfo, SamplePredictorValue, Site, SiteInfo, SitePredictorValue, Taxonomy, Translation, RawSampleTaxa, GeneralizedSampleTaxa, TranslationSampleTaxa, RarefiedSampleTaxa, PlanktonSample, DriftSample, FishSample, MassSample, MetricResult, Attribute, TaxonomyTree, AttributeValue, TranslationTaxa, Metric, ModelResult, FishDiet } from '@namcbugdb/common';
 declare const _default: {
     Query: {
         auth: (obj: any, args: any, ctx: any) => Promise<AuthResponse>;
@@ -203,13 +203,13 @@ declare const _default: {
         }, { user }: {
             user: any;
         }) => Promise<PaginatedRecords<ModelResult>>;
-        fishGuts: (obj: any, { limit, offset, sampleIds }: {
+        fishDiet: (obj: any, { limit, offset, sampleIds }: {
             limit: any;
             offset: any;
             sampleIds: any;
         }, { user }: {
             user: any;
-        }) => Promise<PaginatedRecords<FishGuts>>;
+        }) => Promise<PaginatedRecords<FishDiet>>;
     };
     Mutation: {
         setSitePredictorValue: (obj: any, { siteId, predictorId, value }: {
