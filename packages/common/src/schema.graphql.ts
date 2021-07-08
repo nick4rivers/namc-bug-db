@@ -627,6 +627,7 @@ type FishDiet {
         predictorName: String
         abbreviation: String
         description: String
+        source: String
         units: String
         calculationScript: String
         predictorTypeId: Int

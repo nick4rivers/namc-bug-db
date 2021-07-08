@@ -165,6 +165,7 @@ export type Predictor = {
     predictorName: string
     abbreviation: string
     description: string
+    source: string
     units: string
     calculationScript: string
     predictorTypeId: number
