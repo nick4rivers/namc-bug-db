@@ -179,3 +179,9 @@ INSERT INTO geo.predictors (predictor_id,predictor_name,abbreviation,unit_id,pre
 INSERT INTO geo.predictors (predictor_id,predictor_name,abbreviation,unit_id,predictor_type_id,description,metadata,calculation_script,is_temporal) VALUES (177,'SFLR','SFLR',1,1,NULL,NULL,NULL,FALSE);
 INSERT INTO geo.predictors (predictor_id,predictor_name,abbreviation,unit_id,predictor_type_id,description,metadata,calculation_script,is_temporal) VALUES (178,'PrdCond','PrdCond',1,1,NULL,NULL,NULL,FALSE);
 
+INSERT INTO geo.predictors (predictor_id,predictor_name,abbreviation,unit_id,predictor_type_id,description,metadata,calculation_script,is_temporal) VALUES (179,'TMAXPT','TMAXPT',1,1,NULL,NULL,NULL,FALSE);
+INSERT INTO geo.predictors (predictor_id,predictor_name,abbreviation,unit_id,predictor_type_id,description,metadata,calculation_script,is_temporal) VALUES (180,'MAST_mean08091314','MAST_mean08091314',1,1,NULL,NULL,NULL,FALSE);
+INSERT INTO geo.predictors (predictor_id,predictor_name,abbreviation,unit_id,predictor_type_id,description,metadata,calculation_script,is_temporal) VALUES (181,'MSST_mean08091314','MSST_mean08091314',1,1,NULL,NULL,NULL,FALSE);
+INSERT INTO geo.predictors (predictor_id,predictor_name,abbreviation,unit_id,predictor_type_id,description,metadata,calculation_script,is_temporal) VALUES (182,'MWST_mean08091314','MWST_mean08091314',1,1,NULL,NULL,NULL,FALSE);
+
+
