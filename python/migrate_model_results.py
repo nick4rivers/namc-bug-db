@@ -152,21 +152,18 @@ def migrate(pgcurs, csv_path):
         o2e_result = float(row['OE']) if len(row['OE']) > 0 else None
         mmi_result = float(row['MMI']) if len(row['MMI']) > 0 else None
 
-        for model_result in (o2e_result, mmi_result):
+        for model_result, model_suffix in ((o2e_result, 'OE'), (mmi_result, 'MMI')):
             if model_result is None:
                 continue
 
             model_name = row['MODEL']
             if model_name.lower() == 'aremp':
                 # AREMP has become two models.
-                if row['MMI'] == '':
-                    model_name = 'AREMP MMI'
-                else:
-                    model_name = 'AREMP OE'
-
-            # Check the model aliases at the top of this file
-            if model_name in model_aliases:
-                model_name = model_aliases[model_name]
+                model_name = 'AREMP {}'.format(model_suffix)
+            else:
+                # Check the model aliases at the top of this file
+                if model_name in model_aliases:
+                    model_name = model_aliases[model_name]
 
             # Now try to find the correct model ID
             model_id = get_db_id(models, 'model_id', ['model_name', 'abbreviation'], model_name, True)
