@@ -147,51 +147,57 @@ def migrate(pgcurs, csv_path):
         if row['COUNT'] == '':
             log.warning('Fixed count is empty. Skipping sample {}'.format(sample_id))
             continue
+        fixed_count = int(row['COUNT'])
 
-        model_result = float(row['OE']) if row['MMI'] is None or len(row['MMI']) < 1 else float(row['MMI'])
+        o2e_result = float(row['OE']) if len(row['OE']) > 0 else None
+        mmi_result = float(row['MMI']) if len(row['MMI']) > 0 else None
 
-        model_name = row['MODEL']
-        if model_name.lower() == 'aremp':
-            # AREMP has become two models.
-            if row['MMI'] == '':
-                model_name = 'AREMP MMI'
+        for model_result in (o2e_result, mmi_result):
+            if model_result is None:
+                continue
+
+            model_name = row['MODEL']
+            if model_name.lower() == 'aremp':
+                # AREMP has become two models.
+                if row['MMI'] == '':
+                    model_name = 'AREMP MMI'
+                else:
+                    model_name = 'AREMP OE'
+
+            # Check the model aliases at the top of this file
+            if model_name in model_aliases:
+                model_name = model_aliases[model_name]
+
+            # Now try to find the correct model ID
+            model_id = get_db_id(models, 'model_id', ['model_name', 'abbreviation'], model_name, True)
+
+            # Build a dictionary of all the relevant values. This will get flattened to a list before inserting into the database
+            data = {
+                'model_id': model_id,
+                'sample_id': sample_id,
+                'model_version': '0.0.0',
+                'fixed_count': int(row['COUNT']),
+                'model_result': model_result,
+                'metadata': metadata
+            }
+
+            # Track unique results and skip duplicates
+            key = '{}_{}_{}'.format(sample_id, model_id, int(row['COUNT']))
+            if key in unique_model_results:
+                log.warning('Duplicate model result {} for sample {}, model {}, fixed count {}. Other value is {}'.format(model_result, sample_id, model_name, int(row['COUNT']), unique_model_results[key]))
+                continue
             else:
-                model_name = 'AREMP OE'
+                unique_model_results[key] = model_result
 
-        # Check the model aliases at the top of this file
-        if model_name in model_aliases:
-            model_name = model_aliases[model_name]
+            # flatten data ready for database insert
+            block_data.append([data[col] for col in columns])
 
-        # Now try to find the correct model ID
-        model_id = get_db_id(models, 'model_id', ['model_name', 'abbreviation'], model_name, True)
+            if len(block_data) == block_size:
+                insert_many_rows(pgcurs, 'sample.model_results', columns, block_data, None)
+                block_data = []
+                progbar.update(counter)
 
-        # Build a dictionary of all the relevant values. This will get flattened to a list before inserting into the database
-        data = {
-            'model_id': model_id,
-            'sample_id': sample_id,
-            'model_version': '0.0.0',
-            'fixed_count': int(row['COUNT']),
-            'model_result': model_result,
-            'metadata': metadata
-        }
-
-        # Track unique results and skip duplicates
-        key = '{}_{}_{}'.format(sample_id, model_id, int(row['COUNT']))
-        if key in unique_model_results:
-            log.warning('Duplicate model result {} for sample {}, model {}, fixed count {}. Other value is {}'.format(model_result, sample_id, model_name, int(row['COUNT']), unique_model_results[key]))
-            continue
-        else:
-            unique_model_results[key] = model_result
-
-        # flatten data ready for database insert
-        block_data.append([data[col] for col in columns])
-
-        if len(block_data) == block_size:
-            insert_many_rows(pgcurs, 'sample.model_results', columns, block_data, None)
-            block_data = []
-            progbar.update(counter)
-
-        counter += 1
+            counter += 1
 
     # insert remaining rows
     if len(block_data) > 0:
