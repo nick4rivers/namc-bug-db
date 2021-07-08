@@ -115,8 +115,8 @@ const typeDefs = gql`
         "List of all mass samples in the system."
         massSamples(limit: Int = ${queryLimits.samples}, offset: Int = 0): PaginatedMass
 
-        "List all fish guts samples in the system"
-        fishGuts(limit: Int = ${queryLimits.samples}, offset: Int = 0, sampleIds: [Int]): PaginatedFishGuts
+        "List all fish diet samples in the system"
+        fishDiet(limit: Int = ${queryLimits.samples}, offset: Int = 0, sampleIds: [Int]): PaginatedFishDiet
 
         ####################################################################################################################################################################################
         # Sample Taxa queries
@@ -527,7 +527,7 @@ type ModelResult {
     updatedDate: String
 }
 
-type FishGuts {
+type FishDiet {
     sampleId:            Int
     sampleDate:          String
     siteId:              Int
@@ -976,8 +976,8 @@ type FishGuts {
         nextOffset: Int
     }
 
-    type PaginatedFishGuts {
-        records: [FishGuts]
+    type PaginatedFishDiet {
+        records: [FishDiet]
         nextOffset: Int
     }
 `

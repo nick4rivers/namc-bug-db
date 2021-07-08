@@ -36,7 +36,7 @@ import {
     Metric,
     util,
     ModelResult,
-    FishGuts
+    FishDiet
 } from '@namcbugdb/common'
 import * as pg from '../pg'
 
@@ -501,13 +501,13 @@ export default {
             return createPagination<ModelResult>(data, limit, offset)
         },
 
-        fishGuts: async (obj, { limit, offset, sampleIds }, { user }): Promise<PaginatedRecords<FishGuts>> => {
+        fishDiet: async (obj, { limit, offset, sampleIds }, { user }): Promise<PaginatedRecords<FishDiet>> => {
             loggedInGate(user)
             limitOffsetCheck(limit, graphql.queryLimits.samples, offset)
 
             const pool = await pg.getPool()
-            const data = await pg.getFishGuts(pool, limit, offset, sampleIds)
-            return createPagination<FishGuts>(data, limit, offset)
+            const data = await pg.getFishDiet(pool, limit, offset, sampleIds)
+            return createPagination<FishDiet>(data, limit, offset)
         }
     },
 

@@ -1310,7 +1310,7 @@ CREATE TABLE sample.model_results
 );
 CREATE UNIQUE INDEX ux_sample_model_results ON sample.model_results(sample_id, model_id, model_version, fixed_count);
 
-CREATE TABLE sample.fish_guts
+CREATE TABLE sample.fish_diet
 (
     sample_id INT NOT NULL PRIMARY KEY,
     fish_weight REAL NOT NULL,
@@ -1324,19 +1324,19 @@ CREATE TABLE sample.fish_guts
     created_date TIMESTAMPTZ        NOT NULL DEFAULT now(),
     updated_date TIMESTAMPTZ        NOT NULL DEFAULT now(),
 
-    CONSTRAINT fk_sample_fish_guts FOREIGN KEY (sample_id) references sample.samples(sample_id) on delete cascade,
-    CONSTRAINT fk_sample_fish_guts_fish_taxonomy_id FOREIGN KEY (fish_taxonomy_id) references taxa.taxonomy(taxonomy_id),
-    CONSTRAINT ck_sample_fish_guts_organic_weight CHECK (organic_weight >= 0),
-    CONSTRAINT ck_sample_fish_guts_inorganic_weight CHECK (inorganic_weight >= 0),
-    CONSTRAINT ck_sample_fish_guts_other_weight CHECK (other_weight >= 0)
+    CONSTRAINT fk_sample_fish_diet FOREIGN KEY (sample_id) references sample.samples(sample_id) on delete cascade,
+    CONSTRAINT fk_sample_fish_diet_fish_taxonomy_id FOREIGN KEY (fish_taxonomy_id) references taxa.taxonomy(taxonomy_id),
+    CONSTRAINT ck_sample_fish_diet_organic_weight CHECK (organic_weight >= 0),
+    CONSTRAINT ck_sample_fish_diet_inorganic_weight CHECK (inorganic_weight >= 0),
+    CONSTRAINT ck_sample_fish_diet_other_weight CHECK (other_weight >= 0)
 );
-CREATE TRIGGER tr_fish_guts
+CREATE TRIGGER tr_fish_diet
     BEFORE UPDATE
-    ON sample.fish_guts
+    ON sample.fish_diet
     FOR EACH ROW
 EXECUTE PROCEDURE fn_before_update();
 
-CREATE TABLE sample.fish_gut_weights
+CREATE TABLE sample.fish_diet_weights
 (
     sample_id INT NOT NULL,
     taxonomy_id INT NOT NULL,
@@ -1344,15 +1344,15 @@ CREATE TABLE sample.fish_gut_weights
     count SMALLINT,
     weight REAL NOT NULL,
 
-    CONSTRAINT pk_sample_fish_gut_weights PRIMARY KEY (sample_id, taxonomy_id, life_stage_id),
-    CONSTRAINT fk_sample_fish_gut_weights_sample_id FOREIGN KEY (sample_id) REFERENCES sample.fish_guts(sample_id) on delete cascade,
-    CONSTRAINT fk_sample_fish_gut_weights_taxonomy_id FOREIGN KEY (taxonomy_id) REFERENCES taxa.taxonomy(taxonomy_id),
-    CONSTRAINT fk_sample_fish_gut_weights_life_stage_id FOREIGN KEY (life_stage_id) REFERENCES taxa.life_stages(life_stage_id),
-    CONSTRAINT ck_sample_fish_gut_weights_count CHECK (count > 0),
-    CONSTRAINT ck_sample_fish_gut_weights_weight CHECK (weight > 0)
+    CONSTRAINT pk_sample_fish_diet_weights PRIMARY KEY (sample_id, taxonomy_id, life_stage_id),
+    CONSTRAINT fk_sample_fish_diet_weights_sample_id FOREIGN KEY (sample_id) REFERENCES sample.fish_diet(sample_id) on delete cascade,
+    CONSTRAINT fk_sample_fish_diet_weights_taxonomy_id FOREIGN KEY (taxonomy_id) REFERENCES taxa.taxonomy(taxonomy_id),
+    CONSTRAINT fk_sample_fish_diet_weights_life_stage_id FOREIGN KEY (life_stage_id) REFERENCES taxa.life_stages(life_stage_id),
+    CONSTRAINT ck_sample_fish_diet_weights_count CHECK (count > 0),
+    CONSTRAINT ck_sample_fish_diet_weights_weight CHECK (weight > 0)
 );
-CREATE INDEX fx_sample_fish_gut_weights_taxonomy_id ON sample.fish_gut_weights(taxonomy_id);
-CREATE INDEX fx_sample_fish_gut_weights_life_stage_id ON sample.fish_gut_weights(life_stage_id);
+CREATE INDEX fx_sample_fish_diet_weights_taxonomy_id ON sample.fish_diet_weights(taxonomy_id);
+CREATE INDEX fx_sample_fish_diet_weights_life_stage_id ON sample.fish_diet_weights(life_stage_id);
 
 CREATE TABLE sample.asset_types
 (

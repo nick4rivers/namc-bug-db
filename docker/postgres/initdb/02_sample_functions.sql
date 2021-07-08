@@ -700,7 +700,7 @@ limit p_limit offset p_offset;
 $$;
 
 
-create or replace function sample.fn_fish_guts(p_limit int, p_offset int, p_sample_ids int[])
+create or replace function sample.fn_fish_diet(p_limit int, p_offset int, p_sample_ids int[])
     returns table
             (
                 sample_id            int,
@@ -752,11 +752,11 @@ select s.sample_id,
        fgw.weight
 from (
          select *
-         from sample.fish_gut_weights
+         from sample.fish_diet_weights
          order by sample_id, taxonomy_id, life_stage_id
          limit p_limit offset p_offset
      ) fgw
-         inner join sample.fish_guts fg on fgw.sample_id = fg.sample_id
+         inner join sample.fish_diet fg on fgw.sample_id = fg.sample_id
          inner join sample.samples s on s.sample_id = fgw.sample_id
          inner join geo.sites si on s.site_id = si.site_id
          inner join taxa.taxonomy ft on fg.fish_taxonomy_id = ft.taxonomy_id

@@ -180,7 +180,7 @@ var modelResultsQuery = 'SELECT * FROM sample.fn_model_results($1, $2, $3)';
 exports.getModelResults = function (pool, limit, offset, sampleIds) {
     return pgPromise(pool, modelResultsQuery, [limit, offset, sampleIds]);
 };
-var fishGutsQuery = 'SELECT * FROM sample.fn_fish_guts($1, $2, $3)';
+var fishGutsQuery = 'SELECT * FROM sample.fn_fish_diet($1, $2, $3)';
 exports.getFishGuts = function (pool, limit, offset, sampleIds) {
     return pgPromise(pool, fishGutsQuery, [limit, offset, sampleIds]);
 };
