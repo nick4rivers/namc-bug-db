@@ -309,6 +309,7 @@ CREATE TABLE geo.predictors
     predictor_type_id  SMALLINT            NOT NULL,
     is_temporal        BOOLEAN             NOT NULL,
     description        TEXT,
+    source             TEXT,
     metadata           JSON,
     calculation_script VARCHAR(255),
     created_date       TIMESTAMPTZ         NOT NULL DEFAULT now(),
