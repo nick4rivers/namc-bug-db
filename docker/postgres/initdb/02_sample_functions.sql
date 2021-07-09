@@ -694,7 +694,7 @@ from sample.model_results mr
          inner join sample.samples s on p.sample_id = s.sample_id
          inner join geo.sites si on s.site_id = si.site_id
          inner join geo.models m on mr.model_id = m.model_id
-         inner join geo.model_conditions mt on m.model_id = mt.model_id and mr.model_result::numeric <@ mt.condition
+         left join geo.model_conditions mt on m.model_id = mt.model_id and mr.model_result::numeric <@ mt.condition
 order by mr.sample_id, mr.model_id, mr.model_version, mr.fixed_count
 limit p_limit offset p_offset;
 $$;
