@@ -3,16 +3,9 @@
     The CSV file was obtained from Jennifer Courtright as an Excel file and
     exported to CSV for this process.
 """
-import os
 import csv
-import json
-import psycopg2
-import argparse
-from psycopg2.extras import execute_values
+import random
 from lib.logger import Logger
-from lib.progress_bar import ProgressBar
-from lib.dotenv import parse_args_env
-from utilities import sanitize_string, format_values, add_metadata, write_sql_file
 from postgres_lookup_data import lookup_data, insert_row, log_row_count, insert_many_rows
 from lookup_data import get_db_id
 
@@ -105,27 +98,20 @@ def migrate(pgcurs, csv_path):
         raise Exception('You need to migrate sites and samples into the database first.')
 
     counter = 0
-    raw_data = csv.DictReader(open(csv_path))
-    progbar = ProgressBar(len(list(raw_data)), 50, "metric values")
-
-    # track unique results for the index ux_sample_model_results on
-    # sample_id, model_id, model_version, fixed_count
     unique_model_results = {}
-
-    raw_data = csv.DictReader(open(csv_path))
-    block_data = []
-    for row in raw_data:
+    for row in csv.DictReader(open(csv_path)):
 
         sample_id = int(row['SAMPLEID'])
-        station = row['STATION']
-
         if sample_id not in samples:
             log.warning('Sample {} not present in database. Skipping'.format(sample_id))
             continue
 
+        # No longer using site ID
+        # The station values actually refer to ReachID. Ignore and do not user
+        # station = row['STATION']    
         # Verify that the site in the database is associated with the same site as that specified in the CSV
-        if sites[samples[sample_id]]['site_name'].lower() != station.lower():
-            log.error('Sample {} has site {} in CSV but is associated with site {} in postgres'.format(sample_id, station, sites[samples[sample_id]]['site_name']))
+        # if sites[samples[sample_id]]['site_name'].lower() != station.lower():
+        #     log.error('Sample {} has site {} in CSV but is associated with site {} in postgres'.format(sample_id, station, sites[samples[sample_id]]['site_name']))
 
         # Store all the miscellaneous CSV columns as JSON metadata in postgres
         metadata = {}
@@ -180,28 +166,31 @@ def migrate(pgcurs, csv_path):
 
             # Track unique results and skip duplicates
             key = '{}_{}_{}'.format(sample_id, model_id, int(row['COUNT']))
-            if key in unique_model_results:
-                log.warning('Duplicate model result {} for sample {}, model {}, fixed count {}. Other value is {}'.format(model_result, sample_id, model_name, int(row['COUNT']), unique_model_results[key]))
-                continue
-            else:
-                unique_model_results[key] = model_result
+            if key not in unique_model_results:
+                unique_model_results[key] = []
+            unique_model_results.append(data)
+            
 
-            # flatten data ready for database insert
-            block_data.append([data[col] for col in columns])
+    # Now insert the data into the database. Needs flattening first.
+    block_data = []
+    for key, list_of_data in unique_model_results.items():
 
-            if len(block_data) == block_size:
-                insert_many_rows(pgcurs, 'sample.model_results', columns, block_data, None)
-                block_data = []
-                progbar.update(counter)
+        # pick one of the model results at random
+        data = random.choice(list_of_data)
 
-            counter += 1
+        # flatten data ready for database insert
+        block_data.append([data[col] for col in columns])
+
+        # insert the data if the block size has been reached
+        if len(block_data) == block_size:
+            insert_many_rows(pgcurs, 'sample.model_results', columns, block_data, None)
+            block_data = []
 
     # insert remaining rows
     if len(block_data) > 0:
         insert_many_rows(pgcurs, 'sample.model_results', columns, block_data, None)
 
-    progbar.finish()
-    log_row_count(pgcurs, 'sample.model_results', len(list(raw_data)))
+    log_row_count(pgcurs, 'sample.model_results', len(list(unique_model_results)))
 
 
 def isfloat(value):
@@ -210,18 +199,3 @@ def isfloat(value):
         return True
     except ValueError:
         return False
-# def insert_metric_taxa(pgcurs):
-
-#     # First set all the metrics to inactive except the overall sample abundance
-#     pgcurs.execute('UPDATE metric.metrics SET is_active =false WHERE metric_id <> 21')
-
-#     for metric_id, metric_name in metric_taxa.items():
-#         taxa_name = metric_name.split(' ')[0]
-#         print(taxa_name)
-#         pgcurs.execute('SELECT taxonomy_id FROM taxa.taxonomy where scientific_name ilike (%s)', [taxa_name])
-#         taxonomy_id = pgcurs.fetchone()[0]
-
-#         pgcurs.execute('INSERT INTO metric.metric_taxa (metric_id, taxonomy_id) VALUES (%s, %s)', [metric_id, taxonomy_id])
-
-#         # Set this metric to active
-#         pgcurs.execute('UPDATE metric.metrics SET is_active = TRUE where metric_id = %s', [metric_id])
