@@ -27,14 +27,14 @@ model_aliases = {
     'NVMMI': 'NV MMI',
     'Westwide': 'WestWide2018_OtherEcoregions',
     'WestWide2017': 'WestWide2018_OtherEcoregions',
-    'CO_EDAS-Biotype1': 'CO EDAS Biotype 1',
-    'CO_EDAS - Biotype1': 'CO EDAS Biotype 1',
+    'CO_EDAS-Biotype1': 'CO EDAS Biotype 1 (2009)',
+    'CO_EDAS - Biotype1': 'CO EDAS Biotype 1 (2009)',
     'CO-EDAS2017 - Biotype 1': 'CO EDAS Biotype 1',
-    'CO_EDAS-Biotype2': 'CO EDAS Biotype 2',
-    'CO_EDAS - Biotype2': 'CO EDAS Biotype 2',
+    'CO_EDAS-Biotype2': 'CO EDAS Biotype 2 (2009)',
+    'CO_EDAS - Biotype2': 'CO EDAS Biotype 2 (2009)',
     'CO-EDAS2017 - Biotype 2': 'CO EDAS Biotype 2',
-    'CO_EDAS-Biotype3': 'CO EDAS Biotype 3',
-    'CO_EDAS - Biotype3': 'CO EDAS Biotype 3',
+    'CO_EDAS-Biotype3': 'CO EDAS Biotype 3 (2009)',
+    'CO_EDAS - Biotype3': 'CO EDAS Biotype 3 (2009)',
     'CO-EDAS2017 - Biotype 3': 'CO EDAS Biotype 3',
     'ColumbiaRiverBasin_PIBO': 'PIBO',
     'CA_CSCI': 'CSCI',
@@ -97,7 +97,6 @@ def migrate(pgcurs, csv_path):
     if len(sites) < 1 or len(samples) < 1:
         raise Exception('You need to migrate sites and samples into the database first.')
 
-    counter = 0
     unique_model_results = {}
     for row in csv.DictReader(open(csv_path)):
 
@@ -108,7 +107,7 @@ def migrate(pgcurs, csv_path):
 
         # No longer using site ID
         # The station values actually refer to ReachID. Ignore and do not user
-        # station = row['STATION']    
+        # station = row['STATION']
         # Verify that the site in the database is associated with the same site as that specified in the CSV
         # if sites[samples[sample_id]]['site_name'].lower() != station.lower():
         #     log.error('Sample {} has site {} in CSV but is associated with site {} in postgres'.format(sample_id, station, sites[samples[sample_id]]['site_name']))
@@ -159,17 +158,16 @@ def migrate(pgcurs, csv_path):
                 'model_id': model_id,
                 'sample_id': sample_id,
                 'model_version': '0.0.0',
-                'fixed_count': int(row['COUNT']),
+                'fixed_count': fixed_count,
                 'model_result': model_result,
                 'metadata': metadata
             }
 
             # Track unique results and skip duplicates
-            key = '{}_{}_{}'.format(sample_id, model_id, int(row['COUNT']))
+            key = '{}_{}_{}'.format(sample_id, model_id, fixed_count)
             if key not in unique_model_results:
                 unique_model_results[key] = []
-            unique_model_results.append(data)
-            
+            unique_model_results[key].append(data)
 
     # Now insert the data into the database. Needs flattening first.
     block_data = []
