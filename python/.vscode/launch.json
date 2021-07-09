@@ -207,6 +207,21 @@
       "{env:POSTGRES_PASSWORD}",
       "data/NAR_metricstest.csv"
     ]
+  } ,
+  {
+    "name": "Fish Diet",
+    "type": "python",
+    "request": "launch",
+    "module": "migrate_fish_diet",
+    "console": "integratedTerminal",
+    "args": [
+      "{env:POSTGRES_HOST}",
+      "{env:POSTGRES_PORT}",
+      "{env:POSTGRES_DB}",
+      "{env:POSTGRES_USER}",
+      "{env:POSTGRES_PASSWORD}",
+      "data/fish_diet_master.csv"
+    ]
   }
 ]
 }
