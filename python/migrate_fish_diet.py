@@ -5,6 +5,7 @@ Green River data?
 import os
 import csv
 import argparse
+import pyodbc
 import psycopg2
 from psycopg2.extras import execute_values
 from lib.dotenv import parse_args_env
@@ -14,14 +15,88 @@ from lookup_data import get_db_id
 from utilities import log_record_count, format_values, sanitize_string
 from postgres_lookup_data import process_query, lookup_data
 
+# This SQL was provided by David Fowler on 12 Jul 2021. This version of the
+# SQL runs against BugLab database. With a few tweaks it also works against
+# PilotDB (see Python manipulation below.)
+bug_lab_sql = """
+    with taxa_notes as (
+    Select
+    bs.boxid,
+    bs.rowid,
+    bd.*,
+    --n.value as parsedNotes,
+    case when charindex('Mass:',t.value) <> 0 then trim(replace(t.value,'MASS:','')) end as tin_mass,
+    case when isnumeric(t.value) = 1 then t.value end as tin_sample_mass,
+    case when charindex('Vial',t.value) <> 0 then trim(substring(t.value,charindex(':',t.value)-2,2)) end as vial_number,
+    case
+    when charindex('Vial',t.value) <> 0
+    then
+    replace(replace(REPLACE(
+    trim(substring(t.value,charindex(':',t.value)+1,len(t.value)-charindex(':',t.value)+1)),
+    '<0.0001',''), 'Weight less than',''), 'Note:%','')
+    end as mass_scientific_name,
+    case when charindex('Note',t.value) <> 0 then trim(substring(t.value,charindex('Note:',t.value)+5,len(t.value)-charindex('Note:',t.value)+5)) end as mass_note,
+    case when charindex('0.0001',t.value) <> 0 then 'TRUE' else 'FALSE' end as mass_is_immeasurable
+    From BugData as bd
+    join bugsample as bs
+    on bs.SampleID = bd.SampleID
+    join BugBoxes as bb
+    on bb.BoxId = bs.BoxID
+    cross apply string_split(bd.notes,',') as n
+    cross apply string_split(n.Value,'|') as t
+    where
+    trim(n.Value) <> '' and
+    bb.Complete = 0 and
+    bs.boxid in (
+    1529,
+    1605,
+    1821,
+    1830,
+    1986,
+    2095,
+    2122,
+    2163
+    )
+    )
 
-def migrate(pgcurs, csv_path):
+    Select
+    boxid, rowid,SampleID, t.Code, LifeStage,BugSize,SplitCount,BigRareCount,Notes,
+    max(tin_mass) as tin_mass,
+    max(tin_sample_mass) as tin_sample_mass,
+    max(vial_number) as vial_number,
+    max(mass_scientific_name) as mass_scientific_name,
+    max(tx.code) as mass_code,
+    max(mass_is_immeasurable) as mass_is_immeasurable,
+    max(mass_note) as mass_note
+    from taxa_notes as t
+    left join taxonomy as tx
+    on tx.ScientificName = mass_scientific_name
+    group by boxid, rowid,SampleID, t.Code, LifeStage,BugSize,SplitCount,BigRareCount,Notes"""
+
+def migrate(pgcurs, mscurs, csv_path):
 
     log = Logger('Fish Diet')
 
     sites = lookup_data(pgcurs, 'geo.sites', 'site_id')
     taxa = lookup_data(pgcurs, 'taxa.taxonomy', 'scientific_name')
     life_stages = lookup_data(pgcurs, 'taxa.life_stages', 'abbreviation')
+
+    # Convert the bug lab query to Pilot DB query
+    pil_sql = bug_lab_sql.replace('bb.Complete = 0 and', ' ').replace('BugBoxes', 'BoxTracking').replace('bs.rowid,', ' ').replace('rowid,').replace(' ')
+
+    # Load Trip's data from Excel (CSV)
+    csv_data = load_csv_data(sites, taxa, life_stages, csv_path)
+    lab_data = load_db_data(sites, taxa, life_stages, mscurs, bug_lab_sql)
+    pil_data = load_db_data(sites, taxa, life_stages, mscurs, pil_sql)
+
+def load_db_data(sites, taxa, life_stages, mscurs, sql):
+
+    mscurs.execute(sql)
+    for row in mscurs.fetchall():
+        print('here')
+
+
+def load_csv_data(sites, taxa, life_stages, csv_path):
 
     # Loop over the CSV once. Build the nested hierarchy of
     # samples containing multiple fish gut measurements
@@ -136,11 +211,16 @@ def isfloat(value):
 
 def main():
     parser = argparse.ArgumentParser()
+    parser.add_argument('msdb', help='SQLServer password', type=str)
+    parser.add_argument('msuser_name', help='SQLServer user name', type=str)
+    parser.add_argument('mspassword', help='SQLServer password', type=str)
+
     parser.add_argument('pghost', help='Postgres password', type=str)
     parser.add_argument('pgport', help='Postgres password', type=str)
     parser.add_argument('pgdb', help='Postgres password', type=str)
     parser.add_argument('pguser_name', help='Postgres user name', type=str)
     parser.add_argument('pgpassword', help='Postgres password', type=str)
+
     parser.add_argument('fish_diet_csv', help='Fish diet CSV', type=str)
     parser.add_argument('--verbose', help='verbose logging', default=False)
 
@@ -155,8 +235,11 @@ def main():
     pgcon = psycopg2.connect(user=args.pguser_name, password=args.pgpassword, host=args.pghost, port=args.pgport, database=args.pgdb)
     pgcurs = pgcon.cursor(cursor_factory=psycopg2.extras.DictCursor)
 
+    mscon = pyodbc.connect('DSN={};UID={};PWD={}'.format(args.msdb, args.msuser_name, args.mspassword))
+    mscurs = mscon.cursor()
+
     try:
-        migrate(pgcurs, fish_diet_csv)
+        migrate(pgcurs, mscurs, fish_diet_csv)
         pgcon.commit()
     except Exception as ex:
         log.error(str(ex))

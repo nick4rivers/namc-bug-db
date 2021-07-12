@@ -215,6 +215,9 @@
     "module": "migrate_fish_diet",
     "console": "integratedTerminal",
     "args": [
+      "{env:MS_DB}",
+      "{env:MS_USER}",
+      "{env:MS_PASSWORD}",
       "{env:POSTGRES_HOST}",
       "{env:POSTGRES_PORT}",
       "{env:POSTGRES_DB}",
