@@ -1175,6 +1175,8 @@ CREATE TABLE sample.mass
     mass_type_id   SMALLINT    NOT NULL,
     mass_method_id SMALLINT    NOT NULL,
     mass           REAL        NOT NULL,
+    notes TEXT,
+    metadata JSON,
     updated_date   TIMESTAMPTZ NOT NULL DEFAULT now(),
 
     CONSTRAINT pk_mass PRIMARY KEY (sample_id, mass_type_id),
@@ -1190,17 +1192,31 @@ CREATE TRIGGER tr_mass_update
     FOR EACH ROW
 EXECUTE PROCEDURE fn_before_update();
 
--- BugOMatter table
--- not all records are AFDM. The type
+-- This table stores mass measurements that are identified by
+-- taxonomy and life stage.
 CREATE TABLE sample.taxa_mass
 (
     sample_id      INT      NOT NULL,
-    taxa_id        SMALLINT NOT NULL,
+    taxonomy_id        SMALLINT NOT NULL,
+    life_stage_id SMALLINT NOT NULL,
     mass_type_id   SMALLINT NOT NULL,
     mass_method_id SMALLINT NOT NULL,
     mass           REAL     NOT NULL,
-    notes          TEXT
+    notes          TEXT,
+    metadata JSON,
+
+    CONSTRAINT pk_sample_taxa_mass PRIMARY KEY ON (sample_id, taxonomy_id, life_stage_id),
+    CONSTRAINT fk_sample_taxa_mass_sample_id FOREIGN KEY (sample_id) REFERENCES sample.samples(sample_id) ON DELETE CASCADE,
+    CONSTRAINT fk_sample_taxa_mass_taxonomy_id FOREIGN KEY (taxonomy_id) REFERENCES taxa.taxonomy(taxonomy_id),
+    CONSTRAINT fk_sample_taxa_mass_life_stage_id FOREIGN KEY (life_stage_id) REFERENCES taxa.life_stages(life_stage_id),
+    CONSTRAINT fk_sample_taxa_mass_mass_type_id FOREIGN KEY (mass_type_id) REFERENCES sample.mass_types(mass_type_id),
+    CONSTRAINT fk_sample_taxa_mass_mass_method_id FOREIGN KEY (mass_method_id) REFERENCES sample.mass_methods(mass_method_id),
+    CONSTRAINT fk_sample_taxa_mass_mass_method_id CHECK (mass >0)
 );
+CREATE INDEX fx_sample_taxa_mass_taxonomy_id ON sample.taxa_mass(taxonomy_id);
+CREATE INDEX fx_sample_taxa_mass_life_stage_id ON sample.taxa_mass(life_stage_id);
+CREATE INDEX fx_sample_taxa_mass_mass_type_id ON sample.taxa_mass(mass_type_id);
+CREATE INDEX fx_sample_taxa_mass_mass_method_id ON sample.taxa_mass(mass_method_id);
 
 -- TODO PilotDB.Stomachs.Code is NULL and the species column has species as text
 CREATE TABLE sample.fish
@@ -1209,6 +1225,8 @@ CREATE TABLE sample.fish
     taxonomy_id  SMALLINT    NOT NULL,
     fish_length  REAL,
     fish_mass    REAL,
+    notes TEXT,
+    metadata JSON,
     updated_date TIMESTAMPTZ NOT NULL DEFAULT now(),
 
     CONSTRAINT fk_fish_sample_id FOREIGN KEY (sample_id) REFERENCES sample.samples (sample_id) ON DELETE CASCADE,
