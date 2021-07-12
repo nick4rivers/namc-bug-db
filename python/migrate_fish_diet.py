@@ -37,10 +37,10 @@ bug_lab_sql = """
     end as mass_scientific_name,
     case when charindex('Note',t.value) <> 0 then trim(substring(t.value,charindex('Note:',t.value)+5,len(t.value)-charindex('Note:',t.value)+5)) end as mass_note,
     case when charindex('0.0001',t.value) <> 0 then 'TRUE' else 'FALSE' end as mass_is_immeasurable
-    From BugData as bd
-    join bugsample as bs
+    From BugLab.dbo.BugData as bd
+    join BugLab.dbo.bugsample as bs
     on bs.SampleID = bd.SampleID
-    join BugBoxes as bb
+    join BugLab.dbo.BugBoxes as bb
     on bb.BoxId = bs.BoxID
     cross apply string_split(bd.notes,',') as n
     cross apply string_split(n.Value,'|') as t
@@ -69,9 +69,10 @@ bug_lab_sql = """
     max(mass_is_immeasurable) as mass_is_immeasurable,
     max(mass_note) as mass_note
     from taxa_notes as t
-    left join taxonomy as tx
+    left join BugLab.dbo.taxonomy as tx
     on tx.ScientificName = mass_scientific_name
     group by boxid, rowid,SampleID, t.Code, LifeStage,BugSize,SplitCount,BigRareCount,Notes"""
+
 
 def migrate(pgcurs, mscurs, csv_path):
 
@@ -82,18 +83,27 @@ def migrate(pgcurs, mscurs, csv_path):
     life_stages = lookup_data(pgcurs, 'taxa.life_stages', 'abbreviation')
 
     # Convert the bug lab query to Pilot DB query
-    pil_sql = bug_lab_sql.replace('bb.Complete = 0 and', ' ').replace('BugBoxes', 'BoxTracking').replace('bs.rowid,', ' ').replace('rowid,').replace(' ')
+    pil_sql = bug_lab_sql.replace('bb.Complete = 0 and', ' '
+                                  ).replace('BugBoxes', 'BoxTracking'
+                                            ).replace('bs.rowid,', ' '
+                                                      ).replace('rowid,', ' '
+                                                                ).replace('BugLab.dbo.', 'PilotDB.dbo.')
 
     # Load Trip's data from Excel (CSV)
-    csv_data = load_csv_data(sites, taxa, life_stages, csv_path)
+    # csv_data = load_csv_data(sites, taxa, life_stages, csv_path)
     lab_data = load_db_data(sites, taxa, life_stages, mscurs, bug_lab_sql)
     pil_data = load_db_data(sites, taxa, life_stages, mscurs, pil_sql)
 
+
 def load_db_data(sites, taxa, life_stages, mscurs, sql):
 
+    count = 0
     mscurs.execute(sql)
     for row in mscurs.fetchall():
-        print('here')
+        count += 1
+
+    print('{} records'.format(count))
+    return count
 
 
 def load_csv_data(sites, taxa, life_stages, csv_path):

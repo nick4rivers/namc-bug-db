@@ -9,7 +9,7 @@ from migrate_entities import migrate as entities
 from migrate_taxonomy_pivot import migrate as taxonomy
 from migrate_projects import migrate as projects
 from migrate_predictors import migrate as predictors
-from migrate_metric_values import migrate as metrics
+from migrate_model_results import migrate as model_results
 from lib.dotenv import parse_args_env
 from lib.logger import Logger
 from migrate_model_polygons import migrate_model_polygons
@@ -30,30 +30,30 @@ def migrate_all_data(mscon, pgcon, predictor_values_csv_path, metric_values_csv_
     mscurs = mscon.cursor()
 
     # Import GeoJSON model polygons from local file exported from ShapeFile provided by NAMC
-    migrate_model_polygons(pgcurs, model_polygons_geojson_path)
+    # migrate_model_polygons(pgcurs, model_polygons_geojson_path)
 
-    taxonomy(mscurs, pgcurs)
-    # translation_taxa(mscurs, pgcurs)
+    # taxonomy(mscurs, pgcurs)
+    # # translation_taxa(mscurs, pgcurs)
 
-    sites(mscurs, pgcurs, 'PilotDB')
-    sites(mscurs, pgcurs, 'BugLab')
-    model_reference_sites(pgcurs, model_ref_sites)
+    # sites(mscurs, pgcurs, 'PilotDB')
+    # sites(mscurs, pgcurs, 'BugLab')
+    # model_reference_sites(pgcurs, model_ref_sites)
 
-    # Import GeoJSON catchment polygons from local file exported from ShapeFile provided by NAMC
-    migrate_catchment_polygons(pgcurs, catchment_polygons)
+    # # Import GeoJSON catchment polygons from local file exported from ShapeFile provided by NAMC
+    # migrate_catchment_polygons(pgcurs, catchment_polygons)
 
-    entities(mscurs, pgcurs, parent_entities)
-    associate_models_with_entities(pgcurs)
+    # entities(mscurs, pgcurs, parent_entities)
+    # associate_models_with_entities(pgcurs)
 
-    boxes(mscurs, pgcurs)
-    associate_models_with_boxes(pgcurs, predictor_values_csv_path)
+    # boxes(mscurs, pgcurs)
+    # associate_models_with_boxes(pgcurs, predictor_values_csv_path)
 
-    samples(mscurs, pgcurs)
-    predictor_values(pgcurs, predictor_values_csv_path)
-    # metrics(pgcurs, metric_values_csv_path)
-    projects(mscurs, pgcurs)
+    # samples(mscurs, pgcurs)
+    # predictor_values(pgcurs, predictor_values_csv_path)
+    model_results(pgcurs, metric_values_csv_path)
+    # projects(mscurs, pgcurs)
 
-    organisms(mscurs, pgcurs)
+    # organisms(mscurs, pgcurs)
 
     # Refresh any materialized views
     pgcurs.execute('REFRESH MATERIALIZED VIEW taxa.vw_taxonomy_crosstab;')
