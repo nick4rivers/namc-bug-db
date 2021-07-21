@@ -121,7 +121,6 @@ export declare type Project = {
     isPrivate: boolean;
     contactId: number;
     contactName: string;
-    autoUpdateSamples: boolean;
     description: string;
     sampleCount: number;
     modelCount: number;
@@ -154,6 +153,7 @@ export declare type Predictor = {
     predictorName: string;
     abbreviation: string;
     description: string;
+    source: string;
     units: string;
     calculationScript: string;
     predictorTypeId: number;

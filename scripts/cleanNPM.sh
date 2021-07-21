@@ -10,7 +10,7 @@ then
     exit 1
 fi
 
-lerna clean -y
+npx lerna clean -y
 rm yarn.lock
 rm -fr node_modules
-lerna bootstrap
+npx lerna bootstrap
