@@ -129,7 +129,6 @@ export type Project = {
     isPrivate: boolean
     contactId: number
     contactName: string
-    autoUpdateSamples: boolean
     description: string
     sampleCount: number
     modelCount: number

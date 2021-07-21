@@ -591,7 +591,6 @@ type FishDiet {
         isPrivate: Boolean
         contactId: Int
         contactName: String
-        autoUpdateSamples: Boolean
         description: String
         sampleCount: Int
         modelCount: Int
