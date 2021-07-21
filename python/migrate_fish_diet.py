@@ -18,6 +18,25 @@ from postgres_lookup_data import process_query, lookup_data
 # This SQL was provided by David Fowler on 12 Jul 2021. This version of the
 # SQL runs against BugLab database. With a few tweaks it also works against
 # PilotDB (see Python manipulation below.)
+#
+# Columns returned:
+# boxid
+# rowid = only in BugLab. Should be sequential and helps line up samples which have different IDs. 
+#         sometimes samples get removed etc. So no guaranteed.
+# sampleid = different in the two databases
+# Code = taxonomy_id of lab identified organism ( gut weights are randomly assigned to one lab identified organism. Gut weights are at higher level in hierarchy)
+# LifeStage
+# BugSize
+# SplitCount = sample split count
+# BigRareCount
+# Notes = contains the fish gut data in quasi JSON format.
+# tin_mass
+# tin_sample_mass = sample_mass = (tin_sample_mass - tin_mass)
+# vial_number
+# mass_scientific_name = coarser resolution of the taxa identified for fish diet mass
+# mass_code = taxonomy_id of the mass_scientific_name. Not always present because the mass taxa names have errors
+# mass is imeasureable = True/False if the mass taxa could be identified
+# mass_note
 bug_lab_sql = """
     with taxa_notes as (
     Select
