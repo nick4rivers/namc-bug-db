@@ -398,7 +398,7 @@ CREATE INDEX fx_organizations_organization_type_id ON entity.organizations (orga
 
 CREATE TABLE entity.individuals
 (
-    entity_id      SMALLINT    NOT NULL PRIMARY KEY,
+    entity_id      SMALLINT     NOT NULL PRIMARY KEY,
     first_name     VARCHAR(255) NOT NULL,
     last_name      VARCHAR(255) NOT NULL,
     initials       VARCHAR(3),
@@ -509,7 +509,7 @@ CREATE TABLE taxa.taxonomy
     CONSTRAINT fk_organism_taxonomy_taxa_level_id FOREIGN KEY (level_id) REFERENCES taxa.taxa_levels (level_id)
 );
 CREATE INDEX fx_taxa_taxonomy_level_id ON taxa.taxonomy (level_id);
-CREATE INDEX ix_taxa_taxonomy_parent_id ON taxa.taxonomy(parent_id);
+CREATE INDEX ix_taxa_taxonomy_parent_id ON taxa.taxonomy (parent_id);
 CREATE TRIGGER tr_taxonomy_update
     BEFORE UPDATE
     ON taxa.taxonomy
@@ -572,7 +572,7 @@ CREATE TABLE taxa.taxa_attributes
     CONSTRAINT fk_taxa_attributes_taxonomy_id FOREIGN KEY (taxonomy_id) REFERENCES taxa.taxonomy (taxonomy_id) ON DELETE CASCADE,
     CONSTRAINT fk_taxa_attributes_attribute_id FOREIGN KEY (attribute_id) REFERENCES taxa.attributes (attribute_id)
 );
-CREATE INDEX fx_taxa_attributes_attribute_id ON taxa.taxa_attributes(attribute_id);
+CREATE INDEX fx_taxa_attributes_attribute_id ON taxa.taxa_attributes (attribute_id);
 
 /*
  ITIS
@@ -594,8 +594,8 @@ CREATE TABLE taxa.external_sources
 
 CREATE TABLE taxa.external_ids
 (
-    source_id          SMALLINT NOT NULL,
-    taxonomy_id        SMALLINT NOT NULL,
+    source_id          SMALLINT     NOT NULL,
+    taxonomy_id        SMALLINT     NOT NULL,
     external_source_id VARCHAR(255) NOT NULL,
 
     CONSTRAINT pk_external_ids PRIMARY KEY (source_id, taxonomy_id),
@@ -603,7 +603,7 @@ CREATE TABLE taxa.external_ids
     CONSTRAINT fk_external_ids_taxonomy_id FOREIGN KEY (taxonomy_id) REFERENCES taxa.taxonomy (taxonomy_id),
     CONSTRAINT ck_external_source_id CHECK (length(external_source_id) > 0)
 );
-CREATE INDEX fx_taxa_external_ids_taxonomy_id ON taxa.external_ids(taxonomy_id);
+CREATE INDEX fx_taxa_external_ids_taxonomy_id ON taxa.external_ids (taxonomy_id);
 
 CREATE TABLE taxa.translations
 (
@@ -625,10 +625,10 @@ EXECUTE PROCEDURE fn_before_update();
 
 CREATE TABLE taxa.translation_taxa
 (
-    translation_id          SMALLINT NOT NULL,
-    taxonomy_id             SMALLINT NOT NULL,
-    alias                   VARCHAR(255),
-    is_final                boolean  NOT NULL default true,
+    translation_id SMALLINT NOT NULL,
+    taxonomy_id    SMALLINT NOT NULL,
+    alias          VARCHAR(255),
+    is_final       boolean  NOT NULL default true,
 
     CONSTRAINT pk_translation_taxa PRIMARY KEY (translation_id, taxonomy_id),
     CONSTRAINT ck_translation_taxonomy_name CHECK (alias IS NULL OR length(alias) > 0),
@@ -970,6 +970,7 @@ CREATE TABLE sample.samples
     box_id              INT         NOT NULL,
     site_id             INT,
     visit_id            VARCHAR(100),
+    customer_site_code  VARCHAR(100),
     location            Geography(Point),               -- NOT NULL,
     sample_date         DATE,
     sample_time         TIME,
@@ -1175,8 +1176,8 @@ CREATE TABLE sample.mass
     mass_type_id   SMALLINT    NOT NULL,
     mass_method_id SMALLINT    NOT NULL,
     mass           REAL        NOT NULL,
-    notes TEXT,
-    metadata JSON,
+    notes          TEXT,
+    metadata       JSON,
     updated_date   TIMESTAMPTZ NOT NULL DEFAULT now(),
 
     CONSTRAINT pk_mass PRIMARY KEY (sample_id, mass_type_id),
@@ -1197,26 +1198,26 @@ EXECUTE PROCEDURE fn_before_update();
 CREATE TABLE sample.taxa_mass
 (
     sample_id      INT      NOT NULL,
-    taxonomy_id        SMALLINT NOT NULL,
-    life_stage_id SMALLINT NOT NULL,
+    taxonomy_id    SMALLINT NOT NULL,
+    life_stage_id  SMALLINT NOT NULL,
     mass_type_id   SMALLINT NOT NULL,
     mass_method_id SMALLINT NOT NULL,
     mass           REAL     NOT NULL,
     notes          TEXT,
-    metadata JSON,
+    metadata       JSON,
 
     CONSTRAINT pk_sample_taxa_mass PRIMARY KEY ON (sample_id, taxonomy_id, life_stage_id),
-    CONSTRAINT fk_sample_taxa_mass_sample_id FOREIGN KEY (sample_id) REFERENCES sample.samples(sample_id) ON DELETE CASCADE,
-    CONSTRAINT fk_sample_taxa_mass_taxonomy_id FOREIGN KEY (taxonomy_id) REFERENCES taxa.taxonomy(taxonomy_id),
-    CONSTRAINT fk_sample_taxa_mass_life_stage_id FOREIGN KEY (life_stage_id) REFERENCES taxa.life_stages(life_stage_id),
-    CONSTRAINT fk_sample_taxa_mass_mass_type_id FOREIGN KEY (mass_type_id) REFERENCES sample.mass_types(mass_type_id),
-    CONSTRAINT fk_sample_taxa_mass_mass_method_id FOREIGN KEY (mass_method_id) REFERENCES sample.mass_methods(mass_method_id),
-    CONSTRAINT fk_sample_taxa_mass_mass_method_id CHECK (mass >0)
+    CONSTRAINT fk_sample_taxa_mass_sample_id FOREIGN KEY (sample_id) REFERENCES sample.samples (sample_id) ON DELETE CASCADE,
+    CONSTRAINT fk_sample_taxa_mass_taxonomy_id FOREIGN KEY (taxonomy_id) REFERENCES taxa.taxonomy (taxonomy_id),
+    CONSTRAINT fk_sample_taxa_mass_life_stage_id FOREIGN KEY (life_stage_id) REFERENCES taxa.life_stages (life_stage_id),
+    CONSTRAINT fk_sample_taxa_mass_mass_type_id FOREIGN KEY (mass_type_id) REFERENCES sample.mass_types (mass_type_id),
+    CONSTRAINT fk_sample_taxa_mass_mass_method_id FOREIGN KEY (mass_method_id) REFERENCES sample.mass_methods (mass_method_id),
+    CONSTRAINT fk_sample_taxa_mass_mass_method_id CHECK (mass > 0)
 );
-CREATE INDEX fx_sample_taxa_mass_taxonomy_id ON sample.taxa_mass(taxonomy_id);
-CREATE INDEX fx_sample_taxa_mass_life_stage_id ON sample.taxa_mass(life_stage_id);
-CREATE INDEX fx_sample_taxa_mass_mass_type_id ON sample.taxa_mass(mass_type_id);
-CREATE INDEX fx_sample_taxa_mass_mass_method_id ON sample.taxa_mass(mass_method_id);
+CREATE INDEX fx_sample_taxa_mass_taxonomy_id ON sample.taxa_mass (taxonomy_id);
+CREATE INDEX fx_sample_taxa_mass_life_stage_id ON sample.taxa_mass (life_stage_id);
+CREATE INDEX fx_sample_taxa_mass_mass_type_id ON sample.taxa_mass (mass_type_id);
+CREATE INDEX fx_sample_taxa_mass_mass_method_id ON sample.taxa_mass (mass_method_id);
 
 -- TODO PilotDB.Stomachs.Code is NULL and the species column has species as text
 CREATE TABLE sample.fish
@@ -1225,8 +1226,8 @@ CREATE TABLE sample.fish
     taxonomy_id  SMALLINT    NOT NULL,
     fish_length  REAL,
     fish_mass    REAL,
-    notes TEXT,
-    metadata JSON,
+    notes        TEXT,
+    metadata     JSON,
     updated_date TIMESTAMPTZ NOT NULL DEFAULT now(),
 
     CONSTRAINT fk_fish_sample_id FOREIGN KEY (sample_id) REFERENCES sample.samples (sample_id) ON DELETE CASCADE,
@@ -1256,8 +1257,8 @@ CREATE TABLE sample.organisms
     taxonomy_id    SMALLINT    NOT NULL,
     life_stage_id  SMALLINT    NOT NULL,
     bug_size       REAL,
-    split_count    REAL NOT NULL,
-    big_rare_count SMALLINT NOT NULL,
+    split_count    REAL        NOT NULL,
+    big_rare_count SMALLINT    NOT NULL,
     metadata       JSON,
     notes          TEXT,
     created_date   TIMESTAMPTZ NOT NULL DEFAULT now(),
@@ -1313,21 +1314,21 @@ CREATE TABLE sample.organism_notes
 
 CREATE TABLE sample.model_results
 (
-    model_result_id  INT GENERATED BY DEFAULT AS IDENTITY PRIMARY KEY,
-    sample_id INT NOT NULL,
-    model_id SMALLINT NOT NULL,
-    model_version VARCHAR(50) NOT NULL,
-    fixed_count SMALLINT,
-    model_result REAL,
-    notes TEXT,
-    metadata JSON,
-    created_date TIMESTAMPTZ        NOT NULL DEFAULT now(),
-    updated_date TIMESTAMPTZ        NOT NULL DEFAULT now(),
+    model_result_id INT GENERATED BY DEFAULT AS IDENTITY PRIMARY KEY,
+    sample_id       INT         NOT NULL,
+    model_id        SMALLINT    NOT NULL,
+    model_version   VARCHAR(50) NOT NULL,
+    fixed_count     SMALLINT,
+    model_result    REAL,
+    notes           TEXT,
+    metadata        JSON,
+    created_date    TIMESTAMPTZ NOT NULL DEFAULT now(),
+    updated_date    TIMESTAMPTZ NOT NULL DEFAULT now(),
 
-    CONSTRAINT fk_sample_model_results_sample_id FOREIGN KEY (sample_id) REFERENCES sample.samples(sample_id) ON DELETE CASCADE,
-    CONSTRAINT fk_sample_model_results_model_id FOREIGN KEY (model_id) REFERENCES geo.models(model_id)
+    CONSTRAINT fk_sample_model_results_sample_id FOREIGN KEY (sample_id) REFERENCES sample.samples (sample_id) ON DELETE CASCADE,
+    CONSTRAINT fk_sample_model_results_model_id FOREIGN KEY (model_id) REFERENCES geo.models (model_id)
 );
-CREATE UNIQUE INDEX ux_sample_model_results ON sample.model_results(sample_id, model_id, model_version, fixed_count);
+CREATE UNIQUE INDEX ux_sample_model_results ON sample.model_results (sample_id, model_id, model_version, fixed_count);
 CREATE TABLE sample.asset_types
 (
     asset_type_id SMALLINT GENERATED BY DEFAULT AS IDENTITY PRIMARY KEY,
