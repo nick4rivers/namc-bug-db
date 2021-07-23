@@ -4,7 +4,7 @@
 -- recursively down through the hierarchy for child organizations instead of
 -- upwards for parent taxa.
 drop function if exists entity.fn_tree;
-create or replace function entity.fn_tree(p_entity_id smallint)
+create or replace function entity.fn_tree(p_entity_id int)
     returns table
             (
                 entity_id         smallint,
