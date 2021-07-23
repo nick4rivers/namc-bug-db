@@ -220,6 +220,30 @@ from box_samples bs
          inner join sample.fn_samples(p_limit, p_offset, bs.sample_ids) s on true;
 $$;
 
+
+drop function if exists sample.fn_site_samples;
+create or replace function sample.fn_site_samples(p_limit int, p_offset int, p_site_ids int[])
+    returns setof sample_info_type
+    language sql
+    immutable
+as
+$$
+with filtered_samples as
+         (
+             select array_agg(sample_id) sample_ids
+             from (
+                      select sample_id
+                      from unnest(p_site_ids) b(site_id)
+                               inner join sample.samples s on b.site_id = s.site_id
+                      order by sample_id
+                      limit p_limit offset p_offset
+                  ) arr_samples
+         )
+select s.*
+from filtered_samples fs
+         inner join sample.fn_samples(p_limit, p_offset, fs.sample_ids) s on true;
+$$;
+
 drop function if exists sample.fn_entity_samples;
 create or replace function sample.fn_entity_samples(p_limit int, p_offset int, p_entity_ids int[])
     returns setof sample_info_type
