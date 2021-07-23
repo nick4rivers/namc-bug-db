@@ -6,6 +6,7 @@ import { SSMParameter, SecretDBCredentials } from '@namcbugdb/aws-cdk-stack'
 // This universal NODECACHE is useful for reducing the strain on our network tools
 // It lives outside the main method so it should carry across Lambda calls (sometimes)
 export const NODECACHE = new NodeCache({ stdTTL: 30, checkperiod: 25 })
+export const isDev = process.env.NODE_ENV && process.env.NODE_ENV === 'development'
 
 // Sanity check here for mandatory environment variabels
 const mandatoryKeys = ['SSM_PARAM', 'REGION']

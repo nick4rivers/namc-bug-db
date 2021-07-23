@@ -1,6 +1,7 @@
 import NodeCache from 'node-cache';
 import { SSMParameter, SecretDBCredentials } from '@namcbugdb/aws-cdk-stack';
 export declare const NODECACHE: NodeCache;
+export declare const isDev: boolean;
 export declare const awsRegion: string;
 export declare const ssmName: string;
 export declare const maxQueryIds = 50;

@@ -1,6 +1,6 @@
 // import config from '../config'
 import log from 'loglevel'
-import { getPool, queries as q } from './'
+import { getPool } from './'
 
 let pool = null
 beforeAll(async () => {

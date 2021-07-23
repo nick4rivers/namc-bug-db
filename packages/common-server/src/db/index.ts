@@ -1,4 +1,4 @@
-import { getConfigPromise, getDBSecretCredentials } from '../config'
+import { getConfigPromise, getDBSecretCredentials, isDev } from '../config'
 export * as queries from './queries'
 import { Pool } from 'pg'
 import log from 'loglevel'
@@ -30,7 +30,9 @@ export const pgPromise = (pool: Pool, query: string, vars?: unknown[]): DBReturn
         const cb = (error, results): void => {
             if (error) {
                 log.error('PG ERROR', error)
-                return reject(error)
+                // Return better errors if we're dev.
+                if (isDev) return reject(error)
+                else return reject(new Error('Database Error'))
             } else return resolve(results.rows)
         }
         pool.query(query, vars, cb)

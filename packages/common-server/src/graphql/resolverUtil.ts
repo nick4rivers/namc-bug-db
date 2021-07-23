@@ -116,7 +116,7 @@ export function checkExclusiveFilter(args: Partial<t.QueryFilter>, requireOne = 
             ).join(', ')}`
         )
     }
-    validArgKeys.filter((ak) => ID_ARRAYS.indexOf(ak) > -1).forEach((ak) => checkIDArray)
+    validArgKeys.filter((ak) => ID_ARRAYS.indexOf(ak) > -1).forEach((ak) => checkIDArray(ak, args[ak]))
 
     if (args.polygon) checkGeoJSON(args.polygon)
     if (args.pointDistance) checkPointDistance(args.pointDistance)

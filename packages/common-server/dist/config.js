@@ -14,10 +14,11 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getDBSecretCredentials = exports.getConfigPromise = exports.maxQueryIds = exports.ssmName = exports.awsRegion = exports.NODECACHE = void 0;
+exports.getDBSecretCredentials = exports.getConfigPromise = exports.maxQueryIds = exports.ssmName = exports.awsRegion = exports.isDev = exports.NODECACHE = void 0;
 var node_cache_1 = __importDefault(require("node-cache"));
 var ssm_1 = require("./lib/aws/ssm");
 exports.NODECACHE = new node_cache_1.default({ stdTTL: 30, checkperiod: 25 });
+exports.isDev = process.env.NODE_ENV && process.env.NODE_ENV === 'development';
 var mandatoryKeys = ['SSM_PARAM', 'REGION'];
 mandatoryKeys.forEach(function (key) {
     if (!process.env[key]) {

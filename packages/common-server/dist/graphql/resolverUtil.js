@@ -92,7 +92,7 @@ function checkExclusiveFilter(args, requireOne) {
     if (validArgKeys.length > 1) {
         throw new Error("You can only specify one of the filter arguments: " + Object.keys(args).join(', ') + ". Found: " + Object.keys(validArgKeys).join(', '));
     }
-    validArgKeys.filter(function (ak) { return ID_ARRAYS.indexOf(ak) > -1; }).forEach(function (ak) { return checkIDArray; });
+    validArgKeys.filter(function (ak) { return ID_ARRAYS.indexOf(ak) > -1; }).forEach(function (ak) { return checkIDArray(ak, args[ak]); });
     if (args.polygon)
         checkGeoJSON(args.polygon);
     if (args.pointDistance)
