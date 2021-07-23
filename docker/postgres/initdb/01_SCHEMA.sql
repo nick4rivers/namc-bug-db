@@ -1212,7 +1212,7 @@ CREATE TABLE sample.taxa_mass
     CONSTRAINT fk_sample_taxa_mass_life_stage_id FOREIGN KEY (life_stage_id) REFERENCES taxa.life_stages (life_stage_id),
     CONSTRAINT fk_sample_taxa_mass_mass_type_id FOREIGN KEY (mass_type_id) REFERENCES sample.mass_types (mass_type_id),
     CONSTRAINT fk_sample_taxa_mass_mass_method_id FOREIGN KEY (mass_method_id) REFERENCES sample.mass_methods (mass_method_id),
-    CONSTRAINT fk_sample_taxa_mass_mass_method_id CHECK (mass > 0)
+    CONSTRAINT ck_sample_taxa_mass_mass CHECK (mass > 0)
 );
 CREATE INDEX fx_sample_taxa_mass_taxonomy_id ON sample.taxa_mass (taxonomy_id);
 CREATE INDEX fx_sample_taxa_mass_life_stage_id ON sample.taxa_mass (life_stage_id);
