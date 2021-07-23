@@ -197,48 +197,43 @@ const typeDefs = gql`
         domain: String
     }
 
-    type Sample {
-        sampleId: Int
-        boxId: Int
-        customerName: String
-        boxStateName: String
-        boxStateId: Int
-        submitterName: String
-        siteId: Int
-        siteName: String
-        siteLatitude: Float
-        siteLongitude: Float
-        siteState: String
-        sampleDate: String
-        sampleYear: Int
-        sampleLatitude: Float
-        sampleLongitude: Float
-        sampleType: String
-        sampleMethod: String
-        habitatName: String
+    type Sample {          
+        sample_id: Int
+        box_id: Int
+        customer_name: String
+        customer_abbreviation: String
+        submitted_by: String
+        box_state: String
+        site_id: Int
+        site_name: String
+        us_state: String
+        site_location: String
+        site_longitude: Float
+        site_latitude: Float
+        visit_id: String
+        customer_site_code: String
+        sample_date: String
+        sample_time: String
+        sample_type: String
+        sample_method: String
+        habitat: String
+        sample_location: String
+        sample_longitude: Float
+        sample_latitude: Float
         area: Float
-        fieldSplit: Float
-        labSplit: Float
-        jarCount: Int
+        field_split: Float
+        field_notes: String
+        lab_split: Float
+        jar_count: Int
         qualitative: Boolean
-        mesh: Float
-        createdDate: String
-        updatedDate: String
-        qaSampleId: Int
-        diameter: Float
-        subSampleCount: Float
-        towLength: Float
-        volume: Float
-        aliquot: Float
-        siteInterval: Float
-        towType: String
-        netArea: Float
-        netDuration: Float
-        streamDepth: Float
-        netDepth: Float
-        netVelocity: Float
+        lab_notes: String
+        mesh: Int
+        created_date: String
+        updated_date: String
+        sample_date_changed: String
+        qa_sample_id: Int
+        metadata: String
     }
-
 
     type Site {
         siteId: Int
