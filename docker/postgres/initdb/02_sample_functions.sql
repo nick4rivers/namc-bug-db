@@ -52,6 +52,71 @@ comment on type taxa_info is 'This type is reused as the basic structure of info
     where requesting taxonomic information about a sample.';
 
 
+drop function if exists sample.fn_box_info;
+CREATE OR REPLACE FUNCTION sample.fn_box_info(p_box_id INT)
+    returns table
+            (
+                box_id                   INT,
+                customer_id              smallint,
+                customer_name            varchar(255),
+                customer_abbreviation    varchar(50),
+                submitter_id             smallint,
+                submitted_by             text,
+                box_state_id             smallint,
+                box_state                varchar(50),
+                box_received_date        text,
+                processing_complete_date text,
+                projected_complete_date  text,
+                sample_count             bigint,
+                description              text,
+                metadata                 json,
+                measurements             boolean,
+                sorter_qa                boolean,
+                taxa_qa                  boolean,
+                created_date             text,
+                updated_date             text
+            )
+    language plpgsql
+    immutable
+AS
+$$
+BEGIN
+    return query
+        SELECT b.box_id,
+               b.customer_id,
+               o.organization_name,
+               o.abbreviation,
+               b.submitter_id,
+               i.first_name || ' ' || i.last_name,
+               bs.box_state_id,
+               bs.box_state_name,
+               to_json(b.box_received_date) #>> '{}',
+               to_json(b.processing_complete_date) #>> '{}',
+               to_json(b.projected_complete_date) #>> '{}',
+               s.sample_count,
+               b.description,
+               b.metadata,
+               b.measurements,
+               b.sorter_qa,
+               b.taxa_qa,
+               to_json(b.created_date) #>> '{}',
+               to_json(b.updated_date) #>> '{}'
+        FROM sample.boxes b
+                 inner join entity.organizations o on b.customer_id = o.entity_id
+                 inner join entity.individuals i on b.submitter_id = i.entity_id
+                 inner join sample.box_states bs on b.box_state_id = bs.box_state_id
+                 inner join
+             (
+                 select b.box_id, count(s.box_id) sample_count
+                 from sample.boxes b
+                          left join sample.samples s on b.box_id = s.box_id
+                 where b.box_id = p_box_id
+                 group by b.box_id
+             ) s on b.box_id = s.box_id
+        where b.box_id = p_box_id;
+end
+$$;
+
 drop function if exists sample.fn_samples;
 create or replace function sample.fn_samples(p_limit int, p_offset int, p_sample_ids int[])
     returns setof sample_info_type
@@ -466,70 +531,6 @@ from entity_boxes eb
 
 $$;
 
-drop function if exists sample.fn_box_info;
-CREATE OR REPLACE FUNCTION sample.fn_box_info(p_box_id INT)
-    returns table
-            (
-                box_id                   INT,
-                customer_id              smallint,
-                customer_name            varchar(255),
-                customer_abbreviation    varchar(50),
-                submitter_id             smallint,
-                submitted_by             text,
-                box_state_id             smallint,
-                box_state                varchar(50),
-                box_received_date        text,
-                processing_complete_date text,
-                projected_complete_date  text,
-                sample_count             bigint,
-                description              text,
-                metadata                 json,
-                measurements             boolean,
-                sorter_qa                boolean,
-                taxa_qa                  boolean,
-                created_date             text,
-                updated_date             text
-            )
-    language plpgsql
-    immutable
-AS
-$$
-BEGIN
-    return query
-        SELECT b.box_id,
-               b.customer_id,
-               o.organization_name,
-               o.abbreviation,
-               b.submitter_id,
-               i.first_name || ' ' || i.last_name,
-               bs.box_state_id,
-               bs.box_state_name,
-               to_json(b.box_received_date) #>> '{}',
-               to_json(b.processing_complete_date) #>> '{}',
-               to_json(b.projected_complete_date) #>> '{}',
-               s.sample_count,
-               b.description,
-               b.metadata,
-               b.measurements,
-               b.sorter_qa,
-               b.taxa_qa,
-               to_json(b.created_date) #>> '{}',
-               to_json(b.updated_date) #>> '{}'
-        FROM sample.boxes b
-                 inner join entity.organizations o on b.customer_id = o.entity_id
-                 inner join entity.individuals i on b.submitter_id = i.entity_id
-                 inner join sample.box_states bs on b.box_state_id = bs.box_state_id
-                 inner join
-             (
-                 select b.box_id, count(s.box_id) sample_count
-                 from sample.boxes b
-                          left join sample.samples s on b.box_id = s.box_id
-                 where b.box_id = p_box_id
-                 group by b.box_id
-             ) s on b.box_id = s.box_id
-        where b.box_id = p_box_id;
-end
-$$;
 
 /******************************************************************************************************************************
   SAMPLE PREDICTORS
