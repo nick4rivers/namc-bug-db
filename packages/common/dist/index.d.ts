@@ -1,7 +1,7 @@
 export * as types from './types';
 export * as util from './util';
 export declare const graphql: {
-    typeDefs: import("graphql/language/ast").DocumentNode;
+    typeDefs: import("graphql").DocumentNode;
     queryLimits: {
         samples: number;
         sites: number;

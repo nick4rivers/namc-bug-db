@@ -198,40 +198,40 @@ const typeDefs = gql`
     }
 
     type Sample {          
-        sample_id: Int
-        box_id: Int
-        customer_name: String
-        customer_abbreviation: String
-        submitted_by: String
-        box_state: String
-        site_id: Int
-        site_name: String
-        us_state: String
-        site_location: String
-        site_longitude: Float
-        site_latitude: Float
-        visit_id: String
-        customer_site_code: String
-        sample_date: String
-        sample_time: String
-        sample_type: String
-        sample_method: String
+        sampleId: Int
+        boxId: Int
+        customerName: String
+        customerAbbreviation: String
+        submittedBy: String
+        boxState: String
+        siteId: Int
+        siteName: String
+        usState: String
+        siteLocation: String
+        siteLongitude: Float
+        siteLatitude: Float
+        visitId: String
+        customerSiteCode: String
+        sampleDate: String
+        sampleTime: String
+        sampleType: String
+        sampleMethod: String
         habitat: String
-        sample_location: String
-        sample_longitude: Float
-        sample_latitude: Float
+        sampleLocation: String
+        sampleLongitude: Float
+        sampleLatitude: Float
         area: Float
-        field_split: Float
-        field_notes: String
-        lab_split: Float
-        jar_count: Int
+        fieldSplit: Float
+        fieldNotes: String
+        labSplit: Float
+        jarCount: Int
         qualitative: Boolean
-        lab_notes: String
+        labNotes: String
         mesh: Int
-        created_date: String
-        updated_date: String
-        sample_date_changed: String
-        qa_sample_id: Int
+        createdDate: String
+        updatedDate: String
+        sampleDateChanged: String
+        qaSampleId: Int
         metadata: String
     }
 

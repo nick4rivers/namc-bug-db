@@ -35,40 +35,40 @@ export type QueryFilter = {
 }
 
 export type Sample = {
-    sample_id: number
-    box_id: number
-    customer_name: string
-    customer_abbreviation: string
-    submitted_by: string
-    box_state: string
-    site_id: number
-    site_name: string
-    us_state: string
-    site_location: string
-    site_longitude: number
-    site_latitude: number
-    visit_id: string
-    customer_site_code: string
-    sample_date: string
-    sample_time: string
-    sample_type: string
-    sample_method: string
+    sampleId: number
+    boxId: number
+    customerName: string
+    customerAbbreviation: string
+    submittedBy: string
+    boxState: string
+    siteId: number
+    siteName: string
+    usState: string
+    siteLocation: string
+    siteLongitude: number
+    siteLatitude: number
+    visitId: string
+    customerSiteCode: string
+    sampleDate: string
+    sampleTime: string
+    sampleType: string
+    sampleMethod: string
     habitat: string
-    sample_location: string
-    sample_longitude: number
-    sample_latitude: number
+    sampleLocation: string
+    sampleLongitude: number
+    sampleLatitude: number
     area: number
-    field_split: number
-    field_notes: string
-    lab_split: number
-    jar_count: number
+    fieldSplit: number
+    fieldNotes: string
+    labSplit: number
+    jarCount: number
     qualitative: boolean
-    lab_notes: string
+    labNotes: string
     mesh: number
-    created_date: string
-    updated_date: string
-    sample_date_changed: string
-    qa_sample_id: number
+    createdDate: string
+    updatedDate: string
+    sampleDateChanged: string
+    qaSampleId: number
     metadata: string
 }
 
