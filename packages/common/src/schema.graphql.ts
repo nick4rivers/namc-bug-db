@@ -184,8 +184,8 @@ const typeDefs = gql`
     }
 
     type QueryDistance {
-        latitude: Float!,
-        longitude: Float!,
+        latitude: Float!
+        longitude: Float!
         distance: Float!
     }
 

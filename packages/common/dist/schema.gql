@@ -12,7 +12,7 @@ type Query {
   "List of all thresholds (e.g. good, fair, poor) for a particular model"
   modelThresholds(modelId: Int!): PaginatedModelThresholds
   "Detailed information about a single sample, including information about the box and customer."
-  sampleInfo(sampleId: Int!: SampleInfo
+  sampleInfo(sampleId: Int!): SampleInfo
   "Detailed information about a single box, including information about the customer and number of samples associated with the box."
   boxInfo(boxId: Int!): BoxInfo
   "List of all samples in the system, including high level information about the associated box and customer."
