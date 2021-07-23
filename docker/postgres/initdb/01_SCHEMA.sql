@@ -1206,7 +1206,7 @@ CREATE TABLE sample.taxa_mass
     notes          TEXT,
     metadata       JSON,
 
-    CONSTRAINT pk_sample_taxa_mass PRIMARY KEY ON (sample_id, taxonomy_id, life_stage_id),
+    CONSTRAINT pk_sample_taxa_mass PRIMARY KEY (sample_id, taxonomy_id, life_stage_id),
     CONSTRAINT fk_sample_taxa_mass_sample_id FOREIGN KEY (sample_id) REFERENCES sample.samples (sample_id) ON DELETE CASCADE,
     CONSTRAINT fk_sample_taxa_mass_taxonomy_id FOREIGN KEY (taxonomy_id) REFERENCES taxa.taxonomy (taxonomy_id),
     CONSTRAINT fk_sample_taxa_mass_life_stage_id FOREIGN KEY (life_stage_id) REFERENCES taxa.life_stages (life_stage_id),
