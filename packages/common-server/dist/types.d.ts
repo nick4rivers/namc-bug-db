@@ -1,4 +1,4 @@
-import { StrObj } from '@namcbugdb/common';
+import { types } from '@namcbugdb/common';
 export declare type UserObj = {
     cognito: {
         sub: string;
@@ -6,7 +6,7 @@ export declare type UserObj = {
         isAdmin: boolean;
     };
 };
-export declare type DBReturnType = StrObj[];
+export declare type DBReturnType = types.StrObj[];
 export declare type DBReturnPromiseType = Promise<DBReturnType>;
 export declare type LambdaCtxAuth = {
     isLoggedIn: string;

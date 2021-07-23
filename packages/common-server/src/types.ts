@@ -1,4 +1,4 @@
-import { StrObj } from '@namcbugdb/common'
+import { types } from '@namcbugdb/common'
 export type UserObj = {
     cognito: {
         sub: string
@@ -7,7 +7,7 @@ export type UserObj = {
     }
 }
 
-export type DBReturnType = StrObj[]
+export type DBReturnType = types.StrObj[]
 export type DBReturnPromiseType = Promise<DBReturnType>
 
 export type LambdaCtxAuth = {

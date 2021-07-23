@@ -1,0 +1,7 @@
+{
+  "$schema": "https://unpkg.com/graphql-config@3.3.0/config-schema.json",
+  "schema": "./packages/common/dist/schema.gql",
+  "exclude": [
+    "./packages/common/src/schema.graphql.ts"
+  ]
+}

@@ -1,4 +1,4 @@
-export * from './types'
+export * as types from './types'
 import typeDefs, { queryLimits } from './schema.graphql'
 
 export * as util from './util'

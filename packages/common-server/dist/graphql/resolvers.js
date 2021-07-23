@@ -1,23 +1,4 @@
 "use strict";
-var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
-}) : (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    o[k2] = m[k];
-}));
-var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
-    Object.defineProperty(o, "default", { enumerable: true, value: v });
-}) : function(o, v) {
-    o["default"] = v;
-});
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (k !== "default" && Object.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
-    __setModuleDefault(result, mod);
-    return result;
-};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -57,39 +38,8 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var config_1 = require("../config");
 var common_1 = require("@namcbugdb/common");
-var pg = __importStar(require("../pg"));
-var config_2 = require("../config");
-function loggedInGate(user) {
-    var err = new Error('You must be authenticated to perform this query.');
-    try {
-        if (!user.cognito.isLoggedIn || !user.cognito.sub || user.cognito.sub.length < 10)
-            throw err;
-    }
-    catch (_a) {
-        throw new Error('You are not authorized to perform this query.');
-    }
-}
-function limitOffsetCheck(limit, limitMax, offset) {
-    if (!limit)
-        throw new Error('You must provide a limit for this query');
-    if (limit < 0)
-        throw new Error('limit must be a valid positive integer');
-    if (limit > limitMax)
-        throw new Error("limit for this query has a maximum value of " + limitMax);
-    if (!(offset >= 0))
-        throw new Error('Offset must be a positive integer');
-}
-function createPagination(data, limit, offset) {
-    var nextOffset = null;
-    try {
-        nextOffset = data && data.length === limit ? offset + limit : null;
-    }
-    catch (_a) { }
-    return {
-        records: data.map(function (record) { return common_1.util.snake2camel(record); }),
-        nextOffset: nextOffset
-    };
-}
+var db_1 = require("../db");
+var resolverUtil_1 = require("./resolverUtil");
 exports.default = {
     Query: {
         auth: function (obj, args, ctx) { return __awaiter(void 0, void 0, void 0, function () {
@@ -114,45 +64,130 @@ exports.default = {
                 }
             });
         }); },
-        samples: function (obj, _a, _b, info) {
-            var limit = _a.limit, offset = _a.offset;
+        samples: function (obj, _a, _b) {
+            var limit = _a.limit, offset = _a.offset, sampleIds = _a.sampleIds, boxIds = _a.boxIds, projectIds = _a.projectIds, entityIds = _a.entityIds, siteIds = _a.siteIds, polygon = _a.polygon, pointDistance = _a.pointDistance;
             var user = _b.user;
             return __awaiter(void 0, void 0, void 0, function () {
-                var pool, data;
+                var pool, data, longitude, latitude, distance;
                 return __generator(this, function (_c) {
                     switch (_c.label) {
                         case 0:
-                            loggedInGate(user);
-                            limitOffsetCheck(limit, common_1.graphql.queryLimits.samples, offset);
-                            return [4, pg.getPool()];
+                            resolverUtil_1.loggedInGate(user);
+                            resolverUtil_1.checkExclusiveFilter({ sampleIds: sampleIds, boxIds: boxIds, projectIds: projectIds, entityIds: entityIds, siteIds: siteIds, polygon: polygon, pointDistance: pointDistance }, true);
+                            resolverUtil_1.limitOffsetCheck(limit, common_1.graphql.queryLimits.samples, offset);
+                            return [4, db_1.getPool()];
                         case 1:
                             pool = _c.sent();
-                            return [4, pg.getSamples(pool, limit, offset)];
+                            if (!sampleIds) return [3, 3];
+                            return [4, db_1.fnQuery(pool, { name: 'sample.fn_samples', args: [limit, offset, sampleIds] })];
                         case 2:
                             data = _c.sent();
-                            console.log(info, obj);
-                            return [2, createPagination(data, limit, offset)];
+                            return [3, 15];
+                        case 3:
+                            if (!boxIds) return [3, 5];
+                            return [4, db_1.fnQuery(pool, { name: 'sample.fn_box_samples', args: [limit, offset, boxIds] })];
+                        case 4:
+                            data = _c.sent();
+                            return [3, 15];
+                        case 5:
+                            if (!projectIds) return [3, 7];
+                            return [4, db_1.fnQuery(pool, { name: 'sample.fn_project_samples', args: [limit, offset, projectIds] })];
+                        case 6:
+                            data = _c.sent();
+                            return [3, 15];
+                        case 7:
+                            if (!entityIds) return [3, 9];
+                            return [4, db_1.fnQuery(pool, { name: 'sample.fn_entity_samples', args: [limit, offset, entityIds] })];
+                        case 8:
+                            data = _c.sent();
+                            return [3, 15];
+                        case 9:
+                            if (!siteIds) return [3, 11];
+                            return [4, db_1.fnQuery(pool, { name: 'sample.fn_site_samples', args: [limit, offset, siteIds] })];
+                        case 10:
+                            data = _c.sent();
+                            return [3, 15];
+                        case 11:
+                            if (!polygon) return [3, 13];
+                            return [4, db_1.fnQuery(pool, { name: 'sample.fn_polygon_samples', args: [limit, offset, polygon] })];
+                        case 12:
+                            data = _c.sent();
+                            return [3, 15];
+                        case 13:
+                            if (!pointDistance) return [3, 15];
+                            longitude = pointDistance.longitude, latitude = pointDistance.latitude, distance = pointDistance.distance;
+                            return [4, db_1.fnQuery(pool, {
+                                    name: 'sample.fn_point_distance_samples',
+                                    args: [limit, offset, longitude, latitude, distance]
+                                })];
+                        case 14:
+                            data = _c.sent();
+                            _c.label = 15;
+                        case 15: return [2, resolverUtil_1.createPagination(data, limit, offset)];
                     }
                 });
             });
         },
         sites: function (obj, _a, _b) {
-            var limit = _a.limit, offset = _a.offset;
+            var limit = _a.limit, offset = _a.offset, sampleIds = _a.sampleIds, boxIds = _a.boxIds, projectIds = _a.projectIds, entityIds = _a.entityIds, siteIds = _a.siteIds, polygon = _a.polygon, pointDistance = _a.pointDistance;
             var user = _b.user;
             return __awaiter(void 0, void 0, void 0, function () {
-                var pool, data;
+                var pool, data, longitude, latitude, distance;
                 return __generator(this, function (_c) {
                     switch (_c.label) {
                         case 0:
-                            loggedInGate(user);
-                            limitOffsetCheck(limit, common_1.graphql.queryLimits.sites, offset);
-                            return [4, pg.getPool()];
+                            resolverUtil_1.loggedInGate(user);
+                            resolverUtil_1.checkExclusiveFilter({ sampleIds: sampleIds, boxIds: boxIds, projectIds: projectIds, entityIds: entityIds, siteIds: siteIds, polygon: polygon, pointDistance: pointDistance }, true);
+                            resolverUtil_1.limitOffsetCheck(limit, common_1.graphql.queryLimits.sites, offset);
+                            return [4, db_1.getPool()];
                         case 1:
                             pool = _c.sent();
-                            return [4, pg.getSites(pool, limit, offset)];
+                            if (!siteIds) return [3, 3];
+                            return [4, db_1.fnQuery(pool, { name: 'geo.fn_sites', args: [limit, offset, siteIds] })];
                         case 2:
                             data = _c.sent();
-                            return [2, createPagination(data, limit, offset)];
+                            return [3, 15];
+                        case 3:
+                            if (!boxIds) return [3, 5];
+                            return [4, db_1.fnQuery(pool, { name: 'geo.fn_box_sites', args: [limit, offset, boxIds] })];
+                        case 4:
+                            data = _c.sent();
+                            return [3, 15];
+                        case 5:
+                            if (!projectIds) return [3, 7];
+                            return [4, db_1.fnQuery(pool, { name: 'geo.fn_project_sites', args: [limit, offset, projectIds] })];
+                        case 6:
+                            data = _c.sent();
+                            return [3, 15];
+                        case 7:
+                            if (!entityIds) return [3, 9];
+                            return [4, db_1.fnQuery(pool, { name: 'geo.fn_entity_sites', args: [limit, offset, entityIds] })];
+                        case 8:
+                            data = _c.sent();
+                            return [3, 15];
+                        case 9:
+                            if (!sampleIds) return [3, 11];
+                            return [4, db_1.fnQuery(pool, { name: 'geo.fn_sample_sites', args: [limit, offset, sampleIds] })];
+                        case 10:
+                            data = _c.sent();
+                            return [3, 15];
+                        case 11:
+                            if (!polygon) return [3, 13];
+                            return [4, db_1.fnQuery(pool, { name: 'geo.fn_polygon_sites', args: [limit, offset, polygon] })];
+                        case 12:
+                            data = _c.sent();
+                            return [3, 15];
+                        case 13:
+                            if (!pointDistance) return [3, 15];
+                            longitude = pointDistance.longitude, latitude = pointDistance.latitude, distance = pointDistance.distance;
+                            return [4, db_1.fnQuery(pool, {
+                                    name: 'geo.fn_sites_point_distance',
+                                    args: [limit, offset, longitude, latitude, distance]
+                                })];
+                        case 14:
+                            data = _c.sent();
+                            _c.label = 15;
+                        case 15: return [2, resolverUtil_1.createPagination(data, limit, offset)];
                     }
                 });
             });
@@ -165,11 +200,11 @@ exports.default = {
                 return __generator(this, function (_c) {
                     switch (_c.label) {
                         case 0:
-                            loggedInGate(user);
-                            return [4, pg.getPool()];
+                            resolverUtil_1.loggedInGate(user);
+                            return [4, db_1.getPool()];
                         case 1:
                             pool = _c.sent();
-                            return [4, pg.getSiteInfo(pool, siteId)];
+                            return [4, db_1.fnQuery(pool, { name: 'geo.fn_site_info', args: [siteId] })];
                         case 2:
                             data = _c.sent();
                             if (data.length !== 1) {
@@ -189,11 +224,11 @@ exports.default = {
                 return __generator(this, function (_c) {
                     switch (_c.label) {
                         case 0:
-                            loggedInGate(user);
-                            return [4, pg.getPool()];
+                            resolverUtil_1.loggedInGate(user);
+                            return [4, db_1.getPool()];
                         case 1:
                             pool = _c.sent();
-                            return [4, pg.getSampleInfo(pool, sampleId)];
+                            return [4, db_1.fnQuery(pool, { name: 'sample.fn_sample_info', args: [sampleId] })];
                         case 2:
                             data = _c.sent();
                             if (data.length !== 1) {
@@ -213,11 +248,11 @@ exports.default = {
                 return __generator(this, function (_c) {
                     switch (_c.label) {
                         case 0:
-                            loggedInGate(user);
-                            return [4, pg.getPool()];
+                            resolverUtil_1.loggedInGate(user);
+                            return [4, db_1.getPool()];
                         case 1:
                             pool = _c.sent();
-                            return [4, pg.getBoxInfo(pool, boxId)];
+                            return [4, db_1.fnQuery(pool, { name: 'sample.fn_box_info', args: [boxId] })];
                         case 2:
                             data = _c.sent();
                             if (data.length !== 1) {
@@ -237,11 +272,11 @@ exports.default = {
                 return __generator(this, function (_c) {
                     switch (_c.label) {
                         case 0:
-                            loggedInGate(user);
-                            return [4, pg.getPool()];
+                            resolverUtil_1.loggedInGate(user);
+                            return [4, db_1.getPool()];
                         case 1:
                             pool = _c.sent();
-                            return [4, pg.getModelInfo(pool, modelId)];
+                            return [4, db_1.fnQuery(pool, { name: 'geo.fn_model_info', args: [modelId] })];
                         case 2:
                             data = _c.sent();
                             if (data.length !== 1) {
@@ -261,14 +296,14 @@ exports.default = {
                 return __generator(this, function (_c) {
                     switch (_c.label) {
                         case 0:
-                            loggedInGate(user);
-                            return [4, pg.getPool()];
+                            resolverUtil_1.loggedInGate(user);
+                            return [4, db_1.getPool()];
                         case 1:
                             pool = _c.sent();
-                            return [4, pg.getModelThresholds(pool, modelId)];
+                            return [4, db_1.fnQuery(pool, { name: 'geo.fn_model_thresholds', args: [modelId] })];
                         case 2:
                             data = _c.sent();
-                            return [2, createPagination(data, 500, 0)];
+                            return [2, resolverUtil_1.createPagination(data, 500, 0)];
                     }
                 });
             });
@@ -281,14 +316,14 @@ exports.default = {
                 return __generator(this, function (_c) {
                     switch (_c.label) {
                         case 0:
-                            loggedInGate(user);
-                            return [4, pg.getPool()];
+                            resolverUtil_1.loggedInGate(user);
+                            return [4, db_1.getPool()];
                         case 1:
                             pool = _c.sent();
-                            return [4, pg.getSamplePredictorValues(pool, sampleId)];
+                            return [4, db_1.fnQuery(pool, { name: 'sample.fn_sample_predictor_values', args: [sampleId] })];
                         case 2:
                             data = _c.sent();
-                            return [2, createPagination(data, 500, 0)];
+                            return [2, resolverUtil_1.createPagination(data, 500, 0)];
                     }
                 });
             });
@@ -301,15 +336,15 @@ exports.default = {
                 return __generator(this, function (_c) {
                     switch (_c.label) {
                         case 0:
-                            loggedInGate(user);
-                            limitOffsetCheck(limit, common_1.graphql.queryLimits.boxes, offset);
-                            return [4, pg.getPool()];
+                            resolverUtil_1.loggedInGate(user);
+                            resolverUtil_1.limitOffsetCheck(limit, common_1.graphql.queryLimits.boxes, offset);
+                            return [4, db_1.getPool()];
                         case 1:
                             pool = _c.sent();
-                            return [4, pg.getBoxes(pool, limit, offset)];
+                            return [4, db_1.fnQuery(pool, { name: 'sample.fn_boxes', args: [limit, offset] })];
                         case 2:
                             data = _c.sent();
-                            return [2, createPagination(data, limit, offset)];
+                            return [2, resolverUtil_1.createPagination(data, limit, offset)];
                     }
                 });
             });
@@ -322,15 +357,15 @@ exports.default = {
                 return __generator(this, function (_c) {
                     switch (_c.label) {
                         case 0:
-                            loggedInGate(user);
-                            limitOffsetCheck(limit, common_1.graphql.queryLimits.projects, offset);
-                            return [4, pg.getPool()];
+                            resolverUtil_1.loggedInGate(user);
+                            resolverUtil_1.limitOffsetCheck(limit, common_1.graphql.queryLimits.projects, offset);
+                            return [4, db_1.getPool()];
                         case 1:
                             pool = _c.sent();
-                            return [4, pg.getProjects(pool, limit, offset)];
+                            return [4, db_1.fnQuery(pool, { name: 'sample.fn_projects', args: [limit, offset] })];
                         case 2:
                             data = _c.sent();
-                            return [2, createPagination(data, limit, offset)];
+                            return [2, resolverUtil_1.createPagination(data, limit, offset)];
                     }
                 });
             });
@@ -343,15 +378,15 @@ exports.default = {
                 return __generator(this, function (_c) {
                     switch (_c.label) {
                         case 0:
-                            loggedInGate(user);
-                            limitOffsetCheck(limit, common_1.graphql.queryLimits.taxonomy, offset);
-                            return [4, pg.getPool()];
+                            resolverUtil_1.loggedInGate(user);
+                            resolverUtil_1.limitOffsetCheck(limit, common_1.graphql.queryLimits.taxonomy, offset);
+                            return [4, db_1.getPool()];
                         case 1:
                             pool = _c.sent();
-                            return [4, pg.getTaxonomy(pool, limit, offset)];
+                            return [4, db_1.fnQuery(pool, { name: 'taxa.fn_taxonomy', args: [limit, offset] })];
                         case 2:
                             data = _c.sent();
-                            return [2, createPagination(data, limit, offset)];
+                            return [2, resolverUtil_1.createPagination(data, limit, offset)];
                     }
                 });
             });
@@ -364,14 +399,14 @@ exports.default = {
                 return __generator(this, function (_c) {
                     switch (_c.label) {
                         case 0:
-                            loggedInGate(user);
-                            return [4, pg.getPool()];
+                            resolverUtil_1.loggedInGate(user);
+                            return [4, db_1.getPool()];
                         case 1:
                             pool = _c.sent();
-                            return [4, pg.getTaxonomyTree(pool, taxonomyId)];
+                            return [4, db_1.fnQuery(pool, { name: 'taxa.fn_tree', args: [taxonomyId] })];
                         case 2:
                             data = _c.sent();
-                            return [2, createPagination(data, taxonomyId)];
+                            return [2, resolverUtil_1.createPagination(data, taxonomyId)];
                     }
                 });
             });
@@ -384,15 +419,15 @@ exports.default = {
                 return __generator(this, function (_c) {
                     switch (_c.label) {
                         case 0:
-                            loggedInGate(user);
-                            limitOffsetCheck(limit, common_1.graphql.queryLimits.predictors, offset);
-                            return [4, pg.getPool()];
+                            resolverUtil_1.loggedInGate(user);
+                            resolverUtil_1.limitOffsetCheck(limit, common_1.graphql.queryLimits.predictors, offset);
+                            return [4, db_1.getPool()];
                         case 1:
                             pool = _c.sent();
-                            return [4, pg.getPredictors(pool, limit, offset, modelId)];
+                            return [4, db_1.fnQuery(pool, { name: 'geo.fn_predictors', args: [limit, offset, modelId] })];
                         case 2:
                             data = _c.sent();
-                            return [2, createPagination(data, limit, offset)];
+                            return [2, resolverUtil_1.createPagination(data, limit, offset)];
                     }
                 });
             });
@@ -405,15 +440,15 @@ exports.default = {
                 return __generator(this, function (_c) {
                     switch (_c.label) {
                         case 0:
-                            loggedInGate(user);
-                            limitOffsetCheck(limit, common_1.graphql.queryLimits.models, offset);
-                            return [4, pg.getPool()];
+                            resolverUtil_1.loggedInGate(user);
+                            resolverUtil_1.limitOffsetCheck(limit, common_1.graphql.queryLimits.models, offset);
+                            return [4, db_1.getPool()];
                         case 1:
                             pool = _c.sent();
-                            return [4, pg.getModels(pool, limit, offset)];
+                            return [4, db_1.fnQuery(pool, { name: 'geo.fn_models', args: [limit, offset] })];
                         case 2:
                             data = _c.sent();
-                            return [2, createPagination(data, limit, offset)];
+                            return [2, resolverUtil_1.createPagination(data, limit, offset)];
                     }
                 });
             });
@@ -426,15 +461,15 @@ exports.default = {
                 return __generator(this, function (_c) {
                     switch (_c.label) {
                         case 0:
-                            loggedInGate(user);
-                            limitOffsetCheck(limit, common_1.graphql.queryLimits.models, offset);
-                            return [4, pg.getPool()];
+                            resolverUtil_1.loggedInGate(user);
+                            resolverUtil_1.limitOffsetCheck(limit, common_1.graphql.queryLimits.models, offset);
+                            return [4, db_1.getPool()];
                         case 1:
                             pool = _c.sent();
-                            return [4, pg.getTranslations(pool, limit, offset)];
+                            return [4, db_1.fnQuery(pool, { name: 'taxa.fn_translations', args: [limit, offset] })];
                         case 2:
                             data = _c.sent();
-                            return [2, createPagination(data, limit, offset)];
+                            return [2, resolverUtil_1.createPagination(data, limit, offset)];
                     }
                 });
             });
@@ -447,15 +482,18 @@ exports.default = {
                 return __generator(this, function (_c) {
                     switch (_c.label) {
                         case 0:
-                            loggedInGate(user);
-                            limitOffsetCheck(limit, common_1.graphql.queryLimits.models, offset);
-                            return [4, pg.getPool()];
+                            resolverUtil_1.loggedInGate(user);
+                            resolverUtil_1.limitOffsetCheck(limit, common_1.graphql.queryLimits.models, offset);
+                            return [4, db_1.getPool()];
                         case 1:
                             pool = _c.sent();
-                            return [4, pg.getTranslationTaxa(pool, limit, offset, translationId)];
+                            return [4, db_1.fnQuery(pool, {
+                                    name: 'taxa.fn_translation_taxa',
+                                    args: [limit, offset, translationId]
+                                })];
                         case 2:
                             data = _c.sent();
-                            return [2, createPagination(data, limit, offset)];
+                            return [2, resolverUtil_1.createPagination(data, limit, offset)];
                     }
                 });
             });
@@ -468,15 +506,15 @@ exports.default = {
                 return __generator(this, function (_c) {
                     switch (_c.label) {
                         case 0:
-                            loggedInGate(user);
-                            limitOffsetCheck(limit, common_1.graphql.queryLimits.sitePredictorValues, offset);
-                            return [4, pg.getPool()];
+                            resolverUtil_1.loggedInGate(user);
+                            resolverUtil_1.limitOffsetCheck(limit, common_1.graphql.queryLimits.sitePredictorValues, offset);
+                            return [4, db_1.getPool()];
                         case 1:
                             pool = _c.sent();
-                            return [4, pg.getSitePredictorValues(pool, limit, offset, siteId)];
+                            return [4, db_1.fnQuery(pool, { name: 'geo.fn_site_predictor_values', args: [limit, offset, siteId] })];
                         case 2:
                             data = _c.sent();
-                            return [2, createPagination(data, limit, offset)];
+                            return [2, resolverUtil_1.createPagination(data, limit, offset)];
                     }
                 });
             });
@@ -489,14 +527,14 @@ exports.default = {
                 return __generator(this, function (_c) {
                     switch (_c.label) {
                         case 0:
-                            loggedInGate(user);
-                            return [4, pg.getPool()];
+                            resolverUtil_1.loggedInGate(user);
+                            return [4, db_1.getPool()];
                         case 1:
                             pool = _c.sent();
-                            return [4, pg.getModelPredictors(pool, limit, offset, modelId)];
+                            return [4, db_1.fnQuery(pool, { name: 'geo.fn_model_predictors', args: [limit, offset, modelId] })];
                         case 2:
                             data = _c.sent();
-                            return [2, createPagination(data, 500, 0)];
+                            return [2, resolverUtil_1.createPagination(data, 500, 0)];
                     }
                 });
             });
@@ -505,43 +543,33 @@ exports.default = {
             var sampleIds = _a.sampleIds, boxIds = _a.boxIds, projectIds = _a.projectIds;
             var user = _b.user;
             return __awaiter(void 0, void 0, void 0, function () {
-                var check, pool, data;
+                var pool, data;
                 return __generator(this, function (_c) {
                     switch (_c.label) {
                         case 0:
-                            loggedInGate(user);
-                            check = [sampleIds, boxIds, projectIds].filter(function (i) { return i; });
-                            if (check.length === 0)
-                                throw new Error('You must provide an array of sample IDs, box IDs or project IDs.');
-                            else if (check.length > 1)
-                                throw new Error('You must choose either an array of sample IDs, an array of box IDs, or an array of project IDs.');
-                            return [4, pg.getPool()];
+                            resolverUtil_1.loggedInGate(user);
+                            resolverUtil_1.checkExclusiveFilter({ sampleIds: sampleIds, boxIds: boxIds, projectIds: projectIds }, true);
+                            return [4, db_1.getPool()];
                         case 1:
                             pool = _c.sent();
                             if (!sampleIds) return [3, 3];
-                            if (sampleIds.length < 1 || sampleIds.length > config_2.maxIdResults)
-                                throw new Error(sampleIds.length + " items found. You must specify between 1 and " + config_2.maxIdResults + " item IDs.");
-                            return [4, pg.getSampleTaxaRaw(pool, sampleIds)];
+                            return [4, db_1.fnQuery(pool, { name: 'sample.fn_sample_taxa_raw', args: [sampleIds] })];
                         case 2:
                             data = _c.sent();
                             return [3, 7];
                         case 3:
                             if (!boxIds) return [3, 5];
-                            if (boxIds.length > config_2.maxIdResults)
-                                throw new Error(boxIds.length + " items found. You must specify between 1 and " + config_2.maxIdResults + " item IDs.");
-                            return [4, pg.getBoxTaxaRaw(pool, boxIds)];
+                            return [4, db_1.fnQuery(pool, { name: 'sample.fn_box_taxa_raw', args: [boxIds] })];
                         case 4:
                             data = _c.sent();
                             return [3, 7];
                         case 5:
                             if (!projectIds) return [3, 7];
-                            if (projectIds.length > config_2.maxIdResults)
-                                throw new Error(projectIds.length + " items found. You must specify between 1 and " + config_2.maxIdResults + " item IDs.");
-                            return [4, pg.getProjectTaxaRaw(pool, projectIds)];
+                            return [4, db_1.fnQuery(pool, { name: 'sample.fn_project_taxa_raw', args: [projectIds] })];
                         case 6:
                             data = _c.sent();
                             _c.label = 7;
-                        case 7: return [2, createPagination(data)];
+                        case 7: return [2, resolverUtil_1.createPagination(data)];
                     }
                 });
             });
@@ -554,14 +582,14 @@ exports.default = {
                 return __generator(this, function (_c) {
                     switch (_c.label) {
                         case 0:
-                            loggedInGate(user);
-                            return [4, pg.getPool()];
+                            resolverUtil_1.loggedInGate(user);
+                            return [4, db_1.getPool()];
                         case 1:
                             pool = _c.sent();
-                            return [4, pg.getSampleTaxaGeneralized(pool, sampleId)];
+                            return [4, db_1.fnQuery(pool, { name: 'sample.fn_sample_taxa_generalized', args: [sampleId] })];
                         case 2:
                             data = _c.sent();
-                            return [2, createPagination(data)];
+                            return [2, resolverUtil_1.createPagination(data)];
                     }
                 });
             });
@@ -574,14 +602,17 @@ exports.default = {
                 return __generator(this, function (_c) {
                     switch (_c.label) {
                         case 0:
-                            loggedInGate(user);
-                            return [4, pg.getPool()];
+                            resolverUtil_1.loggedInGate(user);
+                            return [4, db_1.getPool()];
                         case 1:
                             pool = _c.sent();
-                            return [4, pg.getSampleTaxaTranslation(pool, sampleId, translationId)];
+                            return [4, db_1.fnQuery(pool, {
+                                    name: 'sample.fn_sample_translation_taxa',
+                                    args: [sampleId, translationId]
+                                })];
                         case 2:
                             data = _c.sent();
-                            return [2, createPagination(data)];
+                            return [2, resolverUtil_1.createPagination(data)];
                     }
                 });
             });
@@ -594,14 +625,17 @@ exports.default = {
                 return __generator(this, function (_c) {
                     switch (_c.label) {
                         case 0:
-                            loggedInGate(user);
-                            return [4, pg.getPool()];
+                            resolverUtil_1.loggedInGate(user);
+                            return [4, db_1.getPool()];
                         case 1:
                             pool = _c.sent();
-                            return [4, pg.getSampleTaxaTranslationRarefied(pool, sampleId, translationId, fixedCount)];
+                            return [4, db_1.fnQuery(pool, {
+                                    name: 'sample.fn_translation_rarefied_taxa',
+                                    args: [sampleId, translationId, fixedCount]
+                                })];
                         case 2:
                             data = _c.sent();
-                            return [2, createPagination(data)];
+                            return [2, resolverUtil_1.createPagination(data)];
                     }
                 });
             });
@@ -614,14 +648,18 @@ exports.default = {
                 return __generator(this, function (_c) {
                     switch (_c.label) {
                         case 0:
-                            loggedInGate(user);
-                            return [4, pg.getPool()];
+                            resolverUtil_1.loggedInGate(user);
+                            return [4, db_1.getPool()];
                         case 1:
                             pool = _c.sent();
-                            return [4, pg.getPointTaxaRawQuery(pool, longitude, latitude, distance)];
+                            resolverUtil_1.checkExclusiveFilter({ pointDistance: { longitude: longitude, latitude: latitude, distance: distance } });
+                            return [4, db_1.fnQuery(pool, {
+                                    name: 'sample.fn_taxa_raw_point_distance',
+                                    args: [longitude, latitude, distance]
+                                })];
                         case 2:
                             data = _c.sent();
-                            return [2, createPagination(data)];
+                            return [2, resolverUtil_1.createPagination(data)];
                     }
                 });
             });
@@ -634,14 +672,18 @@ exports.default = {
                 return __generator(this, function (_c) {
                     switch (_c.label) {
                         case 0:
-                            loggedInGate(user);
-                            return [4, pg.getPool()];
+                            resolverUtil_1.loggedInGate(user);
+                            return [4, db_1.getPool()];
                         case 1:
                             pool = _c.sent();
-                            return [4, pg.getPolygonTaxaRawQuery(pool, polygon)];
+                            resolverUtil_1.checkExclusiveFilter({ polygon: polygon });
+                            return [4, db_1.fnQuery(pool, {
+                                    name: 'sample.fn_taxa_raw_polygon',
+                                    args: [polygon]
+                                })];
                         case 2:
                             data = _c.sent();
-                            return [2, createPagination(data)];
+                            return [2, resolverUtil_1.createPagination(data)];
                     }
                 });
             });
@@ -654,14 +696,14 @@ exports.default = {
                 return __generator(this, function (_c) {
                     switch (_c.label) {
                         case 0:
-                            loggedInGate(user);
-                            return [4, pg.getPool()];
+                            resolverUtil_1.loggedInGate(user);
+                            return [4, db_1.getPool()];
                         case 1:
                             pool = _c.sent();
-                            return [4, pg.getAttributes(pool, limit, offset)];
+                            return [4, db_1.fnQuery(pool, { name: 'taxa.fn_attributes', args: [limit, offset] })];
                         case 2:
                             data = _c.sent();
-                            return [2, createPagination(data)];
+                            return [2, resolverUtil_1.createPagination(data)];
                     }
                 });
             });
@@ -674,14 +716,14 @@ exports.default = {
                 return __generator(this, function (_c) {
                     switch (_c.label) {
                         case 0:
-                            loggedInGate(user);
-                            return [4, pg.getPool()];
+                            resolverUtil_1.loggedInGate(user);
+                            return [4, db_1.getPool()];
                         case 1:
                             pool = _c.sent();
-                            return [4, pg.getMetrics(pool, limit, offset)];
+                            return [4, db_1.fnQuery(pool, { name: 'metric.fn_metrics', args: [limit, offset] })];
                         case 2:
                             data = _c.sent();
-                            return [2, createPagination(data)];
+                            return [2, resolverUtil_1.createPagination(data)];
                     }
                 });
             });
@@ -690,43 +732,42 @@ exports.default = {
             var sampleIds = _a.sampleIds, boxIds = _a.boxIds, projectIds = _a.projectIds, translationId = _a.translationId, fixedCount = _a.fixedCount;
             var user = _b.user;
             return __awaiter(void 0, void 0, void 0, function () {
-                var check, pool, data;
+                var pool, data;
                 return __generator(this, function (_c) {
                     switch (_c.label) {
                         case 0:
-                            loggedInGate(user);
-                            check = [sampleIds, boxIds, projectIds].filter(function (i) { return i; });
-                            if (check.length === 0)
-                                throw new Error('You must provide an array of sample IDs, box IDs or project IDs.');
-                            else if (check.length > 1)
-                                throw new Error('You must choose either an array of sample IDs, an array of box IDs, or an array of project IDs.');
-                            return [4, pg.getPool()];
+                            resolverUtil_1.loggedInGate(user);
+                            resolverUtil_1.checkExclusiveFilter({ sampleIds: sampleIds, boxIds: boxIds, projectIds: projectIds }, true);
+                            return [4, db_1.getPool()];
                         case 1:
                             pool = _c.sent();
                             if (!sampleIds) return [3, 3];
-                            if (sampleIds.length < 1 || sampleIds.length > config_2.maxIdResults)
-                                throw new Error(sampleIds.length + " items found. You must specify between 1 and " + config_2.maxIdResults + " item IDs.");
-                            return [4, pg.getSampleMetrics(pool, sampleIds, translationId, fixedCount)];
+                            return [4, db_1.fnQuery(pool, {
+                                    name: 'metric.fn_sample_metrics_array',
+                                    args: [sampleIds, translationId, fixedCount]
+                                })];
                         case 2:
                             data = _c.sent();
                             return [3, 7];
                         case 3:
                             if (!boxIds) return [3, 5];
-                            if (boxIds.length > config_2.maxIdResults)
-                                throw new Error(boxIds.length + " items found. You must specify between 1 and " + config_2.maxIdResults + " item IDs.");
-                            return [4, pg.getBoxMetrics(pool, boxIds, translationId, fixedCount)];
+                            return [4, db_1.fnQuery(pool, {
+                                    name: 'metric.fn_box_metrics',
+                                    args: [boxIds, translationId, fixedCount]
+                                })];
                         case 4:
                             data = _c.sent();
                             return [3, 7];
                         case 5:
                             if (!projectIds) return [3, 7];
-                            if (projectIds.length > config_2.maxIdResults)
-                                throw new Error(projectIds.length + " items found. You must specify between 1 and " + config_2.maxIdResults + " item IDs.");
-                            return [4, pg.getProjectMetrics(pool, projectIds, translationId, fixedCount)];
+                            return [4, db_1.fnQuery(pool, {
+                                    name: 'metric.fn_project_metrics',
+                                    args: [projectIds, translationId, fixedCount]
+                                })];
                         case 6:
                             data = _c.sent();
                             _c.label = 7;
-                        case 7: return [2, createPagination(data)];
+                        case 7: return [2, resolverUtil_1.createPagination(data)];
                     }
                 });
             });
@@ -739,14 +780,14 @@ exports.default = {
                 return __generator(this, function (_c) {
                     switch (_c.label) {
                         case 0:
-                            loggedInGate(user);
-                            return [4, pg.getPool()];
+                            resolverUtil_1.loggedInGate(user);
+                            return [4, db_1.getPool()];
                         case 1:
                             pool = _c.sent();
-                            return [4, pg.getTaxaAttributes(pool, taxonomyId, limit, offset)];
+                            return [4, db_1.fnQuery(pool, { name: 'taxa.fn_taxa_attributes', args: [taxonomyId, limit, offset] })];
                         case 2:
                             data = _c.sent();
-                            return [2, createPagination(data)];
+                            return [2, resolverUtil_1.createPagination(data)];
                     }
                 });
             });
@@ -759,15 +800,15 @@ exports.default = {
                 return __generator(this, function (_c) {
                     switch (_c.label) {
                         case 0:
-                            loggedInGate(user);
-                            limitOffsetCheck(limit, common_1.graphql.queryLimits.samples, offset);
-                            return [4, pg.getPool()];
+                            resolverUtil_1.loggedInGate(user);
+                            resolverUtil_1.limitOffsetCheck(limit, common_1.graphql.queryLimits.samples, offset);
+                            return [4, db_1.getPool()];
                         case 1:
                             pool = _c.sent();
-                            return [4, pg.getPlanktonSamples(pool, limit, offset)];
+                            return [4, db_1.fnQuery(pool, { name: 'sample.fn_plankton', args: [limit, offset] })];
                         case 2:
                             data = _c.sent();
-                            return [2, createPagination(data, limit, offset)];
+                            return [2, resolverUtil_1.createPagination(data, limit, offset)];
                     }
                 });
             });
@@ -780,15 +821,15 @@ exports.default = {
                 return __generator(this, function (_c) {
                     switch (_c.label) {
                         case 0:
-                            loggedInGate(user);
-                            limitOffsetCheck(limit, common_1.graphql.queryLimits.samples, offset);
-                            return [4, pg.getPool()];
+                            resolverUtil_1.loggedInGate(user);
+                            resolverUtil_1.limitOffsetCheck(limit, common_1.graphql.queryLimits.samples, offset);
+                            return [4, db_1.getPool()];
                         case 1:
                             pool = _c.sent();
-                            return [4, pg.getDriftSamples(pool, limit, offset)];
+                            return [4, db_1.fnQuery(pool, { name: 'sample.fn_drift', args: [limit, offset] })];
                         case 2:
                             data = _c.sent();
-                            return [2, createPagination(data, limit, offset)];
+                            return [2, resolverUtil_1.createPagination(data, limit, offset)];
                     }
                 });
             });
@@ -801,15 +842,15 @@ exports.default = {
                 return __generator(this, function (_c) {
                     switch (_c.label) {
                         case 0:
-                            loggedInGate(user);
-                            limitOffsetCheck(limit, common_1.graphql.queryLimits.samples, offset);
-                            return [4, pg.getPool()];
+                            resolverUtil_1.loggedInGate(user);
+                            resolverUtil_1.limitOffsetCheck(limit, common_1.graphql.queryLimits.samples, offset);
+                            return [4, db_1.getPool()];
                         case 1:
                             pool = _c.sent();
-                            return [4, pg.getFishSamples(pool, limit, offset)];
+                            return [4, db_1.fnQuery(pool, { name: 'sample.fn_fish', args: [limit, offset] })];
                         case 2:
                             data = _c.sent();
-                            return [2, createPagination(data, limit, offset)];
+                            return [2, resolverUtil_1.createPagination(data, limit, offset)];
                     }
                 });
             });
@@ -822,15 +863,15 @@ exports.default = {
                 return __generator(this, function (_c) {
                     switch (_c.label) {
                         case 0:
-                            loggedInGate(user);
-                            limitOffsetCheck(limit, common_1.graphql.queryLimits.samples, offset);
-                            return [4, pg.getPool()];
+                            resolverUtil_1.loggedInGate(user);
+                            resolverUtil_1.limitOffsetCheck(limit, common_1.graphql.queryLimits.samples, offset);
+                            return [4, db_1.getPool()];
                         case 1:
                             pool = _c.sent();
-                            return [4, pg.getMassSamples(pool, limit, offset)];
+                            return [4, db_1.fnQuery(pool, { name: 'sample.fn_mass', args: [limit, offset] })];
                         case 2:
                             data = _c.sent();
-                            return [2, createPagination(data, limit, offset)];
+                            return [2, resolverUtil_1.createPagination(data, limit, offset)];
                     }
                 });
             });
@@ -843,15 +884,15 @@ exports.default = {
                 return __generator(this, function (_c) {
                     switch (_c.label) {
                         case 0:
-                            loggedInGate(user);
-                            limitOffsetCheck(limit, common_1.graphql.queryLimits.samples, offset);
-                            return [4, pg.getPool()];
+                            resolverUtil_1.loggedInGate(user);
+                            resolverUtil_1.limitOffsetCheck(limit, common_1.graphql.queryLimits.samples, offset);
+                            return [4, db_1.getPool()];
                         case 1:
                             pool = _c.sent();
-                            return [4, pg.getModelResults(pool, limit, offset, sampleIds)];
+                            return [4, db_1.fnQuery(pool, { name: 'sample.fn_model_results', args: [limit, offset, sampleIds] })];
                         case 2:
                             data = _c.sent();
-                            return [2, createPagination(data, limit, offset)];
+                            return [2, resolverUtil_1.createPagination(data, limit, offset)];
                     }
                 });
             });
@@ -864,15 +905,15 @@ exports.default = {
                 return __generator(this, function (_c) {
                     switch (_c.label) {
                         case 0:
-                            loggedInGate(user);
-                            limitOffsetCheck(limit, common_1.graphql.queryLimits.samples, offset);
-                            return [4, pg.getPool()];
+                            resolverUtil_1.loggedInGate(user);
+                            resolverUtil_1.limitOffsetCheck(limit, common_1.graphql.queryLimits.samples, offset);
+                            return [4, db_1.getPool()];
                         case 1:
                             pool = _c.sent();
-                            return [4, pg.getFishDiet(pool, limit, offset, sampleIds)];
+                            return [4, db_1.fnQuery(pool, { name: 'sample.fn_fish_diet', args: [limit, offset, sampleIds] })];
                         case 2:
                             data = _c.sent();
-                            return [2, createPagination(data, limit, offset)];
+                            return [2, resolverUtil_1.createPagination(data, limit, offset)];
                     }
                 });
             });
@@ -887,11 +928,14 @@ exports.default = {
                 return __generator(this, function (_c) {
                     switch (_c.label) {
                         case 0:
-                            loggedInGate(user);
-                            return [4, pg.getPool()];
+                            resolverUtil_1.loggedInGate(user);
+                            return [4, db_1.getPool()];
                         case 1:
                             pool = _c.sent();
-                            return [4, pg.setSitePredictorValue(pool, siteId, predictorId, value)];
+                            return [4, db_1.fnQuery(pool, {
+                                    name: 'sample.fn_set_site_predictor_value',
+                                    args: [siteId, predictorId, value]
+                                })];
                         case 2:
                             data = _c.sent();
                             returnVal = data[0].fn_set_site_predictor_value;
@@ -908,11 +952,14 @@ exports.default = {
                 return __generator(this, function (_c) {
                     switch (_c.label) {
                         case 0:
-                            loggedInGate(user);
-                            return [4, pg.getPool()];
+                            resolverUtil_1.loggedInGate(user);
+                            return [4, db_1.getPool()];
                         case 1:
                             pool = _c.sent();
-                            return [4, pg.setSamplePredictorValue(pool, sampleId, predictorId, value)];
+                            return [4, db_1.fnQuery(pool, {
+                                    name: 'sample.fn_set_sample_predictor_value',
+                                    args: [sampleId, predictorId, value]
+                                })];
                         case 2:
                             data = _c.sent();
                             returnVal = data[0].fn_set_sample_predictor_value;
@@ -929,11 +976,14 @@ exports.default = {
                 return __generator(this, function (_c) {
                     switch (_c.label) {
                         case 0:
-                            loggedInGate(user);
-                            return [4, pg.getPool()];
+                            resolverUtil_1.loggedInGate(user);
+                            return [4, db_1.getPool()];
                         case 1:
                             pool = _c.sent();
-                            return [4, pg.setSiteCatchment(pool, siteId, catchment)];
+                            return [4, db_1.fnQuery(pool, {
+                                    name: 'sample.fn_set_site_catchment',
+                                    args: [siteId, catchment]
+                                })];
                         case 2:
                             data = _c.sent();
                             returnVal = data[0].fn_set_site_catchment;
@@ -950,11 +1000,14 @@ exports.default = {
                 return __generator(this, function (_c) {
                     switch (_c.label) {
                         case 0:
-                            loggedInGate(user);
-                            return [4, pg.getPool()];
+                            resolverUtil_1.loggedInGate(user);
+                            return [4, db_1.getPool()];
                         case 1:
                             pool = _c.sent();
-                            return [4, pg.createTranslation(pool, translationName, description)];
+                            return [4, db_1.fnQuery(pool, {
+                                    name: 'taxa.fn_create_translation',
+                                    args: [translationName, description]
+                                })];
                         case 2:
                             data = _c.sent();
                             returnVal = data[0].fn_create_translation;
@@ -971,11 +1024,14 @@ exports.default = {
                 return __generator(this, function (_c) {
                     switch (_c.label) {
                         case 0:
-                            loggedInGate(user);
-                            return [4, pg.getPool()];
+                            resolverUtil_1.loggedInGate(user);
+                            return [4, db_1.getPool()];
                         case 1:
                             pool = _c.sent();
-                            return [4, pg.setTranslationTaxa(pool, translationId, taxonomyId, alias, isFinal)];
+                            return [4, db_1.fnQuery(pool, {
+                                    name: 'taxa.fn_set_translation_taxa',
+                                    args: [translationId, taxonomyId, alias, isFinal]
+                                })];
                         case 2:
                             data = _c.sent();
                             returnVal = data[0].fn_set_translation_taxa;
@@ -992,11 +1048,14 @@ exports.default = {
                 return __generator(this, function (_c) {
                     switch (_c.label) {
                         case 0:
-                            loggedInGate(user);
-                            return [4, pg.getPool()];
+                            resolverUtil_1.loggedInGate(user);
+                            return [4, db_1.getPool()];
                         case 1:
                             pool = _c.sent();
-                            return [4, pg.deleteTranslationTaxa(pool, translationId, taxonomyId)];
+                            return [4, db_1.fnQuery(pool, {
+                                    name: 'taxa.fn_delete_translation_taxa',
+                                    args: [translationId, taxonomyId]
+                                })];
                         case 2:
                             data = _c.sent();
                             returnVal = data[0].fn_delete_translation_taxa;
@@ -1013,11 +1072,14 @@ exports.default = {
                 return __generator(this, function (_c) {
                     switch (_c.label) {
                         case 0:
-                            loggedInGate(user);
-                            return [4, pg.getPool()];
+                            resolverUtil_1.loggedInGate(user);
+                            return [4, db_1.getPool()];
                         case 1:
                             pool = _c.sent();
-                            return [4, pg.setTaxonomy(pool, taxonomyId, scientificName, levelId, parentId, author, year, notes, metadata)];
+                            return [4, db_1.fnQuery(pool, {
+                                    name: 'taxa.fn_set_taxonomy',
+                                    args: [taxonomyId, scientificName, levelId, parentId, author, year, notes, metadata]
+                                })];
                         case 2:
                             data = _c.sent();
                             returnVal = data[0].fn_set_taxonomy;
@@ -1034,11 +1096,14 @@ exports.default = {
                 return __generator(this, function (_c) {
                     switch (_c.label) {
                         case 0:
-                            loggedInGate(user);
-                            return [4, pg.getPool()];
+                            resolverUtil_1.loggedInGate(user);
+                            return [4, db_1.getPool()];
                         case 1:
                             pool = _c.sent();
-                            return [4, pg.createProject(pool, projectName, isPrivate, contactId, description, metadata)];
+                            return [4, db_1.fnQuery(pool, {
+                                    name: 'sample.fn_create_project',
+                                    args: [projectName, isPrivate, contactId, description, metadata]
+                                })];
                         case 2:
                             data = _c.sent();
                             returnVal = data[0].fn_create_project;
@@ -1055,11 +1120,15 @@ exports.default = {
                 return __generator(this, function (_c) {
                     switch (_c.label) {
                         case 0:
-                            loggedInGate(user);
-                            return [4, pg.getPool()];
+                            resolverUtil_1.loggedInGate(user);
+                            resolverUtil_1.checkExclusiveFilter({ sampleIds: sampleIds });
+                            return [4, db_1.getPool()];
                         case 1:
                             pool = _c.sent();
-                            return [4, pg.addProjectSamples(pool, projectId, sampleIds)];
+                            return [4, db_1.fnQuery(pool, {
+                                    name: 'sample.add_project_samples',
+                                    args: [projectId, sampleIds]
+                                })];
                         case 2:
                             data = _c.sent();
                             returnVal = data[0].fn_add_project_samples;
@@ -1076,11 +1145,15 @@ exports.default = {
                 return __generator(this, function (_c) {
                     switch (_c.label) {
                         case 0:
-                            loggedInGate(user);
-                            return [4, pg.getPool()];
+                            resolverUtil_1.loggedInGate(user);
+                            resolverUtil_1.checkExclusiveFilter({ boxIds: boxIds });
+                            return [4, db_1.getPool()];
                         case 1:
                             pool = _c.sent();
-                            return [4, pg.addProjectBoxes(pool, projectId, boxIds)];
+                            return [4, db_1.fnQuery(pool, {
+                                    name: 'sample.add_project_boxes',
+                                    args: [projectId, boxIds]
+                                })];
                         case 2:
                             data = _c.sent();
                             returnVal = data[0].fn_add_project_boxes;
@@ -1097,11 +1170,15 @@ exports.default = {
                 return __generator(this, function (_c) {
                     switch (_c.label) {
                         case 0:
-                            loggedInGate(user);
-                            return [4, pg.getPool()];
+                            resolverUtil_1.loggedInGate(user);
+                            resolverUtil_1.checkExclusiveFilter({ sampleIds: sampleIds });
+                            return [4, db_1.getPool()];
                         case 1:
                             pool = _c.sent();
-                            return [4, pg.removeProjectSamples(pool, projectId, sampleIds)];
+                            return [4, db_1.fnQuery(pool, {
+                                    name: 'sample.remove_project_samples',
+                                    args: [projectId, sampleIds]
+                                })];
                         case 2:
                             data = _c.sent();
                             returnVal = data[0].fn_remove_project_samples;
@@ -1118,11 +1195,14 @@ exports.default = {
                 return __generator(this, function (_c) {
                     switch (_c.label) {
                         case 0:
-                            loggedInGate(user);
-                            return [4, pg.getPool()];
+                            resolverUtil_1.loggedInGate(user);
+                            return [4, db_1.getPool()];
                         case 1:
                             pool = _c.sent();
-                            return [4, pg.deleteProject(pool, projectId)];
+                            return [4, db_1.fnQuery(pool, {
+                                    name: 'sample.delete_project',
+                                    args: [projectId]
+                                })];
                         case 2:
                             data = _c.sent();
                             returnVal = data[0].fn_delete_project;

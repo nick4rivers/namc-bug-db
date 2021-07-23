@@ -10,6 +10,20 @@ export interface PaginatedRecords<T> {
     records: [T];
     nextOffset?: number;
 }
+export declare type QueryDistance = {
+    latitude: number;
+    longitude: number;
+    distance: number;
+};
+export declare type QueryFilter = {
+    sampleIds: number[];
+    boxIds: number[];
+    projectIds: number[];
+    entityIds: number[];
+    siteIds: number[];
+    polygon: string;
+    pointDistance: QueryDistance;
+};
 export declare type Sample = {
     sampleId: number;
     boxId: number;

@@ -13,6 +13,27 @@ export interface PaginatedRecords<T> {
     nextOffset?: number
 }
 
+/**
+ * Distance from a point (mirrors the GQL type)
+ */
+export type QueryDistance = {
+    latitude: number
+    longitude: number
+    distance: number
+}
+
+// This type has no analogous representation in GQL but we use it to check
+// exclusivity of filter parameters
+export type QueryFilter = {
+    sampleIds: number[]
+    boxIds: number[]
+    projectIds: number[]
+    entityIds: number[]
+    siteIds: number[]
+    polygon: string
+    pointDistance: QueryDistance
+}
+
 export type Sample = {
     sampleId: number
     boxId: number

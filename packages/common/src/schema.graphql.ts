@@ -49,15 +49,14 @@ const typeDefs = gql`
         boxInfo(boxId: Int!): BoxInfo
 
         "List of all samples in the system, including high level information about the associated box and customer."
-        samples(limit: Int = ${queryLimits.samples}, offset: Int = 0): PaginatedSamples
+        samples(limit: Int = ${queryLimits.samples}, offset: Int = 0, sampleIds: [Int], boxIds: [Int], projectIds: [Int], entityIds: [Int], siteIds: [Int], polygon: String, pointDistance: QueryDistance): PaginatedSamples
 
         "Summary information for all sites, including location coordinates and number of samples. Use the siteInfo query to get more detailed information about a single site."
-        sites(limit: Int = ${queryLimits.sites}, offset: Int = 0, usState: [String]): PaginatedSites
+        sites(limit: Int = ${queryLimits.sites}, offset: Int = 0, usState: [String], sampleIds: [Int], boxIds: [Int], projectIds: [Int], entityIds: [Int], siteIds: [Int], polygon: String, pointDistance: QueryDistance): PaginatedSites
         
         # individuals(limit: Int, offset: Int): [Individual]
-
         "Summary information for all boxes, including the customer name and number of samples within the box. Use the boxInfo query to get more detailed information about a single box."
-        boxes(limit: Int = ${queryLimits.boxes}, offset: Int = 0): PaginatedBoxes
+        boxes(limit: Int = ${queryLimits.boxes}, offset: Int = 0, boxIds: [Int], entityIds: [Int]): PaginatedBoxes
 
         "Summary information about all projects in the system. Use the projectInfo query to get more detailed about a single project."
         projects(limit: Int = ${queryLimits.projects}, offset: Int = 0): PaginatedProjects
@@ -182,6 +181,12 @@ const typeDefs = gql`
         removeProjectSamples(projectId: Int!, sampleIds:[Int]): Int
 
         deleteProject(projectId: Int!): Int
+    }
+
+    type QueryDistance {
+        latitude: Float!,
+        longitude: Float!,
+        distance: Float!
     }
 
     type AuthParams {

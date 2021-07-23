@@ -18,7 +18,7 @@ mandatoryKeys.forEach((key) => {
 
 export const awsRegion = process.env.REGION
 export const ssmName = process.env.SSM_PARAM
-export const maxIdResults = 50
+export const maxQueryIds = 50
 
 // Now go populate the cache
 export const getConfigPromise = (): Promise<SSMParameter> =>

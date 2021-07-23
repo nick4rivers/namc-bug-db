@@ -1,161 +1,175 @@
-import { AuthResponse, Box, BoxInfo, Model, ModelInfo, ModelPredictor, ModelThreshold, PaginatedRecords, Predictor, Project, Sample, SampleInfo, SamplePredictorValue, Site, SiteInfo, SitePredictorValue, Taxonomy, Translation, RawSampleTaxa, GeneralizedSampleTaxa, TranslationSampleTaxa, RarefiedSampleTaxa, PlanktonSample, DriftSample, FishSample, MassSample, MetricResult, Attribute, TaxonomyTree, AttributeValue, TranslationTaxa, Metric, ModelResult, FishDiet } from '@namcbugdb/common';
+import { types as t } from '@namcbugdb/common';
 declare const _default: {
     Query: {
-        auth: (obj: any, args: any, ctx: any) => Promise<AuthResponse>;
-        samples: (obj: any, { limit, offset }: {
+        auth: (obj: any, args: any, ctx: any) => Promise<t.AuthResponse>;
+        samples: (obj: any, { limit, offset, sampleIds, boxIds, projectIds, entityIds, siteIds, polygon, pointDistance }: {
             limit: any;
             offset: any;
+            sampleIds: any;
+            boxIds: any;
+            projectIds: any;
+            entityIds: any;
+            siteIds: any;
+            polygon: any;
+            pointDistance: any;
         }, { user }: {
             user: any;
-        }, info: any) => Promise<PaginatedRecords<Sample>>;
-        sites: (obj: any, { limit, offset }: {
+        }) => Promise<t.PaginatedRecords<t.Sample>>;
+        sites: (obj: any, { limit, offset, sampleIds, boxIds, projectIds, entityIds, siteIds, polygon, pointDistance }: {
             limit: any;
             offset: any;
+            sampleIds: any;
+            boxIds: any;
+            projectIds: any;
+            entityIds: any;
+            siteIds: any;
+            polygon: any;
+            pointDistance: any;
         }, { user }: {
             user: any;
-        }) => Promise<PaginatedRecords<Site>>;
+        }) => Promise<t.PaginatedRecords<t.Site>>;
         siteInfo: (obj: any, { siteId }: {
             siteId: any;
         }, { user }: {
             user: any;
-        }) => Promise<SiteInfo>;
+        }) => Promise<t.SiteInfo>;
         sampleInfo: (obj: any, { sampleId }: {
             sampleId: any;
         }, { user }: {
             user: any;
-        }) => Promise<SampleInfo>;
+        }) => Promise<t.SampleInfo>;
         boxInfo: (obj: any, { boxId }: {
             boxId: any;
         }, { user }: {
             user: any;
-        }) => Promise<BoxInfo>;
+        }) => Promise<t.BoxInfo>;
         modelInfo: (obj: any, { modelId }: {
             modelId: any;
         }, { user }: {
             user: any;
-        }) => Promise<ModelInfo>;
+        }) => Promise<t.ModelInfo>;
         modelThresholds: (obj: any, { modelId }: {
             modelId: any;
         }, { user }: {
             user: any;
-        }) => Promise<PaginatedRecords<ModelThreshold>>;
+        }) => Promise<t.PaginatedRecords<t.ModelThreshold>>;
         samplePredictorValues: (obj: any, { sampleId }: {
             sampleId: any;
         }, { user }: {
             user: any;
-        }) => Promise<PaginatedRecords<SamplePredictorValue>>;
+        }) => Promise<t.PaginatedRecords<t.SamplePredictorValue>>;
         boxes: (obj: any, { limit, offset }: {
             limit: any;
             offset: any;
         }, { user }: {
             user: any;
-        }) => Promise<PaginatedRecords<Box>>;
+        }) => Promise<t.PaginatedRecords<t.Box>>;
         projects: (obj: any, { limit, offset }: {
             limit: any;
             offset: any;
         }, { user }: {
             user: any;
-        }) => Promise<PaginatedRecords<Project>>;
+        }) => Promise<t.PaginatedRecords<t.Project>>;
         taxonomy: (obj: any, { limit, offset }: {
             limit: any;
             offset: any;
         }, { user }: {
             user: any;
-        }) => Promise<PaginatedRecords<Taxonomy>>;
+        }) => Promise<t.PaginatedRecords<t.Taxonomy>>;
         taxonomyTree: (obj: any, { taxonomyId }: {
             taxonomyId: any;
         }, { user }: {
             user: any;
-        }) => Promise<PaginatedRecords<TaxonomyTree>>;
+        }) => Promise<t.PaginatedRecords<t.TaxonomyTree>>;
         predictors: (obj: any, { limit, offset, modelId }: {
             limit: any;
             offset: any;
             modelId: any;
         }, { user }: {
             user: any;
-        }) => Promise<PaginatedRecords<Predictor>>;
+        }) => Promise<t.PaginatedRecords<t.Predictor>>;
         models: (obj: any, { limit, offset }: {
             limit: any;
             offset: any;
         }, { user }: {
             user: any;
-        }) => Promise<PaginatedRecords<Model>>;
+        }) => Promise<t.PaginatedRecords<t.Model>>;
         translations: (obj: any, { limit, offset }: {
             limit: any;
             offset: any;
         }, { user }: {
             user: any;
-        }) => Promise<PaginatedRecords<Translation>>;
+        }) => Promise<t.PaginatedRecords<t.Translation>>;
         translationTaxa: (obj: any, { limit, offset, translationId }: {
             limit: any;
             offset: any;
             translationId: any;
         }, { user }: {
             user: any;
-        }) => Promise<PaginatedRecords<TranslationTaxa>>;
+        }) => Promise<t.PaginatedRecords<t.TranslationTaxa>>;
         sitePredictorValues: (obj: any, { limit, offset, siteId }: {
             limit: any;
             offset: any;
             siteId: any;
         }, { user }: {
             user: any;
-        }) => Promise<PaginatedRecords<SitePredictorValue>>;
+        }) => Promise<t.PaginatedRecords<t.SitePredictorValue>>;
         modelPredictors: (obj: any, { limit, offset, modelId }: {
             limit: any;
             offset: any;
             modelId: any;
         }, { user }: {
             user: any;
-        }) => Promise<PaginatedRecords<ModelPredictor>>;
+        }) => Promise<t.PaginatedRecords<t.ModelPredictor>>;
         sampleTaxaRaw: (obj: any, { sampleIds, boxIds, projectIds }: {
             sampleIds: any;
             boxIds: any;
             projectIds: any;
         }, { user }: {
             user: any;
-        }) => Promise<PaginatedRecords<RawSampleTaxa>>;
+        }) => Promise<t.PaginatedRecords<t.RawSampleTaxa>>;
         sampleTaxaGeneralized: (obj: any, { sampleId }: {
             sampleId: any;
         }, { user }: {
             user: any;
-        }) => Promise<PaginatedRecords<GeneralizedSampleTaxa>>;
+        }) => Promise<t.PaginatedRecords<t.GeneralizedSampleTaxa>>;
         sampleTaxaTranslation: (obj: any, { sampleId, translationId }: {
             sampleId: any;
             translationId: any;
         }, { user }: {
             user: any;
-        }) => Promise<PaginatedRecords<TranslationSampleTaxa>>;
+        }) => Promise<t.PaginatedRecords<t.TranslationSampleTaxa>>;
         sampleTaxaTranslationRarefied: (obj: any, { sampleId, translationId, fixedCount }: {
             sampleId: any;
             translationId: any;
             fixedCount: any;
         }, { user }: {
             user: any;
-        }) => Promise<PaginatedRecords<RarefiedSampleTaxa>>;
+        }) => Promise<t.PaginatedRecords<t.RarefiedSampleTaxa>>;
         pointTaxaRaw: (obj: any, { longitude, latitude, distance }: {
             longitude: any;
             latitude: any;
             distance: any;
         }, { user }: {
             user: any;
-        }) => Promise<PaginatedRecords<RawSampleTaxa>>;
+        }) => Promise<t.PaginatedRecords<t.RawSampleTaxa>>;
         polygonTaxaRaw: (obj: any, { polygon }: {
             polygon: any;
         }, { user }: {
             user: any;
-        }) => Promise<PaginatedRecords<RawSampleTaxa>>;
+        }) => Promise<t.PaginatedRecords<t.RawSampleTaxa>>;
         attributes: (obj: any, { limit, offset }: {
             limit: any;
             offset: any;
         }, { user }: {
             user: any;
-        }) => Promise<PaginatedRecords<Attribute>>;
+        }) => Promise<t.PaginatedRecords<t.Attribute>>;
         metrics: (obj: any, { limit, offset }: {
             limit: any;
             offset: any;
         }, { user }: {
             user: any;
-        }) => Promise<PaginatedRecords<Metric>>;
+        }) => Promise<t.PaginatedRecords<t.Metric>>;
         sampleMetrics: (obj: any, { sampleIds, boxIds, projectIds, translationId, fixedCount }: {
             sampleIds: any;
             boxIds: any;
@@ -164,52 +178,52 @@ declare const _default: {
             fixedCount: any;
         }, { user }: {
             user: any;
-        }) => Promise<PaginatedRecords<MetricResult>>;
+        }) => Promise<t.PaginatedRecords<t.MetricResult>>;
         taxaAttributes: (obj: any, { taxonomyId, limit, offset }: {
             taxonomyId: any;
             limit: any;
             offset: any;
         }, { user }: {
             user: any;
-        }) => Promise<PaginatedRecords<AttributeValue>>;
+        }) => Promise<t.PaginatedRecords<t.AttributeValue>>;
         planktonSamples: (obj: any, { limit, offset }: {
             limit: any;
             offset: any;
         }, { user }: {
             user: any;
-        }) => Promise<PaginatedRecords<PlanktonSample>>;
+        }) => Promise<t.PaginatedRecords<t.PlanktonSample>>;
         driftSamples: (obj: any, { limit, offset }: {
             limit: any;
             offset: any;
         }, { user }: {
             user: any;
-        }) => Promise<PaginatedRecords<DriftSample>>;
+        }) => Promise<t.PaginatedRecords<t.DriftSample>>;
         fishSamples: (obj: any, { limit, offset }: {
             limit: any;
             offset: any;
         }, { user }: {
             user: any;
-        }) => Promise<PaginatedRecords<FishSample>>;
+        }) => Promise<t.PaginatedRecords<t.FishSample>>;
         massSamples: (obj: any, { limit, offset }: {
             limit: any;
             offset: any;
         }, { user }: {
             user: any;
-        }) => Promise<PaginatedRecords<MassSample>>;
+        }) => Promise<t.PaginatedRecords<t.MassSample>>;
         modelResults: (obj: any, { limit, offset, sampleIds }: {
             limit: any;
             offset: any;
             sampleIds: any;
         }, { user }: {
             user: any;
-        }) => Promise<PaginatedRecords<ModelResult>>;
+        }) => Promise<t.PaginatedRecords<t.ModelResult>>;
         fishDiet: (obj: any, { limit, offset, sampleIds }: {
             limit: any;
             offset: any;
             sampleIds: any;
         }, { user }: {
             user: any;
-        }) => Promise<PaginatedRecords<FishDiet>>;
+        }) => Promise<t.PaginatedRecords<t.FishDiet>>;
     };
     Mutation: {
         setSitePredictorValue: (obj: any, { siteId, predictorId, value }: {
