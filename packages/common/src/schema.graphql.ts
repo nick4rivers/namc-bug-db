@@ -183,7 +183,7 @@ const typeDefs = gql`
         deleteProject(projectId: Int!): Int
     }
 
-    type QueryDistance {
+    input QueryDistance {
         latitude: Float!
         longitude: Float!
         distance: Float!
