@@ -51,7 +51,6 @@ create type taxa_info as
 comment on type taxa_info is 'This type is reused as the basic structure of information returned
     where requesting taxonomic information about a sample.';
 
-
 drop function if exists sample.fn_box_info;
 CREATE OR REPLACE FUNCTION sample.fn_box_info(p_box_id INT)
     returns table
@@ -929,21 +928,19 @@ begin
          */
         select o.sample_id,
                tt.taxonomy_id,
-               cast(coalesce(tt.translation_scientific_name, t.scientific_name) as varchar(255)) scientific_name,
-               tt.level_id,
-               cast(tt.level_name as varchar(50)),
+               cast(tt.translation_scientific_name as varchar(255)),
+               tt.translation_level_id,
+               cast(tt.translation_level_name as varchar(50)),
                sum(metric.fn_calc_abundance(o.split_count, s.lab_split, s.field_split, s.area))
         FROM sample.organisms o
                  inner join sample.samples s on o.sample_id = s.sample_id
-                 inner join taxa.taxonomy t on o.taxonomy_id = t.taxonomy_id
                  inner join lateral taxa.fn_translation_taxa(p_translation_id, o.taxonomy_id) tt on true
         where o.sample_id = p_sample_id
         group by o.sample_id,
                  tt.taxonomy_id,
                  tt.translation_scientific_name,
-                 t.scientific_name,
-                 tt.level_id,
-                 tt.level_name,
+                 tt.translation_level_id,
+                 tt.translation_level_name,
                  s.lab_split,
                  s.field_split;
 end
@@ -953,6 +950,9 @@ comment on function sample.fn_sample_translation_taxa is
     Note that the output taxonomy_id and scientific name are those of the translation, not
     the original taxa used by the lab!';
 
+
+-- This function is no longer used. There is never a case when you want to rarefy without first translating.
+-- Use sample.fn_fn_translation_rarefied_taxa() instead.
 
 -- drop function if exists sample.fn_rarefied_taxa;
 -- create or replace function sample.fn_rarefied_taxa(p_sample_id int, p_fixed_count int)

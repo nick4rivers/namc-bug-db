@@ -192,6 +192,8 @@ create or replace function taxa.fn_translation_taxa(p_translation_id int, p_taxo
                 translation_scientific_name varchar(255),
                 translation_level_id        smallint,
                 translation_level_name      varchar(50)
+
+
             )
     language plpgsql
     immutable
