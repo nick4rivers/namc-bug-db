@@ -421,19 +421,20 @@ begin
         raise exception 'The search polygon is empty';
     end if;
 
-    with sites_in_polygon as
-             (
-                 select array_agg(site_id) site_ids
-                 from (
-                          select site_id
-                          from geo.sites
-                          where st_covers(p_search_geography::geography, location)
-                          order by site_id
-                          limit p_limit offset p_offset
-                      ) arr_sites
-             )
-    select *
-    from geo.fn_sites(p_limit, p_offset, arr_sites.site_ids);
+    return query with filtered_sites as
+                          (
+                              select array_agg(site_id) site_ids
+                              from (
+                                       select site_id
+                                       from geo.sites
+                                       where st_covers(p_search_geography::geography, location)
+                                       order by site_id
+                                       limit p_limit offset p_offset
+                                   ) arr_sites
+                          )
+                 select s.*
+                 from filtered_sites fs
+                          inner join geo.fn_sites(p_limit, p_offset, fs.site_ids) s on true;
 end
 $$;
 
@@ -465,23 +466,21 @@ begin
         raise 'Invalid distance %. The distance must be greater than zero, meters.', p_distance;
     end if;
 
-    return query select site_id,
-                        site_name,
-                        system,
-                        ecosystem,
-                        longitude,
-                        latitude,
-                        us_state,
-                        waterbody_type_name,
-                        waterbody_code,
-                        waterbody_name,
-                        created_date,
-                        updated_date,
-                        has_catchment
-                 from geo.sites s
-                 where st_dwithin(s.location, ST_SetSRID(st_point(p_longitude, p_latitude), 4326), p_distance, false)
-                 order by site_id
-                 limit p_limit offset p_offset;
+    return query with filtered_sites as
+                          (
+                              select array_agg(site_id) site_ids
+                              from (
+                                       select site_id
+                                       from geo.sites s
+                                       where st_dwithin(s.location, ST_SetSRID(st_point(p_longitude, p_latitude), 4326),
+                                                        p_distance, false)
+                                       order by site_id
+                                       limit p_limit offset p_offset
+                                   ) arr_sites
+                          )
+                 select s.*
+                 from filtered_sites fs
+                          inner join geo.fn_sites(p_limit, p_offset, fs.site_ids) s on true;
 end
 $$;
 
