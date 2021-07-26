@@ -10,13 +10,59 @@ import pytest
 
 def test_samples(cursor):
 
-    cursor.execute('SELECT * FROM sample.vw_samples ORDER BY sample_id LIMIT 100 OFFSET 0')
+    # Query by Sample IDs
+    cursor.execute('SELECT * FROM sample.fn_samples(100, 0, Array[1, 10, 100, 1000, 10000])')
+    assert True
+
+    # Query by box IDs
+    cursor.execute('SELECT * FROM sample.fn_box_samples(100, 0, Array[38, 39, 40])')
+    assert True
+
+    # Query by Project IDs
+    cursor.execute('SELECT * FROM sample.fn_project_samples(100, 0, Array[1, 2, 5, 10, 50])')
+    assert True
+
+    # Query by Site IDs
+    cursor.execute('SELECT * FROM sample.fn_site_samples(100, 0, Array[1, 100, 1000, 10000])')
+    assert True
+
+    # Query by Entity IDs
+    cursor.execute('SELECT * FROM sample.fn_entity_samples(100, 0, Array[1782])')
+    assert True
+
+    # Query by polygon
+    cursor.execute("""SELECT * FROM sample.fn_polygon_samples(100, 0, '{ "type": "Polygon", "coordinates": [ [ [ -112.4, 39.5 ], [ -107.1, 39.5 ], [ -107.1, 42.6 ], [ -112.4, 42.6 ], [ -112.4, 39.5 ] ] ]}')""")
+    assert True
+
+    # Query by point and distance
+    cursor.execute('SELECT * FROM sample.fn_point_distance_samples(100, 0, -112.4, 39.5, 50000)')
     assert True
 
 
 def test_sites(cursor):
 
-    cursor.execute('SELECT * FROM geo.fn_sites(100, 0)')
+    # Query by Site IDs
+    cursor.execute('SELECT * FROM geo.fn_sites(100, 0, Array[1, 10, 100])')
+    assert True
+
+    # Query by box IDs
+    cursor.execute('SELECT * FROM geo.fn_box_sites(100, 0, Array[38, 39, 40])')
+    assert True
+
+    # Query by Sample IDs
+    cursor.execute('SELECT * FROM geo.fn_sample_sites(100, 0, Array[164634])')
+    assert True
+
+    # Query by Entity IDs
+    cursor.execute('SELECT * FROM geo.fn_entity_sites(100, 0, Array[1782])')
+    assert True
+
+    # Query by polygon
+    cursor.execute("""SELECT * FROM geo.fn_polygon_sites(100, 0, '{ "type": "Polygon", "coordinates": [ [ [ -112.4, 39.5 ], [ -107.1, 39.5 ], [ -107.1, 42.6 ], [ -112.4, 42.6 ], [ -112.4, 39.5 ] ] ]}')""")
+    assert True
+
+    # Query by point and distance
+    cursor.execute('SELECT * FROM geo.fn_sites_point_distance(100, 0, -112.4, 39.5, 50000)')
     assert True
 
 
@@ -28,7 +74,12 @@ def test_site_info(cursor):
 
 def test_boxes(cursor):
 
-    cursor.execute('SELECT * FROM sample.fn_boxes(100, 0)')
+    # Query by Box IDs
+    cursor.execute('SELECT * FROM sample.fn_boxes(100, 0, Array[10, 100, 1000])')
+    assert True
+
+    # Query by Entity IDs
+    cursor.execute('SELECT * FROM sample.fn_entity_boxes(100, 0, Array[1, 50, 500, 1000])')
     assert True
 
 
@@ -65,12 +116,6 @@ def test_model_info(cursor):
 def test_predictor_values(cursor):
 
     cursor.execute('SELECT * FROM geo.fn_site_predictor_values(100, 0, 1)')
-    assert True
-
-
-def test_sample_info(cursor):
-
-    cursor.execute('SELECT * FROM sample.fn_sample_info(164638)')
     assert True
 
 
@@ -193,10 +238,12 @@ def test_taxa_translation(cursor):
     assert True
 
 
-def test_raxa_rarefied(cursor):
+# This stored procedure was commented out. There is never a case when you
+# # want to rarefy without translating
+# def test_raxa_rarefied(cursor):
 
-    cursor.execute('SELECT * FROM sample.fn_rarefied_taxa(164638, 300)')
-    assert True
+#     cursor.execute('SELECT * FROM sample.fn_rarefied_taxa(164638, 300)')
+#     assert True
 
 
 def test_taxa_translated_rarefied(cursor):

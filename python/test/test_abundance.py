@@ -59,9 +59,9 @@ def test_sample_abundance(cursor, taxonomic_hierarchy, abundance):
     samples = get_samples_by_customer_name(cursor, 'test customer')
     sample_id = samples[0]
 
-    cursor.callproc('metric.fn_sample_abundance', [sample_id, 0, 0])
-    sa = cursor.fetchone()
-    assert sa[0] == 20
+    cursor.callproc('metric.sample_metrics', [sample_id, 3, 300])
+    metrics = parse_sample_metrics(cursor)
+    assert metrics['Abundance'] == 20
 
 
 def test_richness_by_taxa(cursor):
@@ -110,3 +110,14 @@ def test_richness_by_taxa(cursor):
 #     cursor.execute('SELECT metric.fn_attribute_abundance(%s, %s)', [sample_id, attributea])
 #     atta_abundance = cursor.fetchone()[0]
 #     assert atta_abundance == 20
+
+def parse_sample_metrics(cursor):
+    """Assumes that metrics have been calculated for a single sample
+    Need to parse them into dictionary
+    """
+
+    metrics = {}
+    for row in cursor.fetchall():
+        metrics[row[4]] = row[5]
+
+    return metrics

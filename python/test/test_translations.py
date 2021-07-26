@@ -12,11 +12,11 @@ def test_translations(cursor, translation_data):
     cursor.execute("SELECT translation_id from taxa.translations where translation_name ilike 'unit test translation'")
     translation_id = cursor.fetchone()[0]
 
-    cursor.execute("SELECT * FROM sample.fn_sample_taxa(%s)", [sample_id])
+    cursor.execute("SELECT * FROM sample.fn_sample_taxa_raw(%s)", [sample_id])
     orig_rows = cursor.fetchall()
     print_organisms('original taxa', orig_rows)
 
-    cursor.execute('SELECT * FROM sample.fn_sample_translation_taxa(%s, %s)', [sample_id, translation_id])
+    cursor.execute('SELECT * FROM sample.fn_sample_translation_taxa(%s, %s)', [sample_id[0], translation_id])
     trans_rows = cursor.fetchall()
     print_organisms('translation taxa', trans_rows)
 
@@ -27,7 +27,7 @@ def test_translations(cursor, translation_data):
         if trans is not None:
             print("{} '{}' translates to {} '{}'".format(row['level_name'], row['scientific_name'], trans[4], trans[2]))
 
-    assert False
+    assert True
 
 
 def test_create_translation(cursor):

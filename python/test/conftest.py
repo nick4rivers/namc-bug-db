@@ -140,7 +140,7 @@ def insert_taxa_translation(cursor, translation_id, original_taxa_name, replacem
 
 def insert_organism(cursor, sample_id, taxonomy_id, split_count):
 
-    cursor.execute('INSERT INTO sample.organisms (sample_id, taxonomy_id, life_stage_id, split_count) VALUES (%s, %s, 1, %s) returning organism_id', [sample_id, taxonomy_id, split_count])
+    cursor.execute('INSERT INTO sample.organisms (sample_id, taxonomy_id, life_stage_id, split_count, big_rare_count) VALUES (%s, %s, 1, %s, 0) returning organism_id', [sample_id, taxonomy_id, split_count])
     return cursor.fetchone()[0]
 
 
@@ -164,7 +164,7 @@ def rarefaction_data(cursor):
 
     # insert 10 records, each with 1000 bugs
     for taxonomy_id in taxa:
-        cursor.execute('insert into sample.organisms (sample_id, taxonomy_id, life_stage_id, split_count) values (%s, %s, %s, 1000)', [sample_id, taxonomy_id, life_stage_id])
+        cursor.execute('insert into sample.organisms (sample_id, taxonomy_id, life_stage_id, split_count, big_rare_count) values (%s, %s, %s, 1000, 0)', [sample_id, taxonomy_id, life_stage_id])
 
 
 def get_test_taxa(cursor, level, limit):

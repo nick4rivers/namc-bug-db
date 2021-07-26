@@ -21,7 +21,7 @@ def print_organisms(label, rows):
     print('-- {} --'.format(label))
     if rows is not None:
         [print('{} ({}) at level {} has count {}'.format(
-            row['scientific_name'], row['taxonomy_id'], row['level_name'], row['organism_count'])) for row in rows]
+            row['scientific_name'], row['taxonomy_id'], row['level_name'], row['abundance'])) for row in rows]
 
 
 def get_taxa_by_name(cursor, scientific_name):
