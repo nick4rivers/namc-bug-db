@@ -101,18 +101,18 @@ export default {
             const returnVal = data.map(util.snake2camel)[0] as t.SiteInfo
             return returnVal
         },
-        sampleInfo: async (obj, { sampleId }, { user }): Promise<t.SampleInfo> => {
-            loggedInGate(user)
-            const pool = await getPool()
-            const data = await fnQuery(pool, { name: 'sample.fn_sample_info', args: [sampleId] })
+        // sampleInfo: async (obj, { sampleId }, { user }): Promise<t.SampleInfo> => {
+        //     loggedInGate(user)
+        //     const pool = await getPool()
+        //     const data = await fnQuery(pool, { name: 'sample.fn_sample_info', args: [sampleId] })
 
-            if (data.length !== 1) {
-                throw new Error('Record not found')
-            }
+        //     if (data.length !== 1) {
+        //         throw new Error('Record not found')
+        //     }
 
-            const returnVal = data.map(util.snake2camel)[0] as t.SampleInfo
-            return returnVal
-        },
+        //     const returnVal = data.map(util.snake2camel)[0] as t.SampleInfo
+        //     return returnVal
+        // },
 
         boxInfo: async (obj, { boxId }, { user }): Promise<t.BoxInfo> => {
             loggedInGate(user)

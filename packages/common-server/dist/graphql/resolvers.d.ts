@@ -33,11 +33,6 @@ declare const _default: {
         }, { user }: {
             user: any;
         }) => Promise<t.SiteInfo>;
-        sampleInfo: (obj: any, { sampleId }: {
-            sampleId: any;
-        }, { user }: {
-            user: any;
-        }) => Promise<t.SampleInfo>;
         boxInfo: (obj: any, { boxId }: {
             boxId: any;
         }, { user }: {

@@ -3,18 +3,18 @@ import gql from 'graphql-tag'
 // is in the mix
 
 export const queryLimits = {
-    samples: 500,
-    sites: 500,
-    boxes: 500,
-    projects: 500,
-    taxonomy: 500,
+    samples: 1000,
+    sites: 1000,
+    boxes: 1000,
+    projects: 1000,
+    taxonomy: 1000,
     predictors: 500,
     models: 500,
     sitePredictorValues: 500,
     modelPredictors: 500,
     modelResults: 500,
     translations: 500,
-    metrics: 500
+    metrics: 1000
 }
 
 const typeDefs = gql`
@@ -42,8 +42,8 @@ const typeDefs = gql`
         ####################################################################################################################################################################################
         # Sample queries
 
-        "Detailed information about a single sample, including information about the box and customer."
-        sampleInfo(sampleId: Int!): SampleInfo
+        # "Detailed information about a single sample, including information about the box and customer."
+        # sampleInfo(sampleId: Int!): SampleInfo
 
         "Detailed information about a single box, including information about the customer and number of samples associated with the box."
         boxInfo(boxId: Int!): BoxInfo

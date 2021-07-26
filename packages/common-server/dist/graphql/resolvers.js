@@ -216,30 +216,6 @@ exports.default = {
                 });
             });
         },
-        sampleInfo: function (obj, _a, _b) {
-            var sampleId = _a.sampleId;
-            var user = _b.user;
-            return __awaiter(void 0, void 0, void 0, function () {
-                var pool, data, returnVal;
-                return __generator(this, function (_c) {
-                    switch (_c.label) {
-                        case 0:
-                            resolverUtil_1.loggedInGate(user);
-                            return [4, db_1.getPool()];
-                        case 1:
-                            pool = _c.sent();
-                            return [4, db_1.fnQuery(pool, { name: 'sample.fn_sample_info', args: [sampleId] })];
-                        case 2:
-                            data = _c.sent();
-                            if (data.length !== 1) {
-                                throw new Error('Record not found');
-                            }
-                            returnVal = data.map(common_1.util.snake2camel)[0];
-                            return [2, returnVal];
-                    }
-                });
-            });
-        },
         boxInfo: function (obj, _a, _b) {
             var boxId = _a.boxId;
             var user = _b.user;
