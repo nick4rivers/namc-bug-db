@@ -304,7 +304,7 @@ sites API endpoint.
         waterbodyName: String
 
         "The latest date and time that either the site location (point) or catchment (polygon) were changed."
-        geometryChanged: String
+        geographyChanged: String
 
         "The system generated date and time that the site record was created in the database."
         createdDate: String

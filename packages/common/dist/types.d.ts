@@ -88,7 +88,7 @@ export declare type SiteInfo = {
     waterbodyType: string;
     waterbodyCode: string;
     waterbodyName: string;
-    geometryChanged: string;
+    geographyChanged: string;
     createdDate: string;
     updatedDate: string;
     catchment: string;
