@@ -142,7 +142,6 @@ export type Box = {
 export type Project = {
     projectId: number
     projectName: string
-    projectType: string
     isPrivate: boolean
     contactId: number
     contactName: string

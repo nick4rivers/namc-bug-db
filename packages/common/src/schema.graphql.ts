@@ -587,7 +587,6 @@ type FishDiet {
     type Project {
         projectId: Int
         projectName: String
-        projectType: String
         isPrivate: Boolean
         contactId: Int
         contactName: String

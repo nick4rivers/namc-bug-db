@@ -127,7 +127,6 @@ export declare type Box = {
 export declare type Project = {
     projectId: number;
     projectName: string;
-    projectType: string;
     isPrivate: boolean;
     contactId: number;
     contactName: string;
