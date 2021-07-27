@@ -140,12 +140,12 @@ export default {
             return returnVal
         },
 
-        modelThresholds: async (obj, { modelId }, { user }): Promise<t.PaginatedRecords<t.ModelThreshold>> => {
+        modelConditions: async (obj, { modelId }, { user }): Promise<t.PaginatedRecords<t.ModelCondtion>> => {
             loggedInGate(user)
             const pool = await getPool()
-            const data = await fnQuery(pool, { name: 'geo.fn_model_thresholds', args: [modelId] })
+            const data = await fnQuery(pool, { name: 'geo.fn_model_conditions', args: [modelId] })
 
-            return createPagination<t.ModelThreshold>(data, 500, 0)
+            return createPagination<t.ModelCondition>(data, 500, 0)
         },
 
         samplePredictorValues: async (

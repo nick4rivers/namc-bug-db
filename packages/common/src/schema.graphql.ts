@@ -36,8 +36,8 @@ const typeDefs = gql`
         "Detailed information about a single model, including the number of predictors associated with the model."
         modelInfo(modelId: Int!): ModelInfo
 
-        "List of all thresholds (e.g. good, fair, poor) for a particular model"
-        modelThresholds(modelId: Int!): PaginatedModelThresholds
+        "List of all model conditions (e.g. good, fair, poor) for a particular model"
+        modelConditions(modelId: Int!): PaginatedModelConditions
 
         ####################################################################################################################################################################################
         # Sample queries
@@ -672,10 +672,10 @@ type FishDiet {
         extent: String
     }
 
-    type ModelThreshold {
+    type ModelCondition {
         modelId: Int
-        thresholdId: Int
-        threshold: String
+        conditionId: Int
+        condition: String
         displayText: String
         description: String
     }
@@ -956,8 +956,8 @@ type FishDiet {
         nextOffset: Int
     }
 
-    type PaginatedModelThresholds {
-        records: [ModelThreshold]
+    type PaginatedModelConditions {
+        records: [ModelCondition]
         nextOffset: Int
     }
 

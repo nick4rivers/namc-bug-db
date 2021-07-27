@@ -264,7 +264,7 @@ exports.default = {
                 });
             });
         },
-        modelThresholds: function (obj, _a, _b) {
+        modelConditions: function (obj, _a, _b) {
             var modelId = _a.modelId;
             var user = _b.user;
             return __awaiter(void 0, void 0, void 0, function () {
@@ -276,7 +276,7 @@ exports.default = {
                             return [4, db_1.getPool()];
                         case 1:
                             pool = _c.sent();
-                            return [4, db_1.fnQuery(pool, { name: 'geo.fn_model_thresholds', args: [modelId] })];
+                            return [4, db_1.fnQuery(pool, { name: 'geo.fn_model_conditions', args: [modelId] })];
                         case 2:
                             data = _c.sent();
                             return [2, resolverUtil_1.createPagination(data, 500, 0)];

@@ -43,11 +43,11 @@ declare const _default: {
         }, { user }: {
             user: any;
         }) => Promise<t.ModelInfo>;
-        modelThresholds: (obj: any, { modelId }: {
+        modelConditions: (obj: any, { modelId }: {
             modelId: any;
         }, { user }: {
             user: any;
-        }) => Promise<t.PaginatedRecords<t.ModelThreshold>>;
+        }) => Promise<t.PaginatedRecords<t.ModelCondtion>>;
         samplePredictorValues: (obj: any, { sampleId }: {
             sampleId: any;
         }, { user }: {
