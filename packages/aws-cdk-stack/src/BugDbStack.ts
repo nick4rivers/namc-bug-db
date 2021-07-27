@@ -13,7 +13,7 @@ import LambdaAPI from './constructs/Lambda'
 
 import SSMParametersConstruct from './constructs/SSMParameters'
 import S3BucketsConstruct from './constructs/S3Buckets'
-import { CognitoClient } from './constructs/Cognito'
+import { CognitoClient, CognitoMachineClient } from './constructs/Cognito'
 import RDSConstruct from './constructs/RDS'
 
 class NAMCBUgDbStack extends cdk.Stack {
@@ -33,7 +33,15 @@ class NAMCBUgDbStack extends cdk.Stack {
             removalPolicy
         })
 
-        const cognitoClient = new CognitoClient(this, `Cognito_${stage}`, { userPool: vpcStack.userPool })
+        const cognitoClient = new CognitoClient(this, `CognitoClient_${stage}`, { userPool: vpcStack.userPool })
+
+        // The machine client is what we use in Insomnia to test without the annoying popup. This should not
+        // be used for any other kind of authentication
+        // Note: We don't store the secret or id anywhere. If you want this you need to go digging through the
+        // AWS client. This is kind of on purpose
+        new CognitoMachineClient(this, `CognitoClientMachine_${stage}`, {
+            userPool: vpcStack.userPool
+        })
 
         // Now deploy the Database
         const dbName = 'bugdb' // default
@@ -67,7 +75,7 @@ class NAMCBUgDbStack extends cdk.Stack {
 
         const s3Buckets = new S3BucketsConstruct(this, `S3Buckets_${stage}`)
 
-        const ssmParams = new SSMParametersConstruct(
+        new SSMParametersConstruct(
             this,
             secretParamName,
             secretParamName,

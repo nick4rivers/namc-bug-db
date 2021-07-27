@@ -51,7 +51,7 @@ export class CognitoClient extends cdk.Construct {
         this.client = new cognito.UserPoolClient(this, `CognitoUserPoolClient_${stackProps.stage}`, {
             userPool: props.userPool,
             generateSecret: false,
-            userPoolClientName: `${stackProps.stackPrefix}UserPoolClient`,
+            userPoolClientName: `${stackProps.stackPrefix}UserPoolClient_${stackProps.stage}`,
             oAuth: {
                 // TODO: THIS IS FOR DEV ONLY, OBVIOUSLY
                 callbackUrls: ['http://localhost:3000/namc/'],
@@ -65,6 +65,40 @@ export class CognitoClient extends cdk.Construct {
             },
             authFlows: {
                 adminUserPassword: true,
+                userPassword: false,
+                userSrp: true,
+                custom: true
+            }
+        })
+    }
+}
+
+/**
+ * The machine client is used mostly for insomnia testing
+ */
+export class CognitoMachineClient extends cdk.Construct {
+    client: cognito.UserPoolClient
+
+    constructor(scope: cdk.Construct, id: string, props: CognitoClientProps) {
+        super(scope, id)
+        this.client = new cognito.UserPoolClient(this, `CognitoMachineClient_${stackProps.stage}`, {
+            userPool: props.userPool,
+            generateSecret: true,
+            userPoolClientName: `${stackProps.stackPrefix}UserPoolMachineClient_${stackProps.stage}`,
+            oAuth: {
+                // TODO: THIS IS FOR DEV ONLY, OBVIOUSLY
+                callbackUrls: ['http://localhost:3000/namc/'],
+                logoutUrls: ['http://localhost:3000/namc/'],
+                flows: {
+                    authorizationCodeGrant: false,
+                    implicitCodeGrant: false,
+                    clientCredentials: true
+                },
+                // Weird thing: this doesn't work unless you specify a custom scope. Not sure why
+                scopes: [{ scopeName: 'custom/scope' }]
+            },
+            authFlows: {
+                adminUserPassword: false,
                 userPassword: false,
                 userSrp: true,
                 custom: true
