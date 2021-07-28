@@ -226,10 +226,10 @@ export type ModelInfo = {
     extent: string
 }
 
-export type ModelThreshold = {
+export type ModelCondition = {
     modelId: number
-    thresholdId: number
-    threshold: string
+    ConditionId: number
+    condition: string
     displayText: string
     description: string
 }

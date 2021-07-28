@@ -140,7 +140,7 @@ export default {
             return returnVal
         },
 
-        modelConditions: async (obj, { modelId }, { user }): Promise<t.PaginatedRecords<t.ModelCondtion>> => {
+        modelConditions: async (obj, { modelId }, { user }): Promise<t.PaginatedRecords<t.ModelCondition>> => {
             loggedInGate(user)
             const pool = await getPool()
             const data = await fnQuery(pool, { name: 'geo.fn_model_conditions', args: [modelId] })

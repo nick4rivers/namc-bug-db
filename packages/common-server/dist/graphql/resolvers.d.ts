@@ -47,7 +47,7 @@ declare const _default: {
             modelId: any;
         }, { user }: {
             user: any;
-        }) => Promise<t.PaginatedRecords<t.ModelCondtion>>;
+        }) => Promise<t.PaginatedRecords<t.ModelCondition>>;
         samplePredictorValues: (obj: any, { sampleId }: {
             sampleId: any;
         }, { user }: {

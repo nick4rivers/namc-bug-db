@@ -205,10 +205,10 @@ export declare type ModelInfo = {
     updatedDate: string;
     extent: string;
 };
-export declare type ModelThreshold = {
+export declare type ModelCondition = {
     modelId: number;
-    thresholdId: number;
-    threshold: string;
+    ConditionId: number;
+    condition: string;
     displayText: string;
     description: string;
 };
