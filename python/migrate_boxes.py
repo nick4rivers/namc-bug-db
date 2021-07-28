@@ -24,12 +24,12 @@ def migrate(mscurs, pgcurs):
     original_box_data = {}
     load_box_data(mscurs, original_box_data, 'SELECT BT.*, C.Contact FROM PilotDB.dbo.BoxTracking BT LEFT JOIN PilotDB.dbo.Customer C ON BT.CustId = C.CustID', ['DateIn', 'Notes', 'Contact', 'CustId'], box_states, 'Complete')
     load_box_data(mscurs, original_box_data, 'SELECT BT.*, C.Contact FROM BugLab.dbo.BugBoxes BT LEFT JOIN BugLab.dbo.Customer C ON BT.CustId = C.CustID where Complete = 0', ['DateIn', 'Notes', 'Contact', 'CustId'], box_states, 'Active')
- 
+
     expected_rows = log_record_count(len(original_box_data), 'Pilot and BugLab Boxes')
     progbar = ProgressBar(expected_rows, 50, "boxes")
     counter = 0
     for box_id, msdata in original_box_data.items():
-        
+
         custId = sanitize_string(msdata['CustId'])
 
         # Forest service customer IDs were tweaked during import. Use old format for lookup
@@ -56,7 +56,7 @@ def migrate(mscurs, pgcurs):
                     raise Exception('failed to find contact')
 
         data = {
-            'box_id': msdata['BoxId'],
+            'box_id': box_id,
             'customer_id': entity_id,
             'submitter_id': submitter_id,
             'box_received_date': msdata['DateIn'],
@@ -131,20 +131,21 @@ def associate_models_with_boxes(pgcurs, csv_path):
 
 def load_box_data(mscurs, boxes, sql, fields, box_states, state):
 
+    log = Logger('Boxes')
     original_count = len(boxes)
 
     mscurs.execute(sql)
-    for row in mscurs.fetchall():
+    for msrow in mscurs.fetchall():
+        msdata = dict(zip([t[0] for t in msrow.cursor_description], msrow))
 
-        box_id = row['BoxId']
+        box_id = msdata['BoxId']
 
         if box_id in boxes:
             # Warn if the box has already been loaded. Should load Pilot first and then BugLab.
-            log = Logger('Boxes')
             log.warning('Duplicate Box ID {} found'.format(box_id))
             continue
 
-        boxes[box_id] = {field: row[field] for field in fields}
+        boxes[box_id] = {field: msdata[field] for field in fields}
         boxes[box_id]['box_status_id'] = box_states[state]
 
     log.info('{} boxes loaded with status of {}'.format(len(boxes) - original_count, state))
