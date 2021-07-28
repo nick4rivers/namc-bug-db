@@ -69,8 +69,7 @@ CREATE OR REPLACE FUNCTION geo.fn_predictors(p_limit INT, p_offset INT, p_model_
                 source              TEXT,
                 units               VARCHAR(20),
                 calculation_script  varchar(255),
-                predictor_type_id   SMALLINT,
-                predictor_type_name VARCHAR(255),
+                predictor_type VARCHAR(255),
                 is_temporal         BOOLEAN,
                 updated_date        text,
                 created_date        text,
@@ -89,7 +88,6 @@ begin
                p.source,
                u.abbreviation as     units,
                p.calculation_script,
-               p.predictor_type_id,
                t.predictor_type_name,
                p.is_temporal,
                to_json(p.updated_date) #>> '{}',
@@ -554,51 +552,4 @@ begin
 end
 $$;
 
-drop function if exists geo.fn_model_predictors;
-create or replace function geo.fn_model_predictors(p_limit INT, p_offset INT, p_model_id int)
-    returns table
-            (
-                predictor_id       smallint,
-                predictor_name     varchar(255),
-                abbreviation       varchar(25),
-                units              varchar(20),
-                predictor_type     varchar(255),
-                is_temporal        boolean,
-                description        text,
-                metadata           text,
-                calculation_script varchar(255),
-                model_count        bigint,
-                created_date       text,
-                updated_date       text
-            )
-    language plpgsql
-    immutable
-AS
-$$
-begin
-    return query
-        select p.predictor_id,
-               p.predictor_name,
-               p.abbreviation,
-               u.abbreviation,
-               t.predictor_type_name,
-               p.is_temporal,
-               p.description,
-               cast(p.metadata as text),
-               p.calculation_script,
-               pc.model_count,
-               to_json(p.created_date) #>> '{}',
-               to_json(p.updated_date) #>> '{}'
-        from geo.predictors p
-                 inner join geo.predictor_types t on p.predictor_type_id = t.predictor_type_id
-                 inner join geo.units u on p.unit_id = u.unit_id
-                 inner join geo.model_predictors mp on p.predictor_id = mp.predictor_id
-                 left join (
-            select mc.predictor_id, count(*) model_count from geo.model_predictors mc group by mc.predictor_id
-        ) pc on p.predictor_id = pc.predictor_id
-        where mp.model_id = p_model_id
-        order by p.predictor_id
-        limit p_limit offset p_offset;
-end
-$$;
 
