@@ -83,25 +83,17 @@ export class CognitoMachineClient extends cdk.Construct {
         super(scope, id)
         this.client = new cognito.UserPoolClient(this, `CognitoMachineClient_${stackProps.stage}`, {
             userPool: props.userPool,
-            generateSecret: true,
             userPoolClientName: `${stackProps.stackPrefix}UserPoolMachineClient_${stackProps.stage}`,
+            generateSecret: true,
             oAuth: {
-                // TODO: THIS IS FOR DEV ONLY, OBVIOUSLY
-                callbackUrls: ['http://localhost:3000/namc/'],
-                logoutUrls: ['http://localhost:3000/namc/'],
                 flows: {
-                    authorizationCodeGrant: false,
-                    implicitCodeGrant: false,
                     clientCredentials: true
                 },
-                // Weird thing: this doesn't work unless you specify a custom scope. Not sure why
-                scopes: [{ scopeName: 'custom/scope' }]
-            },
-            authFlows: {
-                adminUserPassword: false,
-                userPassword: false,
-                userSrp: true,
-                custom: true
+                scopes: [
+                    {
+                        scopeName: 'SomeIdentifier/post'
+                    }
+                ]
             }
         })
     }
