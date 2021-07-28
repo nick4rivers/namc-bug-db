@@ -409,13 +409,13 @@ export declare type AttributeValue = {
 export declare type Metric = {
     metricId: number;
     metricName: string;
+    displayText: string;
     metricTypeId: number;
-    typeName: string;
-    translationId: number;
-    translationName: string;
+    groupId: number;
+    groupName: string;
     formulaId: number;
     formulaName: string;
-    formulaCodeFunction: string;
+    codeFunction: string;
     isStandardized: boolean;
     perturbDirection: string;
     description: string;

@@ -643,13 +643,12 @@ type FishDiet {
     type Metric {
         metricId: Int
         metricName: String
-        metricTypeId: Int
-        typeName:  String
-        translationId: Int
-        translationName: String
+        displayText: String
+        groupId: Int
+        groupName: String
         formulaId: Int
         formulaName: String
-        formulaCodeFunction: String
+        codeFunction: String
         isStandardized: Boolean
         perturbDirection: String
         description: String
