@@ -167,11 +167,20 @@ export default {
         //     return data.map(util.snake2camel)
         // },
 
-        boxes: async (obj, { limit, offset }, { user }): Promise<t.PaginatedRecords<t.Box>> => {
+        boxes: async (obj, { limit, offset, boxIds, entityIds }, { user }): Promise<t.PaginatedRecords<t.Box>> => {
             loggedInGate(user)
             limitOffsetCheck(limit, graphql.queryLimits.boxes, offset)
+            // Do some checking to make sure the right combination of filter params (if any) have been provided
+            checkExclusiveFilter({ boxIds, entityIds }, true)
+
             const pool = await getPool()
-            const data = await fnQuery(pool, { name: 'sample.fn_boxes', args: [limit, offset] })
+
+            let data
+            if (boxIds) data = await fnQuery(pool, { name: 'sample.fn_boxes', args: [limit, offset, boxIds] })
+            else if (entityIds) {
+                data = await fnQuery(pool, { name: 'sample.fn_entity_boxes', args: [limit, offset, entityIds] })
+            }
+
             return createPagination<t.Box>(data, limit, offset)
         },
 

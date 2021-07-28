@@ -53,9 +53,11 @@ declare const _default: {
         }, { user }: {
             user: any;
         }) => Promise<t.PaginatedRecords<t.SamplePredictorValue>>;
-        boxes: (obj: any, { limit, offset }: {
+        boxes: (obj: any, { limit, offset, boxIds, entityIds }: {
             limit: any;
             offset: any;
+            boxIds: any;
+            entityIds: any;
         }, { user }: {
             user: any;
         }) => Promise<t.PaginatedRecords<t.Box>>;

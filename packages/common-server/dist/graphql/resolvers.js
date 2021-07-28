@@ -305,7 +305,7 @@ exports.default = {
             });
         },
         boxes: function (obj, _a, _b) {
-            var limit = _a.limit, offset = _a.offset;
+            var limit = _a.limit, offset = _a.offset, boxIds = _a.boxIds, entityIds = _a.entityIds;
             var user = _b.user;
             return __awaiter(void 0, void 0, void 0, function () {
                 var pool, data;
@@ -314,13 +314,22 @@ exports.default = {
                         case 0:
                             resolverUtil_1.loggedInGate(user);
                             resolverUtil_1.limitOffsetCheck(limit, common_1.graphql.queryLimits.boxes, offset);
+                            resolverUtil_1.checkExclusiveFilter({ boxIds: boxIds, entityIds: entityIds }, true);
                             return [4, db_1.getPool()];
                         case 1:
                             pool = _c.sent();
-                            return [4, db_1.fnQuery(pool, { name: 'sample.fn_boxes', args: [limit, offset] })];
+                            if (!boxIds) return [3, 3];
+                            return [4, db_1.fnQuery(pool, { name: 'sample.fn_boxes', args: [limit, offset, boxIds] })];
                         case 2:
                             data = _c.sent();
-                            return [2, resolverUtil_1.createPagination(data, limit, offset)];
+                            return [3, 5];
+                        case 3:
+                            if (!entityIds) return [3, 5];
+                            return [4, db_1.fnQuery(pool, { name: 'sample.fn_entity_boxes', args: [limit, offset, entityIds] })];
+                        case 4:
+                            data = _c.sent();
+                            _c.label = 5;
+                        case 5: return [2, resolverUtil_1.createPagination(data, limit, offset)];
                     }
                 });
             });

@@ -336,18 +336,8 @@ sites API endpoint.
         levelId: Int
         "The taxonomic level of the taxa identified within the laboratory."
         levelName: String
-        "Sum of the split_counts recorded within the laboratory for this taxa. No other manipulation."
-        rawCount: Float
-        
-        """
-        Sum of the split counts multiplied by the sample lab_split and field_split.
-
-        corrected_count = sum(split_count) * (100 / lab_split) * (100 / field_split)
-        """
-        correctedCount: Float
-
-        "Sum of the big rare count within the laboratory for this taxa. No other manipulation."
-        rawBigRareCount: Int
+        "Abundance for the specified taxa and lifestage"
+        abundance: Float
     }
 
     type SampleTaxa {

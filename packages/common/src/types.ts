@@ -403,9 +403,7 @@ export declare type RawSampleTaxa = {
     scientificName: string
     levelId: number
     levelName: string
-    rawCount: number
-    correctedCount: number
-    rawBigRareCount: number
+    abundance: number
 }
 
 export declare type GeneralizedSampleTaxa = {
