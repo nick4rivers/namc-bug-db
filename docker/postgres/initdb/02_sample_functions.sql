@@ -313,7 +313,7 @@ with point_samples as
              from (
                       select sample_id
                       from geo.fn_sites_point_distance(null, null, p_longitude, p_latitude, p_distance) ss
-                               inner join sample.samples s on ss.site_id = s.sample_id
+                               inner join sample.samples s on ss.site_id = s.site_id
                       group by sample_id
                       order by sample_id
                       limit p_limit offset p_offset
