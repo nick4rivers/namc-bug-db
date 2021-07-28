@@ -179,7 +179,7 @@ create or replace function sample.fn_project_samples(p_limit int, p_offset int, 
     immutable
 as
 $$
-with project_samples as
+with filtered_samples as
          (
              select array_agg(sample_id) sample_ids
              from (
@@ -189,10 +189,13 @@ with project_samples as
                       order by sample_id
                       limit p_limit offset p_offset
                   ) arr_samples
+         ),
+     sample_info as
+         (
+             select * from sample.fn_samples(p_limit, p_offset, (select * from filtered_samples))
          )
-select s.*
-from project_samples ps
-         inner join sample.fn_samples(p_limit, p_offset, ps.sample_ids) s on true;
+select *
+from sample_info;
 $$;
 
 
@@ -203,7 +206,7 @@ create or replace function sample.fn_box_samples(p_limit int, p_offset int, p_bo
     immutable
 as
 $$
-with box_samples as
+with filtered_samples as
          (
              select array_agg(sample_id) sample_ids
              from (
@@ -213,10 +216,13 @@ with box_samples as
                       order by sample_id
                       limit p_limit offset p_offset
                   ) arr_samples
+         ),
+     sample_info as
+         (
+             select * from sample.fn_samples(p_limit, p_offset, (select * from filtered_samples))
          )
-select s.*
-from box_samples bs
-         inner join sample.fn_samples(p_limit, p_offset, bs.sample_ids) s on true;
+select *
+from sample_info;
 $$;
 
 
@@ -237,10 +243,13 @@ with filtered_samples as
                       order by sample_id
                       limit p_limit offset p_offset
                   ) arr_samples
+         ),
+     sample_info as
+         (
+             select * from sample.fn_samples(p_limit, p_offset, (select * from filtered_samples))
          )
-select s.*
-from filtered_samples fs
-         inner join sample.fn_samples(p_limit, p_offset, fs.sample_ids) s on true;
+select *
+from sample_info;
 $$;
 
 drop function if exists sample.fn_entity_samples;
@@ -250,7 +259,7 @@ create or replace function sample.fn_entity_samples(p_limit int, p_offset int, p
     immutable
 as
 $$
-with entity_samples as
+with filtered_samples as
          (
              select array_agg(sample_id) sample_ids
              from (
@@ -267,10 +276,13 @@ with entity_samples as
                       order by sample_id
                       limit p_limit offset p_offset
                   ) arr_samples
+         ),
+     sample_info as
+         (
+             select * from sample.fn_samples(p_limit, p_offset, (select * from filtered_samples))
          )
-select s.*
-from entity_samples es
-         inner join sample.fn_samples(p_limit, p_offset, es.sample_ids) s on true;
+select *
+from sample_info;
 $$;
 
 drop function if exists sample.fn_polygon_samples;
@@ -280,7 +292,7 @@ create or replace function sample.fn_polygon_samples(p_limit int, p_offset int, 
     immutable
 as
 $$
-with polygon_samples as
+with filtered_samples as
          (
              select array_agg(sample_id) sample_ids
              from (
@@ -291,10 +303,13 @@ with polygon_samples as
                       order by sample_id
                       limit p_limit offset p_offset
                   ) arr_samples
+         ),
+     sample_info as
+         (
+             select * from sample.fn_samples(p_limit, p_offset, (select * from filtered_samples))
          )
-select s.*
-from polygon_samples ps
-         inner join sample.fn_samples(p_limit, p_offset, ps.sample_ids) s on true;
+select *
+from sample_info;
 $$;
 
 drop function if exists sample.fn_point_distance_samples;
@@ -307,7 +322,7 @@ create or replace function sample.fn_point_distance_samples(p_limit int, p_offse
     immutable
 as
 $$
-with point_samples as
+with filtered_samples as
          (
              select array_agg(sample_id) sample_ids
              from (
@@ -318,10 +333,13 @@ with point_samples as
                       order by sample_id
                       limit p_limit offset p_offset
                   ) arr_samples
+         ),
+     sample_info as
+         (
+             select * from sample.fn_samples(p_limit, p_offset, (select * from filtered_samples))
          )
-select s.*
-from point_samples ps
-         inner join sample.fn_samples(p_limit, p_offset, ps.sample_ids) s on true;
+select *
+from sample_info;
 $$;
 
 
@@ -531,7 +549,7 @@ create or replace function sample.fn_entity_boxes(p_limit int, p_offset int, p_e
     immutable
 as
 $$
-with entity_boxes as
+with filtered_boxes as
          (
              select array_agg(box_id) box_ids
              from (
@@ -547,11 +565,12 @@ with entity_boxes as
                       order by box_id
                       limit p_limit offset p_offset
                   ) arr_boxes
-         )
-select s.*
-from entity_boxes eb
-         inner join sample.fn_boxes(p_limit, p_offset, eb.box_ids) s on true;
-
+         ),
+     box_info as (
+         select * from sample.fn_boxes(p_limit, p_offset, (select * from filtered_boxes))
+     )
+select *
+from box_info;
 $$;
 
 

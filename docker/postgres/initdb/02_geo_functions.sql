@@ -62,18 +62,18 @@ drop function if exists geo.fn_predictors;
 CREATE OR REPLACE FUNCTION geo.fn_predictors(p_limit INT, p_offset INT, p_model_id INT = NULL)
     returns table
             (
-                predictor_id        SMALLINT,
-                predictor_name      VARCHAR(255),
-                abbreviation        VARCHAR(25),
-                description         TEXT,
-                source              TEXT,
-                units               VARCHAR(20),
-                calculation_script  varchar(255),
-                predictor_type VARCHAR(255),
-                is_temporal         BOOLEAN,
-                updated_date        text,
-                created_date        text,
-                model_count         BIGINT
+                predictor_id       SMALLINT,
+                predictor_name     VARCHAR(255),
+                abbreviation       VARCHAR(25),
+                description        TEXT,
+                source             TEXT,
+                units              VARCHAR(20),
+                calculation_script varchar(255),
+                predictor_type     VARCHAR(255),
+                is_temporal        BOOLEAN,
+                updated_date       text,
+                created_date       text,
+                model_count        BIGINT
             )
     language plpgsql
     immutable
@@ -305,10 +305,12 @@ with filtered_sites as
                       order by site_id
                       limit p_limit offset p_offset
                   ) arr_sites
-         )
-select s.*
-from filtered_sites fs
-         inner join geo.fn_sites(p_limit, p_offset, fs.site_ids) s on true;
+         ),
+     site_info as (
+         select * from geo.fn_sites(p_limit, p_offset, (select * from filtered_sites))
+     )
+select *
+from site_info;
 $$;
 
 drop function if exists geo.fn_project_sites;
@@ -330,10 +332,13 @@ with filtered_sites as
                       order by site_id
                       limit p_limit offset p_offset
                   ) arr_sites
+         ),
+     site_info as
+         (
+             select * from geo.fn_sites(p_limit, p_offset, (select * from filtered_sites))
          )
-select s.*
-from filtered_sites fs
-         inner join geo.fn_sites(p_limit, p_offset, fs.site_ids) s on true;
+select *
+from site_info;
 $$;
 
 
@@ -349,16 +354,19 @@ with filtered_sites as
              select array_agg(site_id) site_ids
              from (
                       select site_id
-                      from unnest(p_sample_ids) s(sample_id)
+                      from unnest(Array [164638]) s(sample_id)
                                inner join sample.samples ss on s.sample_id = ss.sample_id
                       group by site_id
                       order by site_id
-                      limit p_limit offset p_offset
+                      limit 1000 offset 0
                   ) arr_sites
-         )
-select s.*
-from filtered_sites fs
-         inner join geo.fn_sites(p_limit, p_offset, fs.site_ids) s on true;
+         ),
+     site_info as (
+         select *
+         from geo.fn_sites(1000, 0, (select * from filtered_sites))
+     )
+select *
+from site_info;
 $$;
 
 
@@ -387,10 +395,13 @@ with filtered_sites as
                       order by site_id
                       limit p_limit offset p_offset
                   ) arr_sites
-         )
-select s.*
-from filtered_sites fs
-         inner join geo.fn_sites(p_limit, p_offset, fs.site_ids) s on true;
+         ),
+     site_info as (
+         select *
+         from geo.fn_sites(1000, 0, (select * from filtered_sites))
+     )
+select *
+from site_info;
 $$;
 
 create or replace function geo.fn_polygon_sites(p_limit int, p_offset int, p_search_polygon json)
@@ -429,10 +440,13 @@ begin
                                        order by site_id
                                        limit p_limit offset p_offset
                                    ) arr_sites
+                          ),
+                      site_info as
+                          (
+                              select * from geo.fn_sites(p_limit, p_offset, (select * from filtered_sites))
                           )
-                 select s.*
-                 from filtered_sites fs
-                          inner join geo.fn_sites(p_limit, p_offset, fs.site_ids) s on true;
+                 select *
+                 from site_info;
 end
 $$;
 
@@ -475,10 +489,13 @@ begin
                                        order by site_id
                                        limit p_limit offset p_offset
                                    ) arr_sites
+                          ),
+                      site_info as
+                          (
+                              select * from geo.fn_sites(p_limit, p_offset, (select * from filtered_sites))
                           )
-                 select s.*
-                 from filtered_sites fs
-                          inner join geo.fn_sites(p_limit, p_offset, fs.site_ids) s on true;
+                 select *
+                 from site_info;
 end
 $$;
 
