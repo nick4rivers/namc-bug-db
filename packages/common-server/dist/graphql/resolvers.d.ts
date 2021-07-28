@@ -124,7 +124,7 @@ declare const _default: {
             projectIds: any;
         }, { user }: {
             user: any;
-        }) => Promise<t.PaginatedRecords<t.RawSampleTaxa>>;
+        }) => Promise<t.PaginatedRecords<t.SampleTaxa>>;
         sampleTaxaGeneralized: (obj: any, { sampleId }: {
             sampleId: any;
         }, { user }: {
@@ -135,26 +135,26 @@ declare const _default: {
             translationId: any;
         }, { user }: {
             user: any;
-        }) => Promise<t.PaginatedRecords<t.TranslationSampleTaxa>>;
+        }) => Promise<t.PaginatedRecords<t.SampleTaxa>>;
         sampleTaxaTranslationRarefied: (obj: any, { sampleId, translationId, fixedCount }: {
             sampleId: any;
             translationId: any;
             fixedCount: any;
         }, { user }: {
             user: any;
-        }) => Promise<t.PaginatedRecords<t.RarefiedSampleTaxa>>;
+        }) => Promise<t.PaginatedRecords<t.SampleTaxa>>;
         pointTaxaRaw: (obj: any, { longitude, latitude, distance }: {
             longitude: any;
             latitude: any;
             distance: any;
         }, { user }: {
             user: any;
-        }) => Promise<t.PaginatedRecords<t.RawSampleTaxa>>;
+        }) => Promise<t.PaginatedRecords<t.SampleTaxa>>;
         polygonTaxaRaw: (obj: any, { polygon }: {
             polygon: any;
         }, { user }: {
             user: any;
-        }) => Promise<t.PaginatedRecords<t.RawSampleTaxa>>;
+        }) => Promise<t.PaginatedRecords<t.SampleTaxa>>;
         attributes: (obj: any, { limit, offset }: {
             limit: any;
             offset: any;

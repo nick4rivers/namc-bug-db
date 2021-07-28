@@ -397,7 +397,7 @@ export declare type MassSample = {
     updatedDate: string
 }
 
-export declare type RawSampleTaxa = {
+export declare type SampleTaxa = {
     sampleId: number
     taxonomyId: number
     scientificName: string
@@ -419,26 +419,6 @@ export declare type GeneralizedSampleTaxa = {
     rawCount: number
     correctedCount: number
     rawBigRareCount: number
-}
-
-export declare type TranslationSampleTaxa = {
-    sampleId: number
-    taxonomyId: number
-    scientificName: string
-    aliasName: string
-    levelId: number
-    levelName: string
-    rawCount: number
-    correctedCount: number
-    rawBigRareCount: number
-}
-
-export declare type RarefiedSampleTaxa = {
-    taxonomyId: number
-    scientificName: string
-    levelId: number
-    levelName: string
-    organismCount: number
 }
 
 export declare type Attribute = {

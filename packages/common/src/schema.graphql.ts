@@ -121,25 +121,25 @@ const typeDefs = gql`
         # Sample Taxa queries
         
         "Sample organisms summed by taxonomy only. Includes both raw counts as well as counts corrected for lab and field split. Also includes both raw and corrected big rare counts."
-        sampleTaxaRaw(sampleIds: [Int], boxIds: [Int], projectIds: [Int]): PaginatedRawSampleTaxa
+        sampleTaxaRaw(sampleIds: [Int], boxIds: [Int], projectIds: [Int]): PaginatedSampleTaxa
 
         "Sample organisms summed by taxonomy, life stage and bug size. Includes both raw counts as well as counts corrected for lab and field split. Also includes both raw and corrected big rare counts."
         sampleTaxaGeneralized(sampleId: Int!): PaginatedGeneralizedSampleTaxa
 
         "Sample organisms converted to a translation (OTU). Rolls up counts to those taxa present in the translation and omits any organisms that don't roll up to a taxa in the translation."
-        sampleTaxaTranslation(sampleId: Int!, translationId: Int!): PaginatedSampleTranslationTaxa
+        sampleTaxaTranslation(sampleId: Int!, translationId: Int!): PaginatedSampleTaxa
 
         # "Sample organisms in their original taxonomic designation but rarefied to the specified fixed count."
         # sampleTaxaRarefied(sampleId: Int!, fixedCount: Int!): PaginatedRarefiedSampleTaxa
 
         "Sample organisms converted to the translation (OTU) and then rarefied to the specified fixed count."
-        sampleTaxaTranslationRarefied(sampleId: Int!, translationId: Int!, fixedCount:Int!):PaginatedRarefiedSampleTaxa
+        sampleTaxaTranslationRarefied(sampleId: Int!, translationId: Int!, fixedCount:Int!):PaginatedSampleTaxa
 
         "Sample organisms within distance (meters) of a point (decimal degrees)"
-        pointTaxaRaw(longitude: Float!, latitude: Float!, distance: Float!): PaginatedRawSampleTaxa
+        pointTaxaRaw(longitude: Float!, latitude: Float!, distance: Float!): PaginatedSampleTaxa
    
         "Sample organisms within a polygon"
-        polygonTaxaRaw(polygon: String!): PaginatedRawSampleTaxa
+        polygonTaxaRaw(polygon: String!): PaginatedSampleTaxa
 
         ####################################################################################################################################################################################
         # Metric queries
@@ -323,7 +323,7 @@ sites API endpoint.
     Raw summary of organisms for a single sample. The data are returned with their original
     laboratory taxonomic identification.
     """
-    type RawSampleTaxa {
+    type SampleTaxa {
 
         "The sample to which the taxa belong"
         sampleId: Int
@@ -340,15 +340,6 @@ sites API endpoint.
         abundance: Float
     }
 
-    type SampleTaxa {
-        sampleId: Int
-        taxonomyId: Int
-        scientificName: String
-        taxaLevelId: Int
-        taxaLevel: String
-        organismCount: Int
-    }
-
     type GeneralizedSampleTaxa {
         sampleId: Int
         taxonomyId: Int
@@ -362,26 +353,6 @@ sites API endpoint.
         rawCount: Float
         correctedCount: Float
         rawBigRareCount: Int
-    }
-
-    type TranslationSampleTaxa { 
-        sampleId:Int 
-        taxonomyId: Int
-        scientificName: String
-        aliasName: String
-        levelId: Int
-        levelName: String
-        rawCount: Float
-        correctedCount: Float
-        rawBigRareCount: Int
-    }
-
-    type RarefiedSampleTaxa {
-        taxonomyId: Int
-        scientificName: String
-        levelId: Int
-        levelName: String
-        organismCount: Int
     }
 
     type SampleInfo {
@@ -890,11 +861,6 @@ type FishDiet {
         nextOffset: Int
     }
 
-    type PaginatedRawSampleTaxa {
-        records: [RawSampleTaxa]
-        nextOffset: Int
-    }
-
     type PaginatedSampleTaxa {
         records: [SampleTaxa]
         nextOffset: Int
@@ -902,16 +868,6 @@ type FishDiet {
 
     type PaginatedGeneralizedSampleTaxa {
         records: [GeneralizedSampleTaxa]
-        nextOffset: Int
-    }
-
-    type PaginatedSampleTranslationTaxa {
-        records: [TranslationSampleTaxa]
-        nextOffset: Int
-    }
-
-    type PaginatedRarefiedSampleTaxa {
-        records: [RarefiedSampleTaxa]
         nextOffset: Int
     }
 

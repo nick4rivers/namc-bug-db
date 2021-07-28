@@ -284,7 +284,7 @@ export default {
             obj,
             { sampleIds, boxIds, projectIds },
             { user }
-        ): Promise<t.PaginatedRecords<t.RawSampleTaxa>> => {
+        ): Promise<t.PaginatedRecords<t.SampleTaxa>> => {
             loggedInGate(user)
 
             // Do some checking to make sure the right combination of filter params (if any) have been provided
@@ -297,7 +297,7 @@ export default {
             else if (boxIds) data = await fnQuery(pool, { name: 'sample.fn_box_taxa_raw', args: [boxIds] })
             else if (projectIds) data = await fnQuery(pool, { name: 'sample.fn_project_taxa_raw', args: [projectIds] })
 
-            return createPagination<t.RawSampleTaxa>(data)
+            return createPagination<t.SampleTaxa>(data)
         },
 
         sampleTaxaGeneralized: async (
@@ -316,7 +316,7 @@ export default {
             obj,
             { sampleId, translationId },
             { user }
-        ): Promise<t.PaginatedRecords<t.TranslationSampleTaxa>> => {
+        ): Promise<t.PaginatedRecords<t.SampleTaxa>> => {
             loggedInGate(user)
 
             const pool = await getPool()
@@ -324,7 +324,7 @@ export default {
                 name: 'sample.fn_sample_translation_taxa',
                 args: [sampleId, translationId]
             })
-            return createPagination<t.TranslationSampleTaxa>(data)
+            return createPagination<t.SampleTaxa>(data)
         },
 
         // sampleTaxaRarefied: async (
@@ -346,7 +346,7 @@ export default {
             obj,
             { sampleId, translationId, fixedCount },
             { user }
-        ): Promise<t.PaginatedRecords<t.RarefiedSampleTaxa>> => {
+        ): Promise<t.PaginatedRecords<t.SampleTaxa>> => {
             loggedInGate(user)
 
             const pool = await getPool()
@@ -355,14 +355,14 @@ export default {
                 args: [sampleId, translationId, fixedCount]
             })
 
-            return createPagination<t.RarefiedSampleTaxa>(data)
+            return createPagination<t.SampleTaxa>(data)
         },
 
         pointTaxaRaw: async (
             obj,
             { longitude, latitude, distance },
             { user }
-        ): Promise<t.PaginatedRecords<t.RawSampleTaxa>> => {
+        ): Promise<t.PaginatedRecords<t.SampleTaxa>> => {
             loggedInGate(user)
 
             const pool = await getPool()
@@ -373,10 +373,10 @@ export default {
                 args: [longitude, latitude, distance]
             })
 
-            return createPagination<t.RawSampleTaxa>(data)
+            return createPagination<t.SampleTaxa>(data)
         },
 
-        polygonTaxaRaw: async (obj, { polygon }, { user }): Promise<t.PaginatedRecords<t.RawSampleTaxa>> => {
+        polygonTaxaRaw: async (obj, { polygon }, { user }): Promise<t.PaginatedRecords<t.SampleTaxa>> => {
             loggedInGate(user)
 
             const pool = await getPool()
@@ -387,7 +387,7 @@ export default {
                 args: [polygon]
             })
 
-            return createPagination<t.RawSampleTaxa>(data)
+            return createPagination<t.SampleTaxa>(data)
         },
 
         attributes: async (obj, { limit, offset }, { user }): Promise<t.PaginatedRecords<t.Attribute>> => {
