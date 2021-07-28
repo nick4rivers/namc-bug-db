@@ -1,5 +1,5 @@
 // import config from '../config'
-import log from 'loglevel'
+// import log from 'loglevel'
 import { getPool } from './'
 
 let pool = null
@@ -16,6 +16,7 @@ describe('Series Tests', () => {
         // const geoResult = await q.getGeoRecord(pool, testcoord)
         // const geoResultEPSG = await q.getGeoRecordEPSG(pool, testcoord3857, 3857)
         // expect(preAuthStr).toHaveProperty('url')
-        log.info('done')
+        expect(1).toBe(1)
+        // log.info('done')
     })
 })
