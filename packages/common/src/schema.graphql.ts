@@ -11,7 +11,6 @@ export const queryLimits = {
     predictors: 500,
     models: 500,
     sitePredictorValues: 500,
-    modelPredictors: 500,
     modelResults: 500,
     translations: 500,
     metrics: 1000
@@ -62,7 +61,7 @@ const typeDefs = gql`
         projects(limit: Int = ${queryLimits.projects}, offset: Int = 0): PaginatedProjects
 
         "List of all predictors in the system. Includes summary information about how many models rely on each predictor."
-        predictors(modelId: Int, limit: Int = ${queryLimits.predictors}, offset: Int = 0): PaginatedPredictors
+        predictors(limit: Int = ${queryLimits.predictors}, offset: Int = 0, modelId: Int): PaginatedPredictors
 
         "List of all models in the system. Includes summary information about how many predictors are used by the model as well as the translation that might be required."
         models(limit: Int = ${queryLimits.models}, offset: Int = 0): PaginatedModels
@@ -72,9 +71,6 @@ const typeDefs = gql`
 
         "List of all predictor values for a single sample. This includes both temporal and non-temporal predictors as well as their calculation status (current, missing, expired)."
         samplePredictorValues(sampleId: Int!): PaginatedSamplePredictorValue
-
-        "List of predictors required by a single model."
-        modelPredictors(limit: Int = ${queryLimits.modelPredictors}, offset: Int = 0, modelId: Int!): PaginatedModelPredictors
 
         modelResults(limit: Int = ${queryLimits.modelResults}, offset: Int = 0, sampleIds: [Int]!): PaginatedModelResult
 
@@ -581,22 +577,6 @@ type FishDiet {
         parentId: Int
     }
 
-    type Predictor {
-        predictorId: Int
-        predictorName: String
-        abbreviation: String
-        description: String
-        source: String
-        units: String
-        calculationScript: String
-        predictorTypeId: Int
-        predictorTypeName: String
-        isTemporal: Boolean
-        updatedDate: String
-        createdDate: String
-        modelCount: Int
-    }
-
     type Model {
         modelId: Int
         modelName: String
@@ -693,14 +673,14 @@ type FishDiet {
     }
 
     """
-    Information about a model predictor.
+    Information about a predictor.
 
     Each predictor can be associated with multiple models. Predictors can also
     be temporal, in which their values are associated with a particular sample,
     or they can be non-temporal, in which case their values are associated with
     sites.
     """
-    type ModelPredictor {
+    type Predictor {
 
         "The unique system generated identifier for the predictor."
         predictorId: Int
@@ -743,6 +723,8 @@ type FishDiet {
         "Optional name of the R function that performs the calculation for this predictor."
         calculationScript: String
 
+        "Source information about the predictors"
+        source: String
     }
 
     type Translation {
@@ -842,11 +824,6 @@ type FishDiet {
 
     type PaginatedSamplePredictorValue {
         records: [SamplePredictorValue]
-        nextOffset: Int
-    }
-
-    type PaginatedModelPredictors {
-        records: [ModelPredictor]
         nextOffset: Int
     }
 

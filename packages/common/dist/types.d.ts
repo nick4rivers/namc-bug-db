@@ -165,8 +165,7 @@ export declare type Predictor = {
     source: string;
     units: string;
     calculationScript: string;
-    predictorTypeId: number;
-    predictorTypeName: string;
+    predictorType: string;
     isTemporal: boolean;
     updatedDate: string;
     createdDate: string;
@@ -211,20 +210,6 @@ export declare type ModelCondition = {
     condition: string;
     displayText: string;
     description: string;
-};
-export declare type ModelPredictor = {
-    predictorId: number;
-    predictorName: string;
-    abbreviation: string;
-    units: string;
-    predictorType: string;
-    isTemporal: boolean;
-    description: string;
-    metadata: string;
-    calculationScript: string;
-    modelCount: number;
-    createdDate: string;
-    updatedDate: string;
 };
 export declare type SitePredictorValue = {
     predictorId: number;

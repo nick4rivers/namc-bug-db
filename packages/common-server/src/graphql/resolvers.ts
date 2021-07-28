@@ -269,17 +269,6 @@ export default {
             return createPagination<t.SitePredictorValue>(data, limit, offset)
         },
 
-        modelPredictors: async (
-            obj,
-            { limit, offset, modelId },
-            { user }
-        ): Promise<t.PaginatedRecords<t.ModelPredictor>> => {
-            loggedInGate(user)
-            const pool = await getPool()
-            const data = await fnQuery(pool, { name: 'geo.fn_model_predictors', args: [limit, offset, modelId] })
-            return createPagination<t.ModelPredictor>(data, 500, 0)
-        },
-
         sampleTaxaRaw: async (
             obj,
             { sampleIds, boxIds, projectIds },

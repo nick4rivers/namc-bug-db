@@ -7,7 +7,6 @@ export declare const queryLimits: {
     predictors: number;
     models: number;
     sitePredictorValues: number;
-    modelPredictors: number;
     modelResults: number;
     translations: number;
     metrics: number;

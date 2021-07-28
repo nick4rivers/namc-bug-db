@@ -504,26 +504,6 @@ exports.default = {
                 });
             });
         },
-        modelPredictors: function (obj, _a, _b) {
-            var limit = _a.limit, offset = _a.offset, modelId = _a.modelId;
-            var user = _b.user;
-            return __awaiter(void 0, void 0, void 0, function () {
-                var pool, data;
-                return __generator(this, function (_c) {
-                    switch (_c.label) {
-                        case 0:
-                            resolverUtil_1.loggedInGate(user);
-                            return [4, db_1.getPool()];
-                        case 1:
-                            pool = _c.sent();
-                            return [4, db_1.fnQuery(pool, { name: 'geo.fn_model_predictors', args: [limit, offset, modelId] })];
-                        case 2:
-                            data = _c.sent();
-                            return [2, resolverUtil_1.createPagination(data, 500, 0)];
-                    }
-                });
-            });
-        },
         sampleTaxaRaw: function (obj, _a, _b) {
             var sampleIds = _a.sampleIds, boxIds = _a.boxIds, projectIds = _a.projectIds;
             var user = _b.user;

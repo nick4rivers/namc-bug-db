@@ -111,13 +111,6 @@ declare const _default: {
         }, { user }: {
             user: any;
         }) => Promise<t.PaginatedRecords<t.SitePredictorValue>>;
-        modelPredictors: (obj: any, { limit, offset, modelId }: {
-            limit: any;
-            offset: any;
-            modelId: any;
-        }, { user }: {
-            user: any;
-        }) => Promise<t.PaginatedRecords<t.ModelPredictor>>;
         sampleTaxaRaw: (obj: any, { sampleIds, boxIds, projectIds }: {
             sampleIds: any;
             boxIds: any;
