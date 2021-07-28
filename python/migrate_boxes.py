@@ -20,14 +20,16 @@ def migrate(mscurs, pgcurs):
     # The unspecified user for boxes that don't have a contact individual
     unspecified_individual_id = individuals_by_full_name['Unspecified Unspecified']
 
-    expected_rows = log_record_count(mscurs, 'PilotDB.dbo.BoxTracking')
-
-    mscurs.execute("SELECT BT.*, C.Contact FROM PilotDB.dbo.BoxTracking BT LEFT JOIN PilotDB.dbo.Customer C ON BT.CustId = C.CustID")
+    # Load completed boxes from Pilot first. Then load only incomplete boxes from BugLab.
+    original_box_data = {}
+    load_box_data(mscurs, original_box_data, 'SELECT BT.*, C.Contact FROM PilotDB.dbo.BoxTracking BT LEFT JOIN PilotDB.dbo.Customer C ON BT.CustId = C.CustID', ['DateIn', 'Notes', 'Contact', 'CustId'], box_states, 'Complete')
+    load_box_data(mscurs, original_box_data, 'SELECT BT.*, C.Contact FROM BugLab.dbo.BugBoxes BT LEFT JOIN BugLab.dbo.Customer C ON BT.CustId = C.CustID where Complete = 0', ['DateIn', 'Notes', 'Contact', 'CustId'], box_states, 'Active')
+ 
+    expected_rows = log_record_count(len(original_box_data), 'Pilot and BugLab Boxes')
     progbar = ProgressBar(expected_rows, 50, "boxes")
     counter = 0
-    for msrow in mscurs.fetchall():
-        msdata = dict(zip([t[0] for t in msrow.cursor_description], msrow))
-
+    for box_id, msdata in original_box_data.items():
+        
         custId = sanitize_string(msdata['CustId'])
 
         # Forest service customer IDs were tweaked during import. Use old format for lookup
@@ -125,3 +127,24 @@ def associate_models_with_boxes(pgcurs, csv_path):
 
     # Data inserted with manual IDs need to reset the table sequence
     reset_sequence(pgcurs, 'sample.boxes', 'box_id')
+
+
+def load_box_data(mscurs, boxes, sql, fields, box_states, state):
+
+    original_count = len(boxes)
+
+    mscurs.execute(sql)
+    for row in mscurs.fetchall():
+
+        box_id = row['BoxId']
+
+        if box_id in boxes:
+            # Warn if the box has already been loaded. Should load Pilot first and then BugLab.
+            log = Logger('Boxes')
+            log.warning('Duplicate Box ID {} found'.format(box_id))
+            continue
+
+        boxes[box_id] = {field: row[field] for field in fields}
+        boxes[box_id]['box_status_id'] = box_states[state]
+
+    log.info('{} boxes loaded with status of {}'.format(len(boxes) - original_count, state))
