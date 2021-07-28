@@ -286,7 +286,7 @@ with polygon_samples as
              from (
                       select sample_id
                       from geo.fn_polygon_sites(null, null, p_polygon) ss
-                               inner join sample.samples s on ss.site_id = s.sample_id
+                               inner join sample.samples s on ss.site_id = s.site_id
                       group by sample_id
                       order by sample_id
                       limit p_limit offset p_offset
