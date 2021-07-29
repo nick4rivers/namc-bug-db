@@ -286,7 +286,7 @@ from sample_info;
 $$;
 
 drop function if exists sample.fn_polygon_samples;
-create or replace function sample.fn_polygon_samples(p_limit int, p_offset int, p_polygon JSON)
+create or replace function sample.fn_polygon_samples(p_limit int, p_offset int, p_polygon text)
     returns setof sample_info_type
     language sql
     immutable
@@ -830,7 +830,7 @@ end
 $$;
 
 drop function if exists sample.fn_taxa_raw_polygon;
-create or replace function sample.fn_taxa_raw_polygon(p_search_polygon json)
+create or replace function sample.fn_taxa_raw_polygon(p_search_polygon text)
     returns setof taxa_info
     language plpgsql
     immutable
@@ -847,7 +847,7 @@ begin
         raise exception 'The search polygon cannot be NULL.';
     end if;
 
-    p_search_geography := st_multi(st_geomfromgeojson(p_search_polygon));
+    p_search_geography := st_multi(st_setsrid(st_geomfromgeojson(p_search_polygon), 4326));
 
     if
         (NOT st_isvalid(p_search_geography))
@@ -953,7 +953,7 @@ begin
                sum(metric.fn_calc_abundance(o.split_count, s.lab_split, s.field_split, s.area))
         FROM sample.organisms o
                  inner join sample.samples s on o.sample_id = s.sample_id
-                 inner join lateral taxa.fn_translation_taxa(p_translation_id, o.taxonomy_id) tt on true
+                 inner join lateral taxa.fn_translation_taxonomy(p_translation_id, o.taxonomy_id) tt on true
         where o.sample_id = p_sample_id
         group by o.sample_id,
                  tt.taxonomy_id,

@@ -404,7 +404,8 @@ select *
 from site_info;
 $$;
 
-create or replace function geo.fn_polygon_sites(p_limit int, p_offset int, p_search_polygon json)
+drop function if exists geo.fn_polygon_sites;
+create or replace function geo.fn_polygon_sites(p_limit int, p_offset int, p_search_polygon text)
     returns setof site_info
     language plpgsql
     immutable
@@ -418,7 +419,7 @@ begin
     then
         raise exception 'The search polygon cannot be NULL.';
     end if;
-    p_search_geography := st_multi(st_geomfromgeojson(p_search_polygon));
+    p_search_geography := st_multi(st_setsrid(st_geomfromgeojson(p_search_polygon), 4326));
     if
         (NOT st_isvalid(p_search_geography))
     then

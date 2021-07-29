@@ -166,7 +166,7 @@ create or replace function taxa.fn_translation_taxa(p_limit int, p_offset int, p
 as
 
 $$
-select p_translation_id,
+select tr.translation_id,
        tr.translation_name,
        t.taxonomy_id,
        l.level_id,
@@ -183,8 +183,8 @@ order by level_id, translation_scientific_name
 limit p_limit offset p_offset;
 $$;
 
-drop function if exists taxa.fn_translation_taxa(int, int);
-create or replace function taxa.fn_translation_taxa(p_translation_id int, p_taxonomy_id int)
+drop function if exists taxa.fn_translation_taxonomy(int, int);
+create or replace function taxa.fn_translation_taxonomy(p_translation_id int, p_taxonomy_id int)
     returns table
             (
                 taxonomy_id                 smallint,
@@ -219,7 +219,7 @@ begin
         limit 1;
 end
 $$;
-comment on function taxa.fn_translation_taxa(int, int) is
+comment on function taxa.fn_translation_taxonomy(int, int) is
     'Function to retrieve the taxonomy ID of a taxa according to a specific translation.
     The result could be the same taxonomy ID that was passed in or one higher up in the taxonomic
     hierarchy.';
