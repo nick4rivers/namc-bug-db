@@ -225,6 +225,21 @@
       "{env:POSTGRES_PASSWORD}",
       "data/fish_diet_master.csv"
     ]
+  } ,
+  {
+    "name": "Create OR DEQ OTU",
+    "type": "python",
+    "request": "launch",
+    "module": "api_workflows.create_otucode_ordeq",
+    "console": "integratedTerminal",
+    "envFile": "${workspaceFolder}/.env",
+    "env": {
+      "PYTHONPATH": "{env:PYTHONPATH}:${workspaceFolder}"
+    },
+    "args": [
+      "OTUCode_ORDEQ2022",
+      "data/otucode_ordeq2022.csv"
+    ]
   }
 ]
 }
