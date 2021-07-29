@@ -17,7 +17,7 @@ export const handler = async (event): Promise<unknown> => {
     log.debug('nodecache', NODECACHE.getStats())
     // getAuthcached is expecting headers so wrap this up
     const user = await awsLib.cognito.getAuthCached({ headers: event })
-    // log.debug('USER', JSON.stringify(user))
+
     // Parse the Bearer token out of the headers (if there is one)
 
     // this function must generate a policy that is associated with the recognized principal user identifier.
@@ -26,7 +26,6 @@ export const handler = async (event): Promise<unknown> => {
     // keep in mind, the policy is cached for 5 minutes by default (TTL is configurable in the authorizer)
     // and will apply to subsequent calls to any method/resource in the RestApi
     // made with the same token
-
     // the example policy below denies access to all resources in the RestApi
     const acctid = event.methodArn.split(':')[4]
     const principalId = Boolean(user.cognito.sub) ? 'user' : 'anonymous'

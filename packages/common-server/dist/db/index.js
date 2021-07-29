@@ -90,10 +90,7 @@ exports.pgPromise = function (pool, query, vars) {
         var cb = function (error, results) {
             if (error) {
                 loglevel_1.default.error('PG ERROR', error);
-                if (config_1.isDev)
-                    return reject(error);
-                else
-                    return reject(new Error('Database Error'));
+                return reject(error);
             }
             else
                 return resolve(results.rows);

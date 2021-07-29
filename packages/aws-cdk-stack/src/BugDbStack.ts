@@ -39,7 +39,7 @@ class NAMCBUgDbStack extends cdk.Stack {
         // be used for any other kind of authentication
         // Note: We don't store the secret or id anywhere. If you want this you need to go digging through the
         // AWS client. This is kind of on purpose
-        new CognitoMachineClient(this, `CognitoClientMachine_${stage}`, {
+        const machineCognitoClient = new CognitoMachineClient(this, `CognitoClientMachine_${stage}`, {
             userPool: vpcStack.userPool
         })
 
@@ -87,7 +87,9 @@ class NAMCBUgDbStack extends cdk.Stack {
                 cognito: {
                     userPoolId: vpcStack.userPool.userPoolId,
                     userPoolWebClientId: cognitoClient.client.userPoolClientId,
-                    hostedDomain: `${stackProps.cognitoDomainPrefix}.auth.${stackProps.region}.amazoncognito.com`
+                    hostedDomain: `${stackProps.cognitoDomainPrefix}.auth.${stackProps.region}.amazoncognito.com`,
+                    // We may need to test if this machine client is logging in
+                    machineClientId: machineCognitoClient.client.userPoolClientId
                 },
                 s3: {
                     webBucket: s3Buckets.webBucket.bucketName

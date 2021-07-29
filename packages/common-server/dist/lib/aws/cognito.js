@@ -62,6 +62,7 @@ var NOT_LOGGED_IN = function () {
         cognito: {
             isAdmin: false,
             isLoggedIn: false,
+            isMachine: false,
             sub: null
         }
     });
@@ -175,7 +176,7 @@ function getCognitoUser(cognitoClient, sub) {
 exports.getCognitoUser = getCognitoUser;
 function getAuthCached(event) {
     return __awaiter(this, void 0, void 0, function () {
-        var authCode, cachedAuthUser, config, auth, user;
+        var authCode, cachedAuthUser, config_2, auth, user;
         var _this = this;
         return __generator(this, function (_a) {
             switch (_a.label) {
@@ -195,17 +196,19 @@ function getAuthCached(event) {
                     loglevel_1.default.debug('getAuthCached:: No cached value. Fetching');
                     return [4, config_1.getConfigPromise()];
                 case 2:
-                    config = _a.sent();
-                    auth = new Authorizer_1.default(config);
+                    config_2 = _a.sent();
+                    auth = new Authorizer_1.default(config_2);
                     return [4, auth
                             .AuthHandler(event.headers)
                             .then(function (data) { return __awaiter(_this, void 0, void 0, function () {
-                            var newUser;
+                            var isMachine, newUser;
                             return __generator(this, function (_a) {
+                                isMachine = config_2.cognito.machineClientId && data.sub && config_2.cognito.machineClientId === data.sub;
                                 newUser = {
                                     cognito: {
                                         isAdmin: data.isAdmin,
                                         isLoggedIn: true,
+                                        isMachine: isMachine,
                                         sub: data.sub
                                     }
                                 };

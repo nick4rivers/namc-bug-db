@@ -1,25 +1,26 @@
 {
-	"folders": [
-		{
-			"name": "CDK",
-			"path": "../packages/aws-cdk-stack"
-		},
-		{
-			"path": "../packages/lambda-api"
-		},
-		{
-			"path": "../packages/lambda-auth"
-		},
-		{
-			"path": "../packages/common-server"
-		},
-		{
-			"path": "../packages/common"
-		},
-		{
-			"name": "NAMC-BUG-DB (Root)",
-			"path": "../"
-		}
-	],
-	"settings": {}
+  "folders": [
+    {
+      "name": "CDK",
+      "path": "../packages/aws-cdk-stack"
+    },
+    {
+      "path": "../packages/lambda-api"
+    },
+    {
+      "path": "../packages/lambda-auth"
+    },
+    {
+      "path": "../packages/common-server"
+    },
+    {
+      "path": "../packages/common"
+    },
+    {
+      "name": "NAMC-BUG-DB (Root)",
+      "path": "../"
+    }
+  ],
+  "settings": {
+  }
 }

@@ -4,6 +4,7 @@ export declare type UserObj = {
         sub: string;
         isLoggedIn: boolean;
         isAdmin: boolean;
+        isMachine: boolean;
     };
 };
 export declare type DBReturnType = types.StrObj[];

@@ -13,6 +13,7 @@ const NOT_LOGGED_IN = (): UserObj =>
         cognito: {
             isAdmin: false,
             isLoggedIn: false,
+            isMachine: false,
             sub: null
         }
     })
@@ -139,10 +140,14 @@ export async function getAuthCached(event: any): Promise<UserObj> {
             .AuthHandler(event.headers)
             .then(async (data: any) => {
                 // Build the user object from the pieces we have
+                const isMachine =
+                    config.cognito.machineClientId && data.sub && config.cognito.machineClientId === data.sub
                 const newUser: UserObj = {
                     cognito: {
                         isAdmin: data.isAdmin,
                         isLoggedIn: true,
+                        // A machine is anyone who logs in with the ClientID and Secret
+                        isMachine,
                         sub: data.sub
                     }
                 }

@@ -4,6 +4,7 @@ export type UserObj = {
         sub: string
         isLoggedIn: boolean
         isAdmin: boolean
+        isMachine: boolean
     }
 }
 
