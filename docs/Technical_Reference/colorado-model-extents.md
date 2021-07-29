@@ -8,7 +8,7 @@ The Colorado MMI model has three distinct regions: mountains, transition and xer
 * The smoothed curves represent excessive detail that bloats the layer size.
 * The geoprocessing workflow that produced this layer introduced a considerable number of slivers that are both incorrect and also bloat the geometry.
 
-![original]({{ site.basurl}}/assets/images/colorado/original_vector.png)
+![original]({{ site.baseurl}}/assets/images/colorado/original_vector.png)
 
 # Original Raster
 
