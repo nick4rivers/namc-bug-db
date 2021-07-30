@@ -1,0 +1,11 @@
+query taxonomy($limit: Int, $offset: Int) {
+            taxonomy(limit:$limit, offset: $offset) {
+                records {
+                taxonomyId
+                scientificName
+                levelId
+                levelName
+            }
+            nextOffset
+        }
+}

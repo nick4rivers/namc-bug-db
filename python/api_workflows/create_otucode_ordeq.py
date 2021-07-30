@@ -30,6 +30,26 @@ def create_otucode_ordeq(otu_name: str, csv_path: str):
         "fixedCount": 300
     })
 
+    nextOffset = 0
+    page = 0
+    projects = 0
+    hucs = {}
+
+    # Get all projects
+    while nextOffset or page == 0:
+        page += 1
+
+        # Here is the API Search
+        result = api.run_query_file(os.path.join(QUERY_DIR, 'taxonomy.gql'), {
+            "limit": 500,
+            "offset": nextOffset
+        })
+
+        if 'nextOffset' in result:
+            nextOffset = result['nextOffset']
+        else:
+            nextOffset = 0
+
     # And here's how the data returned looks:
     print(len(result['data']['sampleMetrics']['records']))
 
