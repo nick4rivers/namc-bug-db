@@ -1,4 +1,6 @@
 autopep8==1.5.7
+boto3==1.18.10
+botocore==1.21.10
 iniconfig==1.0.1
 isort==5.5.2
 lazy-object-proxy==1.4.3
@@ -14,6 +16,7 @@ pyodbc==4.0.30
 pyparsing==2.4.7
 pytest==6.2.4
 python-dotenv==0.18.0
+requests==2.26.0
 toml==0.10.1
 wrapt==1.12.1
 termcolor==1.1.0
