@@ -67,9 +67,10 @@ declare const _default: {
         }, { user }: {
             user: any;
         }) => Promise<t.PaginatedRecords<t.Project>>;
-        taxonomy: (obj: any, { limit, offset }: {
+        taxonomy: (obj: any, { limit, offset, searchTerm }: {
             limit: any;
             offset: any;
+            searchTerm: any;
         }, { user }: {
             user: any;
         }) => Promise<t.PaginatedRecords<t.Taxonomy>>;

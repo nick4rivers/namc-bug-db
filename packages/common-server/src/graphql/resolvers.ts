@@ -192,12 +192,12 @@ export default {
             return createPagination<t.Project>(data, limit, offset)
         },
 
-        taxonomy: async (obj, { limit, offset }, { user }): Promise<t.PaginatedRecords<t.Taxonomy>> => {
+        taxonomy: async (obj, { limit, offset, searchTerm }, { user }): Promise<t.PaginatedRecords<t.Taxonomy>> => {
             loggedInGate(user)
             limitOffsetCheck(limit, graphql.queryLimits.taxonomy, offset)
 
             const pool = await getPool()
-            const data = await fnQuery(pool, { name: 'taxa.fn_taxonomy', args: [limit, offset] })
+            const data = await fnQuery(pool, { name: 'taxa.fn_taxonomy', args: [limit, offset, searchTerm] })
 
             return createPagination<t.Taxonomy>(data, limit, offset)
         },

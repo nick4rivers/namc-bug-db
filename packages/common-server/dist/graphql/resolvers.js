@@ -356,7 +356,7 @@ exports.default = {
             });
         },
         taxonomy: function (obj, _a, _b) {
-            var limit = _a.limit, offset = _a.offset;
+            var limit = _a.limit, offset = _a.offset, searchTerm = _a.searchTerm;
             var user = _b.user;
             return __awaiter(void 0, void 0, void 0, function () {
                 var pool, data;
@@ -368,7 +368,7 @@ exports.default = {
                             return [4, db_1.getPool()];
                         case 1:
                             pool = _c.sent();
-                            return [4, db_1.fnQuery(pool, { name: 'taxa.fn_taxonomy', args: [limit, offset] })];
+                            return [4, db_1.fnQuery(pool, { name: 'taxa.fn_taxonomy', args: [limit, offset, searchTerm] })];
                         case 2:
                             data = _c.sent();
                             return [2, resolverUtil_1.createPagination(data, limit, offset)];

@@ -78,7 +78,7 @@ const typeDefs = gql`
         # Taxonomy queries
 
         "List of all taxa in the system. Includes information about each level of the taxonomic hierarchy above each taxa."
-        taxonomy(limit: Int = ${queryLimits.taxonomy}, offset: Int = 0): PaginatedTaxonomies
+        taxonomy(limit: Int = ${queryLimits.taxonomy}, offset: Int = 0, searchTerm: String): PaginatedTaxonomies
 
         "list all parents for a particular taxa"
         taxonomyTree(taxonomyId: Int!): PaginatedTaxonomyTree
