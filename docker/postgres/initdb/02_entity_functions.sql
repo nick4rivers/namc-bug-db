@@ -42,7 +42,7 @@ from entity_tree;
 $$;
 
 drop function if exists entity.fn_organizations;
-create or replace function entity.gn_organizations(p_limit int, p_offset int, p_search_term text = null)
+create or replace function entity.fn_organizations(p_limit int, p_offset int, p_search_term text = null)
     returns table
             (
                 entity_id         smallint,
@@ -75,15 +75,15 @@ select e.entity_id,
        e.address2,
        e.city,
        s.state_name,
-       e.country_id,
+       c.country_name,
        e.zip_code,
        e.phone,
        e.fax,
        e.website,
        e.notes,
-       e.metadata,
-       e.created_date,
-       e.updated_date
+       cast(e.metadata as text),
+       to_json(e.created_date) #>> '{}',
+       to_json(e.updated_date) #>> '{}'
 from (
          select *
          from entity.organizations
@@ -93,6 +93,6 @@ from (
      ) o
          inner join entity.entities e on o.entity_id = e.entity_id
          inner join entity.organization_types t on o.organization_type_id = t.organization_type_id
-         inner join geo.counties c on e.country_id = c.county_id
+         inner join geo.countries c on e.country_id = c.country_id
          left join geo.states s on e.state_id = s.state_id
 $$;
