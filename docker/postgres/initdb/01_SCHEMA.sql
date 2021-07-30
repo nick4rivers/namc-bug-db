@@ -497,6 +497,7 @@ CREATE TABLE taxa.taxonomy
     scientific_name VARCHAR(255) NOT NULL,
     level_id        SMALLINT     NOT NULL,
     parent_id       SMALLINT,
+    is_active       BOOLEAN NOT NULL DEFAULT TRUE,
     author          VARCHAR(255),
     year            SMALLINT,
     notes           TEXT,
