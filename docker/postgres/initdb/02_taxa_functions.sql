@@ -1,5 +1,5 @@
 drop function if exists taxa.fn_taxonomy;
-create or replace function taxa.fn_taxonomy(p_limit int, p_offset int)
+create or replace function taxa.fn_taxonomy(p_limit int, p_offset int, p_search text = null)
     returns table
             (
                 taxonomy_id            smallint,
@@ -39,6 +39,7 @@ from taxa.taxonomy t
          from taxa.taxonomy p
                   inner join taxa.taxa_levels l on p.level_id = l.level_id
      ) p on t.parent_id = p.taxonomy_id
+where ((t.scientific_name ilike p_search) or p_search is null)
 order by l.rank_order, t.scientific_name
 limit p_limit offset p_offset;
 $$;
@@ -73,7 +74,7 @@ from taxa.translations t
      (
          select t.translation_id, count(tt.*) taxa_count
          from taxa.translations t
-         left join taxa.translation_taxa tt on t.translation_id = tt.translation_id
+                  left join taxa.translation_taxa tt on t.translation_id = tt.translation_id
          group by t.translation_id
          order by translation_id
          limit p_limit offset p_offset
