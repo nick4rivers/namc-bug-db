@@ -240,6 +240,26 @@
       "OTUCode_ORDEQ2022",
       "data/otucode_ordeq2022.csv"
     ]
+  },
+  {
+    "name": "Create OR DEQ OTU In Python",
+    "type": "python",
+    "request": "launch",
+    "module": "create_ordeq_otu",
+    "console": "integratedTerminal",
+    "envFile": "${workspaceFolder}/.env",
+    "env": {
+      "PYTHONPATH": "{env:PYTHONPATH}:${workspaceFolder}"
+    },
+    "args": [
+      "{env:POSTGRES_HOST}",
+      "{env:POSTGRES_PORT}",
+      "{env:POSTGRES_DB}",
+      "{env:POSTGRES_USER}",
+      "{env:POSTGRES_PASSWORD}",
+      "OTUCode_ORDEQ2022",
+      "data/otucode_ordeq2022.csv"
+    ]
   }
 ]
 }
