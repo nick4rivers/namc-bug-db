@@ -1,0 +1,12 @@
+query sampleMetrics($projectIds: [Int], $translationId: Int!, $fixedCount: Int!) {
+    sampleMetrics(projectIds: $projectIds, translationId: $translationId, fixedCount: $fixedCount) {
+        records {
+            sampleId
+            groupId
+            groupName
+            metricId
+            metricName
+            metricValue
+        }
+    }
+}

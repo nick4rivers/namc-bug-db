@@ -1,3 +1,5 @@
+"""API Connection
+"""
 import os
 import json
 import requests
@@ -6,6 +8,8 @@ from lib.logger import Logger
 
 
 class QueryMonster:
+    """The Query monster is a generic GraphQL connection class
+    """
 
     def __init__(self):
         self.jwt = None
@@ -16,6 +20,20 @@ class QueryMonster:
 
         # 3) Get the JWT we will need to make queries
         self.cognito_login()
+
+    @staticmethod
+    def load_query(file_path: str):
+        """ Load a GraphQL record from a gql file
+
+        Args:
+            file_path (str): [description]
+
+        Returns:
+            [type]: [description]
+        """
+        with open(file_path, 'r') as file:
+            data = file.read()
+        return data
 
     def cognito_login(self):
         """Log into cognito and retrieve the JWT token
@@ -40,7 +58,28 @@ class QueryMonster:
         )
         self.jwt = resp['AuthenticationResult']['AccessToken']
 
-    def run_query(self, query, variables):  # A simple function to use requests.post to make the API call. Note the json= section.
+    def run_query_file(self, file_path: str, variables: dict):
+        """Run a query from Graphql string inside a file path
+
+        Args:
+            file_path (str): path to the gql file
+            variables (dict): dictionary of query arguments
+        """
+        return self.run_query(self.load_query(file_path), variables)
+
+    def run_query(self, query: str, variables: dict):  # A simple function to use requests.post to make the API call. Note the json= section.
+        """Run a graphQL query
+
+        Args:
+            query (str): graphql query string
+            variables (dict): dictionary of query arguments
+
+        Raises:
+            Exception: [description]
+
+        Returns:
+            [type]: GraphQL dictionary object
+        """
         log = Logger('API_QUERY')
         headers = {"Authorization": "Bearer " + self.jwt if self.jwt else 'Bearer NULL'}
         request = requests.post(os.environ['API_URL'], json={
@@ -66,6 +105,9 @@ class QueryMonster:
             raise Exception("Query failed to run by returning code of {}. {}".format(request.status_code, query))
 
     def auth_query(self):
+        """
+        Retrieves the Authentication information that lets us authenticate properly
+        """
         result = self.run_query(QueryMonster._GQL_Auth, {})  # Execute the query
         return result['data']['auth']  # Drill down the dictionary
 

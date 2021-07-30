@@ -1,32 +1,30 @@
+""" Generate otucode
+"""
 import os
 import csv
 import argparse
 from lib.api import QueryMonster
 
+QUERY_DIR = os.path.join(os.path.dirname(__file__), 'gql')
 
-def create_otucode_ordeq(otu_name, csv_path):
+
+def create_otucode_ordeq(otu_name: str, csv_path: str):
+    """[summary]
+
+    Args:
+        otu_name ([type]): [description]
+        csv_path ([type]): [description]
+    """
 
     api = QueryMonster()
 
     # Define your query here. Yeah this is not ideal but we're not using a GraphQL library in python
     # So it's just all a big, awkward string.
     # The good news is that you can copy and paste this string directly from insomnia
-    q = """
-        query sampleMetrics($projectIds: [Int], $translationId: Int!, $fixedCount: Int!) {
-            sampleMetrics(projectIds: $projectIds, translationId: $translationId, fixedCount: $fixedCount) {
-                records {
-                    sampleId
-                    groupId
-                    groupName
-                    metricId
-                    metricName
-                    metricValue
-                }
-            }
-        }
-    """
+
     # Now here's how you run the query
-    result = api.run_query(q, {
+    q_path = os.path.join(QUERY_DIR, 'sampleMetrics.gql')
+    result = api.run_query_file(q_path, {
         "projectIds": [1],
         "translationId": 3,
         "fixedCount": 300
@@ -44,6 +42,8 @@ def create_otucode_ordeq(otu_name, csv_path):
 
 
 def main():
+    """Do the thing
+    """
     parser = argparse.ArgumentParser()
     parser.add_argument('otu_name', help='Name of the OTU to be generated', type=str)
     parser.add_argument('csv_path', help='CSV Path to OTU taxa', type=str)

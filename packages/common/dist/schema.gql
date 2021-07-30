@@ -9,66 +9,62 @@ type Query {
   siteInfo(siteId: Int!): SiteInfo
   "Detailed information about a single model, including the number of predictors associated with the model."
   modelInfo(modelId: Int!): ModelInfo
-  "List of all thresholds (e.g. good, fair, poor) for a particular model"
-  modelThresholds(modelId: Int!): PaginatedModelThresholds
-  "Detailed information about a single sample, including information about the box and customer."
-  sampleInfo(sampleId: Int!): SampleInfo
+  "List of all model conditions (e.g. good, fair, poor) for a particular model"
+  modelConditions(modelId: Int!): PaginatedModelConditions
   "Detailed information about a single box, including information about the customer and number of samples associated with the box."
   boxInfo(boxId: Int!): BoxInfo
   "List of all samples in the system, including high level information about the associated box and customer."
-  samples(limit: Int = 500, offset: Int = 0, sampleIds: [Int], boxIds: [Int], projectIds: [Int], entityIds: [Int], siteIds: [Int], polygon: String, pointDistance: QueryDistance): PaginatedSamples
+  samples(limit: Int = 1000, offset: Int = 0, sampleIds: [Int], boxIds: [Int], projectIds: [Int], entityIds: [Int], siteIds: [Int], polygon: String, pointDistance: QueryDistance): PaginatedSamples
   "Summary information for all sites, including location coordinates and number of samples. Use the siteInfo query to get more detailed information about a single site."
-  sites(limit: Int = 500, offset: Int = 0, usState: [String], sampleIds: [Int], boxIds: [Int], projectIds: [Int], entityIds: [Int], siteIds: [Int], polygon: String, pointDistance: QueryDistance): PaginatedSites
+  sites(limit: Int = 1000, offset: Int = 0, usState: [String], sampleIds: [Int], boxIds: [Int], projectIds: [Int], entityIds: [Int], siteIds: [Int], polygon: String, pointDistance: QueryDistance): PaginatedSites
   "Summary information for all boxes, including the customer name and number of samples within the box. Use the boxInfo query to get more detailed information about a single box."
-  boxes(limit: Int = 500, offset: Int = 0, boxIds: [Int], entityIds: [Int]): PaginatedBoxes
+  boxes(limit: Int = 1000, offset: Int = 0, boxIds: [Int], entityIds: [Int]): PaginatedBoxes
   "Summary information about all projects in the system. Use the projectInfo query to get more detailed about a single project."
-  projects(limit: Int = 500, offset: Int = 0): PaginatedProjects
+  projects(limit: Int = 1000, offset: Int = 0): PaginatedProjects
   "List of all predictors in the system. Includes summary information about how many models rely on each predictor."
-  predictors(modelId: Int, limit: Int = 500, offset: Int = 0): PaginatedPredictors
+  predictors(limit: Int = 500, offset: Int = 0, modelId: Int): PaginatedPredictors
   "List of all models in the system. Includes summary information about how many predictors are used by the model as well as the translation that might be required."
   models(limit: Int = 500, offset: Int = 0): PaginatedModels
   "List of predictor values at a single site. Site predictors are non-temporal. The value is common to all samples at the specific site."
   sitePredictorValues(siteId: Int!, limit: Int = 500, offset: Int = 0): PaginatedSitePredictorValues
   "List of all predictor values for a single sample. This includes both temporal and non-temporal predictors as well as their calculation status (current, missing, expired)."
   samplePredictorValues(sampleId: Int!): PaginatedSamplePredictorValue
-  "List of predictors required by a single model."
-  modelPredictors(limit: Int = 500, offset: Int = 0, modelId: Int!): PaginatedModelPredictors
   modelResults(limit: Int = 500, offset: Int = 0, sampleIds: [Int]!): PaginatedModelResult
   "List of all taxa in the system. Includes information about each level of the taxonomic hierarchy above each taxa."
-  taxonomy(limit: Int = 500, offset: Int = 0): PaginatedTaxonomies
+  taxonomy(limit: Int = 1000, offset: Int = 0, searchTerm: String): PaginatedTaxonomies
   "list all parents for a particular taxa"
   taxonomyTree(taxonomyId: Int!): PaginatedTaxonomyTree
   "List of all attributes in the system."
-  attributes(limit: Int = 500, offset: Int = 0): PaginatedAttributes
+  attributes(limit: Int = 1000, offset: Int = 0): PaginatedAttributes
   "List of all attributes that exist for a single taxa"
-  taxaAttributes(taxonomyId: Int, limit: Int = 500, offset: Int = 0): PaginatedAttributeValues
+  taxaAttributes(taxonomyId: Int, limit: Int = 1000, offset: Int = 0): PaginatedAttributeValues
   "List all the taxa within a specific translation (OTU)"
-  translationTaxa(limit: Int = 500, offset: Int = 0, translationId: Int!): PaginatedTranslationTaxa
+  translationTaxa(limit: Int = 1000, offset: Int = 0, translationId: Int!): PaginatedTranslationTaxa
   "List of all translations in the system."
   translations(limit: Int = 500, offset: Int = 0): PaginatedTranslations
   "List of all plankton samples in the system."
-  planktonSamples(limit: Int = 500, offset: Int = 0): PaginatedPlankton
+  planktonSamples(limit: Int = 1000, offset: Int = 0): PaginatedPlankton
   "List of all drift samples in the system."
-  driftSamples(limit: Int = 500, offset: Int = 0): PaginatedDrift
+  driftSamples(limit: Int = 1000, offset: Int = 0): PaginatedDrift
   "List of all fish samples in the system."
-  fishSamples(limit: Int = 500, offset: Int = 0): PaginatedFish
+  fishSamples(limit: Int = 1000, offset: Int = 0): PaginatedFish
   "List of all mass samples in the system."
-  massSamples(limit: Int = 500, offset: Int = 0): PaginatedMass
+  massSamples(limit: Int = 1000, offset: Int = 0): PaginatedMass
   "List all fish diet samples in the system"
-  fishDiet(limit: Int = 500, offset: Int = 0, sampleIds: [Int]): PaginatedFishDiet
+  fishDiet(limit: Int = 1000, offset: Int = 0, sampleIds: [Int]): PaginatedFishDiet
   "Sample organisms summed by taxonomy only. Includes both raw counts as well as counts corrected for lab and field split. Also includes both raw and corrected big rare counts."
-  sampleTaxaRaw(sampleIds: [Int], boxIds: [Int], projectIds: [Int]): PaginatedRawSampleTaxa
+  sampleTaxaRaw(sampleIds: [Int], boxIds: [Int], projectIds: [Int]): PaginatedSampleTaxa
   "Sample organisms summed by taxonomy, life stage and bug size. Includes both raw counts as well as counts corrected for lab and field split. Also includes both raw and corrected big rare counts."
   sampleTaxaGeneralized(sampleId: Int!): PaginatedGeneralizedSampleTaxa
   "Sample organisms converted to a translation (OTU). Rolls up counts to those taxa present in the translation and omits any organisms that don't roll up to a taxa in the translation."
-  sampleTaxaTranslation(sampleId: Int!, translationId: Int!): PaginatedSampleTranslationTaxa
+  sampleTaxaTranslation(sampleId: Int!, translationId: Int!): PaginatedSampleTaxa
   "Sample organisms converted to the translation (OTU) and then rarefied to the specified fixed count."
-  sampleTaxaTranslationRarefied(sampleId: Int!, translationId: Int!, fixedCount: Int!): PaginatedRarefiedSampleTaxa
+  sampleTaxaTranslationRarefied(sampleId: Int!, translationId: Int!, fixedCount: Int!): PaginatedSampleTaxa
   "Sample organisms within distance (meters) of a point (decimal degrees)"
-  pointTaxaRaw(longitude: Float!, latitude: Float!, distance: Float!): PaginatedRawSampleTaxa
+  pointTaxaRaw(longitude: Float!, latitude: Float!, distance: Float!): PaginatedSampleTaxa
   "Sample organisms within a polygon"
-  polygonTaxaRaw(polygon: String!): PaginatedRawSampleTaxa
-  metrics(limit: Int = 500, offset: Int = 0): PaginatedMetrics
+  polygonTaxaRaw(polygon: String!): PaginatedSampleTaxa
+  metrics(limit: Int = 1000, offset: Int = 0): PaginatedMetrics
   sampleMetrics(sampleIds: [Int], boxIds: [Int], projectIds: [Int], translationId: Int!, fixedCount: Int!): PaginatedMetricResult
 }
 
@@ -94,7 +90,7 @@ type Mutation {
   deleteProject(projectId: Int!): Int
 }
 
-type QueryDistance {
+input QueryDistance {
   latitude: Float!
   longitude: Float!
   distance: Float!
@@ -112,42 +108,38 @@ type Sample {
   sampleId: Int
   boxId: Int
   customerName: String
-  boxStateName: String
-  boxStateId: Int
-  submitterName: String
+  customerAbbreviation: String
+  submittedBy: String
+  boxState: String
   siteId: Int
   siteName: String
-  siteLatitude: Float
+  usState: String
+  siteLocation: String
   siteLongitude: Float
-  siteState: String
+  siteLatitude: Float
+  visitId: String
+  customerSiteCode: String
   sampleDate: String
-  sampleYear: Int
-  sampleLatitude: Float
-  sampleLongitude: Float
+  sampleTime: String
   sampleType: String
   sampleMethod: String
-  habitatName: String
+  habitat: String
+  sampleLocation: String
+  sampleLongitude: Float
+  sampleLatitude: Float
   area: Float
   fieldSplit: Float
+  fieldNotes: String
   labSplit: Float
   jarCount: Int
   qualitative: Boolean
-  mesh: Float
+  labNotes: String
+  mesh: Int
   createdDate: String
   updatedDate: String
+  sampleDateChanged: String
   qaSampleId: Int
-  diameter: Float
-  subSampleCount: Float
-  towLength: Float
-  volume: Float
-  aliquot: Float
-  siteInterval: Float
-  towType: String
-  netArea: Float
-  netDuration: Float
-  streamDepth: Float
-  netDepth: Float
-  netVelocity: Float
+  metadata: String
 }
 
 type Site {
@@ -207,7 +199,7 @@ type SiteInfo {
   "The string name of the waterbody on which the site occurs. Typicall this is the stream name."
   waterbodyName: String
   "The latest date and time that either the site location (point) or catchment (polygon) were changed."
-  geometryChanged: String
+  geographyChanged: String
   "The system generated date and time that the site record was created in the database."
   createdDate: String
   "The system generated date and time that the site record was last changed in the database."
@@ -223,7 +215,7 @@ type SiteInfo {
 Raw summary of organisms for a single sample. The data are returned with their original
 laboratory taxonomic identification.
 """
-type RawSampleTaxa {
+type SampleTaxa {
   "The sample to which the taxa belong"
   sampleId: Int
   "The taxa identified within the laboratory."
@@ -234,25 +226,8 @@ type RawSampleTaxa {
   levelId: Int
   "The taxonomic level of the taxa identified within the laboratory."
   levelName: String
-  "Sum of the split_counts recorded within the laboratory for this taxa. No other manipulation."
-  rawCount: Float
-  """
-  Sum of the split counts multiplied by the sample lab_split and field_split.
-  
-  corrected_count = sum(split_count) * (100 / lab_split) * (100 / field_split)
-  """
-  correctedCount: Float
-  "Sum of the big rare count within the laboratory for this taxa. No other manipulation."
-  rawBigRareCount: Int
-}
-
-type SampleTaxa {
-  sampleId: Int
-  taxonomyId: Int
-  scientificName: String
-  taxaLevelId: Int
-  taxaLevel: String
-  organismCount: Int
+  "Abundance for the specified taxa and lifestage"
+  abundance: Float
 }
 
 type GeneralizedSampleTaxa {
@@ -268,26 +243,6 @@ type GeneralizedSampleTaxa {
   rawCount: Float
   correctedCount: Float
   rawBigRareCount: Int
-}
-
-type TranslationSampleTaxa {
-  sampleId: Int
-  taxonomyId: Int
-  scientificName: String
-  aliasName: String
-  levelId: Int
-  levelName: String
-  rawCount: Float
-  correctedCount: Float
-  rawBigRareCount: Int
-}
-
-type RarefiedSampleTaxa {
-  taxonomyId: Int
-  scientificName: String
-  levelId: Int
-  levelName: String
-  organismCount: Int
 }
 
 type SampleInfo {
@@ -461,7 +416,6 @@ type Box {
 type Project {
   projectId: Int
   projectName: String
-  projectType: String
   isPrivate: Boolean
   contactId: Int
   contactName: String
@@ -493,22 +447,6 @@ type TaxonomyTree {
   levelId: Int
   levelName: String
   parentId: Int
-}
-
-type Predictor {
-  predictorId: Int
-  predictorName: String
-  abbreviation: String
-  description: String
-  source: String
-  units: String
-  calculationScript: String
-  predictorTypeId: Int
-  predictorTypeName: String
-  isTemporal: Boolean
-  updatedDate: String
-  createdDate: String
-  modelCount: Int
 }
 
 type Model {
@@ -546,10 +484,10 @@ type ModelInfo {
   extent: String
 }
 
-type ModelThreshold {
+type ModelCondition {
   modelId: Int
-  thresholdId: Int
-  threshold: String
+  conditionId: Int
+  condition: String
   displayText: String
   description: String
 }
@@ -557,13 +495,12 @@ type ModelThreshold {
 type Metric {
   metricId: Int
   metricName: String
-  metricTypeId: Int
-  typeName: String
-  translationId: Int
-  translationName: String
+  displayText: String
+  groupId: Int
+  groupName: String
   formulaId: Int
   formulaName: String
-  formulaCodeFunction: String
+  codeFunction: String
   isStandardized: Boolean
   perturbDirection: String
   description: String
@@ -597,14 +534,14 @@ type SitePredictorValue {
 }
 
 """
-Information about a model predictor.
+Information about a predictor.
 
 Each predictor can be associated with multiple models. Predictors can also
 be temporal, in which their values are associated with a particular sample,
 or they can be non-temporal, in which case their values are associated with
 sites.
 """
-type ModelPredictor {
+type Predictor {
   "The unique system generated identifier for the predictor."
   predictorId: Int
   "The unique textual name for the predictor."
@@ -634,6 +571,8 @@ type ModelPredictor {
   updatedDate: String
   "Optional name of the R function that performs the calculation for this predictor."
   calculationScript: String
+  "Source information about the predictors"
+  source: String
 }
 
 type Translation {
@@ -738,11 +677,6 @@ type PaginatedSamplePredictorValue {
   nextOffset: Int
 }
 
-type PaginatedModelPredictors {
-  records: [ModelPredictor]
-  nextOffset: Int
-}
-
 type PaginatedTranslations {
   records: [Translation]
   nextOffset: Int
@@ -753,11 +687,6 @@ type PaginatedTranslationTaxa {
   nextOffset: Int
 }
 
-type PaginatedRawSampleTaxa {
-  records: [RawSampleTaxa]
-  nextOffset: Int
-}
-
 type PaginatedSampleTaxa {
   records: [SampleTaxa]
   nextOffset: Int
@@ -765,16 +694,6 @@ type PaginatedSampleTaxa {
 
 type PaginatedGeneralizedSampleTaxa {
   records: [GeneralizedSampleTaxa]
-  nextOffset: Int
-}
-
-type PaginatedSampleTranslationTaxa {
-  records: [TranslationSampleTaxa]
-  nextOffset: Int
-}
-
-type PaginatedRarefiedSampleTaxa {
-  records: [RarefiedSampleTaxa]
   nextOffset: Int
 }
 
@@ -808,8 +727,8 @@ type PaginatedAttributeValues {
   nextOffset: Int
 }
 
-type PaginatedModelThresholds {
-  records: [ModelThreshold]
+type PaginatedModelConditions {
+  records: [ModelCondition]
   nextOffset: Int
 }
 
