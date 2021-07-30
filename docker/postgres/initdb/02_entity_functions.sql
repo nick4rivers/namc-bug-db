@@ -40,3 +40,59 @@ select entity_tree.entity_id,
        entity_tree.parent_id
 from entity_tree;
 $$;
+
+drop function if exists entity.fn_organizations;
+create or replace function entity.gn_organizations(p_limit int, p_offset int, p_search_term text = null)
+    returns table
+            (
+                entity_id         smallint,
+                organization_name varchar,
+                organization_type varchar,
+                is_lab            bool,
+                address1          varchar,
+                address2          varchar,
+                city              varchar,
+                us_state          varchar,
+                country           varchar,
+                zip_code          varchar,
+                phone             varchar,
+                fax               varchar,
+                website           varchar,
+                notes             text,
+                metadata          text,
+                created_date      text,
+                updated_date      text
+            )
+    immutable
+    language sql
+as
+$$
+select e.entity_id,
+       o.organization_name,
+       t.organization_type_name,
+       o.is_lab,
+       e.address1,
+       e.address2,
+       e.city,
+       s.state_name,
+       e.country_id,
+       e.zip_code,
+       e.phone,
+       e.fax,
+       e.website,
+       e.notes,
+       e.metadata,
+       e.created_date,
+       e.updated_date
+from (
+         select *
+         from entity.organizations
+         where ((organization_name ilike p_search_term) or (p_search_term is null))
+         order by entity_id
+         limit p_limit offset p_offset
+     ) o
+         inner join entity.entities e on o.entity_id = e.entity_id
+         inner join entity.organization_types t on o.organization_type_id = t.organization_type_id
+         inner join geo.counties c on e.country_id = c.county_id
+         left join geo.states s on e.state_id = s.state_id
+$$;
