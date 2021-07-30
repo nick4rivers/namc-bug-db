@@ -57,17 +57,18 @@ export default {
             return createPagination<t.Sample>(data, limit, offset)
         },
 
-        organizations: async (obj, { limit, offset, searchTerm }, { user }): Promise<t.Organization> => {
+        organizations: async (
+            obj,
+            { limit, offset, searchTerm },
+            { user }
+        ): Promise<t.PaginatedRecords<t.Organization>> => {
             loggedInGate(user)
+
+            limitOffsetCheck(limit, graphql.queryLimits.organizations, offset)
             const pool = await getPool()
             const data = await fnQuery(pool, { name: 'entity.fn_organizations', args: [limit, offset, searchTerm] })
 
-            if (data.length !== 1) {
-                throw new Error('Record not found')
-            }
-
-            const returnVal = data.map(util.snake2camel)[0] as t.Organization
-            return returnVal
+            return createPagination<t.Organization>(data, limit, offset)
         },
 
         sites: async (
