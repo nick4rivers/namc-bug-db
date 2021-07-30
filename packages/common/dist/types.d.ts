@@ -453,3 +453,22 @@ export declare type FishDiet = {
     count: number;
     weight: number;
 };
+export declare type Organization = {
+    entityId: number;
+    organizationName: string;
+    organizationType: string;
+    isLab: boolean;
+    address1: string;
+    address2: string;
+    city: string;
+    usState: string;
+    country: string;
+    zipCode: string;
+    phone: string;
+    fax: string;
+    website: string;
+    notes: string;
+    metadata: string;
+    createdDate: string;
+    updatedDate: string;
+};

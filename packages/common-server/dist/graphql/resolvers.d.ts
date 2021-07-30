@@ -15,6 +15,13 @@ declare const _default: {
         }, { user }: {
             user: any;
         }) => Promise<t.PaginatedRecords<t.Sample>>;
+        organizations: (obj: any, { limit, offset, searchTerm }: {
+            limit: any;
+            offset: any;
+            searchTerm: any;
+        }, { user }: {
+            user: any;
+        }) => Promise<t.Organization>;
         sites: (obj: any, { limit, offset, sampleIds, boxIds, projectIds, entityIds, siteIds, polygon, pointDistance }: {
             limit: any;
             offset: any;

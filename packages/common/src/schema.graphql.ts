@@ -10,6 +10,7 @@ export const queryLimits = {
     taxonomy: 1000,
     predictors: 500,
     models: 500,
+    organizations: 500,
     sitePredictorValues: 500,
     modelResults: 500,
     translations: 500,
@@ -25,6 +26,9 @@ const typeDefs = gql`
     type Query {
         # Get a project and associated metadata
         auth: AuthParams
+
+        "API endpoint that calls entity.fn_organizations"
+        organizations(limit: Int = ${queryLimits.organizations}, offset: Int = 0, searchTerm: String): PaginatedOrganizations
 
         ####################################################################################################################################################################################
         # Geo queries
@@ -777,7 +781,27 @@ type FishDiet {
     metricId:    Int
     metricName:  String
     metricValue: String
-}
+  }
+
+  type Organization {
+      entityId: Int
+      organizationName: String
+      organizationType: String
+      isLab: Boolean
+      address1: String
+      address2: String
+      city: String
+      usState: String
+      country: String
+      zipCode: String
+      phone: String
+      fax: String
+      website: String
+      notes: String
+      metadata: String
+      createdDate: String
+      updatedDate: String
+    }
 
 
     # Pagination Types
@@ -901,6 +925,13 @@ type FishDiet {
         records: [FishDiet]
         nextOffset: Int
     }
+
+    type PaginatedOrganizations {
+        records: [Organization]
+        nextOffset: Int
+    }
+
+
 `
 
 export default typeDefs

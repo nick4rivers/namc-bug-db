@@ -128,6 +128,30 @@ exports.default = {
                 });
             });
         },
+        organizations: function (obj, _a, _b) {
+            var limit = _a.limit, offset = _a.offset, searchTerm = _a.searchTerm;
+            var user = _b.user;
+            return __awaiter(void 0, void 0, void 0, function () {
+                var pool, data, returnVal;
+                return __generator(this, function (_c) {
+                    switch (_c.label) {
+                        case 0:
+                            resolverUtil_1.loggedInGate(user);
+                            return [4, db_1.getPool()];
+                        case 1:
+                            pool = _c.sent();
+                            return [4, db_1.fnQuery(pool, { name: 'entity.fn_organizations', args: [limit, offset, searchTerm] })];
+                        case 2:
+                            data = _c.sent();
+                            if (data.length !== 1) {
+                                throw new Error('Record not found');
+                            }
+                            returnVal = data.map(common_1.util.snake2camel)[0];
+                            return [2, returnVal];
+                    }
+                });
+            });
+        },
         sites: function (obj, _a, _b) {
             var limit = _a.limit, offset = _a.offset, sampleIds = _a.sampleIds, boxIds = _a.boxIds, projectIds = _a.projectIds, entityIds = _a.entityIds, siteIds = _a.siteIds, polygon = _a.polygon, pointDistance = _a.pointDistance;
             var user = _b.user;

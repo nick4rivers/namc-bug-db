@@ -6,6 +6,7 @@ export declare const queryLimits: {
     taxonomy: number;
     predictors: number;
     models: number;
+    organizations: number;
     sitePredictorValues: number;
     modelResults: number;
     translations: number;

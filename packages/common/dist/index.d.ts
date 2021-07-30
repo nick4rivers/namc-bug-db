@@ -10,6 +10,7 @@ export declare const graphql: {
         taxonomy: number;
         predictors: number;
         models: number;
+        organizations: number;
         sitePredictorValues: number;
         modelResults: number;
         translations: number;

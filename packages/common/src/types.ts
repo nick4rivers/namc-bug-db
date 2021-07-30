@@ -315,7 +315,7 @@ export type SamplePredictorValue = {
     status: string
 }
 
-export declare type Translation = {
+export type Translation = {
     translationId: number
     translationName: string
     description: string
@@ -325,7 +325,7 @@ export declare type Translation = {
     updatedDate: string
 }
 
-export declare type TranslationTaxa = {
+export type TranslationTaxa = {
     translationId: number
     translationName: string
     taxonomyId: number
@@ -336,7 +336,7 @@ export declare type TranslationTaxa = {
     isFinal: boolean
 }
 
-export declare type PlanktonSample = {
+export type PlanktonSample = {
     sampleId: number
     diameter: number
     subSampleCount: number
@@ -348,7 +348,7 @@ export declare type PlanktonSample = {
     updatedDate: string
 }
 
-export declare type DriftSample = {
+export type DriftSample = {
     sampleId: number
     netArea: number
     netDuration: number
@@ -358,7 +358,7 @@ export declare type DriftSample = {
     updatedDate: string
 }
 
-export declare type FishSample = {
+export type FishSample = {
     sampleId: number
     taxonomyId: number
     scientificName: string
@@ -369,7 +369,7 @@ export declare type FishSample = {
     updatedDate: string
 }
 
-export declare type MassSample = {
+export type MassSample = {
     sampleId: number
     typeId: number
     typeAbbreviation: string
@@ -381,7 +381,7 @@ export declare type MassSample = {
     updatedDate: string
 }
 
-export declare type SampleTaxa = {
+export type SampleTaxa = {
     sampleId: number
     taxonomyId: number
     scientificName: string
@@ -390,7 +390,7 @@ export declare type SampleTaxa = {
     abundance: number
 }
 
-export declare type GeneralizedSampleTaxa = {
+export type GeneralizedSampleTaxa = {
     sampleId: number
     taxonomyId: number
     scientificName: string
@@ -405,7 +405,7 @@ export declare type GeneralizedSampleTaxa = {
     rawBigRareCount: number
 }
 
-export declare type Attribute = {
+export type Attribute = {
     attributeId: number
     attributeName: string
     attributeType: string
@@ -416,7 +416,7 @@ export declare type Attribute = {
     updatedDate: string
 }
 
-export declare type AttributeValue = {
+export type AttributeValue = {
     taxonomyId: number
     scientificName: string
     levelId: number
@@ -427,7 +427,7 @@ export declare type AttributeValue = {
     attributeValue: string
 }
 
-export declare type Metric = {
+export type Metric = {
     metricId: number
     metricName: string
     displayText: string
@@ -444,7 +444,7 @@ export declare type Metric = {
     updatedDate: string
 }
 
-export declare type MetricResult = {
+export type MetricResult = {
     sampleId: number
     groupId: number
     groupName: string
@@ -453,7 +453,7 @@ export declare type MetricResult = {
     metricValue: string
 }
 
-export declare type ModelResult = {
+export type ModelResult = {
     sampleId: number
     siteId: number
     siteName: string
@@ -469,7 +469,7 @@ export declare type ModelResult = {
     updatedDate: string
 }
 
-export declare type FishDiet = {
+export type FishDiet = {
     sampleId: number
     sampleDate: string
     siteId: number
@@ -491,4 +491,24 @@ export declare type FishDiet = {
     lifeStage: string
     count: number
     weight: number
+}
+
+export type Organization = {
+    entityId: number
+    organizationName: string
+    organizationType: string
+    isLab: boolean
+    address1: string
+    address2: string
+    city: string
+    usState: string
+    country: string
+    zipCode: string
+    phone: string
+    fax: string
+    website: string
+    notes: string
+    metadata: string
+    createdDate: string
+    updatedDate: string
 }
