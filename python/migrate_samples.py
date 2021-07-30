@@ -19,19 +19,32 @@ def migrate(mscurs, pgcurs):
         'mass_types': lookup_data(pgcurs, 'sample.mass_types', 'mass_type_name')
     }
 
-    migrate_samples(mscurs, pgcurs)
-    process_table(mscurs, pgcurs, 'PilotDB.dbo.BugDrift', 'sample.drift', drift_callback, None)
-    process_table(mscurs, pgcurs, 'PilotDB.dbo.BugPlankton', 'sample.plankton', plankton_callback, None)
+    for db_name in ('PilotDB', 'BugLab'):
 
-    # Sample ID 16988 exists in BugOMatter but not in BugSample. Use inner join to omit this record
-    process_query(mscurs, pgcurs, 'SELECT B.* FROM PilotDB.dbo.BugOMatter B INNER JOIN PilotDB.dbo.BugSample S ON B.SampleID = S.SampleID',
-                  'sample.mass', mass_callback, lookup)
+        lookup['sample_ids'] = migrate_samples(db_name, mscurs, pgcurs)
 
-    # Data inserted with manual IDs need to reset the table sequence
-    reset_sequence(pgcurs, 'sample.samples', 'sample_id')
+        process_table(mscurs, pgcurs, '{}.dbo.BugDrift'.format(db_name), 'sample.drift', drift_callback, lookup)
+        process_table(mscurs, pgcurs, '{}.dbo.BugPlankton'.format(db_name), 'sample.plankton', plankton_callback, lookup)
+
+        # Sample ID 16988 exists in BugOMatter but not in BugSample. Use inner join to omit this record
+        process_query(mscurs, pgcurs, 'SELECT B.* FROM {0}.dbo.BugOMatter B INNER JOIN {0}.dbo.BugSample S ON B.SampleID = S.SampleID'.format(db_name), 'sample.mass', mass_callback, lookup)
+
+        # Data inserted with manual IDs need to reset the table sequence
+        reset_sequence(pgcurs, 'sample.samples', 'sample_id')
 
 
-def migrate_samples(mscurs, pgcurs):
+def migrate_samples(db_name, mscurs, pgcurs):
+    """
+    db_name: PilotDB or BugLab
+    """
+    issue_new_sample_ids = db_name.lower() == 'pilotdb'
+    box_table_name = 'BoxTracking' if db_name.lower() == 'pilotdb' else 'BugBoxes'
+
+    # This dictionary maps BugLab SampleIDs to new postgres IDs.
+    # It is only used when issusing new IDs for BugLab. When 
+    # processing PilotDB samples this dictionary will return empty.
+    # This is because BugLab SampleIDs might overlap with PilotDB.
+    new_sample_ids = {}
 
     labs = lookup_data(pgcurs, 'entity.organizations', 'organization_name', 'is_lab = True')
     methods = lookup_data(pgcurs, 'sample.sample_methods', 'sample_method_name')
@@ -66,12 +79,14 @@ def migrate_samples(mscurs, pgcurs):
                 Count(BD.SampleID)    Drift,
                 Count(BS.SampleID)  Stomachs
          FROM PilotDB.dbo.BugSample S
-                  LEFT JOIN PilotDB.dbo.BugPlankton BP on S.SampleID = BP.SampleID
-                  LEFT JOIN PilotDB.dbo.BugDrift BD ON S.SampleID = BD.SampleID
-                  LEFT JOIN PilotDB.dbo.BugStomachs BS on S.SampleID = BS.SampleID
+                  INNER JOIN {0}.dbo.{1} B on S.BoxID = b.BoxId
+                  LEFT JOIN {0}.dbo.BugPlankton BP on S.SampleID = BP.SampleID
+                  LEFT JOIN {0}.dbo.BugDrift BD ON S.SampleID = BD.SampleID
+                  LEFT JOIN {0}.dbo.BugStomachs BS on S.SampleID = BS.SampleID
+        {2}
          GROUP BY S.SampleID
      ) C ON S.SampleID = C.SampleID
-    """)
+    """.format(db_name, box_table_name, ' WHERE (Complete = 0) and ((Active <> 0) or (OnHold <> 0) or (waiting <> 0))' if issue_new_sample_ids else ''))
 
     counter = 0
     progbar = ProgressBar(row_count, 50, "samples")
@@ -100,14 +115,22 @@ def migrate_samples(mscurs, pgcurs):
         elif msdata['Stomachs'] > 0:
             sample_type = 'Fish Diet'
 
-        metadata = {}
+        # Initialize the metadata with some helpful information about where the sample
+        # came from; whether its from Pilot or BugLab as well as the original SampleID.
+        # PilotDB SampleIDs are retained. BugLab SampleIDs are discarded and a new one
+        # assigned.
+        metadata = {
+            "OriginalDatabase": db_name,
+            "OriginalSampleID": msdata["SampleID"]
+        }
+
         if msdata['Station'] and not site_id:
             # Sample refers to a site that has a missing location and is not in new DB. Store metadata to keep track
             add_metadata(metadata, 'missingStation', station)
             # continue
 
         data = {
-            'sample_id': msdata['SampleID'],
+            'sample_id': None if issue_new_sample_ids else msdata['SampleID'],
             'box_id': msdata['BoxID'],
             'sample_date': msdata['SampDate'],
             'sample_time': sanitize_time(msdata['SampleTime']),
@@ -133,7 +156,7 @@ def migrate_samples(mscurs, pgcurs):
             # 'id_start_date': None,
             # 'id_end_date': None,
             'qa_sample_id': None,
-            # 'jar_count': msdata['JarCount'],
+            'jar_count': msdata['JarCount'] if 'JarCount' in msdata else None,
             # 'lab_id': lab_id,
             'metadata': metadata
         }
@@ -141,21 +164,26 @@ def migrate_samples(mscurs, pgcurs):
         if not columns:
             columns = list(data.keys())
 
-        block_data.append([data[key] for key in columns])
+        postgres_id = insert_row(pgcurs, 'sample.samples', data, 'sample_id')
 
-        if len(block_data) == block_size:
-            insert_many_rows(pgcurs, table_name, columns, block_data)
-            block_data = []
-            progbar.update(counter)
+        if issue_new_sample_ids:
+            new_sample_ids[row['SampleID']] = postgres_id
 
+        # block_data.append([data[key] for key in columns])
+
+        # if len(block_data) == block_size:
+        #     insert_many_rows(pgcurs, table_name, columns, block_data)
+        #     block_data = []
+        progbar.update(counter)
         counter += 1
 
     # insert remaining rows
-    if len(block_data) > 0:
-        insert_many_rows(pgcurs, table_name, columns, block_data)
+    # if len(block_data) > 0:
+    #     insert_many_rows(pgcurs, table_name, columns, block_data)
 
     progbar.finish()
     log_row_count(pgcurs, table_name, row_count)
+    return new_sample_ids
 
 
 def convert_percent_to_ratio(msdata, field_name, metadata):
@@ -187,8 +215,12 @@ def drift_callback(msdata, lookup):
 
     # PilotDB.BugSample.SampleID = 1271 has NetVelo 98 which should be 0.98 m/s (issue #36)
 
+    # Lookup the new postgres SampleID if BugLab data and substitues are available
+    sample_ids = lookup['sample_ids']
+    sample_id = sample_ids[msdata['SampleID']] if msdata['SampleID'] in sample_ids else msdata['SampleID']
+
     return {
-        'sample_id': msdata['SampleID'],
+        'sample_id': sample_id,
         'net_area': math.pi * msdata['Diameter']**2 if msdata['Diameter'] else None,
         'net_duration': msdata['NetTime'],
         'stream_depth': msdata['StreamDepth'],
@@ -201,8 +233,12 @@ def plankton_callback(msdata, lookup):
 
     tow_type = msdata['TowType'][0].upper() + msdata['TowType'][1:].lower() if msdata['TowType'] else None
 
+    # Lookup the new postgres SampleID if BugLab data and substitues are available
+    sample_ids = lookup['sample_ids']
+    sample_id = sample_ids[msdata['SampleID']] if msdata['SampleID'] in sample_ids else msdata['SampleID']
+
     return {
-        'sample_id': msdata['SampleID'],
+        'sample_id': sample_id,
         'diameter': msdata['Diameter'] if msdata['Diameter'] and msdata['Diameter'] > 0 else None,
         'sub_sample_count': msdata['SubSampleCount'],
         'tow_length': msdata['TowLength'] if msdata['TowLength'] and msdata['TowLength'] > 0 else None,
@@ -218,8 +254,12 @@ def mass_callback(msdata, lookup):
     type_id = get_db_id(lookup['mass_types'], 'mass_type_id', ['mass_type_name', 'abbreviation'], msdata['Type'])
     method_id = get_db_id(lookup['mass_methods'], 'mass_method_id', ['abbreviation'], 'AFDM')
 
+    # Lookup the new postgres SampleID if BugLab data and substitues are available
+    sample_ids = lookup['sample_ids']
+    sample_id = sample_ids[msdata['SampleID']] if msdata['SampleID'] in sample_ids else msdata['SampleID'] 
+    
     return {
-        'sample_id': msdata['SampleID'],
+        'sample_id': sample_id,
         'mass_type_id': type_id,
         'mass_method_id': method_id,
         'mass': msdata['AFDM']

@@ -140,10 +140,10 @@ def load_box_data(mscurs, boxes, sql, fields, box_states, state):
 
         box_id = msdata['BoxId']
 
-        if box_id in boxes:
-            # Warn if the box has already been loaded. Should load Pilot first and then BugLab.
-            log.warning('Duplicate Box ID {} found'.format(box_id))
-            continue
+        # if box_id not in boxes:
+        #     # Warn if the box has already been loaded. Should load Pilot first and then BugLab.
+        #     log.info('New Box ID {} found in both BugLab and PilotDB'.format(box_id))
+        #     continue
 
         boxes[box_id] = {field: msdata[field] for field in fields}
         boxes[box_id]['box_status_id'] = box_states[state]
