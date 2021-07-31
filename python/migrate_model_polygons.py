@@ -52,12 +52,14 @@ statewide_models = {
 }
 
 
-def migrate_model_polygons(pgcurs, geojson_path):
+def model_extent_polygons(pgcurs, geojson_path):
+
+    log = Logger('Model Polygons')
+    log.info('Importing model polygons from {}'.format(geojson_path))
 
     with open(geojson_path) as f:
         features = json.load(f)["features"]
 
-    log = Logger('Model Polygons')
     log.info('{} model polygons retrieved from GeoJSON at {}'.format(len(features), geojson_path))
 
     counter = 0
@@ -65,7 +67,7 @@ def migrate_model_polygons(pgcurs, geojson_path):
     unsuccessful = 0
     progbar = ProgressBar(len(features), 50, "Model Polygons")
     for feature in features:
-        model = feature['properties']['Model']
+        model = feature['properties']['model_id']
 
         # Look up which model(s) this GIS record applies to
         if model in model_names:

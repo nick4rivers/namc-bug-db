@@ -1,4 +1,6 @@
-import pyodbc
+""" Migrates BugData organism counts from SQL Server to Postgres.
+Reused for data from PilotDB and BugLab
+"""
 from lib.logger import Logger
 from lib.progress_bar import ProgressBar
 from lookup_data import get_db_id
@@ -6,31 +8,41 @@ from utilities import log_record_count, format_values, sanitize_string
 from postgres_lookup_data import process_query, lookup_data
 
 
-def migrate(mscurs, pgcurs):
+def migrate(mscurs, pgcurs, db_name, sample_ids):
+    """Main routine for import BugData from SQL Server to Postgres"""
 
     log = Logger('Organisms')
-    log.info('starting organisms')
+    log.info('starting organisms from {}'.format(db_name))
 
     lookup = {
         'life_stages': lookup_data(pgcurs, 'taxa.life_stages', 'abbreviation'),
-        'taxa': lookup_data(pgcurs, 'taxa.taxonomy', 'taxonomy_id')
+        'taxa': lookup_data(pgcurs, 'taxa.taxonomy', 'taxonomy_id'),
+        'sample_ids': sample_ids
     }
 
     # Sum the counts over the required unique index. Join to Samples so we only get
     # records that also have valid samples.
     sql = """SELECT B.SampleID, Code, LifeStage, BugSize, Sum(SplitCount) SplitCount, Sum(BigRareCount) BigRareCount
-             FROM PilotDB.dbo.BugData B INNER JOIN PilotDB.dbo.BugSample BS on B.SampleID = BS.SampleID
-             GROUP BY B.SampleID, Code, LifeStage, BugSize"""
+             FROM {0}.dbo.BugData B INNER JOIN {0}.dbo.BugSample BS on B.SampleID = BS.SampleID
+             GROUP BY B.SampleID, Code, LifeStage, BugSize""".format(db_name)
 
     process_query(mscurs, pgcurs, sql, 'sample.organisms', organisms_callback, lookup)
     # process_notes(pgcurs)
 
 
 def organisms_callback(msdata, lookup):
+    """callback for processing a single organism record in BugData"""
+
+    # Lookup the new postgres SampleID
+    # For Pilot these should match one to one. For BugLab these will map to newly issued postgres IDs
+    # If the SampleID is not found then skip record. It could be a legacy sample in BugLab that was
+    # not removed. i.e. Its not associated with an active, onhold or pending box.
+    if msdata['SampleID'] not in lookup['sample_ids']:
+        return None
 
     original_life_stage = msdata['LifeStage']
 
-    life_stage_id = get_db_id(lookup['life_stages'], 'life_stage_id', ['abbreviation'], original_life_stage)
+    life_stage_id = get_db_id(lookup['life_stages'], 'life_stage_id', ['abbreviation'], original_life_stage, False, False)
     if not life_stage_id:
         life_stage_id = lookup['life_stages']['U']['life_stage_id']
 
@@ -43,7 +55,7 @@ def organisms_callback(msdata, lookup):
     # but notes are post-processed using a different method
 
     return {
-        'sample_id': int(msdata['SampleID']),
+        'sample_id': lookup['sample_ids'][int(msdata['SampleID'])],
         'taxonomy_id': int(msdata['Code']),
         'life_stage_id': life_stage_id,
         'bug_size': msdata['BugSize'] if msdata['BugSize'] and msdata['BugSize'] > 0 else None,
@@ -53,6 +65,7 @@ def organisms_callback(msdata, lookup):
 
 
 def process_notes(pgcurs):
+    """ Splits the BugData notes into their own table"""
 
     # Get the official notes lookups and convert to lower
     note_types = lookup_data(pgcurs, 'sample.note_types', 'abbreviation')

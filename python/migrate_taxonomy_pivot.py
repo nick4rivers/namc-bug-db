@@ -9,6 +9,8 @@ from postgres_lookup_data import lookup_data, process_table, process_query
 
 def migrate(mscurs, pgcurs):
 
+    reset_sequence(pgcurs, 'taxa.synonyms', 'synonym_id')
+
     existing_taxa = lookup_data(pgcurs, 'taxa.taxonomy', 'taxonomy_id')
 
     process_table(mscurs, pgcurs, 'PilotDB.taxa.synonym', 'taxa.synonyms', synonym_callback, existing_taxa)

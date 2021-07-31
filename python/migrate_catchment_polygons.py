@@ -7,7 +7,7 @@ from lib.logger import Logger
 from lib.progress_bar import ProgressBar
 
 
-def migrate_catchment_polygons(pgcurs, geojson_path):
+def site_catchment_polygons(pgcurs, geojson_path):
 
     with open(geojson_path) as f:
         features = json.load(f)["features"]

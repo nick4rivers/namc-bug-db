@@ -1,47 +1,49 @@
+"""
+Import samples and sample side tables from both PilotDB and BugLab
+"""
 import math
-import pyodbc
 from lib.logger import Logger
 from lib.progress_bar import ProgressBar
-from utilities import sanitize_string_col, sanitize_string, sanitize_time, add_metadata, format_values, log_record_count
+from utilities import sanitize_string_col, sanitize_string, sanitize_time, add_metadata, log_record_count
 from utilities import reset_sequence
-from postgres_lookup_data import lookup_data, insert_row, log_row_count, insert_many_rows, process_table, process_query
+from postgres_lookup_data import lookup_data, insert_row, log_row_count, process_table, process_query
 from lookup_data import get_db_id
 
-table_name = 'sample.samples'
 
-block_size = 5000
-
-
-def migrate(mscurs, pgcurs):
+def migrate(mscurs, pgcurs, db_name):
 
     lookup = {
         'mass_methods': lookup_data(pgcurs, 'sample.mass_methods', 'mass_method_name'),
         'mass_types': lookup_data(pgcurs, 'sample.mass_types', 'mass_type_name')
     }
 
-    for db_name in ('PilotDB', 'BugLab'):
+    # BugLab is processed second and needs to issue new Sample IDs
+    reset_sequence(pgcurs, 'sample.samples', 'sample_id')
 
-        lookup['sample_ids'] = migrate_samples(db_name, mscurs, pgcurs)
+    lookup['sample_ids'] = migrate_samples(db_name, mscurs, pgcurs)
 
-        process_table(mscurs, pgcurs, '{}.dbo.BugDrift'.format(db_name), 'sample.drift', drift_callback, lookup)
-        process_table(mscurs, pgcurs, '{}.dbo.BugPlankton'.format(db_name), 'sample.plankton', plankton_callback, lookup)
+    process_table(mscurs, pgcurs, '{}.dbo.BugDrift'.format(db_name), 'sample.drift', drift_callback, lookup)
+    process_table(mscurs, pgcurs, '{}.dbo.BugPlankton'.format(db_name), 'sample.plankton', plankton_callback, lookup)
 
-        # Sample ID 16988 exists in BugOMatter but not in BugSample. Use inner join to omit this record
-        process_query(mscurs, pgcurs, 'SELECT B.* FROM {0}.dbo.BugOMatter B INNER JOIN {0}.dbo.BugSample S ON B.SampleID = S.SampleID'.format(db_name), 'sample.mass', mass_callback, lookup)
+    # Sample ID 16988 exists in BugOMatter but not in BugSample. Use inner join to omit this record
+    process_query(mscurs, pgcurs, 'SELECT B.* FROM {0}.dbo.BugOMatter B INNER JOIN {0}.dbo.BugSample S ON B.SampleID = S.SampleID'.format(db_name), 'sample.mass', mass_callback, lookup)
 
-        # Data inserted with manual IDs need to reset the table sequence
-        reset_sequence(pgcurs, 'sample.samples', 'sample_id')
+    # Data inserted with manual IDs need to reset the table sequence
+    reset_sequence(pgcurs, 'sample.samples', 'sample_id')
+
+    # Subsequent processes need the sample ID mapping
+    return lookup['sample_ids']
 
 
 def migrate_samples(db_name, mscurs, pgcurs):
     """
     db_name: PilotDB or BugLab
     """
-    issue_new_sample_ids = db_name.lower() == 'pilotdb'
+    issue_new_sample_ids = db_name.lower() == 'buglab'
     box_table_name = 'BoxTracking' if db_name.lower() == 'pilotdb' else 'BugBoxes'
 
     # This dictionary maps BugLab SampleIDs to new postgres IDs.
-    # It is only used when issusing new IDs for BugLab. When 
+    # It is only used when issusing new IDs for BugLab. When
     # processing PilotDB samples this dictionary will return empty.
     # This is because BugLab SampleIDs might overlap with PilotDB.
     new_sample_ids = {}
@@ -67,18 +69,15 @@ def migrate_samples(db_name, mscurs, pgcurs):
             if 'employeeId2' in metadata:
                 employees[int(metadata['employeeId2'])] = row['entity_id']
 
-    row_count = log_record_count(mscurs, 'PilotDB.dbo.BugSample')
-
-    mscurs.execute("""
-    SELECT S.*, NULL AS LabName, Plankton, Drift, Stomachs
-    FROM PilotDB.dbo.BugSample S
+    sql = """SELECT TOP 10 S.*, NULL AS LabName, Plankton, Drift, Stomachs
+    FROM {0}.dbo.BugSample S
          INNER JOIN
      (
          SELECT S.SampleID,
                 Count(BP.SampleID)    Plankton,
                 Count(BD.SampleID)    Drift,
                 Count(BS.SampleID)  Stomachs
-         FROM PilotDB.dbo.BugSample S
+         FROM {0}.dbo.BugSample S
                   INNER JOIN {0}.dbo.{1} B on S.BoxID = b.BoxId
                   LEFT JOIN {0}.dbo.BugPlankton BP on S.SampleID = BP.SampleID
                   LEFT JOIN {0}.dbo.BugDrift BD ON S.SampleID = BD.SampleID
@@ -86,11 +85,13 @@ def migrate_samples(db_name, mscurs, pgcurs):
         {2}
          GROUP BY S.SampleID
      ) C ON S.SampleID = C.SampleID
-    """.format(db_name, box_table_name, ' WHERE (Complete = 0) and ((Active <> 0) or (OnHold <> 0) or (waiting <> 0))' if issue_new_sample_ids else ''))
+    """.format(db_name, box_table_name, ' WHERE (Complete = 0) and ((Active <> 0) or (OnHold <> 0) or (waiting <> 0))' if issue_new_sample_ids else '')
 
+    row_count = log_record_count(mscurs, 'Samples', 'SELECT count(*) FROM ({}) s'.format(sql))
+
+    mscurs.execute(sql)
     counter = 0
     progbar = ProgressBar(row_count, 50, "samples")
-    block_data = []
     columns = None
     for msrow in mscurs.fetchall():
         msdata = dict(zip([t[0] for t in msrow.cursor_description], msrow))
@@ -130,7 +131,6 @@ def migrate_samples(db_name, mscurs, pgcurs):
             # continue
 
         data = {
-            'sample_id': None if issue_new_sample_ids else msdata['SampleID'],
             'box_id': msdata['BoxID'],
             'sample_date': msdata['SampDate'],
             'sample_time': sanitize_time(msdata['SampleTime']),
@@ -156,39 +156,32 @@ def migrate_samples(db_name, mscurs, pgcurs):
             # 'id_start_date': None,
             # 'id_end_date': None,
             'qa_sample_id': None,
-            'jar_count': msdata['JarCount'] if 'JarCount' in msdata else None,
+            'jar_count': msdata['JarCount'] if 'JarCount' in msdata else 1,
             # 'lab_id': lab_id,
             'metadata': metadata
         }
+
+        if issue_new_sample_ids is False:
+            data['sample_id'] = msdata['SampleID']
 
         if not columns:
             columns = list(data.keys())
 
         postgres_id = insert_row(pgcurs, 'sample.samples', data, 'sample_id')
 
-        if issue_new_sample_ids:
-            new_sample_ids[row['SampleID']] = postgres_id
+        new_sample_ids[msdata['SampleID']] = postgres_id
 
-        # block_data.append([data[key] for key in columns])
-
-        # if len(block_data) == block_size:
-        #     insert_many_rows(pgcurs, table_name, columns, block_data)
-        #     block_data = []
         progbar.update(counter)
         counter += 1
 
-    # insert remaining rows
-    # if len(block_data) > 0:
-    #     insert_many_rows(pgcurs, table_name, columns, block_data)
-
     progbar.finish()
-    log_row_count(pgcurs, table_name, row_count)
+    log_row_count(pgcurs, 'sample.samples', row_count)
     return new_sample_ids
 
 
 def convert_percent_to_ratio(msdata, field_name, metadata):
     """Used to convert LabSplit and FieldSplit from
-    percentages to ratios. Also converts NULLs and 
+    percentages to ratios. Also converts NULLs and
     negative values to zero.
 
     Args:
@@ -212,6 +205,7 @@ def convert_percent_to_ratio(msdata, field_name, metadata):
 
 
 def drift_callback(msdata, lookup):
+    """Process drift sample side table"""
 
     # PilotDB.BugSample.SampleID = 1271 has NetVelo 98 which should be 0.98 m/s (issue #36)
 
@@ -230,15 +224,21 @@ def drift_callback(msdata, lookup):
 
 
 def plankton_callback(msdata, lookup):
+    """
+    process plankton sample side table
+    """
 
     tow_type = msdata['TowType'][0].upper() + msdata['TowType'][1:].lower() if msdata['TowType'] else None
 
-    # Lookup the new postgres SampleID if BugLab data and substitues are available
-    sample_ids = lookup['sample_ids']
-    sample_id = sample_ids[msdata['SampleID']] if msdata['SampleID'] in sample_ids else msdata['SampleID']
+    # Lookup the new postgres SampleID
+    # For Pilot these should match one to one. For BugLab these will map to newly issued postgres IDs
+    # If the SampleID is not found then skip record. It could be a legacy sample in BugLab that was
+    # not removed. i.e. Its not associated with an active, onhold or pending box.
+    if msdata['SampleID'] not in lookup['sample_ids']:
+        return None
 
     return {
-        'sample_id': sample_id,
+        'sample_id': lookup['sample_ids'][msdata['SampleID']],
         'diameter': msdata['Diameter'] if msdata['Diameter'] and msdata['Diameter'] > 0 else None,
         'sub_sample_count': msdata['SubSampleCount'],
         'tow_length': msdata['TowLength'] if msdata['TowLength'] and msdata['TowLength'] > 0 else None,
@@ -250,16 +250,20 @@ def plankton_callback(msdata, lookup):
 
 
 def mass_callback(msdata, lookup):
+    """Process mass side table"""
 
     type_id = get_db_id(lookup['mass_types'], 'mass_type_id', ['mass_type_name', 'abbreviation'], msdata['Type'])
     method_id = get_db_id(lookup['mass_methods'], 'mass_method_id', ['abbreviation'], 'AFDM')
 
-    # Lookup the new postgres SampleID if BugLab data and substitues are available
-    sample_ids = lookup['sample_ids']
-    sample_id = sample_ids[msdata['SampleID']] if msdata['SampleID'] in sample_ids else msdata['SampleID'] 
-    
+    # Lookup the new postgres SampleID
+    # For Pilot these should match one to one. For BugLab these will map to newly issued postgres IDs
+    # If the SampleID is not found then skip record. It could be a legacy sample in BugLab that was
+    # not removed. i.e. Its not associated with an active, onhold or pending box.
+    if msdata['SampleID'] not in lookup['sample_ids']:
+        return None
+
     return {
-        'sample_id': sample_id,
+        'sample_id': lookup['sample_ids'][msdata['SampleID']],
         'mass_type_id': type_id,
         'mass_method_id': method_id,
         'mass': msdata['AFDM']

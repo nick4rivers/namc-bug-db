@@ -1,18 +1,21 @@
+""" Import boxes
+"""
 import csv
-import pyodbc
 from lib.logger import Logger
 from lib.progress_bar import ProgressBar
-from utilities import sanitize_string_col, sanitize_string, write_sql_file, log_record_count
-from utilities import reset_sequence
+from utilities import log_record_count, sanitize_string, reset_sequence
 from postgres_lookup_data import lookup_data, insert_row, log_row_count, insert_many_rows
 from lookup_data import get_db_id
 
 
-def migrate(mscurs, pgcurs):
+def migrate(mscurs, pgcurs, db_name):
+    """Migrating boxes"""
 
+    log = Logger('Boxes')
     organizations = lookup_data(pgcurs, 'entity.organizations', 'entity_id')
     box_states = lookup_data(pgcurs, 'sample.box_states', 'box_state_name')
     individuals = lookup_data(pgcurs, 'entity.individuals', 'entity_id')
+    existing_boxes = lookup_data(pgcurs, 'sample.boxes', 'box_id')
 
     # Recomposite the individual names
     individuals_by_full_name = {'{} {}'.format(data['first_name'], data['last_name']).replace("'", '').replace('.', ''): individual_id for individual_id, data in individuals.items()}
@@ -20,25 +23,36 @@ def migrate(mscurs, pgcurs):
     # The unspecified user for boxes that don't have a contact individual
     unspecified_individual_id = individuals_by_full_name['Unspecified Unspecified']
 
-    # Load completed boxes from Pilot first. Then load only incomplete boxes from BugLab.
-    original_box_data = {}
-    load_box_data(mscurs, original_box_data, 'SELECT BT.*, C.Contact FROM PilotDB.dbo.BoxTracking BT LEFT JOIN PilotDB.dbo.Customer C ON BT.CustId = C.CustID', ['DateIn', 'Notes', 'Contact', 'CustId'], box_states, 'Complete')
-    load_box_data(mscurs, original_box_data, 'SELECT BT.*, C.Contact FROM BugLab.dbo.BugBoxes BT LEFT JOIN BugLab.dbo.Customer C ON BT.CustId = C.CustID where Complete = 0', ['DateIn', 'Notes', 'Contact', 'CustId'], box_states, 'Active')
+    sql = """SELECT BT.*, C.Contact
+        FROM {0}.dbo.{1} BT
+        LEFT JOIN {0}.dbo.Customer C ON BT.CustId = C.CustID
+        {2}""".format(
+        db_name,
+        'BoxTracking' if db_name.lower() == 'pilotdb' else 'BugBoxes',
+        ' where (Complete = 0) ' if db_name == 'buglab' else '')
 
-    expected_rows = log_record_count(len(original_box_data), 'Pilot and BugLab Boxes')
+    existing_box_count = 0
+    expected_rows = log_record_count(mscurs, '{} Boxes'.format(db_name), sql)
     progbar = ProgressBar(expected_rows, 50, "boxes")
+    mscurs.execute(sql)
     counter = 0
-    for box_id, msdata in original_box_data.items():
+    for msrow in mscurs.fetchall():
+        msdata = dict(zip([t[0] for t in msrow.cursor_description], msrow))
 
-        custId = sanitize_string(msdata['CustId'])
+        # Most boxes should exist in both databases. Only process once.
+        if msdata['BoxId'] in existing_boxes:
+            existing_box_count += 1
+            continue
+
+        cust_id = sanitize_string(msdata['CustId'])
 
         # Forest service customer IDs were tweaked during import. Use old format for lookup
-        if custId.startswith('USFS_'):
-            custId = custId.replace('_', '-')
-        if custId.startswith('USFS-R0'):
-            custId = 'USFS-R' + custId[7:]
+        if cust_id.startswith('USFS_'):
+            cust_id = cust_id.replace('_', '-')
+        if cust_id.startswith('USFS-R0'):
+            cust_id = 'USFS-R' + cust_id[7:]
 
-        entity_id = get_db_id(organizations, 'entity_id', ['abbreviation', 'organization_name'], custId, True)
+        entity_id = get_db_id(organizations, 'entity_id', ['abbreviation', 'organization_name'], cust_id, True)
         box_state_id = get_db_id(box_states, 'box_state_id', ['box_state_name'], 'Complete')
 
         # Default the submitter to the customer organization
@@ -56,12 +70,12 @@ def migrate(mscurs, pgcurs):
                     raise Exception('failed to find contact')
 
         data = {
-            'box_id': box_id,
+            'box_id': msdata['BoxId'],
             'customer_id': entity_id,
             'submitter_id': submitter_id,
             'box_received_date': msdata['DateIn'],
             'box_state_id': box_state_id,
-            'description': sanitize_string_col('BoxTracking', 'BoxId', msdata, 'Notes')
+            'description': sanitize_string(msdata['Notes'], None, 'Boxes') if 'Notes' in msdata else None
         }
         insert_row(pgcurs, 'sample.boxes', data)
         counter += 1
@@ -70,8 +84,14 @@ def migrate(mscurs, pgcurs):
     progbar.finish()
     log_row_count(pgcurs, 'sample.boxes', expected_rows)
 
+    log.info('{} boxes skipped because they already existed in the database.'.format(existing_box_count))
+
+    # Data inserted with manual IDs need to reset the table sequence
+    reset_sequence(pgcurs, 'sample.boxes', 'box_id')
+
 
 def associate_models_with_boxes(pgcurs, csv_path):
+    """ Associate models with the boxes"""
 
     model_aliases = {
         'OR_WCCP': 'OR - WCCP',
@@ -127,25 +147,3 @@ def associate_models_with_boxes(pgcurs, csv_path):
 
     # Data inserted with manual IDs need to reset the table sequence
     reset_sequence(pgcurs, 'sample.boxes', 'box_id')
-
-
-def load_box_data(mscurs, boxes, sql, fields, box_states, state):
-
-    log = Logger('Boxes')
-    original_count = len(boxes)
-
-    mscurs.execute(sql)
-    for msrow in mscurs.fetchall():
-        msdata = dict(zip([t[0] for t in msrow.cursor_description], msrow))
-
-        box_id = msdata['BoxId']
-
-        # if box_id not in boxes:
-        #     # Warn if the box has already been loaded. Should load Pilot first and then BugLab.
-        #     log.info('New Box ID {} found in both BugLab and PilotDB'.format(box_id))
-        #     continue
-
-        boxes[box_id] = {field: msdata[field] for field in fields}
-        boxes[box_id]['box_status_id'] = box_states[state]
-
-    log.info('{} boxes loaded with status of {}'.format(len(boxes) - original_count, state))

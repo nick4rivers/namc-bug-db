@@ -1,3 +1,12 @@
+"""
+Main database migration script to move data from SQL Server
+PilotDB and BugLab to Postgres
+"""
+import os
+import argparse
+import pyodbc
+import psycopg2
+from psycopg2.extras import execute_values
 from migrate_predictor_values import migrate as predictor_values
 from migrate_organisms import migrate as organisms
 from migrate_samples import migrate as samples
@@ -6,54 +15,45 @@ from migrate_sites import migrate_model_reference_sites as model_reference_sites
 from migrate_boxes import migrate as boxes
 from migrate_boxes import associate_models_with_boxes
 from migrate_entities import migrate as entities
-from migrate_taxonomy_pivot import migrate as taxonomy
+from migrate_taxonomy_pivot import migrate as taxonomy_synonyms_attributes
 from migrate_projects import migrate as projects
-from migrate_predictors import migrate as predictors
 from migrate_model_results import migrate as model_results
 from lib.dotenv import parse_args_env
 from lib.logger import Logger
-from migrate_model_polygons import migrate_model_polygons
-from migrate_catchment_polygons import migrate_catchment_polygons
-from migrate_model_polygons import associate_models_with_entities
-from migrate_translation_taxa import migrate as translation_taxa
-import os
-import argparse
-import pyodbc
-import psycopg2
-from psycopg2.extras import execute_values
+from migrate_model_polygons import model_extent_polygons, associate_models_with_entities
+from migrate_catchment_polygons import site_catchment_polygons
 
 
 def migrate_all_data(mscon, pgcon, predictor_values_csv_path, metric_values_csv_path, model_polygons_geojson_path, parent_entities, catchment_polygons, model_ref_sites):
+    """This is the main top level function for migrating data"""
 
-    # output_dir = os.path.join(os.path.dirname(__file__), '../docker/postgres/initdb')
     pgcurs = pgcon.cursor(cursor_factory=psycopg2.extras.DictCursor)
     mscurs = mscon.cursor()
 
-    # Import GeoJSON model polygons from local file exported from ShapeFile provided by NAMC
-    # migrate_model_polygons(pgcurs, model_polygons_geojson_path)
+    taxonomy_synonyms_attributes(mscurs, pgcurs)
 
-    # taxonomy(mscurs, pgcurs)
-    # # translation_taxa(mscurs, pgcurs)
+    entities(mscurs, pgcurs, parent_entities)
+    associate_models_with_entities(pgcurs)
 
-    # sites(mscurs, pgcurs, 'PilotDB')
-    # sites(mscurs, pgcurs, 'BugLab')
-    # model_reference_sites(pgcurs, model_ref_sites)
+    for db_name in ('PilotDB', 'BugLab'):
 
-    # # Import GeoJSON catchment polygons from local file exported from ShapeFile provided by NAMC
-    # migrate_catchment_polygons(pgcurs, catchment_polygons)
+        sites(mscurs, pgcurs, db_name)
+        boxes(mscurs, pgcurs, db_name)
 
-    # entities(mscurs, pgcurs, parent_entities)
-    # associate_models_with_entities(pgcurs)
+        sample_ids = samples(mscurs, pgcurs, db_name)
+        organisms(mscurs, pgcurs, db_name, sample_ids)
 
-    # boxes(mscurs, pgcurs)
-    # associate_models_with_boxes(pgcurs, predictor_values_csv_path)
-
-    # samples(mscurs, pgcurs)
-    # predictor_values(pgcurs, predictor_values_csv_path)
+    model_reference_sites(pgcurs, model_ref_sites)
     model_results(pgcurs, metric_values_csv_path)
-    # projects(mscurs, pgcurs)
+    # model_extent_polygons(pgcurs, model_polygons_geojson_path)
 
-    # organisms(mscurs, pgcurs)
+    # Import GeoJSON catchment polygons from local file exported from ShapeFile provided by NAMC
+    site_catchment_polygons(pgcurs, catchment_polygons)
+
+    associate_models_with_boxes(pgcurs, predictor_values_csv_path)
+
+    predictor_values(pgcurs, predictor_values_csv_path)
+    projects(mscurs, pgcurs)
 
     # Refresh any materialized views
     pgcurs.execute('REFRESH MATERIALIZED VIEW taxa.vw_taxonomy_crosstab;')
@@ -89,10 +89,10 @@ def main():
 
     args = parse_args_env(parser, os.path.join(os.path.dirname(os.path.realpath(__file__)), '.env'))
 
-    predictor_values = os.path.join(os.path.dirname(__file__), args.predictor_values)
-    metric_values = os.path.join(os.path.dirname(__file__), args.metric_values)
-    parent_entities = os.path.join(os.path.dirname(__file__), args.parent_entities)
-    model_ref_sites = os.path.join(os.path.dirname(__file__), args.model_reference_sites)
+    predictor_values_path = os.path.join(os.path.dirname(__file__), args.predictor_values)
+    metric_values_path = os.path.join(os.path.dirname(__file__), args.metric_values)
+    parent_entities_path = os.path.join(os.path.dirname(__file__), args.parent_entities)
+    model_ref_sites_path = os.path.join(os.path.dirname(__file__), args.model_reference_sites)
 
     log = Logger('DB Migration')
     log.setup(logPath=os.path.join(os.path.dirname(__file__), "bugdb_migration.log"), verbose=args.verbose)
@@ -105,7 +105,7 @@ def main():
     pgcon = psycopg2.connect(user=args.pguser_name, password=args.pgpassword, host=args.pghost, port=args.pgport, database=args.pgdb)
 
     try:
-        migrate_all_data(mscon, pgcon, predictor_values, metric_values, args.model_polygons, parent_entities, args.catchment_polygons, model_ref_sites)
+        migrate_all_data(mscon, pgcon, predictor_values_path, metric_values_path, args.model_polygons, parent_entities_path, args.catchment_polygons, model_ref_sites_path)
         pgcon.commit()
     except Exception as ex:
         log.error(str(ex))
