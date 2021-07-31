@@ -69,7 +69,7 @@ def migrate_samples(db_name, mscurs, pgcurs):
             if 'employeeId2' in metadata:
                 employees[int(metadata['employeeId2'])] = row['entity_id']
 
-    sql = """SELECT TOP 10 S.*, NULL AS LabName, Plankton, Drift, Stomachs
+    sql = """SELECT S.*, NULL AS LabName, Plankton, Drift, Stomachs
     FROM {0}.dbo.BugSample S
          INNER JOIN
      (
