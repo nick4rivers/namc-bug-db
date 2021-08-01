@@ -351,6 +351,8 @@ sites API endpoint.
         lifeStageAbbreviation: String
         bugSize: Float
         rawCount: Float
+        labSplit: Float
+        fieldSplit: Float
         correctedCount: Float
         rawBigRareCount: Int
     }

@@ -889,6 +889,8 @@ create or replace function sample.fn_sample_taxa_generalized(p_sample_id int)
                 life_stage_abbreviation char,
                 bug_size                real,
                 raw_count               real,
+                lab_split               real,
+                field_split             real,
                 corrected_count         real,
                 raw_big_rare_count      bigint
             )
@@ -908,6 +910,8 @@ begin
                ll.abbreviation,
                o.bug_size,
                sum(o.split_count),
+               s.lab_split,
+               s.field_split,
                sum(o.split_count) * s.lab_split * s.field_split,
                sum(o.big_rare_count)
         from sample.organisms o

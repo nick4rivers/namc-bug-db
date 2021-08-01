@@ -368,6 +368,8 @@ export declare type GeneralizedSampleTaxa = {
     lifeStageAbbreviation: string;
     bugSize: number;
     rawCount: number;
+    labSplit: number;
+    fieldSplit: number;
     correctedCount: number;
     rawBigRareCount: number;
 };
