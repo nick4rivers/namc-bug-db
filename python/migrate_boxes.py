@@ -147,3 +147,23 @@ def associate_models_with_boxes(pgcurs, csv_path):
 
     # Data inserted with manual IDs need to reset the table sequence
     reset_sequence(pgcurs, 'sample.boxes', 'box_id')
+
+
+def update_box_states(mscurs, pgcurs):
+    """
+    BugLab maintains the accurate box status. Update boxes in postgres
+    with the status from BugLab for Active, OnHold and Waiting
+    """
+
+    log = Logger('Boxes')
+    statuses = lookup_data(pgcurs, 'sample.box_states', 'box_state_name')
+
+    for status in ['Active', 'Waiting', "OnHold"]:
+
+        # Get the new postgres status ID
+        status_id = get_db_id(statuses, 'box_state_id', ['box_state_name'], 'On Hold' if status.lower() == 'onhold' else status, True)
+
+        mscurs.execute('SELECT BoxID From BugLab.dbo.BugBoxes WHERE ( ({} <> 0) AND (Complete = 0))'.format(status))
+        box_ids = [(status_id, row[0]) for row in mscurs.fetchall()]
+        log.info('Update {} boxes with status of {}'.format(len(box_ids), status))
+        pgcurs.executemany('UPDATE sample.boxes SET box_state_id = %s WHERE (box_id = %s)', box_ids)

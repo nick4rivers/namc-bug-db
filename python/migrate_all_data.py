@@ -12,8 +12,8 @@ from migrate_organisms import migrate as organisms
 from migrate_samples import migrate as samples
 from migrate_sites import migrate as sites
 from migrate_sites import migrate_model_reference_sites as model_reference_sites
-from migrate_boxes import migrate as boxes
-from migrate_boxes import associate_models_with_boxes
+from migrate_boxes import migrate as boxes, update_box_states
+from migrate_boxes import associate_models_with_boxes, update_box_states
 from migrate_entities import migrate as entities
 from migrate_taxonomy_pivot import migrate as taxonomy_synonyms_attributes
 from migrate_projects import migrate as projects
@@ -43,6 +43,7 @@ def migrate_all_data(mscon, pgcon, predictor_values_csv_path, metric_values_csv_
         sample_ids = samples(mscurs, pgcurs, db_name)
         organisms(mscurs, pgcurs, db_name, sample_ids)
 
+    update_box_states(mscurs, pgcurs)
     model_reference_sites(pgcurs, model_ref_sites)
     model_results(pgcurs, metric_values_csv_path)
     # model_extent_polygons(pgcurs, model_polygons_geojson_path)
